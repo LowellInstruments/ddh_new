@@ -117,8 +117,10 @@ def update_dl_folder_list():
 
 
 def detect_raspberry():
-    if os.uname()[1].endswith('raspberrypi'):
+    node_name = os.uname()[1]
+    if node_name.endswith('raspberrypi') or node_name.startswith('rpi'):
         return True
+    print('---> detect_raspberry() failed')
     return False
 
 
