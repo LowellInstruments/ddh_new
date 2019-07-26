@@ -34,9 +34,10 @@ if detect_raspberry():
 # application behavior constants
 DDH_BLE_MAC_FILTER = (
     # remember : separator, not -
-    '00:1e:c0:4d:bf:c9',
-    '00:1e:c0:4d:d2:37',
-    '00:1e:c0:4d:bf:db'
+    # '00:1e:c0:4d:bf:c9',
+    # '00:1e:c0:4d:d2:37',
+    # '00:1e:c0:4d:bf:db'
+    '00:1e:c0:3d:7a:f2',
 )
 DDH_GPS_PERIOD = 10
 DDH_PLT_DISPLAY_PERIOD = 30
