@@ -56,7 +56,9 @@ class DeckDataHubPLT:
         dir_1 = cl.d1
         if not dir_1:
             t = 'PLT: no plot, bad folder {}/...'.format(dir_1)
-            return t
+            signals.error_gui.emit(t)
+            signals.plt_result.emit(False)
+            return {}, {}
         cl._plt_lid_to_csv(signals, dir_1)
         fil = [dir_1, 'Temperature.csv', 0, 1]
         y_1 = cl._plt_csv_data(signals, *fil)
@@ -65,7 +67,7 @@ class DeckDataHubPLT:
             t = 'PLT: no csv data for {}...'.format(mac)
             signals.error_gui.emit(t)
             signals.plt_result.emit(False)
-            return
+            return {}, {}
 
         # convert 2nd folder, if any
         cl.d2, y_2 = None, None
@@ -91,7 +93,7 @@ class DeckDataHubPLT:
             t = 'PLT: few averages for {}'.format(mac)
             signals.error_gui.emit(t)
             signals.plt_result.emit(False)
-            return
+            return {}, {}
 
         # loop, start_cut pivots minutes forward from start_key
         avg_data_1, avg_data_2 = {}, {}
