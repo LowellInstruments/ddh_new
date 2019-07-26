@@ -1,0 +1,341 @@
+from mat.data_converter import DataConverter, default_parameters
+import os
+import iso8601
+import numpy
+from sortedcontainers import SortedDict
+from .ddh_utils import (
+    get_last_key_from_dict,
+    get_first_key_from_dict,
+    slice_bw_keys,
+    get_start_key_from_end_key,
+    rm_files_by_extension,
+    list_files_by_extension,
+    filter_files_by_name_ending,
+    filter_files_by_size,
+    get_span_as_hh_mm,
+    get_span_as_slices
+)
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.figure import Figure
+from PyQt5.QtWidgets import (
+    QSizePolicy
+)
+from matplotlib import rcParams
+from datetime import timedelta
+from diskcache import Cache
+
+
+class DeckDataHubPLT:
+
+    # implement disk cache for faster data loading
+    cache = Cache()
+    d1 = None
+    d2 = None
+
+    @staticmethod
+    def plt_cache_clear():
+        DeckDataHubPLT.cache.clear()
+
+    @staticmethod
+    def plt_plot(signals, folders, cnv, ts):
+        signals.clk_start.emit()
+        y1, y2 = DeckDataHubPLT.plt_process_data(signals, folders, ts)
+        DeckDataHubPLT.plt_plot_data(signals, y1, y2, cnv, ts)
+        signals.clk_end.emit()
+
+    @staticmethod
+    def plt_process_data(signals, dirs, ts):
+        # banner
+        signals.status_gui.emit('PLT: plotting...')
+        t = 'PLT: plotting {}...'.format(dirs)
+        signals.status.emit(t)
+
+        # convert 1st folder
+        cl = DeckDataHubPLT
+        cl.d1 = dirs[0]
+        dir_1 = cl.d1
+        if not dir_1:
+            t = 'PLT: no plot, bad folder {}/...'.format(dir_1)
+            return t
+        cl._plt_lid_to_csv(signals, dir_1)
+        fil = [dir_1, 'Temperature.csv', 0, 1]
+        y_1 = cl._plt_csv_data(signals, *fil)
+        if not y_1:
+            mac = os.path.basename(dir_1)
+            t = 'PLT: no csv data for {}...'.format(mac)
+            signals.error_gui.emit(t)
+            signals.plt_result.emit(False)
+            return
+
+        # convert 2nd folder, if any
+        cl.d2, y_2 = None, None
+        if len(dirs) == 2 and dirs[1] is not None:
+            cl.d2 = dirs[1]
+            dir_2 = cl.d2
+            cl._plt_lid_to_csv(signals, dir_2)
+            fil[0] = dir_2
+            y_2 = cl._plt_csv_data(signals, *fil)
+
+        # prune data w/ 'show' parameter
+        span_hh, span_mm = get_span_as_hh_mm(ts)
+        end_key = get_last_key_from_dict(y_1)
+        start_key = get_start_key_from_end_key(end_key, span_hh)
+        y_1 = slice_bw_keys(start_key, end_key, y_1)
+        if y_2:
+            y_2 = slice_bw_keys(start_key, end_key, y_2)
+
+        # get number of (averaged) points = slices
+        num_slices = get_span_as_slices(ts)
+        if num_slices > len(y_1):
+            mac = os.path.basename(dir_1)
+            t = 'PLT: few averages for {}'.format(mac)
+            signals.error_gui.emit(t)
+            signals.plt_result.emit(False)
+            return
+
+        # loop, start_cut pivots minutes forward from start_key
+        avg_data_1, avg_data_2 = {}, {}
+        mm_slice = span_mm / num_slices
+        start_date = iso8601.parse_date(start_key).replace(tzinfo=None)
+        for slice_counter in range(num_slices):
+            start_cut = slice_counter * mm_slice
+            pivot_date = start_date + timedelta(minutes=start_cut)
+            end_date = pivot_date + timedelta(minutes=mm_slice)
+            start_pivot = pivot_date.strftime("%Y-%m-%dT%H:%M:%S") + '.000'
+            end_pivot = end_date.strftime("%Y-%m-%dT%H:%M:%S") + '.000'
+            slice_1 = slice_bw_keys(start_pivot, end_pivot, y_1)
+            slice_2 = None
+            if y_2:
+                slice_2 = slice_bw_keys(start_pivot, end_pivot, y_2)
+
+            # mean and label current slice
+            minimum_required = mm_slice / 2
+            if len(slice_1):
+                label_key = start_pivot
+                slice_mean = avg_values_dict(slice_1, minimum_required)
+                avg_data_1[label_key] = slice_mean
+                if y_2:
+                    slice_mean = avg_values_dict(slice_2, minimum_required)
+                    avg_data_2[label_key] = slice_mean
+
+        # discard poor plots
+        if len(list(avg_data_1.keys())) < 2:
+            mac = os.path.basename(dir_1)
+            t = 'PLT: few plot data for {}.'.format(mac)
+            signals.error_gui.emit(t)
+            signals.plt_result.emit(False)
+            return
+
+        return avg_data_1, avg_data_2
+
+    @staticmethod
+    def plt_plot_data(signals, data_1, data_2, cnv, ts):
+        # check and naming
+        if not data_1:
+            return
+        cl = DeckDataHubPLT
+        dir_1 = cl.d1
+        dir_2 = cl.d2
+
+        # add first averaged data set
+        cnv.axes.cla()
+        x_data = list(data_1.keys())
+        y_data_1 = list(data_1.values())
+        data_legend = translate_logger_name(os.path.basename(dir_1))
+        cnv.axes.plot(x_data, y_data_1, color='blue', label=data_legend)
+
+        # add second averaged data set
+        if data_2:
+            y_data_2 = list(data_2.values())
+            legend = translate_logger_name(os.path.basename(dir_2))
+            cnv.axes.plot(x_data, y_data_2, color='red', label=legend)
+        else:
+            if dir_2:
+                text = 'PLT: no data for {}.'.format(os.path.basename(dir_2))
+                signals.status.emit(text)
+
+        # format plot and show it
+        title = ''
+        ticks = list(data_1.keys())
+        ticks_skip = 1
+        labels_format = ''
+        _, plot_minutes = get_span_as_hh_mm(ts)
+        if plot_minutes <= 60:
+            labels_format, ticks_skip, title = '%H:%M', 5, 'Last hour'
+        elif 60 < plot_minutes <= 24 * 60:
+            labels_format, ticks_skip, title = '%Hh', 2, 'Last day'
+        elif 1440 < plot_minutes <= 168 * 60:
+            labels_format, ticks_skip, title = '%m/%d/%y', 1, 'Last week'
+        elif 10080 < plot_minutes <= 730 * 60:
+            labels_format, ticks_skip, title = '%b %d', 10, 'Last month'
+        elif 43800 < plot_minutes <= 8765 * 60:
+            labels_format, ticks_skip, title = '%b', 1, 'Last year'
+        end_labels = []
+        for each_label in ticks:
+            date_as_iso = iso8601.parse_date(each_label)
+            end_labels.append(date_as_iso.strftime(labels_format))
+        cnv.axes.set_xticks(ticks[::ticks_skip])
+        cnv.axes.set_xticklabels(end_labels[::ticks_skip], fontsize='large')
+        cnv.axes.set_title(title, fontweight='bold', fontsize=16)
+        cnv.axes.set_ylim(5, 30)
+        cnv.axes.set_xlabel('time', fontsize=14, fontweight='bold')
+        cnv.axes.set_ylabel('T (ºC)', fontsize=14, fontweight='bold')
+        cnv.axes.legend(fontsize=14)
+        cnv.draw()
+
+        # result: signal everything went fine
+        signals.status.emit('PLT: data plotted ok.')
+        signals.plt_result.emit(True)
+        signals.status_gui_clear.emit()
+
+    @staticmethod
+    def _plt_lid_to_csv(signals, folder, remove_previous=False):
+        # parameter check, should never happen
+        if not folder:
+            text = 'PLT: NULL folder to convert.'
+            signals.error_gui.emit(text)
+            return 0
+
+        # decide delete all .csv files for this logger
+        if remove_previous:
+            rm_files_by_extension(folder, 'csv')
+
+        # ignore .lid files that already have their .csv
+        lid_files_to_convert = []
+        for each in list_files_by_extension(folder, 'lid'):
+            if each.endswith('.lid'):
+                csv_name = each.split('.')[0] + '_Temperature.csv'
+                if not os.path.isfile(csv_name):
+                    lid_files_to_convert.append(each)
+
+        # convert to csv
+        parameters = default_parameters()
+        parameters['average'] = False
+        counter = 0
+        for counter, each in enumerate(lid_files_to_convert):
+            converter = DataConverter(each, parameters)
+            try:
+                # promote any numpy warnings to errors so we can catch them
+                numpy.seterr(all='raise')
+                converter.convert()
+            except ValueError:
+                text = 'PLT: can\'t convert {}.'.format(each)
+                signals.error_gui.emit(text)
+            except FloatingPointError:
+                text = 'PLT: file {} has ZERO_KELVIN values. '.format(each)
+                signals.error_gui.emit(text)
+            except ZeroDivisionError:
+                text = 'PLT: {} ZeroDivisionError.'.format(each)
+                signals.error_gui.emit(text)
+            else:
+                counter += 1
+        return counter
+
+    @staticmethod
+    def _plt_csv_data(signals, logger_dir, name_filter='Temperature.csv',
+                      min_size=2000, drop_min=0):
+        # naming
+        cl = DeckDataHubPLT
+
+        # check if valid input folder
+        if os.path.isdir(logger_dir):
+            logger_mac = os.path.basename(logger_dir)
+            csv_files = list_files_by_extension(logger_dir, 'csv')
+        else:
+            return None
+
+        # filter, for example, only keep the Temperature-related files
+        csv_files = filter_files_by_name_ending(csv_files, name_filter)
+        if not csv_files:
+            return None
+
+        # filter, for example, by size (default is 2000)
+        csv_files = filter_files_by_size(csv_files, min_size)
+        if not csv_files:
+            return None
+
+        # see if we have this data in cache
+        logger_data = SortedDict()
+        if csv_files in cl.cache:
+            logger_data = cl.cache.get(csv_files)
+        if logger_data:
+            t = 'PLT: hit {}.'.format(logger_mac[-8:])
+            signals.debug.emit(t)
+            cl.cache.touch(csv_files, expire=600)
+            return logger_data
+
+        # append EVERY .csv file to data, lose the columns' titles row
+        for each in csv_files:
+            with open(each, 'r') as f:
+                interval = []
+                for counter, line in enumerate(f):
+                    if counter == 1:
+                        interval.append(line.split(',')[0])
+                    # only consider files w/ data interval > 60 seconds
+                    # if counter == 2:
+                    #     interval.append(line.split(',')[0])
+                    #     time_bw = iso8601.parse_date(interval[1])
+                    #     time_bw -= iso8601.parse_date(interval[0])
+                    #     secs_bw_interval = int(time_bw.total_seconds())
+                    #     if secs_bw_interval < 60:
+                    #         # delete interval[0] from logger_data first
+                    #         logger_data.popitem()
+                    #         text = 'PLT: data interval too small for {}.'.\
+                    #             format(os.path.basename(each))
+                    #         signals.error.emit(text)
+                    #         break
+
+                    # data interval ok, ignore column titles row (counter == 0)
+                    if counter:
+                        row = line.split(',')
+                        logger_data[row[0]] = row[1].replace('\n', '')
+
+        # discard any trailing data because ON/OFF boat, if indicated
+        last_key = get_last_key_from_dict(logger_data)
+        d_h = drop_min / 60
+        logger_data = slice_bw_keys(get_first_key_from_dict(logger_data),
+                                    get_start_key_from_end_key(last_key, d_h),
+                                    logger_data)
+
+        # cache this thing (key, value, expire_seconds, read_permission, tag)
+        cl.cache.set(csv_files, logger_data, expire=600)
+
+        return logger_data
+
+
+def avg_values_dict(input_dict, minimum_required):
+    # check enough significant points in this slice to average
+    if len(input_dict) >= minimum_required:
+        input_dict_values = list(map(float, input_dict.values()))
+        return sum(input_dict_values) / len(input_dict_values)
+    return numpy.nan
+
+
+def translate_logger_name(logger_mac):
+    import json
+    name = 'unnamed_logger'
+    try:
+        with open('ddh.json') as f:
+            ddh_cfg_string = json.load(f)
+            name = ddh_cfg_string['db_logger_macs'][logger_mac]
+    except (FileNotFoundError, TypeError, KeyError):
+        pass
+    return name
+
+
+# class for our plots
+class StaticCanvas(FigureCanvas):
+
+    def __init__(self, parent=None, width=5, height=4, dpi=100):
+        # an update of rcParams is needed to show x-axis label
+        rcParams.update({'figure.autolayout': True})
+        fig = Figure(figsize=(width, height), dpi=dpi)
+        self.axes = fig.add_subplot(111)
+
+        FigureCanvas.__init__(self, fig)
+        self.setParent(parent)
+        FigureCanvas.setSizePolicy(self,
+                                   QSizePolicy.Expanding,
+                                   QSizePolicy.Expanding)
+        FigureCanvas.updateGeometry(self)
+        FigureCanvas.draw(self)
