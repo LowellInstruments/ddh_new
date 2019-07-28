@@ -27,4 +27,4 @@ class DeckDataHubGUI:
         while 1:
             DeckDataHubGUI.indicator = DeckDataHubGUI.step_busy_indicator()
             signals.gui_tick.emit(DeckDataHubGUI.indicator)
-            time.sleep(0.25)
+            time.sleep(1)

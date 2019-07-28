@@ -39,23 +39,23 @@ class DeckDataHubPLT:
     @staticmethod
     def plt_plot(signals, folders, cnv, ts):
         signals.clk_start.emit()
-        y1, y2 = DeckDataHubPLT.plt_process_data(signals, folders, ts)
-        DeckDataHubPLT.plt_plot_data(signals, y1, y2, cnv, ts)
+        DeckDataHubPLT.plt_process_n_plot(signals, folders, cnv, ts)
         signals.clk_end.emit()
 
     @staticmethod
-    def plt_process_data(signals, dirs, ts):
+    def plt_process_n_plot(signals, dirs, cnv, ts):
         # banner
         signals.status_gui.emit('PLT: plotting...')
         t = 'PLT: plotting {}...'.format(dirs)
         signals.status.emit(t)
 
-        # convert 1st folder
+        # process (convert) 1st folder
         cl = DeckDataHubPLT
         cl.d1 = dirs[0]
         dir_1 = cl.d1
+        mac_1 = os.path.basename(dir_1)[-8:]
         if not dir_1:
-            t = 'PLT: no plot, bad folder {}/...'.format(dir_1)
+            t = 'PLT: no folder.'
             signals.error_gui.emit(t)
             signals.plt_result.emit(False)
             return {}, {}
@@ -63,13 +63,12 @@ class DeckDataHubPLT:
         fil = [dir_1, 'Temperature.csv', 0, 1]
         y_1 = cl._plt_csv_data(signals, *fil)
         if not y_1:
-            mac = os.path.basename(dir_1)
-            t = 'PLT: no csv data for {}...'.format(mac)
+            t = 'PLT: {}, few {} raw data.'.format(mac_1, ts)
             signals.error_gui.emit(t)
             signals.plt_result.emit(False)
             return {}, {}
 
-        # convert 2nd folder, if any
+        # process 2nd folder, if any
         cl.d2, y_2 = None, None
         if len(dirs) == 2 and dirs[1] is not None:
             cl.d2 = dirs[1]
@@ -78,7 +77,7 @@ class DeckDataHubPLT:
             fil[0] = dir_2
             y_2 = cl._plt_csv_data(signals, *fil)
 
-        # prune data w/ 'show' parameter
+        # prune data w/ 'ts' parameter
         span_hh, span_mm = get_span_as_hh_mm(ts)
         end_key = get_last_key_from_dict(y_1)
         start_key = get_start_key_from_end_key(end_key, span_hh)
@@ -89,8 +88,7 @@ class DeckDataHubPLT:
         # get number of (averaged) points = slices
         num_slices = get_span_as_slices(ts)
         if num_slices > len(y_1):
-            mac = os.path.basename(dir_1)
-            t = 'PLT: few averages for {}'.format(mac)
+            t = 'PLT: {}, few {} averaged data.'.format(mac_1, ts)
             signals.error_gui.emit(t)
             signals.plt_result.emit(False)
             return {}, {}
@@ -122,16 +120,16 @@ class DeckDataHubPLT:
 
         # discard poor plots
         if len(list(avg_data_1.keys())) < 2:
-            mac = os.path.basename(dir_1)
-            t = 'PLT: few plot data for {}.'.format(mac)
+            t = 'PLT: {}, few {} data to plot.'.format(mac_1, ts)
             signals.error_gui.emit(t)
             signals.plt_result.emit(False)
-            return
+            return {}, {}
 
-        return avg_data_1, avg_data_2
+        # plot display
+        cl._plt_plot(signals, avg_data_1, avg_data_2, cnv, ts)
 
     @staticmethod
-    def plt_plot_data(signals, data_1, data_2, cnv, ts):
+    def _plt_plot(signals, data_1, data_2, cnv, ts):
         # check and naming
         if not data_1:
             return
@@ -153,12 +151,12 @@ class DeckDataHubPLT:
             cnv.axes.plot(x_data, y_data_2, color='red', label=legend)
         else:
             if dir_2:
-                text = 'PLT: no data for {}.'.format(os.path.basename(dir_2))
+                text = 'PLT: few data for {}.'.format(os.path.basename(dir_2))
                 signals.status.emit(text)
 
         # format plot and show it
         title = ''
-        ticks = list(data_1.keys())
+        ticks = x_data
         ticks_skip = 1
         labels_format = ''
         _, plot_minutes = get_span_as_hh_mm(ts)
@@ -203,21 +201,22 @@ class DeckDataHubPLT:
             rm_files_by_extension(folder, 'csv')
 
         # ignore .lid files that already have their .csv
-        lid_files_to_convert = []
+        lid_files = []
         for each in list_files_by_extension(folder, 'lid'):
             if each.endswith('.lid'):
                 csv_name = each.split('.')[0] + '_Temperature.csv'
-                if not os.path.isfile(csv_name):
-                    lid_files_to_convert.append(each)
+            if os.path.isfile(csv_name):
+                continue
+            lid_files.append(each)
 
-        # convert to csv
+        # convert list of lid files to csv
         parameters = default_parameters()
         parameters['average'] = False
         counter = 0
-        for counter, each in enumerate(lid_files_to_convert):
+        for counter, each in enumerate(lid_files):
             converter = DataConverter(each, parameters)
             try:
-                # promote any numpy warnings to errors so we can catch them
+                # promote warnings to errors so can catch them
                 numpy.seterr(all='raise')
                 converter.convert()
             except ValueError:
@@ -244,17 +243,17 @@ class DeckDataHubPLT:
             logger_mac = os.path.basename(logger_dir)
             csv_files = list_files_by_extension(logger_dir, 'csv')
         else:
-            return None
+            return
 
         # filter, for example, only keep the Temperature-related files
         csv_files = filter_files_by_name_ending(csv_files, name_filter)
         if not csv_files:
-            return None
+            return
 
         # filter, for example, by size (default is 2000)
         csv_files = filter_files_by_size(csv_files, min_size)
         if not csv_files:
-            return None
+            return
 
         # see if we have this data in cache
         logger_data = SortedDict()
@@ -287,21 +286,20 @@ class DeckDataHubPLT:
                     #         signals.error.emit(text)
                     #         break
 
-                    # data interval ok, ignore column titles row (counter == 0)
+                    # data interval ok, ignore titles row (counter == 0)
                     if counter:
                         row = line.split(',')
                         logger_data[row[0]] = row[1].replace('\n', '')
 
-        # discard any trailing data because ON/OFF boat, if indicated
+        # discard any trailing data because ON/OFF boat
         last_key = get_last_key_from_dict(logger_data)
         d_h = drop_min / 60
         logger_data = slice_bw_keys(get_first_key_from_dict(logger_data),
                                     get_start_key_from_end_key(last_key, d_h),
                                     logger_data)
 
-        # cache this thing (key, value, expire_seconds, read_permission, tag)
+        # cache data
         cl.cache.set(csv_files, logger_data, expire=600)
-
         return logger_data
 
 
@@ -327,7 +325,6 @@ def translate_logger_name(logger_mac):
 
 # class for our plots
 class StaticCanvas(FigureCanvas):
-
     def __init__(self, parent=None, width=5, height=4, dpi=100):
         # an update of rcParams is needed to show x-axis label
         rcParams.update({'figure.autolayout': True})

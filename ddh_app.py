@@ -1,7 +1,16 @@
-import datetime, sys, time
+import datetime
+import sys
+import time
 from gui.ble_gui_ui import Ui_tabs
-from PyQt5.QtCore import Qt, QThreadPool, pyqtSlot
-from PyQt5.QtGui import QIcon, QPixmap
+from PyQt5.QtCore import (
+    Qt,
+    QThreadPool,
+    pyqtSlot
+)
+from PyQt5.QtGui import (
+    QIcon,
+    QPixmap
+)
 from PyQt5.QtWidgets import (
     QMainWindow,
     QApplication,
@@ -31,7 +40,7 @@ if detect_raspberry():
     from gpiozero import Button
 
 
-# application behavior constants
+# constants for the application
 DDH_BLE_MAC_FILTER = (
     # remember : separator, not -
     # '00:1e:c0:4d:bf:c9',
@@ -39,10 +48,9 @@ DDH_BLE_MAC_FILTER = (
     # '00:1e:c0:4d:bf:db'
     '00:1e:c0:3d:7a:f2',
 )
+DDH_ERR_DISPLAY_TIMEOUT = 5
+DDH_PLT_DISPLAY_TIMEOUT = 25
 DDH_GPS_PERIOD = 10
-DDH_PLT_DISPLAY_PERIOD = 30
-DDH_ERR_DISPLAY_PERIOD = 10
-# DDH_CLK_START_TIME = 0
 
 
 # main code
@@ -50,6 +58,7 @@ class DDHQtApp(QMainWindow):
 
     # application behavior variables
     btn_1_held = 0
+    clk_start_time = None
 
     def __init__(self, *args, **kwargs):
         # checks
@@ -129,15 +138,17 @@ class DDHQtApp(QMainWindow):
             #     DDHQtApp.btn_1_held = 1
             #     print('held button 1')
 
-            # raspberry button creation
             self.button1 = Button(26, pull_up=True)
             self.button2 = Button(19, pull_up=True)
             self.button3 = Button(13, pull_up=True)
-            # self.button1.when_held = button1_held_cb
-            # self.button1.when_released = button1_released_cb
             self.button1.when_pressed = button1_pressed_cb
             self.button2.when_pressed = button2_pressed_cb
             self.button3.when_pressed = button3_pressed_cb
+            # self.button1.when_held = button1_held_cb
+            # self.button1.when_released = button1_released_cb
+
+        else:
+            console_log.debug('SYS: no raspberry detected.')
 
     def _ddh_threads_create(self):
         # threads: creation
@@ -186,7 +197,7 @@ class DDHQtApp(QMainWindow):
             # make window as big as tabs widget
             self.setFixedSize(self.tabs.size())
 
-        # get window and screen shape, match both, adjust upper left corner
+        # get window + screen shape, match both, adjust upper left corner
         rectangle = self.frameGeometry()
         point_center_screen = QDesktopWidget().availableGeometry().center()
         rectangle.moveCenter(point_center_screen)
@@ -223,8 +234,11 @@ class DDHQtApp(QMainWindow):
         # logic checks and do the thing
         if self.plt_dir_1 and self.plt_dir_1 == self.plt_dir_2:
             self.plt_dir_2 = None
-        folders_to_plot = [self.plt_dir_1, self.plt_dir_2]
-        self._ddh_thread_throw_plt(folders_to_plot)
+        if self.plt_dir_1:
+            folders_to_plot = [self.plt_dir_1, self.plt_dir_2]
+            self._ddh_thread_throw_plt(folders_to_plot)
+        else:
+            console_log.debug('GUI: no folder to plot')
 
     @pyqtSlot(name='slot_ble_scan_start')
     def slot_ble_scan_start(self):
@@ -259,7 +273,7 @@ class DDHQtApp(QMainWindow):
         style += "border-width: 2px; border-radius: 10px;"
         self.ui.lbl_error.setText(t)
         self.ui.lbl_error.setStyleSheet(style)
-        self.err_timeout_display = DDH_ERR_DISPLAY_PERIOD
+        self.err_timeout_display = DDH_ERR_DISPLAY_TIMEOUT
         self.ui.lbl_error.show()
 
     @pyqtSlot(str, name='slot_error')
@@ -275,7 +289,7 @@ class DDHQtApp(QMainWindow):
         style += "border-width: 2px; border-radius: 10px;"
         self.ui.lbl_error.setText(e)
         self.ui.lbl_error.setStyleSheet(style)
-        self.err_timeout_display = DDH_ERR_DISPLAY_PERIOD
+        self.err_timeout_display = DDH_ERR_DISPLAY_TIMEOUT
         self.ui.lbl_error.show()
 
     # a download session consists of 1 to n loggers
@@ -318,12 +332,13 @@ class DDHQtApp(QMainWindow):
             self.dl_last_dir = 'dl_files/' + str(desc).replace(':', '-')
             self.plt_folders = [self.dl_last_dir, None]
             self._ddh_thread_throw_plt(self.plt_folders)
+            self.plt_folders = update_dl_folder_list()
 
     @pyqtSlot(object, name='slot_plt_result')
     def slot_plt_result(self, result):
         if result:
             self.tabs.setCurrentIndex(2)
-            self.plt_timeout_display = DDH_PLT_DISPLAY_PERIOD
+            self.plt_timeout_display = DDH_PLT_DISPLAY_TIMEOUT
         else:
             self.tabs.setCurrentIndex(0)
 
@@ -369,8 +384,7 @@ class DDHQtApp(QMainWindow):
 
     @pyqtSlot(name='slot_clk_start')
     def slot_clk_start(self):
-        # todo: fix this global variable thing naming
-        DDHQtApp.DDH_CLK_START_TIME = time.clock()
+        self.clk_start_time = time.clock()
 
     @pyqtSlot(name='slot_status_gui_clear')
     def slot_status_gui_clear(self):
@@ -378,8 +392,7 @@ class DDHQtApp(QMainWindow):
 
     @pyqtSlot(name='slot_clk_end')
     def slot_clk_end(self):
-        start_time = DDHQtApp.DDH_CLK_START_TIME
-        elapsed_time = int((time.clock() - start_time) * 1000)
+        elapsed_time = int((time.clock() - self.clk_start_time) * 1000)
         text = 'SYS: elapsed time {} ms.'.format(elapsed_time)
         console_log.debug(text)
 

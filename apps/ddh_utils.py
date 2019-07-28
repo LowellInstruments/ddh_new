@@ -14,7 +14,7 @@ from logzero import logger as console_log
 
 
 def linux_set_time_from_gps(when):
-    # timedatectl is command line to stop systemd-timesyncd.service
+    # timedatectl: UNIX command to stop systemd-timesyncd.service
     time_string = datetime(*when).isoformat()
     subprocess.call(shlex.split('sudo timedatectl set-ntp false'))
     subprocess.call(shlex.split("sudo date -s '%s'" % time_string))
@@ -24,11 +24,9 @@ def linux_set_time_from_gps(when):
 
 
 def linux_set_time_to_use_ntp():
-    # if calling this after assuring internet connectivity, we should be ok
     subprocess.call(shlex.split('timedatectl set-ntp true'))
 
 
-# see if there is an internet connection
 def have_internet_connection():
     conn = http.client.HTTPConnection('www.google.com', timeout=3)
     try:
@@ -53,7 +51,7 @@ def get_first_key_from_dict(input_dict):
 
 
 def get_start_key_from_end_key(end_key, before):
-    # logger output is w/o tzinfo but microsecond information
+    # logger output: w/o timezone w/ microseconds
     if end_key:
         calc_time = iso8601.parse_date(end_key) - timedelta(hours=before)
         calc_time = calc_time.replace(tzinfo=None).isoformat() + '.000'
@@ -71,7 +69,6 @@ def slice_bw_keys(start_key, end_key, input_dict):
     return output_dict
 
 
-# discard file names not ending 'filter' string
 def filter_files_by_name_ending(input_list, name_ending):
     output_list = []
     for each_name in input_list:
@@ -120,7 +117,6 @@ def detect_raspberry():
     node_name = os.uname()[1]
     if node_name.endswith('raspberrypi') or node_name.startswith('rpi'):
         return True
-    print('---> detect_raspberry() failed')
     return False
 
 
