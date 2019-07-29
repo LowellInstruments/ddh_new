@@ -408,7 +408,7 @@ class DDHQtApp(QMainWindow):
 
 def run_app():
     try:
-        signal.signal(signal.SIGINT, signal.SIG_DFL)
+        signal.signal(signal.SIGINT, on_ctrl_c)
         app = QApplication(sys.argv)
         ex = DDHQtApp()
         ex.show()
@@ -416,3 +416,8 @@ def run_app():
     # catch control + c
     except KeyboardInterrupt:
         print("W: interrupt received, stopping…")
+
+
+def on_ctrl_c():
+    console_log.debug('SYS: captured ctrl+C ...')
+    linux_set_time_to_use_ntp()
