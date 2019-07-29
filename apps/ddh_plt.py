@@ -55,6 +55,7 @@ class DeckDataHubPLT:
         cl.d1 = dirs[0]
         dir_1 = cl.d1
         mac_1 = os.path.basename(dir_1)[-8:]
+        m = metric[0]
         if not dir_1:
             t = 'PLT: no folder.'
             signals.error_gui.emit(t)
@@ -64,7 +65,7 @@ class DeckDataHubPLT:
         fil = [dir_1, metric + '.csv', 0, 1]
         y_1 = cl._plt_csv_data(signals, *fil)
         if not y_1:
-            t = 'PLT: {}, few {} raw data.'.format(mac_1, ts)
+            t = 'PLT: {}, few {}({}) raw data.'.format(mac_1, m, ts)
             signals.error_gui.emit(t)
             signals.plt_result.emit(False)
             return {}, {}
@@ -89,7 +90,7 @@ class DeckDataHubPLT:
         # get number of (averaged) points = slices
         num_slices = get_span_as_slices(ts)
         if num_slices > len(y_1):
-            t = 'PLT: {}, few {} averaged data.'.format(mac_1, ts)
+            t = 'PLT: {}, few {}({}) averaged data.'.format(mac_1, m, ts)
             signals.error_gui.emit(t)
             signals.plt_result.emit(False)
             return {}, {}
@@ -121,7 +122,7 @@ class DeckDataHubPLT:
 
         # discard poor plots
         if len(list(avg_data_1.keys())) < 2:
-            t = 'PLT: {}, few {} data to plot.'.format(mac_1, ts)
+            t = 'PLT: {}, few {}({}) data to plot.'.format(mac_1, m, ts)
             signals.error_gui.emit(t)
             signals.plt_result.emit(False)
             return {}, {}
