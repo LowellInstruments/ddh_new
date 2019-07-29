@@ -142,6 +142,7 @@ class DDHQtApp(QMainWindow):
             self.button3 = Button(13, pull_up=True)
             self.button1.when_pressed = button1_pressed_cb
             self.button2.when_pressed = button2_pressed_cb
+            # added a more featured button
             self.button3.when_held = button3_held_cb
             self.button3.when_released = button3_released_cb
 
