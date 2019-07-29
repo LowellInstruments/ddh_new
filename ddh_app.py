@@ -418,3 +418,4 @@ def run_app():
 def on_ctrl_c(signal_num, _):
     console_log.debug('SYS: captured signal {}...'.format(signal_num))
     linux_set_time_to_use_ntp()
+    sys.exit(signal_num)
