@@ -58,7 +58,7 @@ DDH_GPS_PERIOD = 10
 class DDHQtApp(QMainWindow):
 
     # application behavior variables
-    btn_1_held = 0
+    btn_3_held = 0
     clk_start_time = None
 
     def __init__(self, *args, **kwargs):
@@ -127,29 +127,23 @@ class DDHQtApp(QMainWindow):
             def button2_pressed_cb():
                 self.keyPressEvent(ButtonPressEvent(Qt.Key_2))
 
-            def button3_pressed_cb():
-                self.keyPressEvent(ButtonPressEvent(Qt.Key_3))
+            def button3_released_cb():
+                if DDHQtApp.btn_3_held:
+                    self.keyPressEvent(ButtonPressEvent(Qt.Key_6))
+                else:
+                    self.keyPressEvent(ButtonPressEvent(Qt.Key_3))
+                DDHQtApp.btn_3_held = 0
 
-            # def button1_released_cb():
-            #     print('released button 1')
-            #     if DDHQtApp.btn_1_held:
-            #         self.keyPressEvent(ButtonPressEvent(Qt.Key_4))
-            #     else:
-            #         self.keyPressEvent(ButtonPressEvent(Qt.Key_1))
-            #     DDHQtApp.btn_1_held = 0
-            #
-            # def button1_held_cb():
-            #     DDHQtApp.btn_1_held = 1
-            #     print('held button 1')
+            def button3_held_cb():
+                DDHQtApp.btn_3_held = 1
 
             self.button1 = Button(26, pull_up=True)
             self.button2 = Button(19, pull_up=True)
             self.button3 = Button(13, pull_up=True)
             self.button1.when_pressed = button1_pressed_cb
             self.button2.when_pressed = button2_pressed_cb
-            self.button3.when_pressed = button3_pressed_cb
-            # self.button1.when_held = button1_held_cb
-            # self.button1.when_released = button1_released_cb
+            self.button3.when_held = button3_held_cb
+            self.button3.when_released = button3_released_cb
 
         else:
             console_log.debug('SYS: no raspberry detected.')
