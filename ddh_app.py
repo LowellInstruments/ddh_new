@@ -1,7 +1,7 @@
 import datetime
 import sys
 import time
-import atexit
+import signal
 from gui.ble_gui_ui import Ui_tabs
 from PyQt5.QtCore import (
     Qt,
@@ -408,6 +408,7 @@ class DDHQtApp(QMainWindow):
 
 def run_app():
     try:
+        signal.signal(signal.SIGINT, signal.SIG_DFL)
         app = QApplication(sys.argv)
         ex = DDHQtApp()
         ex.show()
