@@ -133,17 +133,31 @@ def get_span_as_hh_mm(word):
         return 8765, 8765 * 60
 
 
-def get_span_as_slices(word):
+def get_resolution_factor(word):
     if word == 'hour':
-        return 60  # or 30 if less resolution but faster
+        return get_span_as_slices(word) / 60
     if word == 'day':
-        return 24
+        return get_span_as_slices(word) / 24
     if word == 'week':
-        return 7
+        return get_span_as_slices(word) / 7
     if word == 'month':
-        return 30
+        return get_span_as_slices(word) / 30
     if word == 'year':
-        return 12
+        return get_span_as_slices(word) / 12
+
+
+def get_span_as_slices(word):
+    resolution_factor = 8
+    if word == 'hour':
+        return 60
+    if word == 'day':
+        return 24 * resolution_factor
+    if word == 'week':
+        return 7 * resolution_factor
+    if word == 'month':
+        return 30 * resolution_factor
+    if word == 'year':
+        return 12 * resolution_factor
 
 
 def check_config_file():
@@ -163,5 +177,12 @@ def get_ship_name():
         with open('ddh.json') as f:
             ddh_cfg_string = json.load(f)
             return ddh_cfg_string['ship_info']['name']
-    except (FileNotFoundError, TypeError):
+    except TypeError:
         return 'Unnamed ship'
+
+
+def get_metrics():
+    import json
+    with open('ddh.json') as f:
+        ddh_cfg_string = json.load(f)
+        return ddh_cfg_string['metrics']

@@ -10,5 +10,9 @@
     "ship_info":
     {
 	"name": "Maggie Sue"
-    }
+    },
+	"metrics": [
+		"Temperature",
+		"Pressure"
+	]
 }

@@ -26,7 +26,8 @@ from apps.ddh_utils import (
     update_dl_folder_list,
     detect_raspberry,
     check_config_file,
-    get_ship_name
+    get_ship_name,
+    get_metrics
 )
 from logzero import logger as console_log
 from tendo import singleton
@@ -102,6 +103,9 @@ class DDHQtApp(QMainWindow):
         self.plt_time_spans = ('hour', 'day', 'week', 'month', 'year')
         self.plt_ts_idx = 0
         self.plt_ts = self.plt_time_spans[0]
+        self.plt_metrics = get_metrics()
+        self.plt_metrics_idx = 0
+        self.plt_metric = self.plt_metrics[0]
 
         # threads
         self.th_ble = None
@@ -175,8 +179,8 @@ class DDHQtApp(QMainWindow):
 
     def _ddh_thread_throw_plt(self, folders_to_plot):
         fxn = DeckDataHubPLT.plt_plot
-        args_th_plt = [folders_to_plot, self.plot_canvas, self.plt_ts]
-        self.th_plt = DDHThread(fxn, SignalsPLT, *args_th_plt)
+        a = [folders_to_plot, self.plot_canvas, self.plt_ts, self.plt_metric]
+        self.th_plt = DDHThread(fxn, SignalsPLT, *a)
         self.th_plt.signals.status.connect(self.slot_status)
         self.th_plt.signals.debug.connect(self.slot_debug)
         self.th_plt.signals.error.connect(self.slot_error)
@@ -226,6 +230,9 @@ class DDHQtApp(QMainWindow):
         elif e.key() == Qt.Key_5:
             console_log.debug('GUI: keypress 5.')
         elif e.key() == Qt.Key_6:
+            self.plt_metrics_idx += 1
+            self.plt_metrics_idx %= len(self.plt_metrics)
+            self.plt_metric = self.plt_metrics[self.plt_metrics_idx]
             console_log.debug('GUI: keypress 6.')
         else:
             console_log.debug('GUI: keypress unknown.')

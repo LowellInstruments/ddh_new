@@ -13,7 +13,8 @@ from .ddh_utils import (
     filter_files_by_name_ending,
     filter_files_by_size,
     get_span_as_hh_mm,
-    get_span_as_slices
+    get_span_as_slices,
+    get_resolution_factor
 )
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
@@ -37,16 +38,16 @@ class DeckDataHubPLT:
         DeckDataHubPLT.cache.clear()
 
     @staticmethod
-    def plt_plot(signals, folders, cnv, ts):
+    def plt_plot(signals, folders, cnv, ts, metric):
         signals.clk_start.emit()
-        DeckDataHubPLT.plt_process_n_plot(signals, folders, cnv, ts)
+        DeckDataHubPLT.plt_process_n_plot(signals, folders, cnv, ts, metric)
         signals.clk_end.emit()
 
     @staticmethod
-    def plt_process_n_plot(signals, dirs, cnv, ts):
+    def plt_process_n_plot(signals, dirs, cnv, ts, metric):
         # banner
-        signals.status_gui.emit('PLT: plotting...')
-        t = 'PLT: plotting {}...'.format(dirs)
+        signals.status_gui.emit('PLT: converting...')
+        t = 'PLT: converting {}...'.format(dirs)
         signals.status.emit(t)
 
         # process (convert) 1st folder
@@ -60,7 +61,7 @@ class DeckDataHubPLT:
             signals.plt_result.emit(False)
             return {}, {}
         cl._plt_lid_to_csv(signals, dir_1)
-        fil = [dir_1, 'Temperature.csv', 0, 1]
+        fil = [dir_1, metric + '.csv', 0, 1]
         y_1 = cl._plt_csv_data(signals, *fil)
         if not y_1:
             t = 'PLT: {}, few {} raw data.'.format(mac_1, ts)
@@ -126,16 +127,22 @@ class DeckDataHubPLT:
             return {}, {}
 
         # plot display
-        cl._plt_plot(signals, avg_data_1, avg_data_2, cnv, ts)
+        cl._plt_plot(signals, avg_data_1, avg_data_2, cnv, ts, metric)
 
     @staticmethod
-    def _plt_plot(signals, data_1, data_2, cnv, ts):
+    def _plt_plot(signals, data_1, data_2, cnv, ts, metric):
         # check and naming
         if not data_1:
             return
         cl = DeckDataHubPLT
         dir_1 = cl.d1
         dir_2 = cl.d2
+
+        # banner
+        signals.status_gui.emit('PLT: plotting...')
+        a = dir_2[-8:] if dir_2 else None
+        t = 'PLT: plotting {} vs {}'.format(dir_1[-8:], a)
+        signals.status.emit(t)
 
         # add first averaged data set
         cnv.axes.cla()
@@ -160,16 +167,23 @@ class DeckDataHubPLT:
         ticks_skip = 1
         labels_format = ''
         _, plot_minutes = get_span_as_hh_mm(ts)
+        r_f = get_resolution_factor(ts)
         if plot_minutes <= 60:
-            labels_format, ticks_skip, title = '%H:%M', 5, 'Last hour'
+            ticks_skip = len(y_data_1) / 12
+            labels_format, title = '%H:%M', 'Last hour'
         elif 60 < plot_minutes <= 24 * 60:
-            labels_format, ticks_skip, title = '%Hh', 2, 'Last day'
+            ticks_skip = len(y_data_1) / 12
+            labels_format, title = '%Hh', 'Last day'
         elif 1440 < plot_minutes <= 168 * 60:
-            labels_format, ticks_skip, title = '%m/%d/%y', 1, 'Last week'
+            ticks_skip = len(y_data_1) / 7
+            labels_format, title = '%m/%d/%y', 'Last week'
         elif 10080 < plot_minutes <= 730 * 60:
-            labels_format, ticks_skip, title = '%b %d', 10, 'Last month'
+            ticks_skip = len(y_data_1) / 10
+            labels_format, title = '%b %d', 'Last month'
         elif 43800 < plot_minutes <= 8765 * 60:
-            labels_format, ticks_skip, title = '%b', 1, 'Last year'
+            ticks_skip = 1
+            labels_format, title = '%b', 'Last year'
+        ticks_skip = int(ticks_skip)
         end_labels = []
         for each_label in ticks:
             date_as_iso = iso8601.parse_date(each_label)
@@ -179,12 +193,13 @@ class DeckDataHubPLT:
         cnv.axes.set_title(title, fontweight='bold', fontsize=16)
         cnv.axes.set_ylim(5, 30)
         cnv.axes.set_xlabel('time', fontsize=14, fontweight='bold')
-        cnv.axes.set_ylabel('T (ºC)', fontsize=14, fontweight='bold')
+        y_label = {'Temperature': 'T (ºC)', 'Pressure': 'P (psi)'}
+        cnv.axes.set_ylabel(y_label[metric], fontsize=14, fontweight='bold')
         cnv.axes.legend(fontsize=14)
         cnv.draw()
 
         # result: signal everything went fine
-        signals.status.emit('PLT: data plotted ok.')
+        signals.status.emit('PLT: plot w/ resolution {} ok.'.format(int(r_f)))
         signals.plt_result.emit(True)
         signals.status_gui_clear.emit()
 
