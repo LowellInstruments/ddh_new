@@ -418,6 +418,6 @@ def run_app():
         print("W: interrupt received, stopping…")
 
 
-def on_ctrl_c():
-    console_log.debug('SYS: captured ctrl+C ...')
+def on_ctrl_c(signal_num, _):
+    console_log.debug('SYS: captured signal {}...'.format(signal_num))
     linux_set_time_to_use_ntp()
