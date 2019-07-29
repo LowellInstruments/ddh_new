@@ -407,15 +407,12 @@ class DDHQtApp(QMainWindow):
 
 
 def run_app():
-    try:
-        signal.signal(signal.SIGINT, on_ctrl_c)
-        app = QApplication(sys.argv)
-        ex = DDHQtApp()
-        ex.show()
-        sys.exit(app.exec_())
     # catch control + c
-    except KeyboardInterrupt:
-        print("W: interrupt received, stopping…")
+    signal.signal(signal.SIGINT, on_ctrl_c)
+    app = QApplication(sys.argv)
+    ex = DDHQtApp()
+    ex.show()
+    sys.exit(app.exec_())
 
 
 def on_ctrl_c(signal_num, _):
