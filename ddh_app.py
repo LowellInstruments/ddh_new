@@ -1,6 +1,7 @@
 import datetime
 import sys
 import time
+import atexit
 from gui.ble_gui_ui import Ui_tabs
 from PyQt5.QtCore import (
     Qt,
@@ -27,7 +28,8 @@ from apps.ddh_utils import (
     detect_raspberry,
     check_config_file,
     get_ship_name,
-    get_metrics
+    get_metrics,
+    linux_set_time_to_use_ntp
 )
 from logzero import logger as console_log
 from tendo import singleton
@@ -148,6 +150,11 @@ class DDHQtApp(QMainWindow):
 
         else:
             console_log.debug('SYS: no raspberry detected.')
+
+    def closeEvent(self, event):
+        console_log.debug('SYS: closing GUI APP...')
+        linux_set_time_to_use_ntp()
+        event.accept()
 
     def _ddh_threads_create(self):
         # threads: creation
@@ -400,7 +407,11 @@ class DDHQtApp(QMainWindow):
 
 
 def run_app():
-    app = QApplication(sys.argv)
-    ex = DDHQtApp()
-    ex.show()
-    sys.exit(app.exec_())
+    try:
+        app = QApplication(sys.argv)
+        ex = DDHQtApp()
+        ex.show()
+        sys.exit(app.exec_())
+    # catch control + c
+    except KeyboardInterrupt:
+        print("W: interrupt received, stopping…")

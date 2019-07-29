@@ -24,7 +24,7 @@ def linux_set_time_from_gps(when):
 
 
 def linux_set_time_to_use_ntp():
-    subprocess.call(shlex.split('timedatectl set-ntp true'))
+    subprocess.call(shlex.split('sudo timedatectl set-ntp true'))
 
 
 def have_internet_connection():
