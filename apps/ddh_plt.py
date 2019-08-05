@@ -87,6 +87,17 @@ class DeckDataHubPLT:
         if y_2:
             y_2 = slice_bw_keys(start_key, end_key, y_2)
 
+        # prune data w/ screen width
+        # todo: test this
+        # y_1_out = SortedDict()
+        # y_2_out = SortedDict()
+        # if len(y_1) > 800:
+        #     w = int(len(y_1) / 800)
+        #     for idx, each in enumerate(y_1.items()):
+        #         if idx % w != 0:
+        #             y_1_out[each[0]] = each[1]
+        #     y_1 = y_1_out
+
         # get number of (averaged) points = slices
         num_slices = get_span_as_slices(ts)
         if num_slices > len(y_1):
