@@ -30,8 +30,8 @@ class DeckDataHubBLE:
         DeckDataHubBLE.RECENTLY_DONE[mac] = time_blacklisted
 
     @staticmethod
-    def _ble_ignore_some_time(mac):
-        DeckDataHubBLE._ble_blacklist_some_time(mac, DeckDataHubBLE.IGNORE)
+    def _ble_ignore_some_time(mac, seconds):
+        DeckDataHubBLE._ble_blacklist_some_time(mac, seconds)
 
     @staticmethod
     def ble_loop(signals, ble_mac_filter):
@@ -90,9 +90,10 @@ class DeckDataHubBLE:
                     mac, counter + 1, len(DeckDataHubBLE.LOGGERS_TO_QUERY))
                 with LoggerControllerBLE(mac) as lc_ble:
                     DeckDataHubBLE._ble_dl_files(lc_ble, signals)
-            except ble.BTLEException:
-                DeckDataHubBLE._ble_ignore_some_time(mac)
-                break
+            except ble.BTLEException as be:
+                signals.error.emit('BLE: exception {}.'.format(be))
+                seconds = 5 if 'got None' in be.message else 30
+                DeckDataHubBLE._ble_ignore_some_time(mac, seconds)
             else:
                 # ok, next
                 DeckDataHubBLE._ble_add_mac_to_recent_connections(mac)
@@ -110,8 +111,8 @@ class DeckDataHubBLE:
     def _ble_dl_files(lc_ble, signals):
         if not DeckDataHubBLE._ble_pre_dl_files(lc_ble, signals):
             mac = lc_ble.address
-            signals.error_gui.emit('BLE: {} get error, wait 60 s.'.format(mac))
-            raise ble.BTLEException
+            signals.error_gui.emit('BLE: testing {}, one minute...'.format(mac))
+            raise ble.BTLEException('got None on pre_dl_files')
 
         # list files
         folder, files = DeckDataHubBLE._ble_list_files(lc_ble, signals)
@@ -149,7 +150,7 @@ class DeckDataHubBLE:
                 else:
                     signals.status.emit('BLE: cannot get {}.'.format(name))
                     if retries == 2:
-                        raise ble.BTLEException
+                        raise ble.BTLEException('exception while downloading')
                 time.sleep(5)
 
             # check received file ok

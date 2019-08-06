@@ -46,10 +46,10 @@ if detect_raspberry():
 # constants for the application
 DDH_BLE_MAC_FILTER = (
     # remember ':' as separator, not '-'
-    '00:1e:c0:3d:7a:f2',
+    # '00:1e:c0:3d:7a:f2',
     # '00:1e:c0:4d:bf:c9',
     # '00:1e:c0:4d:d2:37',
-    # '00:1e:c0:4d:bf:db',
+    '00:1e:c0:4d:bf:db',
 )
 DDH_ERR_DISPLAY_TIMEOUT = 5
 DDH_PLT_DISPLAY_TIMEOUT = 25
