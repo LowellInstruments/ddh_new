@@ -8,6 +8,11 @@ These instructions will get you up and running.
 - Python v3.5 or higher
 - Linux bluez Bluetooth Stack
 
+## Developing
+Bluetooth development may require permissions. To allow tim to
+develop with pycharm.sh, for example, add to sudoers:
+- tim  ALL=NOPASSWD:/home/tim/pycharm-community-2019.2/bin/pycharm.sh
+
 ## Installing
 For Raspbian (2018-11-13):
 ```
