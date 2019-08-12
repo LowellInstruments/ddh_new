@@ -110,9 +110,15 @@ class DeckDataHubBLE:
 
     # download one entire logger
     @staticmethod
-    def _ble_dl_files(lc_ble, signals):
+    def _ble_dl_files(lc_ble, signals, remove_previous=False):
         # set up logger
         DeckDataHubBLE._ble_pre_dl_files(lc_ble, signals)
+        mac = lc_ble.address
+
+        # remove files, useful for debug
+        if remove_previous:
+            remove_logger_folder(mac)
+            signals.status.emit('SYS: removing {} previous files...'.format(mac))
 
         # list files
         folder, files = DeckDataHubBLE._ble_list_files(lc_ble, signals)
@@ -131,7 +137,6 @@ class DeckDataHubBLE:
         attempts = 0
         counter = 0
         total_left = total_size
-        mac = lc_ble.address
         signals.status.emit('BLE: {} has {} files.'.format(mac, num))
         for name, size in name_n_size.items():
             # statistics
@@ -177,11 +182,11 @@ class DeckDataHubBLE:
         answer = lc_ble.command(STOP_CMD)
         signals.status.emit('BLE: stop deploy = {}.'.format(answer))
         if not answer:
-            return False
+            raise ble.BTLEException(status)
 
         logger_time = lc_ble.get_time()
         if not logger_time:
-            return False
+            raise ble.BTLEException(status)
         difference = datetime.datetime.now() - logger_time
         if abs(difference.total_seconds()) > 60:
             lc_ble.sync_time()
@@ -194,10 +199,7 @@ class DeckDataHubBLE:
         answer = lc_ble.command(control)
         signals.status.emit('BLE: setup as = {}.'.format(answer))
         if not answer or b'ERR' in answer:
-            return False
-
-        # logger: all setup pre download is ok
-        return True
+            raise ble.BTLEException(status)
 
     # files: list_lid_files() one logger
     @staticmethod
@@ -220,3 +222,10 @@ def do_we_have_this_file(file_name, size, folder_name):
         if os.path.getsize(file_path) == size:
             return True
     return False
+
+
+def remove_logger_folder(mac):
+    import shutil
+    folder_name = 'dl_files/' + mac.replace(':', '-').lower() + '/'
+    shutil.rmtree(folder_name, ignore_errors=True)
+

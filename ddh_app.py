@@ -294,6 +294,7 @@ class DDHQtApp(QMainWindow):
     @pyqtSlot(str, name='slot_error_gui')
     def slot_error_gui(self, e):
         console_log.error(e)
+        self.tabs.setCurrentIndex(0)
 
         # google: stylesheet named colors
         style = "background-color: LightBlue; border-style: outset;"
