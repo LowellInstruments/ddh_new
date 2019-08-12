@@ -131,13 +131,6 @@ class DeckDataHubPLT:
                     slice_mean = avg_values_dict(slice_2, minimum_required)
                     avg_data_2[label_key] = slice_mean
 
-        # discard poor plots
-        if len(list(avg_data_1.keys())) < 2:
-            t = 'PLT: {}, few {}({}) data to plot.'.format(mac_1, m, ts)
-            signals.error_gui.emit(t)
-            signals.plt_result.emit(False)
-            return {}, {}
-
         # plot display
         cl._plt_plot(signals, avg_data_1, avg_data_2, cnv, ts, metric)
 
@@ -197,6 +190,14 @@ class DeckDataHubPLT:
             labels_format, title = '%b', 'Last year'
         ticks_skip = int(ticks_skip)
         end_labels = []
+
+        # discard poor plots
+        if ticks_skip == 0:
+            t = 'PLT: {}, few {}({}) data to plot.'.format(dir_1[-8:], metric, ts)
+            signals.error_gui.emit(t)
+            signals.plt_result.emit(False)
+            return
+
         for each_label in ticks:
             date_as_iso = iso8601.parse_date(each_label)
             end_labels.append(date_as_iso.strftime(labels_format))

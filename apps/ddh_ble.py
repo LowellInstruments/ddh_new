@@ -166,8 +166,8 @@ class DeckDataHubBLE:
                 signals.ble_dl_file_.emit(percent_x_size, speed)
 
         # RUN again this logger
-        t = 'BLE: re-start = {}.'.format(lc_ble.command(RUN_CMD))
-        signals.status.emit(t)
+        # t = 'BLE: re-start = {}.'.format(lc_ble.command(RUN_CMD))
+        # signals.status.emit(t)
         signals.ble_dl_logger_.emit(lc_ble.address, counter)
 
     @staticmethod

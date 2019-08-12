@@ -69,7 +69,11 @@ class DDHQtApp(QMainWindow):
         singleton.SingleInstance()
         assert sys.version_info >= (3, 5)
         assert check_config_file()
-        logzero.logfile("logfile.log", maxBytes=1e6, backupCount=3, mode='a')
+        logzero.logfile("logfile.log", maxBytes=int(1e6), backupCount=3, mode='a')
+
+        # banners
+        console_log.debug('SYS: recall \'remove_previous\' at download.')
+        console_log.debug('SYS: recall restart or not.')
 
         # ui stuff
         super(DDHQtApp, self).__init__(*args, **kwargs)
