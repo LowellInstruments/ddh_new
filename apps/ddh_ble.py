@@ -110,7 +110,7 @@ class DeckDataHubBLE:
 
     # download one entire logger
     @staticmethod
-    def _ble_dl_files(lc_ble, signals, remove_previous=False):
+    def _ble_dl_files(lc_ble, signals, remove_previous=True):
         # set up logger
         DeckDataHubBLE._ble_pre_dl_files(lc_ble, signals)
         mac = lc_ble.address
@@ -118,7 +118,7 @@ class DeckDataHubBLE:
         # remove files, useful for debug
         if remove_previous:
             remove_logger_folder(mac)
-            signals.status.emit('SYS: removing {} previous files...'.format(mac))
+            signals.error.emit('**** SYS: removing {} previous files...'.format(mac))
 
         # list files
         folder, files = DeckDataHubBLE._ble_list_files(lc_ble, signals)
