@@ -186,7 +186,7 @@ class DeckDataHubBLE:
 
         logger_time = lc_ble.get_time()
         if not logger_time:
-            raise ble.BTLEException(status)
+            raise ble.BTLEException(logger_time)
         difference = datetime.datetime.now() - logger_time
         if abs(difference.total_seconds()) > 60:
             lc_ble.sync_time()
@@ -199,7 +199,7 @@ class DeckDataHubBLE:
         answer = lc_ble.command(control)
         signals.status.emit('BLE: setup as = {}.'.format(answer))
         if not answer or b'ERR' in answer:
-            raise ble.BTLEException(status)
+            raise ble.BTLEException(answer)
 
     # files: list_lid_files() one logger
     @staticmethod
