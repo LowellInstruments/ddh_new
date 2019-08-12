@@ -45,7 +45,8 @@ class DeckDataHubBLE:
         signals.ble_scan_start.emit()
         signals.status.emit('BLE: detecting loggers...')
         try:
-            list_all_ble = ble.Scanner().scan(3)
+            scanner = ble.Scanner()
+            list_all_ble = scanner.scan(5.0)
         except ble.BTLEException:
             signals.error_gui.emit('BLE: error scanning.')
             return []
@@ -91,9 +92,10 @@ class DeckDataHubBLE:
                 with LoggerControllerBLE(mac) as lc_ble:
                     DeckDataHubBLE._ble_dl_files(lc_ble, signals)
             except ble.BTLEException as be:
-                signals.error.emit('BLE: exception {}.'.format(be))
-                seconds = 5 if 'got None' in be.message else 30
-                DeckDataHubBLE._ble_ignore_some_time(mac, seconds)
+                # first Linux BLE interaction may fail
+                signals.error.emit('BLE: exception {}.'.format(be.message))
+                signals.error_gui.emit('BLE: download error, wait 30 s.')
+                DeckDataHubBLE._ble_ignore_some_time(mac, 30)
             else:
                 # ok, next
                 DeckDataHubBLE._ble_add_mac_to_recent_connections(mac)
@@ -109,10 +111,8 @@ class DeckDataHubBLE:
     # download one entire logger
     @staticmethod
     def _ble_dl_files(lc_ble, signals):
-        if not DeckDataHubBLE._ble_pre_dl_files(lc_ble, signals):
-            mac = lc_ble.address
-            signals.error_gui.emit('BLE: testing {}, one minute...'.format(mac))
-            raise ble.BTLEException('got None on pre_dl_files')
+        # set up logger
+        DeckDataHubBLE._ble_pre_dl_files(lc_ble, signals)
 
         # list files
         folder, files = DeckDataHubBLE._ble_list_files(lc_ble, signals)
@@ -172,7 +172,7 @@ class DeckDataHubBLE:
         status = lc_ble.command(STATUS_CMD)
         signals.status.emit('BLE: get status = {}.'.format(status))
         if not status:
-            return False
+            raise ble.BTLEException(status)
 
         answer = lc_ble.command(STOP_CMD)
         signals.status.emit('BLE: stop deploy = {}.'.format(answer))

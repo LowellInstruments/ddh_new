@@ -31,6 +31,7 @@ from apps.ddh_utils import (
     get_metrics,
     linux_set_time_to_use_ntp
 )
+import logzero
 from logzero import logger as console_log
 from tendo import singleton
 from apps.ddh_signals import (
@@ -68,6 +69,7 @@ class DDHQtApp(QMainWindow):
         singleton.SingleInstance()
         assert sys.version_info >= (3, 5)
         assert check_config_file()
+        logzero.logfile("logfile.log", maxBytes=1e6, backupCount=3, mode='a')
 
         # ui stuff
         super(DDHQtApp, self).__init__(*args, **kwargs)
