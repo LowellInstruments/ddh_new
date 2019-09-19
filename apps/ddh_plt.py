@@ -193,7 +193,7 @@ class DeckDataHubPLT:
 
         # discard poor plots
         if ticks_skip == 0:
-            t = 'PLT: {}, few {}({}) data to plot.'.format(dir_1[-8:], metric, ts)
+            t = 'PLT: {}, few plot {}({}) data.'.format(dir_1[-8:], metric, ts)
             signals.error_gui.emit(t)
             signals.plt_result.emit(False)
             return
