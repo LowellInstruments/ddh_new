@@ -14,8 +14,7 @@ class MainWindow(qtw.QWidget, Ui_Form):
         super().__init__()
         self.setupUi(self)
         self.update_model()
-        self.pushButton_check.clicked.connect(self.sync)
-
+        self.pushButton_sync.clicked.connect(self.sync)
         self.lineEdit_local.editingFinished.connect(self.update_model)
         self.lineEdit_pattern.editingFinished.connect(self.update_model)
         self._upload_thread = QtCore.QThread()

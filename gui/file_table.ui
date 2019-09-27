@@ -58,17 +58,10 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="2">
-      <widget class="QPushButton" name="pushButton_upload">
-       <property name="text">
-        <string>Upload</string>
-       </property>
-      </widget>
-     </item>
      <item row="0" column="2">
-      <widget class="QPushButton" name="pushButton_check">
+      <widget class="QPushButton" name="pushButton_sync">
        <property name="text">
-        <string>Check</string>
+        <string>Sync</string>
        </property>
       </widget>
      </item>
