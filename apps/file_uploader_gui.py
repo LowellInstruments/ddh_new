@@ -1,5 +1,5 @@
 import sys
-from PyQt5 import QtWidgets as qtw
+from PyQt5 import QtWidgets
 from PyQt5 import QtCore
 sys.path.append('../ddh')
 from gui.file_table_ui import Ui_Form
@@ -9,10 +9,11 @@ from pathlib import Path
 from multiprocessing import Pipe, Process
 
 
-class MainWindow(qtw.QWidget, Ui_Form):
+class MainWindow(QtWidgets.QWidget, Ui_Form):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
+        self.model = FileModel([])
         self.update_model()
         self.pushButton_sync.clicked.connect(self.sync)
         self.lineEdit_local.editingFinished.connect(self.update_model)
@@ -24,7 +25,8 @@ class MainWindow(qtw.QWidget, Ui_Form):
     def update_model(self):
         directory = self.lineEdit_local.text()
         pattern = self.lineEdit_pattern.text()
-        self.model = FileModel(directory, pattern)
+        files = list(Path(directory).glob(pattern))
+        self.model.set_files(files)
         self.tableView.setModel(self.model)
 
     def resizeEvent(self, event):
@@ -43,9 +45,7 @@ class MainWindow(qtw.QWidget, Ui_Form):
             Path(self.lineEdit_local.text()),
             self.lineEdit_remote.text(),
             files=self.model.files)
-
         self.uploader.update_signal.connect(self.status_update)
-
         self.uploader.start()
 
     def status_update(self, message):
@@ -71,8 +71,11 @@ class UploadManager(QtCore.QThread):
         while True:
             if self.receiver.poll(0.01):
                 message = self.receiver.recv()
+                if message == 'DONE':
+                    break
                 self.update_signal.emit(message)
             self.msleep(10)
+        print('All done')
 
 
 class FtpProcess:
@@ -84,12 +87,13 @@ class FtpProcess:
         self.uploader = FileUploader(*self.ftp_params)
         self.uploader.register_observer(self.update)
         self.uploader.upload_files(files)
+        self.pipe.send('DONE')
 
     def update(self, i, n_files, status):
         self.pipe.send((i, n_files, status))
 
 
 if __name__ == '__main__':
-    app = qtw.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     mw = MainWindow()
     sys.exit(app.exec())
