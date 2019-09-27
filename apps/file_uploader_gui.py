@@ -6,7 +6,7 @@ from gui.file_table_ui import Ui_Form
 from apps.ddh_file_model import FileModel
 from apps.ddh_file_uploader import FileUploader
 from pathlib import Path
-from multiprocessing import Pipe, Process
+from multiprocessing import Pipe, Process, freeze_support
 
 
 class MainWindow(QtWidgets.QWidget, Ui_Form):
@@ -92,6 +92,7 @@ class FtpProcess:
 
 
 if __name__ == '__main__':
+    freeze_support()
     app = QtWidgets.QApplication(sys.argv)
     mw = MainWindow()
     sys.exit(app.exec())
