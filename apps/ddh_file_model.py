@@ -9,13 +9,15 @@ SIZE = 2
 
 
 class FileModel(QAbstractTableModel):
-    def __init__(self, directory, pattern='**/*.lid', parent=None):
+    def __init__(self, files, parent=None):
         super().__init__(parent=None)
-        self.directory = directory
-        self.pattern = pattern
+        self.set_files(files)
         self.parent = parent
-        self.files = list(Path(self.directory).glob(self.pattern))
-        self._status = ['Unknown']*len(self.files)
+
+    def set_files(self, files):
+        # this will wipe the status of the model
+        self.files = files
+        self._status = ['Unknown'] * len(self.files)
 
     def get_status(self, row):
         return self._status[row]
@@ -23,8 +25,8 @@ class FileModel(QAbstractTableModel):
     def set_status(self, row, status):
         self._status[row] = status
         # self.modelReset.emit()  # this works
-        index_left = self.createIndex(0, 0)
-        index_right = self.createIndex(2, self.rowCount()-1)
+        index_left = self.createIndex(0, row)
+        index_right = self.createIndex(2, row)
         self.dataChanged.emit(index_left, index_right)
 
     def delete(self, row):
