@@ -15,7 +15,7 @@ class FileModel(QAbstractTableModel):
         self.pattern = pattern
         self.parent = parent
         self.files = list(Path(self.directory).glob(self.pattern))
-        self._status = ['unknown']*len(self.files)
+        self._status = ['Unknown']*len(self.files)
 
     def get_status(self, row):
         return self._status[row]

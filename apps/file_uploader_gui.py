@@ -6,10 +6,10 @@ from gui.file_table_ui import Ui_Form
 from apps.ddh_file_model import FileModel
 from apps.ddh_file_uploader import FileUploader
 from pathlib import Path
+from multiprocessing import Pipe, Process
 
 
 class MainWindow(qtw.QWidget, Ui_Form):
-
     def __init__(self):
         super().__init__()
         self.setupUi(self)
@@ -38,18 +38,55 @@ class MainWindow(qtw.QWidget, Ui_Form):
         host = ('ftp.lowellinstruments.com',
                 'jeff@lowellinstruments.com',
                 'DDHftp5Woodland')
-        self.uploader = FileUploader(host,
-                                     Path(self.lineEdit_local.text()),
-                                     self.lineEdit_remote.text())
-        self.uploader.moveToThread(self._upload_thread)
-        self.uploader.status.connect(self.status_update)
-        self.uploader.upload_signal.connect(self.status_update)
-        self._upload_thread.start()
-        self.uploader.upload_files(self.model.files)
+        self.uploader = UploadManager(
+            host,
+            Path(self.lineEdit_local.text()),
+            self.lineEdit_remote.text(),
+            files=self.model.files)
 
-    def status_update(self, row, n_files, status):
+        self.uploader.update_signal.connect(self.status_update)
+
+        self.uploader.start()
+
+    def status_update(self, message):
+        row, n_files, status = message
         self.progressBar.setValue((row+1)/n_files*100)
         self.model.set_status(row, status)
+
+
+class UploadManager(QtCore.QThread):
+    update_signal = QtCore.pyqtSignal(tuple)
+
+    def __init__(self, *args, files):
+        super().__init__()
+        self.ftp_params = args
+        self.files = files
+
+    def run(self):
+        self.receiver, self.sender = Pipe(duplex=False)
+        self.ftp_process = FtpProcess(self.sender, self.ftp_params)
+        self.worker_process = Process(
+            target=self.ftp_process.upload, args=(self.files,))
+        self.worker_process.start()
+        while True:
+            if self.receiver.poll(0.01):
+                message = self.receiver.recv()
+                self.update_signal.emit(message)
+            self.msleep(10)
+
+
+class FtpProcess:
+    def __init__(self, pipe, ftp_params):
+        self.pipe = pipe
+        self.ftp_params = ftp_params
+
+    def upload(self, files):
+        self.uploader = FileUploader(*self.ftp_params)
+        self.uploader.register_observer(self.update)
+        self.uploader.upload_files(files)
+
+    def update(self, i, n_files, status):
+        self.pipe.send((i, n_files, status))
 
 
 if __name__ == '__main__':
