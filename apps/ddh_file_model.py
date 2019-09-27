@@ -16,8 +16,10 @@ class FileModel(QAbstractTableModel):
 
     def set_files(self, files):
         # this will wipe the status of the model
+        self.beginResetModel()
         self.files = files
         self._status = ['Unknown'] * len(self.files)
+        self.endResetModel()
 
     def get_status(self, row):
         return self._status[row]

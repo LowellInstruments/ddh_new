@@ -18,7 +18,6 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         self.pushButton_sync.clicked.connect(self.sync)
         self.lineEdit_local.editingFinished.connect(self.update_model)
         self.lineEdit_pattern.editingFinished.connect(self.update_model)
-        self._upload_thread = QtCore.QThread()
         self.uploader = None
         self.show()
 
@@ -36,7 +35,6 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         self.tableView.setColumnWidth(2, width/4)
 
     def sync(self):
-        self._upload_thread.quit()
         host = ('ftp.lowellinstruments.com',
                 'jeff@lowellinstruments.com',
                 'DDHftp5Woodland')
