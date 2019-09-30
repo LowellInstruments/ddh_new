@@ -14,5 +14,8 @@
 	"metrics": [
 		"Temperature",
 		"Pressure"
-	]
+	],
+	"ftp_site": "ftp.lowellinstruments.com",
+	"ftp_username": "jeff@lowellinstruments.com",
+	"ftp_password": "DDHftp5Woodland"
 }
