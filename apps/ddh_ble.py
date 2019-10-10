@@ -111,14 +111,14 @@ class DeckDataHubBLE:
     # download one entire logger
     @staticmethod
     def _ble_dl_files(lc_ble, signals, remove_previous=True):
-        # set up logger
+        # pre-configure logger
         DeckDataHubBLE._ble_pre_dl_files(lc_ble, signals)
         mac = lc_ble.address
 
-        # remove files, useful for debug
+        # remove files, useful for debug, label ***
         if remove_previous:
             remove_logger_folder(mac)
-            signals.error.emit('**** SYS: removing {} previous files...'.format(mac))
+            signals.error.emit('SYS: removing {} previous files...'.format(mac))
 
         # list files
         folder, files = DeckDataHubBLE._ble_list_files(lc_ble, signals)
@@ -156,7 +156,7 @@ class DeckDataHubBLE:
                     signals.status.emit('BLE: cannot get {}.'.format(name))
                     if retries == 2:
                         raise ble.BTLEException('exception while downloading')
-                time.sleep(5)
+                time.sleep(10)
 
             # check received file ok
             if do_we_have_this_file(name, size, folder):
@@ -165,7 +165,7 @@ class DeckDataHubBLE:
                 speed = size / (time.time() - start_time)
                 signals.ble_dl_file_.emit(percent_x_size, speed)
 
-        # RUN again this logger
+        # RUN again this logger, or not, label ###
         # t = 'BLE: re-start = {}.'.format(lc_ble.command(RUN_CMD))
         # signals.status.emit(t)
         signals.ble_dl_logger_.emit(lc_ble.address, counter)
@@ -194,7 +194,7 @@ class DeckDataHubBLE:
         else:
             signals.status.emit('BLE: logger time is up-to-date.')
 
-        # logger: CMD_CONTROL parameters BLE
+        # RN4020 loggers: CMD_CONTROL parameters BLE, CC26x2 ones will ignore this
         control = 'BTC 00T,0006,0000,0064'
         answer = lc_ble.command(control)
         signals.status.emit('BLE: setup as = {}.'.format(answer))

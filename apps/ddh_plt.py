@@ -65,7 +65,7 @@ class DeckDataHubPLT:
         fil = [dir_1, metric + '.csv', 0, 1]
         y_1 = cl._plt_csv_data(signals, *fil)
         if not y_1:
-            t = 'PLT: {}, few {}({}) raw data.'.format(mac_1, m, ts)
+            t = 'PLT: {}, no {}({}) CSV data.'.format(mac_1, m, ts)
             signals.error_gui.emit(t)
             signals.plt_result.emit(False)
             return {}, {}
@@ -224,7 +224,7 @@ class DeckDataHubPLT:
             signals.error_gui.emit(text)
             return 0
 
-        # decide delete all .csv files for this logger
+        # remove all already existing .csv files for this logger
         if remove_previous:
             rm_files_by_extension(folder, 'csv')
 

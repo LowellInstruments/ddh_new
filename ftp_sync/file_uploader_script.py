@@ -1,5 +1,5 @@
 import json
-from apps.ddh_file_uploader import FileUploader
+from ftp_sync.ddh_file_uploader import FileUploader
 from pathlib import Path
 
 """

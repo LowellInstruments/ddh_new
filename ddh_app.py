@@ -45,12 +45,14 @@ if detect_raspberry():
 
 
 # constants for the application
+# todo: json this
 DDH_BLE_MAC_FILTER = (
     # remember ':' as separator, not '-'
     # '00:1e:c0:3d:7a:f2',
     # '00:1e:c0:4d:bf:c9',
     # '00:1e:c0:4d:d2:37',
-    '00:1e:c0:4d:bf:db',
+    # '00:1e:c0:4d:bf:db',
+    '04:ee:03:6c:ef:49',
 )
 DDH_ERR_DISPLAY_TIMEOUT = 5
 DDH_PLT_DISPLAY_TIMEOUT = 25
@@ -72,8 +74,8 @@ class DDHQtApp(QMainWindow):
         logzero.logfile("logfile.log", maxBytes=int(1e6), backupCount=3, mode='a')
 
         # banners
-        console_log.debug('SYS: recall \'remove_previous\' at download.')
-        console_log.debug('SYS: recall restart or not.')
+        console_log.debug('SYS: recall \'remove_previous\' at download, search \'***\'')
+        console_log.debug('SYS: recall re-RUN after download or not, search \'###\'')
 
         # ui stuff
         super(DDHQtApp, self).__init__(*args, **kwargs)
@@ -135,6 +137,7 @@ class DDHQtApp(QMainWindow):
             def button2_pressed_cb():
                 self.keyPressEvent(ButtonPressEvent(Qt.Key_2))
 
+            # upon release, check if it was a press or a hold
             def button3_released_cb():
                 if DDHQtApp.btn_3_held:
                     self.keyPressEvent(ButtonPressEvent(Qt.Key_6))
@@ -150,12 +153,12 @@ class DDHQtApp(QMainWindow):
             self.button3 = Button(13, pull_up=True)
             self.button1.when_pressed = button1_pressed_cb
             self.button2.when_pressed = button2_pressed_cb
-            # added a more featured button
+            # a more featured button
             self.button3.when_held = button3_held_cb
             self.button3.when_released = button3_released_cb
 
         else:
-            console_log.debug('SYS: no raspberry detected.')
+            console_log.debug('SYS: this is NOT a raspberry system')
 
     def closeEvent(self, event):
         console_log.debug('SYS: closing GUI APP...')
@@ -197,7 +200,6 @@ class DDHQtApp(QMainWindow):
         self.th_plt.signals.clk_start.connect(self.slot_clk_start)
         self.th_plt.signals.clk_end.connect(self.slot_clk_end)
         self.th_plt.signals.status_gui.connect(self.slot_status_gui)
-        self.th_plt.signals.status_gui_clear.connect(self.slot_status_gui_clear)
         self.thread_pool.start(self.th_plt)
 
     def _window_center(self):
@@ -316,6 +318,7 @@ class DDHQtApp(QMainWindow):
         self.ui.lbl_busy_dl.show()
         self.ui.bar_dl.setValue(0)
 
+    # indicates current logger of current download session
     @pyqtSlot(name='slot_ble_dl_logger')
     def slot_ble_dl_logger(self):
         text = '\nConfiguring logger for download...'
@@ -328,6 +331,7 @@ class DDHQtApp(QMainWindow):
         text += '\n\n{} minutes to full logger download'.format(val_3)
         self.ui.lbl_dl_status_2.setText(text)
 
+    # function post dl_file, note trailing '_'
     @pyqtSlot(int, int, name='slot_ble_dl_file_')
     def slot_ble_dl_file_(self, val_1, val_2):
         text = '{} bytes/sec'.format(val_2)
@@ -335,6 +339,7 @@ class DDHQtApp(QMainWindow):
         self.ui.lbl_dl_status_3.setText('\n{}'.format(text))
         self.ui.bar_dl.setValue(percentage)
 
+    # function post dl_logger, note trailing '_'
     @pyqtSlot(str, int, name='slot_ble_dl_logger_')
     def slot_ble_dl_logger_(self, desc, val_1):
         text = 'Logger {} sent {} files.'.format(desc, val_1)
@@ -350,6 +355,7 @@ class DDHQtApp(QMainWindow):
             self._ddh_thread_throw_plt(self.plt_folders)
             self.plt_folders = update_dl_folder_list()
 
+    # display plot if we were successful
     @pyqtSlot(object, name='slot_plt_result')
     def slot_plt_result(self, result):
         if result:
@@ -358,6 +364,7 @@ class DDHQtApp(QMainWindow):
         else:
             self.tabs.setCurrentIndex(0)
 
+    # function post dl_session, note trailing '_'
     @pyqtSlot(str, name='slot_ble_dl_session_')
     def slot_ble_dl_session_(self, desc):
         console_log.info(desc)
@@ -401,10 +408,6 @@ class DDHQtApp(QMainWindow):
     @pyqtSlot(name='slot_clk_start')
     def slot_clk_start(self):
         self.clk_start_time = time.clock()
-
-    @pyqtSlot(name='slot_status_gui_clear')
-    def slot_status_gui_clear(self):
-        self.ui.lbl_error.hide()
 
     @pyqtSlot(name='slot_clk_end')
     def slot_clk_end(self):

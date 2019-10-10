@@ -1,10 +1,9 @@
 import sys
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
-sys.path.append('../ddh')
 from gui.file_table_ui import Ui_Form
-from apps.ddh_file_model import FileModel
-from apps.ddh_file_uploader import FileUploader
+from ftp_sync.ddh_file_model import FileModel
+from ftp_sync.ddh_file_uploader import FileUploader
 from pathlib import Path
 from multiprocessing import Pipe, Process, freeze_support
 
