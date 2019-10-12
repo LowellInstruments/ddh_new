@@ -13,7 +13,7 @@
 	"name": "Maggie Sue"
     },
 	"metrics": [
-		"Temperature",
+		"Temperature (C)",
 		"Pressure"
 	],
 	"ftp_site": "ftp.lowellinstruments.com",

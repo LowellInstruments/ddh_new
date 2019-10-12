@@ -1,4 +1,3 @@
-from sortedcontainers import SortedDict
 from datetime import (
     datetime,
     timedelta
@@ -11,6 +10,8 @@ import socket
 import os
 import glob
 from logzero import logger as console_log
+from mat.data_converter import DataConverter, default_parameters
+import dask.dataframe as dd
 
 
 def linux_set_time_from_gps(when):
@@ -38,59 +39,9 @@ def have_internet_connection():
         return False
 
 
-def get_last_key_from_dict(input_dict):
-    if input_dict:
-        return list(input_dict.keys())[-1]
-    return None
-
-
-def get_first_key_from_dict(input_dict):
-    if input_dict:
-        return list(input_dict.keys())[0]
-    return None
-
-
-def get_start_key_from_end_key(end_key, before):
-    # logger output: w/o timezone w/ microseconds
-    if end_key:
-        calc_time = iso8601.parse_date(end_key) - timedelta(hours=before)
-        calc_time = calc_time.replace(tzinfo=None).isoformat() + '.000'
-        return calc_time
-    return None
-
-
-def slice_bw_keys(start_key, end_key, input_dict):
-    start_index = input_dict.bisect_left(start_key)
-    # next line bisect_left excludes, bisect_right includes edge element
-    end_index = input_dict.bisect_left(end_key)
-    output_data_keys = list(input_dict.keys())[start_index:end_index]
-    output_data_values = list(input_dict.values())[start_index:end_index]
-    output_dict = SortedDict(zip(output_data_keys, output_data_values))
-    return output_dict
-
-
-def filter_files_by_name_ending(input_list, name_ending):
-    output_list = []
-    for each_name in input_list:
-        if each_name.endswith(name_ending):
-            output_list.append(each_name)
-    return output_list
-
-
-# discard files shorter than size bytes, 2000 are about 60 rows
-def filter_files_by_size(input_list, minimum_size):
-    output_list = []
-    for each_name in input_list:
-        try:
-            if os.path.getsize(each_name) > minimum_size:
-                output_list.append(each_name)
-        except FileNotFoundError:
-            pass
-    return output_list
-
-
 # recursively collect all logger files w/ indicated extension
-def list_files_by_extension(dir_name, extension):
+def list_files_by_extension_in_dir(dir_name, extension):
+    if not dir_name: return []
     if os.path.isdir(dir_name):
         wildcard = dir_name + '/**/*.' + extension
         return glob.glob(wildcard, recursive=True)
@@ -120,46 +71,6 @@ def detect_raspberry():
     return False
 
 
-def get_span_as_hh_mm(word):
-    if word == 'hour':
-        return 1, 60
-    if word == 'day':
-        return 24, 24 * 60
-    if word == 'week':
-        return 168, 168 * 60
-    if word == 'month':
-        return 730, 730 * 60
-    if word == 'year':
-        return 8765, 8765 * 60
-
-
-def get_resolution_factor(word):
-    if word == 'hour':
-        return get_span_as_slices(word) / 60
-    if word == 'day':
-        return get_span_as_slices(word) / 24
-    if word == 'week':
-        return get_span_as_slices(word) / 7
-    if word == 'month':
-        return get_span_as_slices(word) / 30
-    if word == 'year':
-        return get_span_as_slices(word) / 12
-
-
-def get_span_as_slices(word):
-    resolution_factor = 8
-    if word == 'hour':
-        return 60
-    if word == 'day':
-        return 24 * resolution_factor
-    if word == 'week':
-        return 7 * resolution_factor
-    if word == 'month':
-        return 30 * resolution_factor
-    if word == 'year':
-        return 12 * resolution_factor
-
-
 def check_config_file():
     import json
     try:
@@ -186,3 +97,51 @@ def get_metrics():
     with open('ddh.json') as f:
         ddh_cfg_string = json.load(f)
         return ddh_cfg_string['metrics']
+
+
+def extract_mac_from_folder(d):
+    try:
+        return d.split('/')[1].replace('-', ':')
+    except (ValueError, Exception):
+        return None
+
+
+def convert_lid_files_to_csv(two_folders_list):
+    d1, d2 = two_folders_list
+    if not os.path.exists(d1): return None
+    l1 = list_files_by_extension_in_dir(d1, 'lid')
+    l2 = list_files_by_extension_in_dir(d2, 'lid')
+
+    # convert LID files to CSV
+    parameters = default_parameters()
+    for f in l1: DataConverter(f, parameters).convert()
+    for f in l2: DataConverter(f, parameters).convert()
+
+
+def convert_csv_to_data_frames(dirs, metric):
+    # convert 'Temperature (C)' to just 'Temperature'
+    metric = metric.split(' ')[0]
+
+    ddf1, ddf2 = None, None
+    try:
+        ddf1 = dd.read_csv(os.path.join(dirs[0], "*" + metric + "*.csv"))
+    except (IOError, Exception):
+        return None
+    try:
+        ddf2 = dd.read_csv(os.path.join(dirs[1], "*" + metric + "*.csv"))
+    except (IOError, Exception):
+        pass
+    return ddf1, ddf2
+
+
+def translate_logger_name(logger_mac):
+    import json
+    name = 'unnamed_logger'
+    try:
+        with open('ddh.json') as f:
+            ddh_cfg_string = json.load(f)
+            name = ddh_cfg_string['db_logger_macs'][logger_mac]
+    except (FileNotFoundError, TypeError, KeyError):
+        pass
+    return name
+
