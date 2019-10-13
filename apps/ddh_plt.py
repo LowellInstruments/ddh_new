@@ -20,7 +20,7 @@ class DeckDataHubPLT:
         # obtain 'metric' data from 'folders' and trim it by 'ts' time
         convert_lid_files_to_csv(folders)
         df1, df2 = convert_csv_to_data_frames(folders, metric)
-        df1, df2 = discard_frames_before(ts, df1, df2)
+        # df1, df2 = discard_frames_before(ts, df1, df2)
 
         # plot stuff
         a1 = extract_mac_from_folder(folders[0])
@@ -28,10 +28,12 @@ class DeckDataHubPLT:
 
         x_time = df1['ISO 8601 Time'].compute()
         y_data = df1[metric].compute()
-        plt.plot(x_time, y_data)
-        plt.axis('tight')
+
+        axes = cnv.figure.subplots()
+        axes.plot(x_time, y_data)
+        axes.axis('tight')
         print('hi')
-        plt.show()
+        # axes.show()
         print('bye')
         signals.plt_result.emit(True)
         signals.clk_end.emit()
