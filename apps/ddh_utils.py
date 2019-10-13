@@ -24,7 +24,7 @@ span_dict = {
 
 def linux_set_time_from_gps(when):
     # timedatectl: UNIX command to stop systemd-timesyncd.service
-    time_string = datetime(*when).isoformat()
+    time_string = datetime.datetime(*when).isoformat()
     subprocess.call(shlex.split('sudo timedatectl set-ntp false'))
     subprocess.call(shlex.split("sudo date -s '%s'" % time_string))
 
@@ -49,16 +49,17 @@ def have_internet_connection():
 
 # recursively collect all logger files w/ indicated extension
 def list_files_by_extension_in_dir(dir_name, extension):
-    if not dir_name: return []
+    if not dir_name:
+        return []
     if os.path.isdir(dir_name):
         wildcard = dir_name + '/**/*.' + extension
         return glob.glob(wildcard, recursive=True)
 
 
 # recursively remove all files w/ indicated extension
-def rm_files_by_extension(dir, ext):
-    if os.path.isdir(dir):
-        for filename in list_files_by_extension_in_dir(dir, ext):
+def rm_files_by_extension(path, ext):
+    if os.path.isdir(path):
+        for filename in list_files_by_extension_in_dir(path, ext):
             os.remove(filename)
 
 
@@ -115,15 +116,19 @@ def extract_mac_from_folder(d):
 
 
 def all_lid_to_csv(two_folders_list):
+    # grab all LID files in these two folders
     d1, d2 = two_folders_list
-    if not os.path.exists(d1): return None
+    if not os.path.exists(d1):
+        return None
     l1 = list_files_by_extension_in_dir(d1, 'lid')
     l2 = list_files_by_extension_in_dir(d2, 'lid')
 
     # convert LID files to CSV
     parameters = default_parameters()
-    for f in l1: DataConverter(f, parameters).convert()
-    for f in l2: DataConverter(f, parameters).convert()
+    for f in l1:
+        DataConverter(f, parameters).convert()
+    for f in l2:
+        DataConverter(f, parameters).convert()
 
 
 def csv_to_data_frames(dirs, metric):

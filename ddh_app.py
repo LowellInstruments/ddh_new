@@ -73,11 +73,11 @@ class DDHQtApp(QMainWindow):
         singleton.SingleInstance()
         assert sys.version_info >= (3, 5)
         assert check_config_file()
-        logzero.logfile("logfile.log", maxBytes=int(1e6), backupCount=3, mode='a')
+        logzero.logfile("ddh.log", maxBytes=int(1e6), backupCount=3, mode='a')
 
         # banners
-        console_log.debug('SYS: recall \'remove_previous\' at download, search \'***\'')
-        console_log.debug('SYS: recall re-RUN after download or not, search \'###\'')
+        console_log.debug('SYS: recall \'rm_previous\' pre_dl, search \'***\'')
+        console_log.debug('SYS: recall re-RUN post download, search \'###\'')
 
         # ui stuff
         super(DDHQtApp, self).__init__(*args, **kwargs)
@@ -357,7 +357,6 @@ class DDHQtApp(QMainWindow):
         self.ui.bar_dl.setValue(100)
         # try to draw if something downloaded from last logger
         if val_1:
-            DeckDataHubPLT.plt_cache_clear()
             self.dl_last_dir = 'dl_files/' + str(desc).replace(':', '-')
             self.plt_folders = [self.dl_last_dir, None]
             self._ddh_thread_throw_plt(self.plt_folders)

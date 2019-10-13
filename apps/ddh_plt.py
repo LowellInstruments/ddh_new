@@ -24,6 +24,9 @@ class DeckDataHubPLT:
         # slice and average data
         t, y_avg = slice_n_average(t, y, ts)
 
+        # obtain data for plot meta-information, legend
+        mac_1 = extract_mac_from_folder(folders[0])
+
         # plot, rcParams update needed to show x-axis label
         rcParams.update({'figure.autolayout': True})
         axes = cnv.figure.subplots()
@@ -31,6 +34,6 @@ class DeckDataHubPLT:
         axes.axis('tight')
         cnv.draw()
 
-
+        # signal we are done with plotting
         signals.plt_result.emit(True)
         signals.clk_end.emit()
