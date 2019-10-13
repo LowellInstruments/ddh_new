@@ -1,13 +1,10 @@
-import matplotlib.pyplot as plt
-
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.figure import Figure
-from PyQt5.QtWidgets import QSizePolicy
 from matplotlib import rcParams
 from .ddh_utils import (
     extract_mac_from_folder,
-    convert_lid_files_to_csv,
-    convert_csv_to_data_frames,
+    all_lid_to_csv,
+    csv_to_data_frames,
+    rm_frames_pre,
+    slice_n_average,
 )
 
 
@@ -17,23 +14,23 @@ class DeckDataHubPLT:
     def plt_plot(signals, folders, cnv, ts, metric):
         signals.clk_start.emit()
 
-        # obtain 'metric' data from 'folders' and trim it by 'ts' time
-        convert_lid_files_to_csv(folders)
-        df1, df2 = convert_csv_to_data_frames(folders, metric)
-        # df1, df2 = discard_frames_before(ts, df1, df2)
+        # obtain 'metric' data from 'folders'
+        all_lid_to_csv(folders)
+        df1, df2 = csv_to_data_frames(folders, metric)
 
-        # plot stuff
-        a1 = extract_mac_from_folder(folders[0])
-        a2 = extract_mac_from_folder(folders[1])
+        # only keep data within span of last recorded time
+        t, y = rm_frames_pre(df1, ts, metric)
 
-        x_time = df1['ISO 8601 Time'].compute()
-        y_data = df1[metric].compute()
+        # slice and average data
+        t, y_avg = slice_n_average(t, y, ts)
 
+        # plot, rcParams update needed to show x-axis label
+        rcParams.update({'figure.autolayout': True})
         axes = cnv.figure.subplots()
-        axes.plot(x_time, y_data)
+        axes.plot(t, y_avg)
         axes.axis('tight')
-        print('hi')
-        # axes.show()
-        print('bye')
+        cnv.draw()
+
+
         signals.plt_result.emit(True)
         signals.clk_end.emit()

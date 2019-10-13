@@ -1,10 +1,6 @@
-from datetime import (
-    datetime,
-    timedelta
-)
+import datetime
 import http.client
 import subprocess
-import iso8601
 import shlex
 import socket
 import os
@@ -12,6 +8,18 @@ import glob
 from logzero import logger as console_log
 from mat.data_converter import DataConverter, default_parameters
 import dask.dataframe as dd
+import pandas as pd
+import numpy as np
+
+
+span_dict = {
+    # unit: slices, mm / slice, mm / unit
+    'h': [12, 5, 60],
+    'd': [48, 30, 1440],
+    'w': [14, 720, 10080],
+    'm': [31, 1440, 43800],
+    'y': [12, 525600]
+}
 
 
 def linux_set_time_from_gps(when):
@@ -48,9 +56,9 @@ def list_files_by_extension_in_dir(dir_name, extension):
 
 
 # recursively remove all files w/ indicated extension
-def rm_files_by_extension(dir_name, extension):
-    if os.path.isdir(dir_name):
-        for filename in list_files_by_extension(dir_name, extension):
+def rm_files_by_extension(dir, ext):
+    if os.path.isdir(dir):
+        for filename in list_files_by_extension_in_dir(dir, ext):
             os.remove(filename)
 
 
@@ -106,7 +114,7 @@ def extract_mac_from_folder(d):
         return None
 
 
-def convert_lid_files_to_csv(two_folders_list):
+def all_lid_to_csv(two_folders_list):
     d1, d2 = two_folders_list
     if not os.path.exists(d1): return None
     l1 = list_files_by_extension_in_dir(d1, 'lid')
@@ -118,7 +126,7 @@ def convert_lid_files_to_csv(two_folders_list):
     for f in l2: DataConverter(f, parameters).convert()
 
 
-def convert_csv_to_data_frames(dirs, metric):
+def csv_to_data_frames(dirs, metric):
     # convert 'Temperature (C)' to just 'Temperature'
     metric = metric.split(' ')[0]
 
@@ -145,3 +153,74 @@ def translate_logger_name(logger_mac):
         pass
     return name
 
+
+# returns last row time value as str
+def df_last_time(df_in):
+    # p pandas data frame, t numpy array
+    p = df_in.tail(1)
+    t = p['ISO 8601 Time'].values
+    return str(t[0])
+
+
+# returns first row time value as str
+def df_first_time(df_in):
+    p = df_in.head(1)
+    t = p['ISO 8601 Time'].values
+    return str(t[0])
+
+
+# t is a string
+def offset_time_mm(t, mm):
+    a = datetime.datetime.strptime(t, '%Y-%m-%dT%H:%M:%S.000')
+    a += datetime.timedelta(minutes=mm)
+    return a.strftime('%Y-%m-%dT%H:%M:%S.000')
+
+
+# a and b are time strings
+def _slice_w_idx(df_in, a, b, metric='Temperature (C)'):
+    # compute() returns a panda series
+    t = df_in['ISO 8601 Time'].compute()
+    c = df_in[metric].compute()
+    # create an index to the pandas series
+    i = pd.Index(t)
+    i_start = i.get_loc(a)
+    i_end = i.get_loc(b)
+    t = t[i_start:i_end]
+    c = c[i_start:i_end]
+    return t, c
+
+
+def rm_frames_pre(df_in, span, metric='Temperature (C)'):
+    try:
+        b = df_last_time(df_in)
+        a = offset_time_mm(b, -1 * span_dict[span][2])
+        return _slice_w_idx(df_in, a, b, metric)
+    except (KeyError, Exception):
+        return None, None
+
+
+# t is time series, d data series
+def slice_n_average(t, d, span):
+    # prepare time jumps forward
+    n_slices = span_dict[span][0]
+    step = span_dict[span][1]
+    start = t.values[0]
+    end = offset_time_mm(start, step)
+    i = pd.Index(t)
+
+    # build averaged output lists
+    x = []
+    y = []
+    for _ in range(n_slices):
+        try:
+            i_start = i.get_loc(start)
+            i_end = i.get_loc(end)
+            y.append(np.nanmean(d.values[i_start:i_end]))
+        except KeyError:
+            y.append(np.nan)
+        finally:
+            x.append(str(start))
+            start = end
+            end = offset_time_mm(start, step)
+
+    return x, y

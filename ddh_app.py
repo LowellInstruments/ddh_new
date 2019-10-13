@@ -112,7 +112,7 @@ class DDHQtApp(QMainWindow):
         self.plt_folders_idx = 0
         self.plt_dir_1 = None
         self.plt_dir_2 = None
-        self.plt_time_spans = ('hour', 'day', 'week', 'month', 'year')
+        self.plt_time_spans = ('h', 'd', 'w', 'm', 'y')
         self.plt_ts_idx = 0
         self.plt_ts = self.plt_time_spans[0]
         self.plt_metrics = get_metrics()
