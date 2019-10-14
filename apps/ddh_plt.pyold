@@ -153,13 +153,13 @@ class DeckDataHubPLT:
         cnv.axes.cla()
         x_data = list(data_1.keys())
         y_data_1 = list(data_1.values())
-        data_legend = translate_logger_name(os.path.basename(dir_1))
+        data_legend = get_logger_name(os.path.basename(dir_1))
         cnv.axes.plot(x_data, y_data_1, color='blue', label=data_legend)
 
         # add second averaged data set
         if data_2:
             y_data_2 = list(data_2.values())
-            legend = translate_logger_name(os.path.basename(dir_2))
+            legend = get_logger_name(os.path.basename(dir_2))
             cnv.axes.plot(x_data, y_data_2, color='red', label=legend)
         else:
             if dir_2:
@@ -339,7 +339,7 @@ def avg_values_dict(input_dict, minimum_required):
     return numpy.nan
 
 
-def translate_logger_name(logger_mac):
+def get_logger_name(logger_mac):
     import json
     name = 'unnamed_logger'
     try:

@@ -5,6 +5,8 @@ import shlex
 import socket
 import os
 import glob
+
+import iso8601
 from logzero import logger as console_log
 from mat.data_converter import DataConverter, default_parameters
 import dask.dataframe as dd
@@ -13,12 +15,12 @@ import numpy as np
 
 
 span_dict = {
-    # unit: slices, mm / slice, mm / unit
-    'h': [12, 5, 60],
-    'd': [48, 30, 1440],
-    'w': [14, 720, 10080],
-    'm': [31, 1440, 43800],
-    'y': [12, 525600]
+    # unit: slices,     mm / slice,     mm / unit,  format,     ticks skip
+    'h':    [12,        5,              60,         '%H:%M',    1],
+    'd':    [48,        30,             1440,       '%H',       2],
+    'w':    [14,        720,            10080,      '%m/%d',    1],
+    'm':    [31,        1440,           43800,      '%d',       1],
+    'y':    [12,        43800,          525600,     '%b %y',    1]
 }
 
 
@@ -147,7 +149,7 @@ def csv_to_data_frames(dirs, metric):
     return ddf1, ddf2
 
 
-def translate_logger_name(logger_mac):
+def get_logger_name(logger_mac):
     import json
     name = 'unnamed_logger'
     try:
@@ -195,10 +197,16 @@ def _slice_w_idx(df_in, a, b, metric='Temperature (C)'):
     return t, c
 
 
-def rm_frames_pre(df_in, span, metric='Temperature (C)'):
+def rm_frames_before(df_in, span, metric='Temperature (C)'):
     try:
         b = df_last_time(df_in)
         a = offset_time_mm(b, -1 * span_dict[span][2])
+
+        # safety check
+        s = df_first_time(df_in)
+        if a < s:
+            a = s
+
         return _slice_w_idx(df_in, a, b, metric)
     except (KeyError, Exception):
         return None, None
@@ -209,19 +217,19 @@ def slice_n_average(t, d, span):
     # prepare time jumps forward
     n_slices = span_dict[span][0]
     step = span_dict[span][1]
-    start = t.values[0]
-    end = offset_time_mm(start, step)
     i = pd.Index(t)
 
     # build averaged output lists
     x = []
     y = []
+    start = t.values[0]
+    end = offset_time_mm(start, step)
     for _ in range(n_slices):
         try:
             i_start = i.get_loc(start)
             i_end = i.get_loc(end)
             y.append(np.nanmean(d.values[i_start:i_end]))
-        except KeyError:
+        except (KeyError, AttributeError):
             y.append(np.nan)
         finally:
             x.append(str(start))
@@ -229,3 +237,26 @@ def slice_n_average(t, d, span):
             end = offset_time_mm(start, step)
 
     return x, y
+
+
+def format_time_labels(t, span):
+    lb = []
+    for each_t in t:
+        lb.append(iso8601.parse_date(each_t).strftime(span_dict[span][3]))
+    return lb
+
+
+def format_time_ticks(t, span):
+    return t[::(span_dict[span][4])]
+
+
+def format_title(t, span):
+    last_time = iso8601.parse_date(t[-1])
+    title_dict = {
+        'h': 'last hour: {}'.format(last_time.strftime('%b. %d, %Y')),
+        'd': 'last day: {}'.format(last_time.strftime('%b. %d, %Y')),
+        'w': 'last week: {}'.format(last_time.strftime('%b. %d, %Y')),
+        'm': 'last month: {}'.format(last_time.strftime('%b. %Y')),
+        'y': 'last year'
+    }
+    return title_dict[span]
