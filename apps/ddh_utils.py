@@ -18,7 +18,7 @@ span_dict = {
     # unit: slices,     mm / slice,     mm / unit,  format,     ticks skip
     'h':    [12,        5,              60,         '%H:%M',    1],
     'd':    [48,        30,             1440,       '%H',       2],
-    'w':    [14,        720,            10080,      '%m/%d',    1],
+    'w':    [14,        720,            10080,      '%m/%d',    2],
     'm':    [31,        1440,           43800,      '%d',       1],
     'y':    [12,        43800,          525600,     '%b %y',    1]
 }
@@ -255,7 +255,7 @@ def format_title(t, span):
     title_dict = {
         'h': 'last hour: {}'.format(last_time.strftime('%b. %d, %Y')),
         'd': 'last day: {}'.format(last_time.strftime('%b. %d, %Y')),
-        'w': 'last week: {}'.format(last_time.strftime('%b. %d, %Y')),
+        'w': 'last week: {}'.format(last_time.strftime('%b. %Y')),
         'm': 'last month: {}'.format(last_time.strftime('%b. %Y')),
         'y': 'last year'
     }
