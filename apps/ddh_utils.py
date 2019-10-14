@@ -107,6 +107,7 @@ def get_metrics():
     import json
     with open('ddh.json') as f:
         ddh_cfg_string = json.load(f)
+        assert len(ddh_cfg_string['metrics']) <= 2
         return ddh_cfg_string['metrics']
 
 
@@ -134,14 +135,13 @@ def all_lid_to_csv(two_folders_list):
 
 
 def csv_to_data_frames(dirs, metric):
-    # convert 'Temperature (C)' to just 'Temperature'
-    metric = metric.split(' ')[0]
-
     ddf1, ddf2 = None, None
+    # try to convert first folder, the most important one
     try:
         ddf1 = dd.read_csv(os.path.join(dirs[0], "*" + metric + "*.csv"))
     except (IOError, Exception):
-        return None
+        return None, None
+    # try to convert second folder
     try:
         ddf2 = dd.read_csv(os.path.join(dirs[1], "*" + metric + "*.csv"))
     except (IOError, Exception):
@@ -149,7 +149,7 @@ def csv_to_data_frames(dirs, metric):
     return ddf1, ddf2
 
 
-def get_logger_name(logger_mac):
+def mac_dns(logger_mac):
     import json
     name = 'unnamed_logger'
     try:
@@ -184,10 +184,10 @@ def offset_time_mm(t, mm):
 
 
 # a and b are time strings
-def _slice_w_idx(df_in, a, b, metric='Temperature (C)'):
+def _slice_w_idx(df_in, a, b, column_name):
     # compute() returns a panda series
     t = df_in['ISO 8601 Time'].compute()
-    c = df_in[metric].compute()
+    c = df_in[column_name].compute()
     # create an index to the pandas series
     i = pd.Index(t)
     i_start = i.get_loc(a)
@@ -197,7 +197,7 @@ def _slice_w_idx(df_in, a, b, metric='Temperature (C)'):
     return t, c
 
 
-def rm_frames_before(df_in, span, metric='Temperature (C)'):
+def rm_frames_before(df_in, span, column_name):
     try:
         b = df_last_time(df_in)
         a = offset_time_mm(b, -1 * span_dict[span][2])
@@ -207,7 +207,7 @@ def rm_frames_before(df_in, span, metric='Temperature (C)'):
         if a < s:
             a = s
 
-        return _slice_w_idx(df_in, a, b, metric)
+        return _slice_w_idx(df_in, a, b, column_name)
     except (KeyError, Exception):
         return None, None
 
@@ -217,6 +217,8 @@ def slice_n_average(t, d, span):
     # prepare time jumps forward
     n_slices = span_dict[span][0]
     step = span_dict[span][1]
+    if t is None:
+        return None, None
     i = pd.Index(t)
 
     # build averaged output lists
@@ -260,3 +262,20 @@ def format_title(t, span):
         'y': 'last year'
     }
     return title_dict[span]
+
+
+def metric_to_column_name(metric):
+    metric_dict = {
+        'Temperature':  'Temperature (C)',
+        'Pressure':     'Pressure (psi)',
+    }
+    return metric_dict[metric]
+
+
+def line_color(column_name, index):
+    index -= 1
+    color_dict = {
+        'Temperature (C)':  ['cyan', 'orange'],
+        'Pressure (psi)':   ['lime', 'red'],
+    }
+    return color_dict[column_name][index]
