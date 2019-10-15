@@ -1,12 +1,8 @@
 {
     "db_logger_macs": {
-		"11-22-33-44-55-66": "Example 1",
-		"ff-ff-ff-ff-ff-ff": "Example 2",
-		"00-1e-c0-4d-bf-c9": "WH 1 of 3",
-		"00-1e-c0-4d-d2-37": "WH 2 of 3",
-		"00-1e-c0-4d-bf-db": "WH 3 of 3",
-		"00-1e-c0-3d-7a-f2": "Old WH",
-		"04-EE-03-6C-EF-49": "cc26x2_1"
+		"11:22:33:44:55:66": "Joaquim's logger",
+		"ff:ff:ff:ff:ff:ff": "Woodneck #7",
+		"00:1e:c0:4d:bf:c9": "WH 1 of 3"
 	},
     "ship_info":
     {

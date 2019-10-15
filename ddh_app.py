@@ -21,7 +21,9 @@ from PyQt5.QtWidgets import (
 from apps.ddh_threads import DDHThread
 from apps.ddh_gps import DeckDataHubGPS
 from apps.ddh_ble import DeckDataHubBLE
-from apps.ddh_plt import DeckDataHubPLT, StaticCanvas
+from apps.ddh_plt import DeckDataHubPLT
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from matplotlib.figure import Figure
 from apps.ddh_gui import DeckDataHubGUI, ButtonPressEvent
 from apps.ddh_utils import (
     update_dl_folder_list,
@@ -71,11 +73,11 @@ class DDHQtApp(QMainWindow):
         singleton.SingleInstance()
         assert sys.version_info >= (3, 5)
         assert check_config_file()
-        logzero.logfile("logfile.log", maxBytes=int(1e6), backupCount=3, mode='a')
+        logzero.logfile("ddh.log", maxBytes=int(1e6), backupCount=3, mode='a')
 
         # banners
-        console_log.debug('SYS: recall \'remove_previous\' at download, search \'***\'')
-        console_log.debug('SYS: recall re-RUN after download or not, search \'###\'')
+        console_log.debug('SYS: recall \'rm_previous\' pre_dl, search \'***\'')
+        console_log.debug('SYS: recall re-RUN post download, search \'###\'')
 
         # ui stuff
         super(DDHQtApp, self).__init__(*args, **kwargs)
@@ -97,7 +99,7 @@ class DDHQtApp(QMainWindow):
         self.setCentralWidget(self.tabs)
         self.tabs.setCurrentIndex(0)
         self._window_center()
-        self.plot_canvas = StaticCanvas()
+        self.plot_canvas = FigureCanvasQTAgg(Figure(figsize=(5, 3)))
         self.ui.vl_3.addWidget(self.plot_canvas)
 
         # automatic flow stuff
@@ -110,12 +112,13 @@ class DDHQtApp(QMainWindow):
         self.plt_folders_idx = 0
         self.plt_dir_1 = None
         self.plt_dir_2 = None
-        self.plt_time_spans = ('hour', 'day', 'week', 'month', 'year')
+        self.plt_time_spans = ('h', 'd', 'w', 'm', 'y')
         self.plt_ts_idx = 0
         self.plt_ts = self.plt_time_spans[0]
         self.plt_metrics = get_metrics()
         self.plt_metrics_idx = 0
         self.plt_metric = self.plt_metrics[0]
+        self.plt_is_busy = False
 
         # threads
         self.th_ble = None
@@ -251,11 +254,16 @@ class DDHQtApp(QMainWindow):
         # logic checks and do the thing
         if self.plt_dir_1 and self.plt_dir_1 == self.plt_dir_2:
             self.plt_dir_2 = None
-        if self.plt_dir_1:
-            folders_to_plot = [self.plt_dir_1, self.plt_dir_2]
+        if not self.plt_dir_1:
+            console_log.debug('GUI: no folder to plot')
+            return
+
+        folders_to_plot = [self.plt_dir_1, self.plt_dir_2]
+        if not self.plt_is_busy:
+            self.plt_is_busy = True
             self._ddh_thread_throw_plt(folders_to_plot)
         else:
-            console_log.debug('GUI: no folder to plot')
+            console_log.debug('GUI: busy to plot')
 
     @pyqtSlot(name='slot_ble_scan_start')
     def slot_ble_scan_start(self):
@@ -349,7 +357,6 @@ class DDHQtApp(QMainWindow):
         self.ui.bar_dl.setValue(100)
         # try to draw if something downloaded from last logger
         if val_1:
-            DeckDataHubPLT.plt_cache_clear()
             self.dl_last_dir = 'dl_files/' + str(desc).replace(':', '-')
             self.plt_folders = [self.dl_last_dir, None]
             self._ddh_thread_throw_plt(self.plt_folders)
@@ -363,6 +370,7 @@ class DDHQtApp(QMainWindow):
             self.plt_timeout_display = DDH_PLT_DISPLAY_TIMEOUT
         else:
             self.tabs.setCurrentIndex(0)
+        self.plt_is_busy = False
 
     # function post dl_session, note trailing '_'
     @pyqtSlot(str, name='slot_ble_dl_session_')

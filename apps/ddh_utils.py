@@ -1,21 +1,32 @@
-from sortedcontainers import SortedDict
-from datetime import (
-    datetime,
-    timedelta
-)
+import datetime
 import http.client
 import subprocess
-import iso8601
 import shlex
 import socket
 import os
 import glob
+
+import iso8601
 from logzero import logger as console_log
+from mat.data_converter import DataConverter, default_parameters
+import dask.dataframe as dd
+import pandas as pd
+import numpy as np
+
+
+span_dict = {
+    # unit: slices,     mm / slice,     mm / unit,  format,     ticks skip
+    'h':    [12,        5,              60,         '%H:%M',    1],
+    'd':    [48,        30,             1440,       '%H',       2],
+    'w':    [14,        720,            10080,      '%m/%d',    2],
+    'm':    [31,        1440,           43800,      '%d',       1],
+    'y':    [12,        43800,          525600,     '%b %y',    1]
+}
 
 
 def linux_set_time_from_gps(when):
     # timedatectl: UNIX command to stop systemd-timesyncd.service
-    time_string = datetime(*when).isoformat()
+    time_string = datetime.datetime(*when).isoformat()
     subprocess.call(shlex.split('sudo timedatectl set-ntp false'))
     subprocess.call(shlex.split("sudo date -s '%s'" % time_string))
 
@@ -38,68 +49,19 @@ def have_internet_connection():
         return False
 
 
-def get_last_key_from_dict(input_dict):
-    if input_dict:
-        return list(input_dict.keys())[-1]
-    return None
-
-
-def get_first_key_from_dict(input_dict):
-    if input_dict:
-        return list(input_dict.keys())[0]
-    return None
-
-
-def get_start_key_from_end_key(end_key, before):
-    # logger output: w/o timezone w/ microseconds
-    if end_key:
-        calc_time = iso8601.parse_date(end_key) - timedelta(hours=before)
-        calc_time = calc_time.replace(tzinfo=None).isoformat() + '.000'
-        return calc_time
-    return None
-
-
-def slice_bw_keys(start_key, end_key, input_dict):
-    start_index = input_dict.bisect_left(start_key)
-    # next line bisect_left excludes, bisect_right includes edge element
-    end_index = input_dict.bisect_left(end_key)
-    output_data_keys = list(input_dict.keys())[start_index:end_index]
-    output_data_values = list(input_dict.values())[start_index:end_index]
-    output_dict = SortedDict(zip(output_data_keys, output_data_values))
-    return output_dict
-
-
-def filter_files_by_name_ending(input_list, name_ending):
-    output_list = []
-    for each_name in input_list:
-        if each_name.endswith(name_ending):
-            output_list.append(each_name)
-    return output_list
-
-
-# discard files shorter than size bytes, 2000 are about 60 rows
-def filter_files_by_size(input_list, minimum_size):
-    output_list = []
-    for each_name in input_list:
-        try:
-            if os.path.getsize(each_name) > minimum_size:
-                output_list.append(each_name)
-        except FileNotFoundError:
-            pass
-    return output_list
-
-
 # recursively collect all logger files w/ indicated extension
-def list_files_by_extension(dir_name, extension):
+def list_files_by_extension_in_dir(dir_name, extension):
+    if not dir_name:
+        return []
     if os.path.isdir(dir_name):
         wildcard = dir_name + '/**/*.' + extension
         return glob.glob(wildcard, recursive=True)
 
 
 # recursively remove all files w/ indicated extension
-def rm_files_by_extension(dir_name, extension):
-    if os.path.isdir(dir_name):
-        for filename in list_files_by_extension(dir_name, extension):
+def rm_files_by_extension(path, ext):
+    if os.path.isdir(path):
+        for filename in list_files_by_extension_in_dir(path, ext):
             os.remove(filename)
 
 
@@ -118,46 +80,6 @@ def detect_raspberry():
     if node_name.endswith('raspberrypi') or node_name.startswith('rpi'):
         return True
     return False
-
-
-def get_span_as_hh_mm(word):
-    if word == 'hour':
-        return 1, 60
-    if word == 'day':
-        return 24, 24 * 60
-    if word == 'week':
-        return 168, 168 * 60
-    if word == 'month':
-        return 730, 730 * 60
-    if word == 'year':
-        return 8765, 8765 * 60
-
-
-def get_resolution_factor(word):
-    if word == 'hour':
-        return get_span_as_slices(word) / 60
-    if word == 'day':
-        return get_span_as_slices(word) / 24
-    if word == 'week':
-        return get_span_as_slices(word) / 7
-    if word == 'month':
-        return get_span_as_slices(word) / 30
-    if word == 'year':
-        return get_span_as_slices(word) / 12
-
-
-def get_span_as_slices(word):
-    resolution_factor = 8
-    if word == 'hour':
-        return 60
-    if word == 'day':
-        return 24 * resolution_factor
-    if word == 'week':
-        return 7 * resolution_factor
-    if word == 'month':
-        return 30 * resolution_factor
-    if word == 'year':
-        return 12 * resolution_factor
 
 
 def check_config_file():
@@ -185,4 +107,183 @@ def get_metrics():
     import json
     with open('ddh.json') as f:
         ddh_cfg_string = json.load(f)
+        assert len(ddh_cfg_string['metrics']) <= 2
         return ddh_cfg_string['metrics']
+
+
+def extract_mac_from_folder(d):
+    try:
+        return d.split('/')[1].replace('-', ':')
+    except (ValueError, Exception):
+        return None
+
+
+def all_lid_to_csv(two_folders_list):
+    # grab all LID files in these two folders
+    d1, d2 = two_folders_list
+    if not os.path.exists(d1):
+        return None
+    l1 = list_files_by_extension_in_dir(d1, 'lid')
+    l2 = list_files_by_extension_in_dir(d2, 'lid')
+
+    # convert LID files to CSV
+    parameters = default_parameters()
+    for f in l1:
+        DataConverter(f, parameters).convert()
+    for f in l2:
+        DataConverter(f, parameters).convert()
+
+
+def csv_to_data_frames(dirs, metric):
+    ddf1, ddf2 = None, None
+    # try to convert first folder, the most important one
+    try:
+        ddf1 = dd.read_csv(os.path.join(dirs[0], "*" + metric + "*.csv"))
+    except (IOError, Exception):
+        return None, None
+    # try to convert second folder
+    try:
+        ddf2 = dd.read_csv(os.path.join(dirs[1], "*" + metric + "*.csv"))
+    except (IOError, Exception):
+        pass
+    return ddf1, ddf2
+
+
+def mac_dns(logger_mac):
+    import json
+    name = 'unnamed_logger'
+    try:
+        with open('ddh.json') as f:
+            ddh_cfg_string = json.load(f)
+            name = ddh_cfg_string['db_logger_macs'][logger_mac]
+    except (FileNotFoundError, TypeError, KeyError):
+        pass
+    return name
+
+
+# returns last row time value as str
+def df_last_time(df_in):
+    # p pandas data frame, t numpy array
+    p = df_in.tail(1)
+    t = p['ISO 8601 Time'].values
+    return str(t[0])
+
+
+# returns first row time value as str
+def df_first_time(df_in):
+    p = df_in.head(1)
+    t = p['ISO 8601 Time'].values
+    return str(t[0])
+
+
+# t is a string
+def offset_time_mm(t, mm):
+    a = datetime.datetime.strptime(t, '%Y-%m-%dT%H:%M:%S.000')
+    a += datetime.timedelta(minutes=mm)
+    return a.strftime('%Y-%m-%dT%H:%M:%S.000')
+
+
+# a and b are time strings
+def _slice_w_idx(df_in, a, b, column_name):
+    # compute() returns a panda series
+    t = df_in['ISO 8601 Time'].compute()
+    c = df_in[column_name].compute()
+    # create an index to the pandas series
+    i = pd.Index(t)
+    i_start = i.get_loc(a)
+    i_end = i.get_loc(b)
+    t = t[i_start:i_end]
+    c = c[i_start:i_end]
+    return t, c
+
+
+def rm_frames_before(df_in, span, column_name):
+    try:
+        b = df_last_time(df_in)
+        a = offset_time_mm(b, -1 * span_dict[span][2])
+
+        # safety check
+        s = df_first_time(df_in)
+        if a < s:
+            a = s
+
+        return _slice_w_idx(df_in, a, b, column_name)
+    except (KeyError, Exception):
+        return None, None
+
+
+# t is time series, d data series
+def slice_n_average(t, d, span):
+    # prepare time jumps forward
+    n_slices = span_dict[span][0]
+    step = span_dict[span][1]
+    if t is None:
+        return None, None
+    i = pd.Index(t)
+
+    # build averaged output lists
+    x = []
+    y = []
+    start = t.values[0]
+    end = offset_time_mm(start, step)
+    for _ in range(n_slices):
+        try:
+            i_start = i.get_loc(start)
+            i_end = i.get_loc(end)
+            y.append(np.nanmean(d.values[i_start:i_end]))
+        except (KeyError, AttributeError):
+            y.append(np.nan)
+        finally:
+            x.append(str(start))
+            start = end
+            end = offset_time_mm(start, step)
+
+    return x, y
+
+
+def format_time_labels(t, span):
+    lb = []
+    for each_t in t:
+        lb.append(iso8601.parse_date(each_t).strftime(span_dict[span][3]))
+    return lb
+
+
+def format_time_ticks(t, span):
+    return t[::(span_dict[span][4])]
+
+
+def format_title(t, span):
+    last_time = iso8601.parse_date(t[-1])
+    title_dict = {
+        'h': 'last hour: {}'.format(last_time.strftime('%b. %d, %Y')),
+        'd': 'last day: {}'.format(last_time.strftime('%b. %d, %Y')),
+        'w': 'last week: {}'.format(last_time.strftime('%b. %Y')),
+        'm': 'last month: {}'.format(last_time.strftime('%b. %Y')),
+        'y': 'last year'
+    }
+    return title_dict[span]
+
+
+def metric_to_column_name(metric):
+    metric_dict = {
+        'Temperature':  'Temperature (C)',
+        'Pressure':     'Pressure (psi)',
+    }
+    return metric_dict[metric]
+
+
+def line_color(column_name, index):
+    index -= 1
+    color_dict = {
+        'Temperature (C)':  ['cyan', 'orange'],
+        'Pressure (psi)':   ['lime', 'red'],
+    }
+    return color_dict[column_name][index]
+
+
+def line_style(column_name):
+    style_dict = {
+        'Temperature (C)':  ':',
+        'Pressure (psi)':   '-',
+    }
+    return style_dict[column_name]
