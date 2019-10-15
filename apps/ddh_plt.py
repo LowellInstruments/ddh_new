@@ -9,7 +9,8 @@ from .ddh_utils import (
     format_title,
     mac_dns,
     metric_to_column_name,
-    line_color
+    line_color,
+    line_style
 )
 import numpy as np
 
@@ -51,7 +52,8 @@ class DeckDataHubPLT:
 
         # maybe build second folder's axes
         if not np.isnan(k_avg).all():
-            ax.plot(t, k_avg, label=mac_dns(mac_2), color=line_color(c, 2))
+            ax.plot(t, k_avg, label=mac_dns(mac_2),
+                    color=line_color(c, 2), linestyle=line_style(c))
 
         # plot labels and legends
         lbs = format_time_ticks(t, ts)

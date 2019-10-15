@@ -279,3 +279,11 @@ def line_color(column_name, index):
         'Pressure (psi)':   ['lime', 'red'],
     }
     return color_dict[column_name][index]
+
+
+def line_style(column_name):
+    style_dict = {
+        'Temperature (C)':  ':',
+        'Pressure (psi)':   '-',
+    }
+    return style_dict[column_name]
