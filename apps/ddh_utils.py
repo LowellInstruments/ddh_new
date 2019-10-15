@@ -86,7 +86,8 @@ def check_config_file():
     import json
     try:
         with open('ddh.json') as f:
-            json.load(f)
+            cfg = json.load(f)
+            assert len(cfg['metrics']) <= 2
     except (FileNotFoundError, TypeError, json.decoder.JSONDecodeError):
         console_log.error('SYS: error reading ddh.json config file')
         return False
@@ -107,46 +108,30 @@ def get_metrics():
     import json
     with open('ddh.json') as f:
         ddh_cfg_string = json.load(f)
-        assert len(ddh_cfg_string['metrics']) <= 2
         return ddh_cfg_string['metrics']
 
 
-def extract_mac_from_folder(d):
+def mac_from_folder(d):
     try:
         return d.split('/')[1].replace('-', ':')
     except (ValueError, Exception):
         return None
 
 
-def all_lid_to_csv(two_folders_list):
-    # grab all LID files in these two folders
-    d1, d2 = two_folders_list
-    if not os.path.exists(d1):
+def all_lid_to_csv(folder):
+    if not os.path.exists(folder):
         return None
-    l1 = list_files_by_extension_in_dir(d1, 'lid')
-    l2 = list_files_by_extension_in_dir(d2, 'lid')
 
-    # convert LID files to CSV
     parameters = default_parameters()
-    for f in l1:
-        DataConverter(f, parameters).convert()
-    for f in l2:
+    for f in list_files_by_extension_in_dir(folder, 'lid'):
         DataConverter(f, parameters).convert()
 
 
-def csv_to_data_frames(dirs, metric):
-    ddf1, ddf2 = None, None
-    # try to convert first folder, the most important one
+def csv_to_data_frames(folder, metric):
     try:
-        ddf1 = dd.read_csv(os.path.join(dirs[0], "*" + metric + "*.csv"))
+        return dd.read_csv(os.path.join(folder, "*" + metric + "*.csv"))
     except (IOError, Exception):
-        return None, None
-    # try to convert second folder
-    try:
-        ddf2 = dd.read_csv(os.path.join(dirs[1], "*" + metric + "*.csv"))
-    except (IOError, Exception):
-        pass
-    return ddf1, ddf2
+        return None
 
 
 def mac_dns(logger_mac):

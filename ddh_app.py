@@ -47,7 +47,6 @@ if detect_raspberry():
 
 
 # constants for the application
-# todo: json this
 DDH_BLE_MAC_FILTER = (
     # remember ':' as separator, not '-'
     # '00:1e:c0:3d:7a:f2',
@@ -110,8 +109,7 @@ class DDHQtApp(QMainWindow):
         self.err_timeout_display = 0
         self.plt_folders = update_dl_folder_list()
         self.plt_folders_idx = 0
-        self.plt_dir_1 = None
-        self.plt_dir_2 = None
+        self.plt_dir = None
         self.plt_time_spans = ('h', 'd', 'w', 'm', 'y')
         self.plt_ts_idx = 0
         self.plt_ts = self.plt_time_spans[0]
@@ -226,12 +224,12 @@ class DDHQtApp(QMainWindow):
             console_log.debug('GUI: keypress 1.')
             self.plt_folders_idx += 1
             self.plt_folders_idx %= len(self.plt_folders)
-            self.plt_dir_1 = self.plt_folders[self.plt_folders_idx]
+            self.plt_dir = self.plt_folders[self.plt_folders_idx]
         elif e.key() == Qt.Key_2:
             console_log.debug('GUI: keypress 2.')
-            self.plt_folders_idx += 1
-            self.plt_folders_idx %= len(self.plt_folders)
-            self.plt_dir_2 = self.plt_folders[self.plt_folders_idx]
+            self.plt_metrics_idx += 1
+            self.plt_metrics_idx %= len(self.plt_metrics)
+            self.plt_metric = self.plt_metrics[self.plt_metrics_idx]
         elif e.key() == Qt.Key_3:
             self.plt_ts_idx += 1
             self.plt_ts_idx %= len(self.plt_time_spans)
@@ -243,25 +241,19 @@ class DDHQtApp(QMainWindow):
         elif e.key() == Qt.Key_5:
             console_log.debug('GUI: keypress 5.')
         elif e.key() == Qt.Key_6:
-            self.plt_metrics_idx += 1
-            self.plt_metrics_idx %= len(self.plt_metrics)
-            self.plt_metric = self.plt_metrics[self.plt_metrics_idx]
             console_log.debug('GUI: keypress 6.')
         else:
             console_log.debug('GUI: keypress unknown.')
             return
 
         # logic checks and do the thing
-        if self.plt_dir_1 and self.plt_dir_1 == self.plt_dir_2:
-            self.plt_dir_2 = None
-        if not self.plt_dir_1:
+        if not self.plt_dir:
             console_log.debug('GUI: no folder to plot')
             return
 
-        folders_to_plot = [self.plt_dir_1, self.plt_dir_2]
         if not self.plt_is_busy:
             self.plt_is_busy = True
-            self._ddh_thread_throw_plt(folders_to_plot)
+            self._ddh_thread_throw_plt(self.plt_dir)
         else:
             console_log.debug('GUI: busy to plot')
 
