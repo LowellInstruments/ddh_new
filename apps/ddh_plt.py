@@ -31,19 +31,19 @@ class LIAvgDB:
             start_time      TEXT, \
             end_time        TEXT, \
             metric          TEXT, \
-            the_values      TEXT \
+            the_times       TEXT, \
+            the_values      TEXT  \
             )"
         )
         db.commit()
         c.close()
 
     # v is a list which gets converted to string
-    def add_record(self, w, s, e, m, v):
+    def add_record(self, w, s, e, m, t, v):
         db = sqlite3.connect(self.dbfilename)
         c = db.cursor()
-        z = json.dumps(v)
-        c.execute('INSERT INTO records(mac, start_time, end_time, metric, the_values) \
-                    VALUES(?,?,?,?,?)', (w, s, e, m, z))
+        c.execute('INSERT INTO records(mac, start_time, end_time, metric, the_times, the_values) \
+                    VALUES(?,?,?,?,?,?)', (w, s, e, m, json.dumps(t), json.dumps(v)))
         db.commit()
         c.close()
 
@@ -71,6 +71,9 @@ class LIAvgDB:
         return records[0]
 
     def get_record_values(self, record_id):
+        return json.loads(self.get_record(record_id)[6])
+
+    def get_record_times(self, record_id):
         return json.loads(self.get_record(record_id)[5])
 
     def get_record_id(self, w, s, e, m):
@@ -111,16 +114,12 @@ class DeckDataHubPLT:
         if db.does_record_exist(mac, s, e, c):
             print('cache hit')
             r_id = db.get_record_id(mac, s, e, c)
-            t = list(x.values)
+            t = db.get_record_times(r_id)
             y_avg = db.get_record_values(r_id)
-            # returns numpy array, string
         else:
             t, y_avg = slice_n_average(x, y, ts)
-            db.add_record(mac, s, e, c, y_avg)
-            # returns list, list
+            db.add_record(mac, s, e, c, t, y_avg)
 
-        print(type(t))
-        print(type(y_avg))
         return t, y_avg
 
     @staticmethod
