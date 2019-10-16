@@ -123,9 +123,11 @@ def lid_files_to_csv(folder):
         return None
 
     parameters = default_parameters()
-    for f in list_files_by_extension_in_dir(folder, 'csv'):
-        bn = (f.split('.')[0].rsplit('_', maxsplit=1)[0]) + '.lid'
-        if not bn: DataConverter(bn, parameters).convert()
+    for f in list_files_by_extension_in_dir(folder, 'lid'):
+        bn = f.split('.')[0]
+        if not glob.glob(bn + '*.csv'):
+            # converting takes about 1.5 seconds per file
+            DataConverter(bn + '.lid', parameters).convert()
 
 
 def csv_to_data_frames(folder, metric):
