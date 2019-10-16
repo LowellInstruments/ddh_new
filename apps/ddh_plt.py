@@ -103,13 +103,13 @@ class DeckDataHubPLT:
         c = metric_to_column_name(metric)
         mac = mac_from_folder(folder)
 
-        # build query
+        # shape data to work with
         lid_files_to_csv(folder)
         df = csv_to_data_frames(folder, metric)
         x, y = del_frames_before(df, ts, c)
         s, e = x.values[0], x.values[-1]
 
-        # check if we already calculated this data previously
+        # check if we already calculated this previously
         db = LIAvgDB()
         if db.does_record_exist(mac, s, e, c):
             signals.status.emit('PLT: cache hit')
