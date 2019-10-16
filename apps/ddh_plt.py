@@ -1,5 +1,6 @@
 import json
 import sqlite3
+import numpy as np
 
 from .ddh_utils import (
     mac_from_folder,
@@ -28,6 +29,7 @@ class LIAvgDB:
             mac             TEXT, \
             start_time      TEXT, \
             end_time        TEXT, \
+            time_span       TEXT, \
             metric          TEXT, \
             the_times       TEXT, \
             the_values      TEXT  \
@@ -37,13 +39,14 @@ class LIAvgDB:
         c.close()
 
     # v is a list which gets converted to string
-    def add_record(self, w, s, e, m, t, v):
+    def add_record(self, w, s, e, p, m, t, v):
         db = sqlite3.connect(self.dbfilename)
         c = db.cursor()
         c.execute('INSERT INTO records('
-                  'mac, start_time, end_time, metric, the_times, the_values) \
-                  VALUES(?,?,?,?,?,?)',
-                  (w, s, e, m, json.dumps(t), json.dumps(v)))
+                  'mac, start_time, end_time, time_span,'
+                  'metric, the_times, the_values) '
+                  'VALUES(?,?,?,?,?,?,?)',
+                  (w, s, e, p, m, json.dumps(t), json.dumps(v)))
         db.commit()
         c.close()
 
@@ -71,31 +74,38 @@ class LIAvgDB:
         return records[0]
 
     def get_record_values(self, record_id):
-        return json.loads(self.get_record(record_id)[6])
+        return json.loads(self.get_record(record_id)[7])
 
     def get_record_times(self, record_id):
-        return json.loads(self.get_record(record_id)[5])
+        return json.loads(self.get_record(record_id)[6])
 
-    def get_record_id(self, w, s, e, m):
+    def get_record_id(self, w, s, e, p, m):
         db = sqlite3.connect(self.dbfilename)
         c = db.cursor()
         c.execute('SELECT id from records WHERE mac=? AND '
-                  'start_time=? AND end_time=? AND metric=?', (w, s, e, m))
+                  'start_time=? AND end_time=? AND time_span=?'
+                  'AND metric=?', (w, s, e, p, m))
         records = c.fetchall()
         c.close()
         return records[0]
 
-    def does_record_exist(self, w, s, e, m):
+    def does_record_exist(self, w, s, e, p, m):
         db = sqlite3.connect(self.dbfilename)
         c = db.cursor()
         c.execute('SELECT EXISTS(SELECT 1 from records WHERE mac=? AND '
-                  'start_time=? AND end_time=? AND metric=?)', (w, s, e, m))
+                  'start_time=? AND end_time=? AND time_span=?'
+                  'AND metric=?)', (w, s, e, p, m))
         records = c.fetchall()
         c.close()
         return records[0][0]
 
 
 class DeckDataHubPLT:
+    @staticmethod
+    def plt_error(signals, e):
+        signals.error.emit(e)
+        signals.plt_result.emit(False)
+        signals.clk_end.emit()
 
     @staticmethod
     def plt_cache_query(signals, folder, ts, metric):
@@ -111,15 +121,16 @@ class DeckDataHubPLT:
 
         # check if we already calculated this previously
         db = LIAvgDB()
-        if db.does_record_exist(mac, s, e, c):
+        if db.does_record_exist(mac, s, e, ts, c):
             signals.status.emit('PLT: cache hit')
-            r_id = db.get_record_id(mac, s, e, c)
+            r_id = db.get_record_id(mac, s, e, ts, c)
             t = db.get_record_times(r_id)
             y_avg = db.get_record_values(r_id)
-        else:
-            t, y_avg = slice_n_average(x, y, ts)
-            db.add_record(mac, s, e, c, t, y_avg)
+            return t, y_avg
 
+        # was not in database
+        t, y_avg = slice_n_average(x, y, ts)
+        db.add_record(mac, s, e, ts, c, t, y_avg)
         return t, y_avg
 
     @staticmethod
@@ -131,13 +142,16 @@ class DeckDataHubPLT:
         # maybe database has this query
         try:
             t, y = DeckDataHubPLT.plt_cache_query(signals, folder, ts, metric)
-        except (AttributeError, Exception):
-            signals.error.emit('PLT: can\'t {} for {}'.format(metric, folder))
-            signals.plt_result.emit(False)
-            signals.clk_end.emit()
-            return
+        except AttributeError:
+            e = 'PLT: can\'t {} for {}'.format(metric, folder)
+            return DeckDataHubPLT.plt_error(signals, e)
 
-        # build first folder's axes
+        # check we have at least two points to plot a line
+        if np.count_nonzero(~np.isnan(y)) < 2:
+            e = 'PLT: few {} points for {}'.format(metric, folder)
+            return DeckDataHubPLT.plt_error(signals, e)
+
+        # build plot axes axes
         cnv.figure.clf()
         c = metric_to_column_name(metric)
         lbl = mac_dns(mac_from_folder(folder))

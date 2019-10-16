@@ -59,7 +59,7 @@ def list_files_by_extension_in_dir(dir_name, extension):
 
 
 # recursively remove all files w/ indicated extension
-def rm_files_by_extension(path, ext):
+def rm_files_by_extension_in_dir(path, ext):
     if os.path.isdir(path):
         for filename in list_files_by_extension_in_dir(path, ext):
             os.remove(filename)

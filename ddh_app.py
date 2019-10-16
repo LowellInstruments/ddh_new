@@ -1,6 +1,7 @@
 import datetime
 import sys
 import time
+import os
 import signal
 from gui.ble_gui_ui import Ui_tabs
 from PyQt5.QtCore import (
@@ -72,6 +73,7 @@ class DDHQtApp(QMainWindow):
         singleton.SingleInstance()
         assert sys.version_info >= (3, 5)
         assert check_config_file()
+        if os.path.exists('ddh_avg.db'): os.remove('ddh_avg.db')
         logzero.logfile("ddh.log", maxBytes=int(1e6), backupCount=3, mode='a')
 
         # banners

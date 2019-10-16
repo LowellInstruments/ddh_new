@@ -8,7 +8,7 @@ from .ddh_utils import (
     get_first_key_from_dict,
     slice_bw_keys,
     get_start_key_from_end_key,
-    rm_files_by_extension,
+    rm_files_by_extension_in_dir,
     list_files_by_extension,
     filter_files_by_name_ending,
     filter_files_by_size,
@@ -226,7 +226,7 @@ class DeckDataHubPLT:
 
         # remove all already existing .csv files for this logger
         if remove_previous:
-            rm_files_by_extension(folder, 'csv')
+            rm_files_by_extension_in_dir(folder, 'csv')
 
         # ignore .lid files that already have their .csv
         lid_files = []
