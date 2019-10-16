@@ -118,13 +118,14 @@ def mac_from_folder(d):
         return None
 
 
-def all_lid_to_csv(folder):
+def lid_files_to_csv(folder):
     if not os.path.exists(folder):
         return None
 
     parameters = default_parameters()
-    for f in list_files_by_extension_in_dir(folder, 'lid'):
-        DataConverter(f, parameters).convert()
+    for f in list_files_by_extension_in_dir(folder, 'csv'):
+        bn = (f.split('.')[0].rsplit('_', maxsplit=1)[0]) + '.lid'
+        if not bn: DataConverter(bn, parameters).convert()
 
 
 def csv_to_data_frames(folder, metric):
@@ -182,7 +183,7 @@ def _slice_w_idx(df_in, a, b, column_name):
     return t, c
 
 
-def rm_frames_before(df_in, span, column_name):
+def del_frames_before(df_in, span, column_name):
     try:
         b = df_last_time(df_in)
         a = offset_time_mm(b, -1 * span_dict[span][2])
@@ -257,18 +258,9 @@ def metric_to_column_name(metric):
     return metric_dict[metric]
 
 
-def line_color(column_name, index):
-    index -= 1
+def line_color(column_name):
     color_dict = {
-        'Temperature (C)':  ['cyan', 'orange'],
-        'Pressure (psi)':   ['lime', 'red'],
+        'Temperature (C)':  'red',
+        'Pressure (psi)':   'lime',
     }
-    return color_dict[column_name][index]
-
-
-def line_style(column_name):
-    style_dict = {
-        'Temperature (C)':  ':',
-        'Pressure (psi)':   '-',
-    }
-    return style_dict[column_name]
+    return color_dict[column_name]
