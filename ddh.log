@@ -1,0 +1,1677 @@
+[D 191015 09:42:19 ddh_app:79] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 09:42:19 ddh_app:80] SYS: recall re-RUN post download, search '###'
+[D 191015 09:42:19 ddh_app:164] SYS: this is NOT a raspberry system
+[I 191015 09:42:19 ddh_app:286] BLE: detecting loggers...
+[D 191015 09:42:21 ddh_app:226] GUI: keypress 1.
+[I 191015 09:42:21 ddh_app:286] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 09:42:23 ddh_app:424] SYS: elapsed time 3398 ms.
+[I 191015 09:42:24 ddh_app:286] BLE: 1 loggers to query.
+[D 191015 09:42:44 ddh_app:79] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 09:42:44 ddh_app:80] SYS: recall re-RUN post download, search '###'
+[D 191015 09:42:44 ddh_app:164] SYS: this is NOT a raspberry system
+[I 191015 09:42:44 ddh_app:286] BLE: detecting loggers...
+[I 191015 09:42:49 ddh_app:286] BLE: 0 loggers to query.
+[I 191015 09:42:51 ddh_app:286] BLE: detecting loggers...
+[I 191015 09:42:56 ddh_app:286] BLE: 0 loggers to query.
+[I 191015 09:42:58 ddh_app:286] BLE: detecting loggers...
+[I 191015 09:43:03 ddh_app:286] BLE: 0 loggers to query.
+[I 191015 09:43:05 ddh_app:286] BLE: detecting loggers...
+[I 191015 09:43:10 ddh_app:286] BLE: 0 loggers to query.
+[I 191015 09:43:12 ddh_app:286] BLE: detecting loggers...
+[I 191015 09:43:13 ddh_app:286] SYS: internet, using NTP.
+[I 191015 09:43:17 ddh_app:286] BLE: 0 loggers to query.
+[I 191015 09:43:19 ddh_app:286] BLE: detecting loggers...
+[D 191015 09:43:21 ddh_app:226] GUI: keypress 1.
+[I 191015 09:43:21 ddh_app:286] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 09:43:23 ddh_app:424] SYS: elapsed time 3451 ms.
+[I 191015 09:43:24 ddh_app:286] BLE: 0 loggers to query.
+[D 191015 09:43:24 ddh_app:231] GUI: keypress 2.
+[I 191015 09:43:24 ddh_app:286] PLT: Temperature ff:ff:ff:ff:ff:ff vs 11:22:33:44:55:66
+[I 191015 09:43:26 ddh_app:286] BLE: detecting loggers...
+[D 191015 09:43:29 ddh_app:424] SYS: elapsed time 7037 ms.
+[I 191015 09:43:31 ddh_app:286] BLE: 0 loggers to query.
+[I 191015 09:43:33 ddh_app:286] BLE: detecting loggers...
+[D 191015 09:43:36 ddh_app:167] SYS: closing GUI APP...
+[D 191015 09:44:28 ddh_app:79] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 09:44:28 ddh_app:80] SYS: recall re-RUN post download, search '###'
+[D 191015 09:44:28 ddh_app:164] SYS: this is NOT a raspberry system
+[I 191015 09:44:28 ddh_app:286] BLE: detecting loggers...
+[D 191015 09:44:31 ddh_app:167] SYS: closing GUI APP...
+[D 191015 09:45:34 ddh_app:79] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 09:45:34 ddh_app:80] SYS: recall re-RUN post download, search '###'
+[D 191015 09:45:34 ddh_app:164] SYS: this is NOT a raspberry system
+[I 191015 09:45:34 ddh_app:286] BLE: detecting loggers...
+[I 191015 09:45:39 ddh_app:286] BLE: 0 loggers to query.
+[I 191015 09:45:41 ddh_app:286] BLE: detecting loggers...
+[I 191015 09:45:46 ddh_app:286] BLE: 0 loggers to query.
+[I 191015 09:45:48 ddh_app:286] BLE: detecting loggers...
+[I 191015 09:45:53 ddh_app:286] BLE: 0 loggers to query.
+[I 191015 09:45:55 ddh_app:286] BLE: detecting loggers...
+[D 191015 09:45:58 ddh_app:167] SYS: closing GUI APP...
+[D 191015 09:48:50 ddh_app:79] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 09:48:50 ddh_app:80] SYS: recall re-RUN post download, search '###'
+[D 191015 09:48:50 ddh_app:164] SYS: this is NOT a raspberry system
+[I 191015 09:48:50 ddh_app:286] BLE: detecting loggers...
+[I 191015 09:48:57 ddh_app:286] BLE: detecting loggers...
+[I 191015 09:49:02 ddh_app:286] BLE: 1 loggers to query.
+[I 191015 09:49:02 ddh_app:286] BLE: connecting 04:ee:03:6c:ef:49.
+[E 191015 09:49:02 ddh_app:306] BLE: exception Failed to connect to peripheral 04:ee:03:6c:ef:49, addr type: public.
+[I 191015 09:49:02 ddh_app:286] BLE: disconnecting 04:ee:03:6c:ef:49.
+[I 191015 09:49:02 ddh_app:378] BLE: all loggers done.
+[I 191015 09:49:04 ddh_app:286] BLE: detecting loggers...
+[D 191015 09:49:07 ddh_app:167] SYS: closing GUI APP...
+[D 191015 09:49:40 ddh_app:79] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 09:49:40 ddh_app:80] SYS: recall re-RUN post download, search '###'
+[D 191015 09:49:40 ddh_app:164] SYS: this is NOT a raspberry system
+[I 191015 09:49:40 ddh_app:286] BLE: detecting loggers...
+[I 191015 09:49:40 ddh_app:286] SYS: internet, using NTP.
+[D 191015 09:49:45 ddh_app:167] SYS: closing GUI APP...
+[D 191015 09:50:04 ddh_app:79] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 09:50:04 ddh_app:80] SYS: recall re-RUN post download, search '###'
+[D 191015 09:50:04 ddh_app:164] SYS: this is NOT a raspberry system
+[I 191015 09:50:04 ddh_app:286] BLE: detecting loggers...
+[I 191015 09:50:05 ddh_app:286] SYS: internet, using NTP.
+[I 191015 09:50:11 ddh_app:286] BLE: detecting loggers...
+[I 191015 09:50:18 ddh_app:286] BLE: detecting loggers...
+[I 191015 09:50:26 ddh_app:286] BLE: detecting loggers...
+[I 191015 09:50:31 ddh_app:286] BLE: 1 loggers to query.
+[I 191015 09:50:31 ddh_app:286] BLE: connecting 04:ee:03:6c:ef:49.
+[E 191015 09:50:31 ddh_app:306] BLE: exception Failed to connect to peripheral 04:ee:03:6c:ef:49, addr type: public.
+[I 191015 09:50:31 ddh_app:286] BLE: disconnecting 04:ee:03:6c:ef:49.
+[I 191015 09:50:31 ddh_app:378] BLE: all loggers done.
+[I 191015 09:50:33 ddh_app:286] BLE: detecting loggers...
+[I 191015 09:50:36 ddh_app:286] SYS: internet, using NTP.
+[D 191015 09:50:37 ddh_app:167] SYS: closing GUI APP...
+[D 191015 09:55:21 ddh_app:79] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 09:55:21 ddh_app:80] SYS: recall re-RUN post download, search '###'
+[D 191015 09:55:21 ddh_app:164] SYS: this is NOT a raspberry system
+[I 191015 09:55:21 ddh_app:286] BLE: detecting loggers...
+[I 191015 09:55:22 ddh_app:286] SYS: internet, using NTP.
+[I 191015 09:55:27 ddh_app:286] BLE: 1 loggers to query.
+[I 191015 09:55:27 ddh_app:286] BLE: connecting 04:ee:03:6c:ef:49.
+[E 191015 09:55:27 ddh_app:306] BLE: exception Failed to connect to peripheral 04:ee:03:6c:ef:49, addr type: public.
+[I 191015 09:55:27 ddh_app:286] BLE: disconnecting 04:ee:03:6c:ef:49.
+[I 191015 09:55:27 ddh_app:378] BLE: all loggers done.
+[I 191015 09:55:29 ddh_app:286] BLE: detecting loggers...
+[I 191015 09:55:36 ddh_app:286] BLE: detecting loggers...
+[I 191015 09:55:41 ddh_app:286] BLE: 04:ee:03:6c:ef:49 already queried, delay 15.83 s.
+[I 191015 09:55:41 ddh_app:286] BLE: 0 loggers to query.
+[I 191015 09:55:43 ddh_app:286] BLE: detecting loggers...
+[D 191015 09:55:47 ddh_app:167] SYS: closing GUI APP...
+[D 191015 09:55:50 ddh_app:79] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 09:55:50 ddh_app:80] SYS: recall re-RUN post download, search '###'
+[D 191015 09:55:50 ddh_app:164] SYS: this is NOT a raspberry system
+[I 191015 09:55:50 ddh_app:286] BLE: detecting loggers...
+[I 191015 09:55:50 ddh_app:286] SYS: internet, using NTP.
+[I 191015 09:55:55 ddh_app:286] BLE: 0 loggers to query.
+[I 191015 09:55:57 ddh_app:286] BLE: detecting loggers...
+[I 191015 09:56:02 ddh_app:286] BLE: 1 loggers to query.
+[I 191015 09:56:02 ddh_app:286] BLE: connecting 04:ee:03:6c:ef:49.
+[E 191015 09:56:02 ddh_app:306] BLE: exception Failed to connect to peripheral 04:ee:03:6c:ef:49, addr type: public.
+[I 191015 09:56:02 ddh_app:286] BLE: disconnecting 04:ee:03:6c:ef:49.
+[I 191015 09:56:02 ddh_app:378] BLE: all loggers done.
+[I 191015 09:56:04 ddh_app:286] BLE: detecting loggers...
+[I 191015 09:56:09 ddh_app:286] BLE: 04:ee:03:6c:ef:49 already queried, delay 22.98 s.
+[I 191015 09:56:09 ddh_app:286] BLE: 0 loggers to query.
+[I 191015 09:56:11 ddh_app:286] BLE: detecting loggers...
+[I 191015 09:56:16 ddh_app:286] BLE: 04:ee:03:6c:ef:49 already queried, delay 15.93 s.
+[I 191015 09:56:16 ddh_app:286] BLE: 0 loggers to query.
+[I 191015 09:56:18 ddh_app:286] BLE: detecting loggers...
+[I 191015 09:56:21 ddh_app:286] SYS: internet, using NTP.
+[I 191015 09:56:23 ddh_app:286] BLE: 04:ee:03:6c:ef:49 already queried, delay 8.90 s.
+[I 191015 09:56:23 ddh_app:286] BLE: 0 loggers to query.
+[I 191015 09:56:25 ddh_app:286] BLE: detecting loggers...
+[I 191015 09:56:30 ddh_app:286] BLE: 04:ee:03:6c:ef:49 already queried, delay 1.86 s.
+[I 191015 09:56:30 ddh_app:286] BLE: 0 loggers to query.
+[I 191015 09:56:32 ddh_app:286] BLE: detecting loggers...
+[I 191015 09:56:37 ddh_app:286] BLE: 0 loggers to query.
+[I 191015 09:56:39 ddh_app:286] BLE: detecting loggers...
+[I 191015 09:56:47 ddh_app:286] BLE: detecting loggers...
+[I 191015 09:56:52 ddh_app:286] BLE: 0 loggers to query.
+[I 191015 09:56:53 ddh_app:286] SYS: internet, using NTP.
+[I 191015 09:56:54 ddh_app:286] BLE: detecting loggers...
+[I 191015 09:56:59 ddh_app:286] BLE: 1 loggers to query.
+[I 191015 09:56:59 ddh_app:286] BLE: connecting 04:ee:03:6c:ef:49.
+[E 191015 09:56:59 ddh_app:306] BLE: exception Failed to connect to peripheral 04:ee:03:6c:ef:49, addr type: public.
+[I 191015 09:56:59 ddh_app:286] BLE: disconnecting 04:ee:03:6c:ef:49.
+[I 191015 09:56:59 ddh_app:378] BLE: all loggers done.
+[I 191015 09:57:01 ddh_app:286] BLE: detecting loggers...
+[D 191015 09:57:04 ddh_app:167] SYS: closing GUI APP...
+[D 191015 09:57:34 ddh_app:79] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 09:57:34 ddh_app:80] SYS: recall re-RUN post download, search '###'
+[D 191015 09:57:34 ddh_app:164] SYS: this is NOT a raspberry system
+[I 191015 09:57:34 ddh_app:286] BLE: detecting loggers...
+[I 191015 09:57:34 ddh_app:286] SYS: internet, using NTP.
+[I 191015 09:57:46 ddh_app:286] BLE: detecting loggers...
+[I 191015 09:57:56 ddh_app:286] BLE: 0 loggers to query.
+[I 191015 09:57:58 ddh_app:286] BLE: detecting loggers...
+[I 191015 09:58:06 ddh_app:286] SYS: internet, using NTP.
+[I 191015 09:58:10 ddh_app:286] BLE: detecting loggers...
+[I 191015 09:58:20 ddh_app:286] BLE: 1 loggers to query.
+[I 191015 09:58:20 ddh_app:286] BLE: connecting 04:ee:03:6c:ef:49.
+[E 191015 09:58:20 ddh_app:306] BLE: exception Failed to connect to peripheral 04:ee:03:6c:ef:49, addr type: public.
+[I 191015 09:58:20 ddh_app:286] BLE: disconnecting 04:ee:03:6c:ef:49.
+[I 191015 09:58:20 ddh_app:378] BLE: all loggers done.
+[I 191015 09:58:22 ddh_app:286] BLE: detecting loggers...
+[D 191015 09:58:33 ddh_app:167] SYS: closing GUI APP...
+[D 191015 10:00:06 ddh_app:79] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 10:00:06 ddh_app:80] SYS: recall re-RUN post download, search '###'
+[D 191015 10:00:06 ddh_app:164] SYS: this is NOT a raspberry system
+[I 191015 10:00:06 ddh_app:286] BLE: detecting loggers...
+[I 191015 10:00:06 ddh_app:286] SYS: internet, using NTP.
+[I 191015 10:00:16 ddh_app:286] BLE: 1 loggers to query.
+[I 191015 10:00:16 ddh_app:286] BLE: connecting 04:ee:03:6c:ef:49.
+[I 191015 10:00:22 ddh_app:286] BLE: get status = [b'STS', b'0203'].
+[I 191015 10:00:23 ddh_app:286] BLE: stop deploy = [b'STP', b'00'].
+[D 191015 10:00:25 ddh_app:167] SYS: closing GUI APP...
+[D 191015 10:00:33 ddh_app:79] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 10:00:33 ddh_app:80] SYS: recall re-RUN post download, search '###'
+[D 191015 10:00:33 ddh_app:164] SYS: this is NOT a raspberry system
+[I 191015 10:00:33 ddh_app:286] BLE: detecting loggers...
+[I 191015 10:00:33 ddh_app:286] SYS: internet, using NTP.
+[I 191015 10:00:43 ddh_app:286] BLE: 1 loggers to query.
+[I 191015 10:00:43 ddh_app:286] BLE: connecting 04:ee:03:6c:ef:49.
+[I 191015 10:00:48 ddh_app:286] BLE: get status = [b'STS', b'0203'].
+[I 191015 10:00:49 ddh_app:286] BLE: stop deploy = [b'STP', b'00'].
+[D 191015 10:00:49 ddh_app:167] SYS: closing GUI APP...
+[D 191015 10:06:57 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 10:06:57 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 10:06:57 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 10:06:57 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:06:57 ddh_app:278] SYS: internet, using NTP.
+[D 191015 10:08:27 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 10:08:27 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 10:08:27 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 10:08:27 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:08:27 ddh_app:278] SYS: internet, using NTP.
+[D 191015 10:09:16 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 10:09:16 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 10:09:16 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 10:09:16 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:09:16 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:09:26 ddh_app:278] BLE: 1 loggers to query.
+[I 191015 10:09:26 ddh_app:278] BLE: connecting 04:ee:03:6c:ef:49.
+[D 191015 10:09:29 ddh_app:159] SYS: closing GUI APP...
+[D 191015 10:22:39 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 10:22:39 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 10:22:39 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 10:22:39 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:22:39 ddh_app:278] SYS: internet, using NTP.
+[D 191015 10:22:43 ddh_app:218] GUI: keypress 1.
+[I 191015 10:22:43 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 10:22:46 ddh_app:416] SYS: elapsed time 3425 ms.
+[I 191015 10:22:49 ddh_app:278] BLE: 1 loggers to query.
+[I 191015 10:22:49 ddh_app:278] BLE: connecting 04:ee:03:6c:ef:49.
+[D 191015 10:22:55 ddh_app:159] SYS: closing GUI APP...
+[D 191015 10:23:07 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 10:23:07 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 10:23:07 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 10:23:07 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:23:07 ddh_app:278] SYS: internet, using NTP.
+[D 191015 10:23:13 ddh_app:218] GUI: keypress 1.
+[I 191015 10:23:13 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 10:23:15 ddh_app:416] SYS: elapsed time 3413 ms.
+[D 191015 10:23:16 ddh_app:223] GUI: keypress 2.
+[I 191015 10:23:16 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs 11:22:33:44:55:66
+[I 191015 10:23:17 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:23:19 ddh_app:278] BLE: detecting loggers...
+[D 191015 10:23:21 ddh_app:416] SYS: elapsed time 7067 ms.
+[D 191015 10:23:27 ddh_app:241] GUI: keypress 6.
+[I 191015 10:23:27 ddh_app:278] PLT: Pressure ff:ff:ff:ff:ff:ff vs 11:22:33:44:55:66
+[I 191015 10:23:29 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:23:31 ddh_app:278] BLE: detecting loggers...
+[D 191015 10:23:32 ddh_app:416] SYS: elapsed time 6886 ms.
+[D 191015 10:23:33 ddh_app:218] GUI: keypress 1.
+[I 191015 10:23:33 ddh_app:278] PLT: Pressure ff:ff:ff:ff:ff:ff vs 11:22:33:44:55:66
+[D 191015 10:23:37 ddh_app:416] SYS: elapsed time 7284 ms.
+[I 191015 10:23:38 ddh_app:278] SYS: internet, using NTP.
+[D 191015 10:23:39 ddh_app:231] GUI: keypress 3.
+[I 191015 10:23:39 ddh_app:278] PLT: Pressure ff:ff:ff:ff:ff:ff vs 11:22:33:44:55:66
+[I 191015 10:23:42 ddh_app:278] BLE: 0 loggers to query.
+[D 191015 10:23:43 ddh_app:416] SYS: elapsed time 6891 ms.
+[I 191015 10:23:44 ddh_app:278] BLE: detecting loggers...
+[D 191015 10:23:47 ddh_app:231] GUI: keypress 3.
+[I 191015 10:23:47 ddh_app:278] PLT: Pressure ff:ff:ff:ff:ff:ff vs 11:22:33:44:55:66
+[D 191015 10:23:52 ddh_app:416] SYS: elapsed time 6849 ms.
+[I 191015 10:23:54 ddh_app:278] BLE: 0 loggers to query.
+[D 191015 10:23:54 ddh_app:231] GUI: keypress 3.
+[I 191015 10:23:54 ddh_app:278] PLT: Pressure ff:ff:ff:ff:ff:ff vs 11:22:33:44:55:66
+[I 191015 10:23:56 ddh_app:278] BLE: detecting loggers...
+[D 191015 10:23:56 ddh_app:218] GUI: keypress 1.
+[D 191015 10:23:56 ddh_app:258] GUI: busy to plot
+[D 191015 10:23:59 ddh_app:416] SYS: elapsed time 6467 ms.
+[D 191015 10:24:04 ddh_app:218] GUI: keypress 1.
+[I 191015 10:24:04 ddh_app:278] PLT: Pressure ff:ff:ff:ff:ff:ff vs None
+[I 191015 10:24:06 ddh_app:278] BLE: 0 loggers to query.
+[D 191015 10:24:06 ddh_app:416] SYS: elapsed time 3208 ms.
+[I 191015 10:24:08 ddh_app:278] BLE: detecting loggers...
+[D 191015 10:24:08 ddh_app:241] GUI: keypress 6.
+[I 191015 10:24:08 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[I 191015 10:24:10 ddh_app:278] SYS: internet, using NTP.
+[D 191015 10:24:10 ddh_app:416] SYS: elapsed time 3512 ms.
+[D 191015 10:24:13 ddh_app:231] GUI: keypress 3.
+[I 191015 10:24:13 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 10:24:15 ddh_app:416] SYS: elapsed time 3413 ms.
+[D 191015 10:24:16 ddh_app:231] GUI: keypress 3.
+[I 191015 10:24:16 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[I 191015 10:24:18 ddh_app:278] BLE: 0 loggers to query.
+[D 191015 10:24:18 ddh_app:416] SYS: elapsed time 3753 ms.
+[I 191015 10:24:20 ddh_app:278] BLE: detecting loggers...
+[D 191015 10:24:22 ddh_app:231] GUI: keypress 3.
+[I 191015 10:24:22 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 10:24:24 ddh_app:416] SYS: elapsed time 3475 ms.
+[D 191015 10:24:27 ddh_app:223] GUI: keypress 2.
+[I 191015 10:24:27 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs 11:22:33:44:55:66
+[I 191015 10:24:30 ddh_app:278] BLE: 0 loggers to query.
+[D 191015 10:24:32 ddh_app:416] SYS: elapsed time 7196 ms.
+[I 191015 10:24:32 ddh_app:278] BLE: detecting loggers...
+[D 191015 10:24:36 ddh_app:231] GUI: keypress 3.
+[I 191015 10:24:36 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs 11:22:33:44:55:66
+[D 191015 10:24:41 ddh_app:416] SYS: elapsed time 7150 ms.
+[I 191015 10:24:42 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:24:42 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:24:44 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:24:54 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:24:56 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:25:06 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:25:08 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:25:13 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:25:18 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:25:20 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:25:30 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:25:32 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:25:42 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:25:44 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:25:44 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:25:54 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:25:56 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:26:06 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:26:08 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:26:16 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:26:18 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:26:20 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:26:30 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:26:32 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:26:42 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:26:44 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:26:47 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:26:54 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:26:56 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:27:07 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:27:09 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:27:19 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:27:19 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:27:21 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:27:31 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:27:33 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:27:43 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:27:45 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:27:50 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:27:55 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:27:57 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:28:07 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:28:09 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:28:19 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:28:21 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:28:22 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:28:31 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:28:33 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:28:43 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:28:45 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:28:53 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:28:55 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:28:57 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:29:07 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:29:09 ddh_app:278] BLE: detecting loggers...
+[D 191015 10:29:10 ddh_app:241] GUI: keypress 6.
+[I 191015 10:29:10 ddh_app:278] PLT: Pressure ff:ff:ff:ff:ff:ff vs 11:22:33:44:55:66
+[D 191015 10:29:14 ddh_app:416] SYS: elapsed time 6858 ms.
+[I 191015 10:29:19 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:29:21 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:29:25 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:29:31 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:29:33 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:29:43 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:29:45 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:29:55 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:29:56 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:29:57 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:30:07 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:30:09 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:30:19 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:30:21 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:30:27 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:30:31 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:30:33 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:30:43 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:30:45 ddh_app:278] BLE: detecting loggers...
+[D 191015 10:30:51 ddh_app:231] GUI: keypress 3.
+[I 191015 10:30:51 ddh_app:278] PLT: Pressure ff:ff:ff:ff:ff:ff vs 11:22:33:44:55:66
+[D 191015 10:30:55 ddh_app:416] SYS: elapsed time 6936 ms.
+[I 191015 10:30:55 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:30:57 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:30:59 ddh_app:278] SYS: internet, using NTP.
+[D 191015 10:30:59 ddh_app:218] GUI: keypress 1.
+[I 191015 10:30:59 ddh_app:278] PLT: Pressure ff:ff:ff:ff:ff:ff vs 11:22:33:44:55:66
+[D 191015 10:31:04 ddh_app:416] SYS: elapsed time 6936 ms.
+[D 191015 10:31:05 ddh_app:159] SYS: closing GUI APP...
+[D 191015 10:31:07 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 10:31:07 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 10:31:07 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 10:31:07 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:31:07 ddh_app:278] SYS: internet, using NTP.
+[D 191015 10:31:10 ddh_app:218] GUI: keypress 1.
+[I 191015 10:31:10 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 10:31:12 ddh_app:416] SYS: elapsed time 3788 ms.
+[D 191015 10:31:15 ddh_app:231] GUI: keypress 3.
+[I 191015 10:31:15 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 10:31:17 ddh_app:416] SYS: elapsed time 3440 ms.
+[I 191015 10:31:17 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:31:19 ddh_app:278] BLE: detecting loggers...
+[D 191015 10:31:23 ddh_app:231] GUI: keypress 3.
+[I 191015 10:31:23 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 10:31:25 ddh_app:416] SYS: elapsed time 3427 ms.
+[D 191015 10:31:27 ddh_app:231] GUI: keypress 3.
+[I 191015 10:31:27 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[I 191015 10:31:29 ddh_app:278] BLE: 0 loggers to query.
+[D 191015 10:31:30 ddh_app:416] SYS: elapsed time 3424 ms.
+[I 191015 10:31:31 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:31:39 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:31:41 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:31:43 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:31:54 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:31:56 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:32:06 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:32:08 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:32:10 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:32:18 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:32:20 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:32:30 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:32:32 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:32:42 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:32:42 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:32:44 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:32:54 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:32:56 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:33:06 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:33:08 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:33:13 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:33:18 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:33:20 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:33:30 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:33:32 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:33:42 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:33:44 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:33:44 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:33:54 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:33:56 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:34:06 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:34:08 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:34:16 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:34:18 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:34:20 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:34:30 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:34:32 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:34:42 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:34:44 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:34:47 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:34:54 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:34:56 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:35:06 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:35:08 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:35:18 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:35:19 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:35:20 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:35:31 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:35:33 ddh_app:278] BLE: detecting loggers...
+[D 191015 10:35:35 ddh_app:159] SYS: closing GUI APP...
+[D 191015 10:36:22 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 10:36:22 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 10:36:22 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 10:36:22 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:36:22 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:36:32 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:36:34 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:36:44 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:36:46 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:36:53 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:36:56 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:36:58 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:37:08 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:37:10 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:37:20 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:37:22 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:37:25 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:37:32 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:37:34 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:37:44 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:37:46 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:37:56 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:37:56 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:37:58 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:38:08 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:38:10 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:38:20 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:38:22 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:38:27 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:38:32 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:38:34 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:38:44 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:38:46 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:38:56 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:38:58 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:38:59 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:39:08 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:39:10 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:39:20 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:39:22 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:39:30 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:39:32 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:39:34 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:39:44 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:39:46 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:39:56 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:39:58 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:40:02 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:40:08 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:40:10 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:40:20 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:40:22 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:40:32 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:40:33 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:40:34 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:40:44 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:40:46 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:40:56 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:40:58 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:41:04 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:41:08 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:41:10 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:41:20 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:41:22 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:41:32 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:41:34 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:41:36 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:41:45 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:41:47 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:41:57 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:41:59 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:42:07 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:42:09 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:42:11 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:42:21 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:42:23 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:42:33 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:42:35 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:42:39 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:42:45 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:42:47 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:42:57 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:42:59 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:43:09 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:43:10 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:43:11 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:43:21 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:43:23 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:43:33 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:43:35 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:43:41 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:43:45 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:43:47 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:43:57 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:43:59 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:44:09 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:44:11 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:44:13 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:44:21 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:44:23 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:44:33 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:44:35 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:44:44 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:44:45 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:44:47 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:44:57 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:44:59 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:45:09 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:45:11 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:45:16 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:45:21 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:45:23 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:45:34 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:45:36 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:45:46 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:45:47 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:45:48 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:45:58 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:46:00 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:46:10 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:46:12 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:46:19 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:46:22 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:46:24 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:46:34 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:46:36 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:46:46 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:46:48 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:46:50 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:46:58 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:47:00 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:47:10 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:47:12 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:47:21 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:47:22 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:47:24 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:47:34 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:47:36 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:47:46 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:47:48 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:47:53 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:47:58 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:48:00 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:48:10 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:48:12 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:48:22 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:48:24 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:48:24 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:48:34 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:48:36 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:48:46 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:48:48 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:48:56 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:48:58 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:49:00 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:49:10 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:49:12 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:49:22 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:49:24 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:49:27 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:49:35 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:49:37 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:49:47 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:49:49 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:49:59 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:49:59 ddh_app:278] SYS: internet, using NTP.
+[I 191015 10:50:01 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:50:11 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:50:13 ddh_app:278] BLE: detecting loggers...
+[D 191015 10:50:18 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 10:50:18 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 10:50:18 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 10:50:18 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:50:18 ddh_app:278] SYS: internet, using NTP.
+[D 191015 10:50:20 ddh_app:218] GUI: keypress 1.
+[I 191015 10:50:20 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 10:52:49 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 10:52:49 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 10:52:49 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 10:52:49 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:52:49 ddh_app:278] SYS: internet, using NTP.
+[D 191015 10:52:52 ddh_app:218] GUI: keypress 1.
+[I 191015 10:52:52 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 10:53:19 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 10:53:19 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 10:53:19 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 10:53:19 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:53:19 ddh_app:278] SYS: internet, using NTP.
+[D 191015 10:53:20 ddh_app:218] GUI: keypress 1.
+[I 191015 10:53:20 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 10:53:59 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 10:53:59 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 10:53:59 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 10:53:59 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:53:59 ddh_app:278] SYS: internet, using NTP.
+[D 191015 10:54:00 ddh_app:218] GUI: keypress 1.
+[I 191015 10:54:00 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 10:54:19 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 10:54:19 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 10:54:19 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 10:54:19 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:54:19 ddh_app:278] SYS: internet, using NTP.
+[D 191015 10:54:20 ddh_app:218] GUI: keypress 1.
+[I 191015 10:54:20 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 10:55:09 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 10:55:09 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 10:55:09 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 10:55:09 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:55:09 ddh_app:278] SYS: internet, using NTP.
+[D 191015 10:55:10 ddh_app:218] GUI: keypress 1.
+[I 191015 10:55:10 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 10:55:53 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 10:55:53 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 10:55:53 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 10:55:53 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:55:54 ddh_app:278] SYS: internet, using NTP.
+[D 191015 10:55:55 ddh_app:218] GUI: keypress 1.
+[I 191015 10:55:55 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 10:56:51 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 10:56:51 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 10:56:51 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 10:56:51 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:56:51 ddh_app:278] SYS: internet, using NTP.
+[D 191015 10:56:52 ddh_app:218] GUI: keypress 1.
+[I 191015 10:56:52 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[I 191015 10:57:01 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 10:57:03 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:57:13 ddh_app:278] BLE: 0 loggers to query.
+[D 191015 10:57:34 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 10:57:34 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 10:57:34 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 10:57:34 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:57:34 ddh_app:278] SYS: internet, using NTP.
+[D 191015 10:57:35 ddh_app:218] GUI: keypress 1.
+[I 191015 10:57:35 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 10:58:56 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 10:58:56 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 10:58:56 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 10:58:56 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:58:57 ddh_app:278] SYS: internet, using NTP.
+[D 191015 10:58:57 ddh_app:218] GUI: keypress 1.
+[I 191015 10:58:57 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 10:59:11 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 10:59:11 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 10:59:11 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 10:59:11 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:59:11 ddh_app:278] SYS: internet, using NTP.
+[D 191015 10:59:12 ddh_app:218] GUI: keypress 1.
+[I 191015 10:59:12 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 10:59:32 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 10:59:32 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 10:59:32 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 10:59:32 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:59:32 ddh_app:278] SYS: internet, using NTP.
+[D 191015 10:59:32 ddh_app:218] GUI: keypress 1.
+[I 191015 10:59:32 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 10:59:44 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 10:59:44 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 10:59:44 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 10:59:44 ddh_app:278] BLE: detecting loggers...
+[I 191015 10:59:44 ddh_app:278] SYS: internet, using NTP.
+[D 191015 10:59:45 ddh_app:218] GUI: keypress 1.
+[I 191015 10:59:45 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 11:00:30 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 11:00:30 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 11:00:30 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 11:00:30 ddh_app:278] BLE: detecting loggers...
+[I 191015 11:00:30 ddh_app:278] SYS: internet, using NTP.
+[D 191015 11:00:31 ddh_app:218] GUI: keypress 1.
+[I 191015 11:00:31 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 11:01:08 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 11:01:08 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 11:01:08 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 11:01:08 ddh_app:278] BLE: detecting loggers...
+[I 191015 11:01:08 ddh_app:278] SYS: internet, using NTP.
+[D 191015 11:01:10 ddh_app:218] GUI: keypress 1.
+[I 191015 11:01:10 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 11:01:37 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 11:01:37 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 11:01:37 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 11:01:37 ddh_app:278] BLE: detecting loggers...
+[I 191015 11:01:38 ddh_app:278] SYS: internet, using NTP.
+[D 191015 11:01:38 ddh_app:218] GUI: keypress 1.
+[I 191015 11:01:38 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 11:02:22 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 11:02:22 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 11:02:22 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 11:02:22 ddh_app:278] BLE: detecting loggers...
+[I 191015 11:02:22 ddh_app:278] SYS: internet, using NTP.
+[D 191015 11:02:22 ddh_app:218] GUI: keypress 1.
+[I 191015 11:02:22 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 11:03:14 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 11:03:14 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 11:03:14 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 11:03:14 ddh_app:278] BLE: detecting loggers...
+[I 191015 11:03:14 ddh_app:278] SYS: internet, using NTP.
+[D 191015 11:03:15 ddh_app:218] GUI: keypress 1.
+[I 191015 11:03:15 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 11:04:21 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 11:04:21 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 11:04:21 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 11:04:21 ddh_app:278] BLE: detecting loggers...
+[I 191015 11:04:21 ddh_app:278] SYS: internet, using NTP.
+[D 191015 11:04:22 ddh_app:218] GUI: keypress 1.
+[I 191015 11:04:22 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 11:04:57 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 11:04:57 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 11:04:57 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 11:04:57 ddh_app:278] BLE: detecting loggers...
+[I 191015 11:04:57 ddh_app:278] SYS: internet, using NTP.
+[D 191015 11:04:58 ddh_app:218] GUI: keypress 1.
+[I 191015 11:04:58 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 11:05:00 ddh_app:416] SYS: elapsed time 3426 ms.
+[D 191015 11:05:03 ddh_app:159] SYS: closing GUI APP...
+[D 191015 11:05:20 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 11:05:20 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 11:05:20 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 11:05:20 ddh_app:278] BLE: detecting loggers...
+[I 191015 11:05:21 ddh_app:278] SYS: internet, using NTP.
+[D 191015 11:05:21 ddh_app:218] GUI: keypress 1.
+[I 191015 11:05:21 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 11:05:24 ddh_app:159] SYS: closing GUI APP...
+[D 191015 11:05:26 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 11:05:26 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 11:05:26 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 11:05:26 ddh_app:278] BLE: detecting loggers...
+[I 191015 11:05:27 ddh_app:278] SYS: internet, using NTP.
+[D 191015 11:05:29 ddh_app:218] GUI: keypress 1.
+[I 191015 11:05:29 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 11:05:37 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 11:05:37 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 11:05:37 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 11:05:37 ddh_app:278] BLE: detecting loggers...
+[I 191015 11:05:37 ddh_app:278] SYS: internet, using NTP.
+[D 191015 11:05:37 ddh_app:218] GUI: keypress 1.
+[I 191015 11:05:37 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 11:05:40 ddh_app:416] SYS: elapsed time 3432 ms.
+[D 191015 11:05:42 ddh_app:159] SYS: closing GUI APP...
+[D 191015 11:05:57 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 11:05:57 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 11:05:57 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 11:05:57 ddh_app:278] BLE: detecting loggers...
+[I 191015 11:05:57 ddh_app:278] SYS: internet, using NTP.
+[D 191015 11:05:58 ddh_app:218] GUI: keypress 1.
+[I 191015 11:05:58 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 11:05:58 ddh_app:218] GUI: keypress 1.
+[D 191015 11:05:58 ddh_app:258] GUI: busy to plot
+[D 191015 11:06:00 ddh_app:416] SYS: elapsed time 3495 ms.
+[D 191015 11:06:00 ddh_app:159] SYS: closing GUI APP...
+[D 191015 11:06:07 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 11:06:07 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 11:06:07 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 11:06:07 ddh_app:278] BLE: detecting loggers...
+[I 191015 11:06:07 ddh_app:278] SYS: internet, using NTP.
+[D 191015 11:06:08 ddh_app:218] GUI: keypress 1.
+[I 191015 11:06:08 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 11:06:10 ddh_app:416] SYS: elapsed time 3626 ms.
+[D 191015 11:06:11 ddh_app:159] SYS: closing GUI APP...
+[D 191015 11:06:20 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 11:06:20 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 11:06:20 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 11:06:20 ddh_app:278] BLE: detecting loggers...
+[I 191015 11:06:21 ddh_app:278] SYS: internet, using NTP.
+[D 191015 11:06:22 ddh_app:218] GUI: keypress 1.
+[I 191015 11:06:22 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 11:06:25 ddh_app:416] SYS: elapsed time 3739 ms.
+[D 191015 11:06:25 ddh_app:159] SYS: closing GUI APP...
+[D 191015 11:06:40 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 11:06:40 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 11:06:40 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 11:06:40 ddh_app:278] BLE: detecting loggers...
+[I 191015 11:06:41 ddh_app:278] SYS: internet, using NTP.
+[D 191015 11:06:41 ddh_app:218] GUI: keypress 1.
+[I 191015 11:06:41 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 11:07:00 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 11:07:00 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 11:07:00 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 11:07:00 ddh_app:278] BLE: detecting loggers...
+[I 191015 11:07:00 ddh_app:278] SYS: internet, using NTP.
+[D 191015 11:07:01 ddh_app:218] GUI: keypress 1.
+[I 191015 11:07:01 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 11:07:37 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 11:07:37 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 11:07:37 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 11:07:37 ddh_app:278] BLE: detecting loggers...
+[I 191015 11:07:37 ddh_app:278] SYS: internet, using NTP.
+[D 191015 11:07:38 ddh_app:218] GUI: keypress 1.
+[I 191015 11:07:38 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 11:07:40 ddh_app:416] SYS: elapsed time 3449 ms.
+[D 191015 11:07:45 ddh_app:159] SYS: closing GUI APP...
+[D 191015 11:08:11 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 11:08:11 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 11:08:11 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 11:08:11 ddh_app:278] BLE: detecting loggers...
+[I 191015 11:08:11 ddh_app:278] SYS: internet, using NTP.
+[D 191015 11:08:12 ddh_app:218] GUI: keypress 1.
+[I 191015 11:08:12 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 11:08:24 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 11:08:24 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 11:08:24 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 11:08:24 ddh_app:278] BLE: detecting loggers...
+[I 191015 11:08:24 ddh_app:278] SYS: internet, using NTP.
+[D 191015 11:08:25 ddh_app:218] GUI: keypress 1.
+[I 191015 11:08:25 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 11:14:49 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 11:14:49 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 11:14:49 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 11:14:49 ddh_app:278] BLE: detecting loggers...
+[I 191015 11:14:49 ddh_app:278] SYS: internet, using NTP.
+[D 191015 11:14:51 ddh_app:218] GUI: keypress 1.
+[I 191015 11:14:51 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[E 191015 11:14:51 ddh_app:298] 
+[D 191015 11:15:13 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 11:15:13 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 11:15:13 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 11:15:13 ddh_app:278] BLE: detecting loggers...
+[I 191015 11:15:13 ddh_app:278] SYS: internet, using NTP.
+[D 191015 11:15:14 ddh_app:218] GUI: keypress 1.
+[I 191015 11:15:14 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 11:15:51 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 11:15:51 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 11:15:51 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 11:15:51 ddh_app:278] BLE: detecting loggers...
+[I 191015 11:15:51 ddh_app:278] SYS: internet, using NTP.
+[D 191015 11:15:51 ddh_app:218] GUI: keypress 1.
+[I 191015 11:15:51 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[E 191015 11:15:51 ddh_app:298] 
+[D 191015 11:25:18 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 11:25:18 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 11:25:18 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 11:25:18 ddh_app:278] BLE: detecting loggers...
+[I 191015 11:25:19 ddh_app:278] SYS: internet, using NTP.
+[D 191015 11:25:19 ddh_app:218] GUI: keypress 1.
+[I 191015 11:25:19 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 11:25:37 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 11:25:37 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 11:25:37 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 11:25:37 ddh_app:278] BLE: detecting loggers...
+[I 191015 11:25:37 ddh_app:278] SYS: internet, using NTP.
+[D 191015 11:25:38 ddh_app:218] GUI: keypress 1.
+[I 191015 11:25:38 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 11:25:54 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 11:25:54 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 11:25:54 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 11:25:54 ddh_app:278] BLE: detecting loggers...
+[I 191015 11:25:54 ddh_app:278] SYS: internet, using NTP.
+[D 191015 11:25:55 ddh_app:218] GUI: keypress 1.
+[I 191015 11:25:55 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 11:26:08 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 11:26:08 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 11:26:08 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 11:26:08 ddh_app:278] BLE: detecting loggers...
+[I 191015 11:26:08 ddh_app:278] SYS: internet, using NTP.
+[D 191015 11:26:09 ddh_app:218] GUI: keypress 1.
+[I 191015 11:26:09 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 11:26:58 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 11:26:58 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 11:26:58 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 11:26:58 ddh_app:278] BLE: detecting loggers...
+[I 191015 11:26:58 ddh_app:278] SYS: internet, using NTP.
+[D 191015 11:26:58 ddh_app:218] GUI: keypress 1.
+[I 191015 11:26:58 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 11:27:43 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 11:27:43 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 11:27:43 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 11:27:43 ddh_app:278] BLE: detecting loggers...
+[I 191015 11:27:43 ddh_app:278] SYS: internet, using NTP.
+[D 191015 11:27:44 ddh_app:218] GUI: keypress 1.
+[I 191015 11:27:44 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 11:27:46 ddh_app:416] SYS: elapsed time 3458 ms.
+[D 191015 11:27:49 ddh_app:159] SYS: closing GUI APP...
+[D 191015 11:29:18 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 11:29:18 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 11:29:18 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 11:29:18 ddh_app:278] BLE: detecting loggers...
+[I 191015 11:29:18 ddh_app:278] SYS: internet, using NTP.
+[D 191015 11:29:19 ddh_app:218] GUI: keypress 1.
+[I 191015 11:29:19 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 11:29:20 ddh_app:218] GUI: keypress 1.
+[D 191015 11:29:20 ddh_app:258] GUI: busy to plot
+[D 191015 11:29:21 ddh_app:416] SYS: elapsed time 3496 ms.
+[D 191015 11:29:22 ddh_app:218] GUI: keypress 1.
+[I 191015 11:29:22 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 11:29:25 ddh_app:416] SYS: elapsed time 3450 ms.
+[D 191015 11:29:27 ddh_app:159] SYS: closing GUI APP...
+[D 191015 11:34:45 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 11:34:45 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 11:34:45 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 11:34:45 ddh_app:278] BLE: detecting loggers...
+[I 191015 11:34:45 ddh_app:278] SYS: internet, using NTP.
+[D 191015 11:34:46 ddh_app:218] GUI: keypress 1.
+[I 191015 11:34:46 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 11:34:48 ddh_app:416] SYS: elapsed time 3475 ms.
+[D 191015 11:34:50 ddh_app:218] GUI: keypress 1.
+[I 191015 11:34:50 ddh_app:278] PLT: Temperature 11:22:33:44:55:66 vs None
+[D 191015 11:34:52 ddh_app:416] SYS: elapsed time 3842 ms.
+[I 191015 11:34:55 ddh_app:278] BLE: 0 loggers to query.
+[I 191015 11:34:57 ddh_app:278] BLE: detecting loggers...
+[D 191015 11:34:58 ddh_app:218] GUI: keypress 1.
+[I 191015 11:34:58 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 11:35:00 ddh_app:416] SYS: elapsed time 3432 ms.
+[D 191015 11:35:01 ddh_app:159] SYS: closing GUI APP...
+[D 191015 11:39:22 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 11:39:22 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 11:39:22 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 11:39:22 ddh_app:278] BLE: detecting loggers...
+[I 191015 11:39:22 ddh_app:278] SYS: internet, using NTP.
+[D 191015 11:39:23 ddh_app:218] GUI: keypress 1.
+[I 191015 11:39:23 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 11:39:25 ddh_app:416] SYS: elapsed time 3459 ms.
+[D 191015 11:39:26 ddh_app:218] GUI: keypress 1.
+[I 191015 11:39:26 ddh_app:278] PLT: Temperature 11:22:33:44:55:66 vs None
+[D 191015 11:39:29 ddh_app:416] SYS: elapsed time 4272 ms.
+[I 191015 11:39:32 ddh_app:278] BLE: 0 loggers to query.
+[D 191015 11:39:32 ddh_app:218] GUI: keypress 1.
+[I 191015 11:39:32 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[I 191015 11:39:34 ddh_app:278] BLE: detecting loggers...
+[D 191015 11:39:34 ddh_app:416] SYS: elapsed time 3422 ms.
+[D 191015 11:39:36 ddh_app:159] SYS: closing GUI APP...
+[D 191015 11:40:43 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 11:40:43 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 11:40:43 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 11:40:43 ddh_app:278] BLE: detecting loggers...
+[I 191015 11:40:43 ddh_app:278] SYS: internet, using NTP.
+[D 191015 11:40:44 ddh_app:218] GUI: keypress 1.
+[I 191015 11:40:44 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 11:40:46 ddh_app:416] SYS: elapsed time 3490 ms.
+[D 191015 11:40:47 ddh_app:218] GUI: keypress 1.
+[I 191015 11:40:47 ddh_app:278] PLT: Temperature 11:22:33:44:55:66 vs None
+[D 191015 11:40:50 ddh_app:416] SYS: elapsed time 3870 ms.
+[D 191015 11:40:51 ddh_app:218] GUI: keypress 1.
+[I 191015 11:40:51 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 11:40:53 ddh_app:416] SYS: elapsed time 3731 ms.
+[D 191015 11:40:53 ddh_app:159] SYS: closing GUI APP...
+[D 191015 11:43:50 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 11:43:50 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 11:43:50 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 11:43:50 ddh_app:278] BLE: detecting loggers...
+[I 191015 11:43:50 ddh_app:278] SYS: internet, using NTP.
+[D 191015 11:43:51 ddh_app:218] GUI: keypress 1.
+[I 191015 11:43:51 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 11:43:53 ddh_app:416] SYS: elapsed time 3694 ms.
+[D 191015 11:43:53 ddh_app:218] GUI: keypress 1.
+[I 191015 11:43:53 ddh_app:278] PLT: Temperature 11:22:33:44:55:66 vs None
+[D 191015 11:43:54 ddh_app:159] SYS: closing GUI APP...
+[D 191015 11:46:59 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 11:46:59 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 11:46:59 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 11:46:59 ddh_app:278] BLE: detecting loggers...
+[I 191015 11:46:59 ddh_app:278] SYS: internet, using NTP.
+[D 191015 11:46:59 ddh_app:218] GUI: keypress 1.
+[I 191015 11:46:59 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 11:47:02 ddh_app:416] SYS: elapsed time 3465 ms.
+[D 191015 11:47:03 ddh_app:159] SYS: closing GUI APP...
+[D 191015 11:47:20 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 11:47:20 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 11:47:20 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 11:47:20 ddh_app:278] BLE: detecting loggers...
+[I 191015 11:47:20 ddh_app:278] SYS: internet, using NTP.
+[D 191015 11:47:21 ddh_app:218] GUI: keypress 1.
+[I 191015 11:47:21 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 11:47:23 ddh_app:416] SYS: elapsed time 3479 ms.
+[D 191015 11:47:24 ddh_app:159] SYS: closing GUI APP...
+[D 191015 11:47:42 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 11:47:42 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 11:47:42 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 11:47:42 ddh_app:278] BLE: detecting loggers...
+[I 191015 11:47:42 ddh_app:278] SYS: internet, using NTP.
+[D 191015 11:47:43 ddh_app:218] GUI: keypress 1.
+[I 191015 11:47:43 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 11:47:44 ddh_app:159] SYS: closing GUI APP...
+[D 191015 11:48:42 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 11:48:42 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 11:48:42 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 11:48:42 ddh_app:278] BLE: detecting loggers...
+[I 191015 11:48:42 ddh_app:278] SYS: internet, using NTP.
+[D 191015 11:48:42 ddh_app:218] GUI: keypress 1.
+[I 191015 11:48:42 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 11:48:54 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 11:48:54 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 11:48:54 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 11:48:54 ddh_app:278] BLE: detecting loggers...
+[I 191015 11:48:54 ddh_app:278] SYS: internet, using NTP.
+[D 191015 11:48:55 ddh_app:218] GUI: keypress 1.
+[I 191015 11:48:55 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 11:49:07 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 11:49:07 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 11:49:07 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 11:49:07 ddh_app:278] BLE: detecting loggers...
+[I 191015 11:49:07 ddh_app:278] SYS: internet, using NTP.
+[D 191015 11:49:07 ddh_app:218] GUI: keypress 1.
+[I 191015 11:49:07 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 11:49:10 ddh_app:159] SYS: closing GUI APP...
+[D 191015 11:49:10 ddh_app:416] SYS: elapsed time 3778 ms.
+[D 191015 11:49:18 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 11:49:18 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 11:49:18 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 11:49:18 ddh_app:278] BLE: detecting loggers...
+[I 191015 11:49:19 ddh_app:278] SYS: internet, using NTP.
+[D 191015 11:49:20 ddh_app:218] GUI: keypress 1.
+[I 191015 11:49:20 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 11:49:21 ddh_app:159] SYS: closing GUI APP...
+[D 191015 12:05:27 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 12:05:27 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 12:05:27 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 12:05:27 ddh_app:278] BLE: detecting loggers...
+[I 191015 12:05:27 ddh_app:278] SYS: internet, using NTP.
+[D 191015 12:05:28 ddh_app:218] GUI: keypress 1.
+[I 191015 12:05:28 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 12:05:45 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 12:05:45 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 12:05:45 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 12:05:45 ddh_app:278] BLE: detecting loggers...
+[I 191015 12:05:45 ddh_app:278] SYS: internet, using NTP.
+[D 191015 12:05:46 ddh_app:218] GUI: keypress 1.
+[I 191015 12:05:46 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 12:05:47 ddh_app:218] GUI: keypress 1.
+[D 191015 12:05:47 ddh_app:258] GUI: busy to plot
+[D 191015 12:05:48 ddh_app:416] SYS: elapsed time 3448 ms.
+[D 191015 12:05:52 ddh_app:218] GUI: keypress 1.
+[I 191015 12:05:52 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 12:05:53 ddh_app:159] SYS: closing GUI APP...
+[D 191015 12:06:10 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 12:06:10 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 12:06:10 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 12:06:10 ddh_app:278] BLE: detecting loggers...
+[I 191015 12:06:10 ddh_app:278] SYS: internet, using NTP.
+[D 191015 12:06:11 ddh_app:218] GUI: keypress 1.
+[I 191015 12:06:11 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 12:06:12 ddh_app:159] SYS: closing GUI APP...
+[D 191015 12:07:54 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 12:07:54 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 12:07:54 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 12:07:54 ddh_app:278] BLE: detecting loggers...
+[I 191015 12:07:54 ddh_app:278] SYS: internet, using NTP.
+[D 191015 12:07:56 ddh_app:218] GUI: keypress 1.
+[I 191015 12:07:56 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 12:07:58 ddh_app:159] SYS: closing GUI APP...
+[D 191015 12:09:51 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 12:09:51 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 12:09:51 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 12:09:51 ddh_app:278] BLE: detecting loggers...
+[I 191015 12:09:51 ddh_app:278] SYS: internet, using NTP.
+[D 191015 12:09:52 ddh_app:218] GUI: keypress 1.
+[I 191015 12:09:52 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 12:10:19 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 12:10:19 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 12:10:19 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 12:10:19 ddh_app:278] BLE: detecting loggers...
+[I 191015 12:10:19 ddh_app:278] SYS: internet, using NTP.
+[D 191015 12:10:22 ddh_app:218] GUI: keypress 1.
+[I 191015 12:10:22 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 12:10:45 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 12:10:45 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 12:10:45 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 12:10:46 ddh_app:278] BLE: detecting loggers...
+[I 191015 12:10:46 ddh_app:278] SYS: internet, using NTP.
+[D 191015 12:10:47 ddh_app:218] GUI: keypress 1.
+[I 191015 12:10:47 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 12:10:49 ddh_app:218] GUI: keypress 1.
+[D 191015 12:10:49 ddh_app:258] GUI: busy to plot
+[D 191015 12:10:50 ddh_app:416] SYS: elapsed time 3485 ms.
+[D 191015 12:10:52 ddh_app:218] GUI: keypress 1.
+[I 191015 12:10:52 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 12:10:54 ddh_app:159] SYS: closing GUI APP...
+[D 191015 12:17:30 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 12:17:30 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 12:17:30 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 12:17:30 ddh_app:278] BLE: detecting loggers...
+[I 191015 12:17:30 ddh_app:278] SYS: internet, using NTP.
+[D 191015 12:17:32 ddh_app:218] GUI: keypress 1.
+[I 191015 12:17:32 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 12:18:28 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 12:18:28 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 12:18:28 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 12:18:28 ddh_app:278] BLE: detecting loggers...
+[I 191015 12:18:28 ddh_app:278] SYS: internet, using NTP.
+[D 191015 12:18:28 ddh_app:218] GUI: keypress 1.
+[I 191015 12:18:28 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 12:18:50 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 12:18:50 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 12:18:50 ddh_app:156] SYS: this is NOT a raspberry system
+[I 191015 12:18:50 ddh_app:278] BLE: detecting loggers...
+[I 191015 12:18:51 ddh_app:278] SYS: internet, using NTP.
+[D 191015 12:18:51 ddh_app:218] GUI: keypress 1.
+[I 191015 12:18:51 ddh_app:278] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 12:18:54 ddh_app:416] SYS: elapsed time 3488 ms.
+[D 191015 12:18:55 ddh_app:159] SYS: closing GUI APP...
+[D 191015 12:35:08 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 12:35:08 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 12:35:08 ddh_app:155] SYS: this is NOT a raspberry system
+[I 191015 12:35:08 ddh_app:271] BLE: detecting loggers...
+[I 191015 12:35:08 ddh_app:271] SYS: internet, using NTP.
+[D 191015 12:35:08 ddh_app:217] GUI: keypress 1.
+[D 191015 12:43:02 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 12:43:02 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 12:43:02 ddh_app:155] SYS: this is NOT a raspberry system
+[I 191015 12:43:02 ddh_app:270] BLE: detecting loggers...
+[I 191015 12:43:02 ddh_app:270] SYS: internet, using NTP.
+[D 191015 12:43:03 ddh_app:217] GUI: keypress 1.
+[D 191015 12:43:05 ddh_app:408] SYS: elapsed time 3449 ms.
+[D 191015 12:43:08 ddh_app:217] GUI: keypress 1.
+[D 191015 12:43:10 ddh_app:408] SYS: elapsed time 3817 ms.
+[I 191015 12:43:12 ddh_app:270] BLE: 0 loggers to query.
+[D 191015 12:43:13 ddh_app:158] SYS: closing GUI APP...
+[D 191015 12:43:46 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 12:43:46 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 12:43:46 ddh_app:155] SYS: this is NOT a raspberry system
+[I 191015 12:43:46 ddh_app:270] BLE: detecting loggers...
+[I 191015 12:43:46 ddh_app:270] SYS: internet, using NTP.
+[D 191015 12:43:47 ddh_app:217] GUI: keypress 1.
+[D 191015 12:43:49 ddh_app:408] SYS: elapsed time 3435 ms.
+[I 191015 12:43:57 ddh_app:270] BLE: 0 loggers to query.
+[D 191015 12:43:58 ddh_app:158] SYS: closing GUI APP...
+[D 191015 12:44:08 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 12:44:08 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 12:44:08 ddh_app:155] SYS: this is NOT a raspberry system
+[I 191015 12:44:08 ddh_app:270] BLE: detecting loggers...
+[I 191015 12:44:08 ddh_app:270] SYS: internet, using NTP.
+[D 191015 12:44:09 ddh_app:217] GUI: keypress 1.
+[D 191015 12:44:11 ddh_app:408] SYS: elapsed time 3456 ms.
+[D 191015 12:44:13 ddh_app:222] GUI: keypress 2.
+[D 191015 12:44:15 ddh_app:408] SYS: elapsed time 3228 ms.
+[I 191015 12:44:18 ddh_app:270] BLE: 0 loggers to query.
+[I 191015 12:44:20 ddh_app:270] BLE: detecting loggers...
+[D 191015 12:44:24 ddh_app:158] SYS: closing GUI APP...
+[D 191015 12:45:47 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 12:45:47 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 12:45:47 ddh_app:155] SYS: this is NOT a raspberry system
+[I 191015 12:45:47 ddh_app:270] BLE: detecting loggers...
+[I 191015 12:45:47 ddh_app:270] SYS: internet, using NTP.
+[D 191015 12:45:48 ddh_app:217] GUI: keypress 1.
+[D 191015 12:45:50 ddh_app:408] SYS: elapsed time 3448 ms.
+[I 191015 12:45:57 ddh_app:270] BLE: 0 loggers to query.
+[I 191015 12:45:59 ddh_app:270] BLE: detecting loggers...
+[D 191015 12:46:00 ddh_app:222] GUI: keypress 2.
+[D 191015 12:46:02 ddh_app:408] SYS: elapsed time 3238 ms.
+[D 191015 12:46:03 ddh_app:158] SYS: closing GUI APP...
+[D 191015 12:47:08 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 12:47:08 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 12:47:08 ddh_app:155] SYS: this is NOT a raspberry system
+[I 191015 12:47:08 ddh_app:270] BLE: detecting loggers...
+[I 191015 12:47:08 ddh_app:270] SYS: internet, using NTP.
+[D 191015 12:47:09 ddh_app:217] GUI: keypress 1.
+[I 191015 12:47:09 ddh_app:270] PLT: Temperature for dl_files/ff-ff-ff-ff-ff-ff
+[D 191015 12:47:11 ddh_app:408] SYS: elapsed time 3421 ms.
+[D 191015 12:47:12 ddh_app:217] GUI: keypress 1.
+[I 191015 12:47:12 ddh_app:270] PLT: Temperature for dl_files/11-22-33-44-55-66
+[D 191015 12:47:15 ddh_app:408] SYS: elapsed time 3958 ms.
+[D 191015 12:47:16 ddh_app:222] GUI: keypress 2.
+[I 191015 12:47:16 ddh_app:270] PLT: Pressure for dl_files/11-22-33-44-55-66
+[I 191015 12:47:18 ddh_app:270] BLE: 0 loggers to query.
+[D 191015 12:47:19 ddh_app:408] SYS: elapsed time 4118 ms.
+[I 191015 12:47:20 ddh_app:270] BLE: detecting loggers...
+[D 191015 12:47:25 ddh_app:217] GUI: keypress 1.
+[I 191015 12:47:25 ddh_app:270] PLT: Pressure for dl_files/ff-ff-ff-ff-ff-ff
+[D 191015 12:47:27 ddh_app:408] SYS: elapsed time 3241 ms.
+[D 191015 12:47:29 ddh_app:158] SYS: closing GUI APP...
+[D 191015 12:59:55 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 12:59:55 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 12:59:55 ddh_app:155] SYS: this is NOT a raspberry system
+[I 191015 12:59:55 ddh_app:270] BLE: detecting loggers...
+[I 191015 12:59:55 ddh_app:270] SYS: internet, using NTP.
+[D 191015 12:59:56 ddh_app:217] GUI: keypress 1.
+[I 191015 12:59:56 ddh_app:270] PLT: Temperature for dl_files/ff-ff-ff-ff-ff-ff
+[E 191015 12:59:58 ddh_app:290] 
+[D 191015 13:00:16 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 13:00:16 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 13:00:16 ddh_app:155] SYS: this is NOT a raspberry system
+[I 191015 13:00:16 ddh_app:270] BLE: detecting loggers...
+[I 191015 13:00:16 ddh_app:270] SYS: internet, using NTP.
+[D 191015 13:00:17 ddh_app:217] GUI: keypress 1.
+[I 191015 13:00:17 ddh_app:270] PLT: Temperature for dl_files/ff-ff-ff-ff-ff-ff
+[D 191015 13:00:19 ddh_app:408] SYS: elapsed time 3506 ms.
+[I 191015 13:00:26 ddh_app:270] BLE: 0 loggers to query.
+[D 191015 13:00:27 ddh_app:158] SYS: closing GUI APP...
+[D 191015 13:01:19 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 13:01:19 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 13:01:19 ddh_app:155] SYS: this is NOT a raspberry system
+[I 191015 13:01:19 ddh_app:270] BLE: detecting loggers...
+[I 191015 13:01:19 ddh_app:270] SYS: internet, using NTP.
+[D 191015 13:01:20 ddh_app:217] GUI: keypress 1.
+[I 191015 13:01:20 ddh_app:270] PLT: Temperature for dl_files/ff-ff-ff-ff-ff-ff
+[D 191015 13:05:43 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 13:05:43 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 13:05:43 ddh_app:155] SYS: this is NOT a raspberry system
+[I 191015 13:05:43 ddh_app:270] BLE: detecting loggers...
+[I 191015 13:05:43 ddh_app:270] SYS: internet, using NTP.
+[D 191015 13:05:44 ddh_app:217] GUI: keypress 1.
+[I 191015 13:05:44 ddh_app:270] PLT: Temperature for dl_files/ff-ff-ff-ff-ff-ff
+[D 191015 13:06:28 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 13:06:28 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 13:06:28 ddh_app:155] SYS: this is NOT a raspberry system
+[I 191015 13:06:28 ddh_app:270] BLE: detecting loggers...
+[I 191015 13:06:28 ddh_app:270] SYS: internet, using NTP.
+[D 191015 13:06:28 ddh_app:217] GUI: keypress 1.
+[I 191015 13:06:28 ddh_app:270] PLT: Temperature for dl_files/ff-ff-ff-ff-ff-ff
+[D 191015 13:06:31 ddh_app:408] SYS: elapsed time 3481 ms.
+[D 191015 13:06:36 ddh_app:158] SYS: closing GUI APP...
+[D 191015 13:07:53 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 13:07:53 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 13:07:53 ddh_app:155] SYS: this is NOT a raspberry system
+[I 191015 13:07:54 ddh_app:270] BLE: detecting loggers...
+[I 191015 13:07:54 ddh_app:270] SYS: internet, using NTP.
+[D 191015 13:07:54 ddh_app:217] GUI: keypress 1.
+[I 191015 13:07:54 ddh_app:270] PLT: Temperature for dl_files/ff-ff-ff-ff-ff-ff
+[D 191015 13:08:12 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 13:08:12 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 13:08:12 ddh_app:155] SYS: this is NOT a raspberry system
+[I 191015 13:08:12 ddh_app:270] BLE: detecting loggers...
+[I 191015 13:08:12 ddh_app:270] SYS: internet, using NTP.
+[D 191015 13:08:12 ddh_app:217] GUI: keypress 1.
+[I 191015 13:08:12 ddh_app:270] PLT: Temperature for dl_files/ff-ff-ff-ff-ff-ff
+[D 191015 13:08:15 ddh_app:408] SYS: elapsed time 3463 ms.
+[D 191015 13:08:20 ddh_app:217] GUI: keypress 1.
+[I 191015 13:08:20 ddh_app:270] PLT: Temperature for dl_files/11-22-33-44-55-66
+[I 191015 13:08:22 ddh_app:270] BLE: 0 loggers to query.
+[D 191015 13:08:23 ddh_app:408] SYS: elapsed time 4118 ms.
+[I 191015 13:08:24 ddh_app:270] BLE: detecting loggers...
+[D 191015 13:08:25 ddh_app:217] GUI: keypress 1.
+[I 191015 13:08:25 ddh_app:270] PLT: Temperature for dl_files/ff-ff-ff-ff-ff-ff
+[D 191015 13:08:27 ddh_app:408] SYS: elapsed time 3404 ms.
+[D 191015 13:08:32 ddh_app:158] SYS: closing GUI APP...
+[D 191015 13:10:47 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 13:10:47 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 13:10:47 ddh_app:155] SYS: this is NOT a raspberry system
+[I 191015 13:10:47 ddh_app:270] BLE: detecting loggers...
+[I 191015 13:10:48 ddh_app:270] SYS: internet, using NTP.
+[D 191015 13:10:48 ddh_app:239] GUI: keypress unknown.
+[D 191015 13:10:56 ddh_app:217] GUI: keypress 1.
+[I 191015 13:10:56 ddh_app:270] PLT: Temperature for dl_files/ff-ff-ff-ff-ff-ff
+[I 191015 13:10:58 ddh_app:270] BLE: 0 loggers to query.
+[D 191015 13:11:38 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 13:11:38 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 13:11:38 ddh_app:155] SYS: this is NOT a raspberry system
+[I 191015 13:11:38 ddh_app:270] BLE: detecting loggers...
+[I 191015 13:11:38 ddh_app:270] SYS: internet, using NTP.
+[D 191015 13:11:40 ddh_app:217] GUI: keypress 1.
+[I 191015 13:11:40 ddh_app:270] PLT: Temperature for dl_files/ff-ff-ff-ff-ff-ff
+[D 191015 13:13:15 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 13:13:15 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 13:13:15 ddh_app:155] SYS: this is NOT a raspberry system
+[I 191015 13:13:15 ddh_app:270] BLE: detecting loggers...
+[I 191015 13:13:15 ddh_app:270] SYS: internet, using NTP.
+[D 191015 13:13:15 ddh_app:217] GUI: keypress 1.
+[I 191015 13:13:15 ddh_app:270] PLT: Temperature for dl_files/ff-ff-ff-ff-ff-ff
+[D 191015 13:15:45 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 13:15:45 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 13:15:45 ddh_app:155] SYS: this is NOT a raspberry system
+[I 191015 13:15:45 ddh_app:270] BLE: detecting loggers...
+[I 191015 13:15:45 ddh_app:270] SYS: internet, using NTP.
+[D 191015 13:15:46 ddh_app:217] GUI: keypress 1.
+[I 191015 13:15:46 ddh_app:270] PLT: Temperature for dl_files/ff-ff-ff-ff-ff-ff
+[D 191015 13:15:48 ddh_app:408] SYS: elapsed time 3478 ms.
+[D 191015 13:15:51 ddh_app:217] GUI: keypress 1.
+[I 191015 13:15:51 ddh_app:270] PLT: Temperature for dl_files/11-22-33-44-55-66
+[D 191015 13:15:53 ddh_app:408] SYS: elapsed time 3840 ms.
+[I 191015 13:15:55 ddh_app:270] BLE: 0 loggers to query.
+[D 191015 13:15:56 ddh_app:217] GUI: keypress 1.
+[I 191015 13:15:56 ddh_app:270] PLT: Temperature for dl_files/ff-ff-ff-ff-ff-ff
+[I 191015 13:15:57 ddh_app:270] BLE: detecting loggers...
+[I 191015 13:15:58 ddh_app:270] PLT: cache hit for beach logger #7 Temperature h
+[D 191015 13:18:21 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 13:18:21 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 13:18:21 ddh_app:155] SYS: this is NOT a raspberry system
+[I 191015 13:18:21 ddh_app:270] BLE: detecting loggers...
+[I 191015 13:18:21 ddh_app:270] SYS: internet, using NTP.
+[D 191015 13:18:22 ddh_app:217] GUI: keypress 1.
+[I 191015 13:18:22 ddh_app:270] PLT: Temperature for dl_files/ff-ff-ff-ff-ff-ff
+[I 191015 13:18:24 ddh_app:270] PLT: cache hit for beach logger #7 Temperature h
+[D 191015 13:19:16 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 13:19:16 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 13:19:16 ddh_app:155] SYS: this is NOT a raspberry system
+[I 191015 13:19:16 ddh_app:270] BLE: detecting loggers...
+[I 191015 13:19:17 ddh_app:270] SYS: internet, using NTP.
+[D 191015 13:19:17 ddh_app:217] GUI: keypress 1.
+[I 191015 13:19:17 ddh_app:270] PLT: Temperature for dl_files/ff-ff-ff-ff-ff-ff
+[I 191015 13:19:19 ddh_app:270] PLT: cache hit for beach logger #7 Temperature h
+[D 191015 13:20:02 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 13:20:02 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 13:20:02 ddh_app:155] SYS: this is NOT a raspberry system
+[I 191015 13:20:02 ddh_app:270] BLE: detecting loggers...
+[I 191015 13:20:02 ddh_app:270] SYS: internet, using NTP.
+[D 191015 13:20:03 ddh_app:217] GUI: keypress 1.
+[I 191015 13:20:03 ddh_app:270] PLT: Temperature for dl_files/ff-ff-ff-ff-ff-ff
+[I 191015 13:20:05 ddh_app:270] PLT: cache hit for beach logger #7 Temperature h
+[D 191015 13:20:21 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 13:20:21 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 13:20:21 ddh_app:155] SYS: this is NOT a raspberry system
+[I 191015 13:20:21 ddh_app:270] BLE: detecting loggers...
+[I 191015 13:20:21 ddh_app:270] SYS: internet, using NTP.
+[D 191015 13:20:21 ddh_app:217] GUI: keypress 1.
+[I 191015 13:20:21 ddh_app:270] PLT: Temperature for dl_files/ff-ff-ff-ff-ff-ff
+[I 191015 13:20:24 ddh_app:270] PLT: cache hit for beach logger #7 Temperature h
+[D 191015 13:20:36 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 13:20:36 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 13:20:36 ddh_app:155] SYS: this is NOT a raspberry system
+[I 191015 13:20:36 ddh_app:270] BLE: detecting loggers...
+[I 191015 13:20:36 ddh_app:270] SYS: internet, using NTP.
+[D 191015 13:20:37 ddh_app:217] GUI: keypress 1.
+[I 191015 13:20:37 ddh_app:270] PLT: Temperature for dl_files/ff-ff-ff-ff-ff-ff
+[I 191015 13:20:39 ddh_app:270] PLT: cache hit for beach logger #7 Temperature h
+[D 191015 13:26:56 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 13:26:56 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 13:26:56 ddh_app:155] SYS: this is NOT a raspberry system
+[I 191015 13:26:56 ddh_app:270] BLE: detecting loggers...
+[I 191015 13:26:56 ddh_app:270] SYS: internet, using NTP.
+[D 191015 13:26:57 ddh_app:217] GUI: keypress 1.
+[I 191015 13:26:57 ddh_app:270] PLT: Temperature for dl_files/ff-ff-ff-ff-ff-ff
+[D 191015 13:26:59 ddh_app:408] SYS: elapsed time 3510 ms.
+[D 191015 13:27:00 ddh_app:217] GUI: keypress 1.
+[I 191015 13:27:00 ddh_app:270] PLT: Temperature for dl_files/11-22-33-44-55-66
+[I 191015 13:27:03 ddh_app:270] PLT: cache hit for my logger Temperature h
+[D 191015 13:28:28 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 13:28:28 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 13:28:28 ddh_app:155] SYS: this is NOT a raspberry system
+[I 191015 13:28:28 ddh_app:270] BLE: detecting loggers...
+[I 191015 13:28:28 ddh_app:270] SYS: internet, using NTP.
+[D 191015 13:28:29 ddh_app:217] GUI: keypress 1.
+[I 191015 13:28:29 ddh_app:270] PLT: Temperature for dl_files/ff-ff-ff-ff-ff-ff
+[I 191015 13:28:31 ddh_app:270] PLT: cache hit for beach logger #7 Temperature h
+[D 191015 13:30:48 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 13:30:48 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 13:30:48 ddh_app:155] SYS: this is NOT a raspberry system
+[I 191015 13:30:48 ddh_app:270] BLE: detecting loggers...
+[I 191015 13:30:48 ddh_app:270] SYS: internet, using NTP.
+[D 191015 13:30:49 ddh_app:217] GUI: keypress 1.
+[I 191015 13:30:49 ddh_app:270] PLT: Temperature for dl_files/ff-ff-ff-ff-ff-ff
+[I 191015 13:30:51 ddh_app:270] PLT: cache hit for beach logger #7 Temperature h
+[D 191015 13:31:59 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 13:31:59 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 13:31:59 ddh_app:155] SYS: this is NOT a raspberry system
+[I 191015 13:31:59 ddh_app:270] BLE: detecting loggers...
+[I 191015 13:31:59 ddh_app:270] SYS: internet, using NTP.
+[D 191015 13:31:59 ddh_app:217] GUI: keypress 1.
+[I 191015 13:31:59 ddh_app:270] PLT: Temperature for dl_files/ff-ff-ff-ff-ff-ff
+[I 191015 13:32:01 ddh_app:270] PLT: cache hit for beach logger #7 Temperature h
+[E 191015 13:32:01 ddh_app:290] 
+[D 191015 13:35:09 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 13:35:09 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 13:35:09 ddh_app:155] SYS: this is NOT a raspberry system
+[I 191015 13:35:09 ddh_app:270] BLE: detecting loggers...
+[I 191015 13:35:09 ddh_app:270] SYS: internet, using NTP.
+[D 191015 13:35:10 ddh_app:217] GUI: keypress 1.
+[I 191015 13:35:10 ddh_app:270] PLT: Temperature for dl_files/ff-ff-ff-ff-ff-ff
+[I 191015 13:35:12 ddh_app:270] PLT: cache hit for beach logger #7 Temperature h
+[D 191015 13:35:44 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 13:35:44 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 13:35:44 ddh_app:155] SYS: this is NOT a raspberry system
+[I 191015 13:35:44 ddh_app:270] BLE: detecting loggers...
+[I 191015 13:35:44 ddh_app:270] SYS: internet, using NTP.
+[D 191015 13:35:47 ddh_app:217] GUI: keypress 1.
+[I 191015 13:35:47 ddh_app:270] PLT: Temperature for dl_files/ff-ff-ff-ff-ff-ff
+[I 191015 13:35:49 ddh_app:270] PLT: cache hit for beach logger #7 Temperature h
+[E 191015 13:35:49 ddh_app:290] 
+[D 191015 13:36:29 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 13:36:29 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 13:36:29 ddh_app:155] SYS: this is NOT a raspberry system
+[I 191015 13:36:29 ddh_app:270] BLE: detecting loggers...
+[I 191015 13:36:29 ddh_app:270] SYS: internet, using NTP.
+[D 191015 13:36:30 ddh_app:217] GUI: keypress 1.
+[I 191015 13:36:30 ddh_app:270] PLT: Temperature for dl_files/ff-ff-ff-ff-ff-ff
+[I 191015 13:36:32 ddh_app:270] PLT: cache hit for beach logger #7 Temperature h
+[E 191015 13:36:32 ddh_app:290] 
+[D 191015 13:36:51 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 13:36:51 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 13:36:51 ddh_app:155] SYS: this is NOT a raspberry system
+[I 191015 13:36:51 ddh_app:270] BLE: detecting loggers...
+[I 191015 13:36:51 ddh_app:270] SYS: internet, using NTP.
+[D 191015 13:36:52 ddh_app:217] GUI: keypress 1.
+[I 191015 13:36:52 ddh_app:270] PLT: Temperature for dl_files/ff-ff-ff-ff-ff-ff
+[I 191015 13:36:54 ddh_app:270] PLT: cache hit for beach logger #7 Temperature h
+[E 191015 13:36:54 ddh_app:290] 
+[D 191015 13:37:13 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 13:37:13 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 13:37:13 ddh_app:155] SYS: this is NOT a raspberry system
+[I 191015 13:37:13 ddh_app:270] BLE: detecting loggers...
+[I 191015 13:37:13 ddh_app:270] SYS: internet, using NTP.
+[D 191015 13:37:13 ddh_app:217] GUI: keypress 1.
+[I 191015 13:37:13 ddh_app:270] PLT: Temperature for dl_files/ff-ff-ff-ff-ff-ff
+[I 191015 13:37:15 ddh_app:270] PLT: cache hit for beach logger #7 Temperature h
+[E 191015 13:37:15 ddh_app:290] 
+[D 191015 13:38:00 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 13:38:00 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 13:38:00 ddh_app:155] SYS: this is NOT a raspberry system
+[I 191015 13:38:00 ddh_app:270] BLE: detecting loggers...
+[I 191015 13:38:01 ddh_app:270] SYS: internet, using NTP.
+[D 191015 13:38:01 ddh_app:217] GUI: keypress 1.
+[I 191015 13:38:01 ddh_app:270] PLT: Temperature for dl_files/ff-ff-ff-ff-ff-ff
+[I 191015 13:38:03 ddh_app:270] PLT: cache hit for beach logger #7 Temperature h
+[E 191015 13:38:03 ddh_app:290] 
+[D 191015 13:38:36 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 13:38:36 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 13:38:36 ddh_app:155] SYS: this is NOT a raspberry system
+[I 191015 13:38:36 ddh_app:270] BLE: detecting loggers...
+[I 191015 13:38:36 ddh_app:270] SYS: internet, using NTP.
+[D 191015 13:38:37 ddh_app:217] GUI: keypress 1.
+[I 191015 13:38:37 ddh_app:270] PLT: Temperature for dl_files/ff-ff-ff-ff-ff-ff
+[I 191015 13:38:39 ddh_app:270] PLT: cache hit for beach logger #7 Temperature h
+[D 191015 13:39:26 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 13:39:26 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 13:39:26 ddh_app:155] SYS: this is NOT a raspberry system
+[I 191015 13:39:26 ddh_app:270] BLE: detecting loggers...
+[I 191015 13:39:26 ddh_app:270] SYS: internet, using NTP.
+[D 191015 13:39:31 ddh_app:217] GUI: keypress 1.
+[I 191015 13:39:31 ddh_app:270] PLT: Temperature for dl_files/ff-ff-ff-ff-ff-ff
+[D 191015 13:39:33 ddh_app:408] SYS: elapsed time 3486 ms.
+[I 191015 13:39:36 ddh_app:270] BLE: 0 loggers to query.
+[I 191015 13:39:38 ddh_app:270] BLE: detecting loggers...
+[D 191015 13:39:45 ddh_app:217] GUI: keypress 1.
+[I 191015 13:39:45 ddh_app:270] PLT: Temperature for dl_files/11-22-33-44-55-66
+[I 191015 13:39:48 ddh_app:270] BLE: 0 loggers to query.
+[D 191015 13:39:48 ddh_app:408] SYS: elapsed time 3873 ms.
+[I 191015 13:39:50 ddh_app:270] BLE: detecting loggers...
+[D 191015 13:39:53 ddh_app:217] GUI: keypress 1.
+[I 191015 13:39:53 ddh_app:270] PLT: Temperature for dl_files/ff-ff-ff-ff-ff-ff
+[I 191015 13:39:55 ddh_app:270] PLT: cache hit for beach logger #7 Temperature h
+[E 191015 13:39:55 ddh_app:290] 
+[D 191015 13:42:12 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 13:42:12 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 13:42:12 ddh_app:155] SYS: this is NOT a raspberry system
+[I 191015 13:42:12 ddh_app:270] BLE: detecting loggers...
+[I 191015 13:42:12 ddh_app:270] SYS: internet, using NTP.
+[D 191015 13:42:19 ddh_app:217] GUI: keypress 1.
+[I 191015 13:42:19 ddh_app:270] PLT: Temperature for dl_files/ff-ff-ff-ff-ff-ff
+[D 191015 13:42:22 ddh_app:408] SYS: elapsed time 3502 ms.
+[I 191015 13:42:22 ddh_app:270] BLE: 0 loggers to query.
+[I 191015 13:42:24 ddh_app:270] BLE: detecting loggers...
+[D 191015 13:42:27 ddh_app:217] GUI: keypress 1.
+[I 191015 13:42:27 ddh_app:270] PLT: Temperature for dl_files/11-22-33-44-55-66
+[D 191015 13:42:30 ddh_app:408] SYS: elapsed time 3883 ms.
+[I 191015 13:42:34 ddh_app:270] BLE: 0 loggers to query.
+[I 191015 13:42:36 ddh_app:270] BLE: detecting loggers...
+[D 191015 13:42:36 ddh_app:217] GUI: keypress 1.
+[I 191015 13:42:36 ddh_app:270] PLT: Temperature for dl_files/ff-ff-ff-ff-ff-ff
+[I 191015 13:42:38 ddh_app:270] PLT: cache hit for beach logger #7 Temperature h
+[E 191015 13:42:38 ddh_app:290] 
+[D 191015 13:45:16 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 13:45:16 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 13:45:16 ddh_app:155] SYS: this is NOT a raspberry system
+[I 191015 13:45:16 ddh_app:270] BLE: detecting loggers...
+[I 191015 13:45:16 ddh_app:270] SYS: internet, using NTP.
+[D 191015 13:45:17 ddh_app:217] GUI: keypress 1.
+[I 191015 13:45:17 ddh_app:270] PLT: Temperature for dl_files/ff-ff-ff-ff-ff-ff
+[I 191015 13:45:19 ddh_app:270] PLT: cache hit for beach logger #7 Temperature h
+[E 191015 13:45:19 ddh_app:290] 
+[D 191015 13:45:57 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 13:45:57 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 13:45:57 ddh_app:155] SYS: this is NOT a raspberry system
+[I 191015 13:45:57 ddh_app:270] BLE: detecting loggers...
+[I 191015 13:45:58 ddh_app:270] SYS: internet, using NTP.
+[D 191015 13:45:58 ddh_app:217] GUI: keypress 1.
+[I 191015 13:45:58 ddh_app:270] PLT: Temperature for dl_files/ff-ff-ff-ff-ff-ff
+[I 191015 13:46:00 ddh_app:270] PLT: cache hit for beach logger #7 Temperature h
+[E 191015 13:46:00 ddh_app:290] 
+[D 191015 13:46:24 ddh_app:71] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 13:46:24 ddh_app:72] SYS: recall re-RUN post download, search '###'
+[D 191015 13:46:24 ddh_app:155] SYS: this is NOT a raspberry system
+[I 191015 13:46:24 ddh_app:270] BLE: detecting loggers...
+[I 191015 13:46:24 ddh_app:270] SYS: internet, using NTP.
+[D 191015 13:46:25 ddh_app:217] GUI: keypress 1.
+[I 191015 13:46:25 ddh_app:270] PLT: Temperature for dl_files/ff-ff-ff-ff-ff-ff
+[I 191015 13:46:28 ddh_app:270] PLT: cache hit for beach logger #7 Temperature h
+[E 191015 13:46:28 ddh_app:290] 
+[D 191015 14:00:06 ddh_app:79] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191015 14:00:06 ddh_app:80] SYS: recall re-RUN post download, search '###'
+[D 191015 14:00:06 ddh_app:164] SYS: this is NOT a raspberry system
+[I 191015 14:00:06 ddh_app:286] BLE: detecting loggers...
+[D 191015 14:00:07 ddh_app:226] GUI: keypress 1.
+[I 191015 14:00:07 ddh_app:286] PLT: Temperature ff:ff:ff:ff:ff:ff vs None
+[D 191015 14:00:09 ddh_app:424] SYS: elapsed time 3490 ms.
+[D 191015 14:00:10 ddh_app:231] GUI: keypress 2.
+[I 191015 14:00:10 ddh_app:286] PLT: Temperature ff:ff:ff:ff:ff:ff vs 11:22:33:44:55:66
+[I 191015 14:00:11 ddh_app:286] BLE: 0 loggers to query.
+[I 191015 14:00:13 ddh_app:286] BLE: detecting loggers...
+[D 191015 14:00:14 ddh_app:424] SYS: elapsed time 7138 ms.
+[D 191015 14:00:17 ddh_app:167] SYS: closing GUI APP...
+[D 191016 09:42:16 ddh_app:80] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191016 09:42:16 ddh_app:81] SYS: recall re-RUN post download, search '###'
+[D 191016 09:42:16 ddh_app:164] SYS: this is NOT a raspberry system
+[I 191016 09:42:16 ddh_app:280] BLE: detecting loggers...
+[D 191016 09:42:21 ddh_app:226] GUI: keypress 1.
+[I 191016 09:42:21 ddh_app:280] PLT: Temperature for dl_files/ff-ff-ff-ff-ff-ff
+[D 191016 09:42:21 ddh_app:418] SYS: elapsed time 263 ms.
+[I 191016 09:42:21 ddh_app:280] BLE: 1 loggers to query.
+[I 191016 09:42:21 ddh_app:280] BLE: connecting 04:ee:03:6c:ef:49.
+[D 191016 09:42:49 ddh_app:80] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191016 09:42:49 ddh_app:81] SYS: recall re-RUN post download, search '###'
+[D 191016 09:42:49 ddh_app:164] SYS: this is NOT a raspberry system
+[I 191016 09:42:49 ddh_app:280] BLE: detecting loggers...
+[D 191016 09:42:50 ddh_app:226] GUI: keypress 1.
+[I 191016 09:42:50 ddh_app:280] PLT: Temperature for dl_files/ff-ff-ff-ff-ff-ff
+[D 191016 09:42:51 ddh_app:418] SYS: elapsed time 225 ms.
+[D 191016 09:42:53 ddh_app:231] GUI: keypress 2.
+[I 191016 09:42:53 ddh_app:280] PLT: Pressure for dl_files/ff-ff-ff-ff-ff-ff
+[E 191016 09:42:53 ddh_app:300] PLT: can't Pressure for dl_files/ff-ff-ff-ff-ff-ff
+[D 191016 09:42:53 ddh_app:418] SYS: elapsed time 8 ms.
+[I 191016 09:42:54 ddh_app:280] BLE: 0 loggers to query.
+[D 191016 09:42:56 ddh_app:226] GUI: keypress 1.
+[I 191016 09:42:56 ddh_app:280] PLT: Pressure for dl_files/11-22-33-44-55-66
+[I 191016 09:42:56 ddh_app:280] BLE: detecting loggers...
+[D 191016 09:42:57 ddh_app:418] SYS: elapsed time 1283 ms.
+[D 191016 09:43:00 ddh_app:226] GUI: keypress 1.
+[I 191016 09:43:00 ddh_app:280] PLT: Pressure for dl_files/ff-ff-ff-ff-ff-ff
+[E 191016 09:43:00 ddh_app:300] PLT: can't Pressure for dl_files/ff-ff-ff-ff-ff-ff
+[D 191016 09:43:00 ddh_app:418] SYS: elapsed time 5 ms.
+[I 191016 09:43:01 ddh_app:280] BLE: 0 loggers to query.
+[D 191016 09:43:01 ddh_app:226] GUI: keypress 1.
+[I 191016 09:43:01 ddh_app:280] PLT: Pressure for dl_files/11-22-33-44-55-66
+[I 191016 09:43:02 ddh_app:280] PLT: cache hit
+[D 191016 09:43:02 ddh_app:418] SYS: elapsed time 195 ms.
+[D 191016 09:43:03 ddh_app:231] GUI: keypress 2.
+[I 191016 09:43:03 ddh_app:280] PLT: Temperature for dl_files/11-22-33-44-55-66
+[D 191016 09:43:03 ddh_app:418] SYS: elapsed time 207 ms.
+[I 191016 09:43:03 ddh_app:280] BLE: detecting loggers...
+[D 191016 09:43:03 ddh_app:231] GUI: keypress 2.
+[I 191016 09:43:03 ddh_app:280] PLT: Pressure for dl_files/11-22-33-44-55-66
+[I 191016 09:43:04 ddh_app:280] PLT: cache hit
+[D 191016 09:43:04 ddh_app:418] SYS: elapsed time 231 ms.
+[D 191016 09:43:06 ddh_app:231] GUI: keypress 2.
+[I 191016 09:43:06 ddh_app:280] PLT: Temperature for dl_files/11-22-33-44-55-66
+[I 191016 09:43:06 ddh_app:280] PLT: cache hit
+[D 191016 09:43:06 ddh_app:418] SYS: elapsed time 212 ms.
+[D 191016 09:43:07 ddh_app:231] GUI: keypress 2.
+[I 191016 09:43:07 ddh_app:280] PLT: Pressure for dl_files/11-22-33-44-55-66
+[I 191016 09:43:07 ddh_app:280] PLT: cache hit
+[D 191016 09:43:07 ddh_app:418] SYS: elapsed time 219 ms.
+[I 191016 09:43:08 ddh_app:280] BLE: 0 loggers to query.
+[I 191016 09:43:10 ddh_app:280] BLE: detecting loggers...
+[D 191016 09:43:11 ddh_app:231] GUI: keypress 2.
+[I 191016 09:43:11 ddh_app:280] PLT: Temperature for dl_files/11-22-33-44-55-66
+[I 191016 09:43:12 ddh_app:280] PLT: cache hit
+[D 191016 09:43:12 ddh_app:418] SYS: elapsed time 226 ms.
+[D 191016 09:43:12 ddh_app:231] GUI: keypress 2.
+[I 191016 09:43:12 ddh_app:280] PLT: Pressure for dl_files/11-22-33-44-55-66
+[I 191016 09:43:12 ddh_app:280] PLT: cache hit
+[D 191016 09:43:12 ddh_app:418] SYS: elapsed time 220 ms.
+[I 191016 09:43:16 ddh_app:280] BLE: 0 loggers to query.
+[D 191016 09:43:17 ddh_app:167] SYS: closing GUI APP...
+[D 191016 09:44:22 ddh_app:80] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191016 09:44:22 ddh_app:81] SYS: recall re-RUN post download, search '###'
+[D 191016 09:44:22 ddh_app:164] SYS: this is NOT a raspberry system
+[I 191016 09:44:22 ddh_app:280] BLE: detecting loggers...
+[D 191016 09:44:27 ddh_app:226] GUI: keypress 1.
+[I 191016 09:44:27 ddh_app:280] PLT: Temperature for dl_files/ff-ff-ff-ff-ff-ff
+[D 191016 09:44:27 ddh_app:418] SYS: elapsed time 230 ms.
+[I 191016 09:44:28 ddh_app:280] BLE: 0 loggers to query.
+[I 191016 09:44:30 ddh_app:280] BLE: detecting loggers...
+[D 191016 09:44:33 ddh_app:231] GUI: keypress 2.
+[I 191016 09:44:33 ddh_app:280] PLT: Pressure for dl_files/ff-ff-ff-ff-ff-ff
+[E 191016 09:44:33 ddh_app:300] PLT: can't Pressure for dl_files/ff-ff-ff-ff-ff-ff
+[D 191016 09:44:33 ddh_app:418] SYS: elapsed time 8 ms.
+[D 191016 09:44:34 ddh_app:226] GUI: keypress 1.
+[I 191016 09:44:34 ddh_app:280] PLT: Pressure for dl_files/11-22-33-44-55-66
+[D 191016 09:44:35 ddh_app:418] SYS: elapsed time 218 ms.
+[I 191016 09:44:35 ddh_app:280] BLE: 0 loggers to query.
+[I 191016 09:44:37 ddh_app:280] BLE: detecting loggers...
+[D 191016 09:44:39 ddh_app:231] GUI: keypress 2.
+[I 191016 09:44:39 ddh_app:280] PLT: Temperature for dl_files/11-22-33-44-55-66
+[D 191016 09:44:40 ddh_app:418] SYS: elapsed time 204 ms.
+[D 191016 09:44:41 ddh_app:231] GUI: keypress 2.
+[I 191016 09:44:41 ddh_app:280] PLT: Pressure for dl_files/11-22-33-44-55-66
+[I 191016 09:44:41 ddh_app:280] PLT: cache hit
+[D 191016 09:44:42 ddh_app:418] SYS: elapsed time 211 ms.
+[I 191016 09:44:42 ddh_app:280] BLE: 0 loggers to query.
+[D 191016 09:44:42 ddh_app:231] GUI: keypress 2.
+[I 191016 09:44:42 ddh_app:280] PLT: Temperature for dl_files/11-22-33-44-55-66
+[I 191016 09:44:42 ddh_app:280] PLT: cache hit
+[D 191016 09:44:42 ddh_app:418] SYS: elapsed time 208 ms.
+[D 191016 09:44:43 ddh_app:231] GUI: keypress 2.
+[I 191016 09:44:43 ddh_app:280] PLT: Pressure for dl_files/11-22-33-44-55-66
+[I 191016 09:44:43 ddh_app:280] PLT: cache hit
+[D 191016 09:44:44 ddh_app:418] SYS: elapsed time 214 ms.
+[I 191016 09:44:44 ddh_app:280] BLE: detecting loggers...
+[D 191016 09:44:45 ddh_app:239] GUI: keypress 3.
+[I 191016 09:44:45 ddh_app:280] PLT: Pressure for dl_files/11-22-33-44-55-66
+[D 191016 09:44:45 ddh_app:418] SYS: elapsed time 238 ms.
+[D 191016 09:44:49 ddh_app:231] GUI: keypress 2.
+[I 191016 09:44:49 ddh_app:280] PLT: Temperature for dl_files/11-22-33-44-55-66
+[D 191016 09:44:49 ddh_app:418] SYS: elapsed time 240 ms.
+[I 191016 09:44:49 ddh_app:280] BLE: 0 loggers to query.
+[D 191016 09:44:50 ddh_app:231] GUI: keypress 2.
+[I 191016 09:44:50 ddh_app:280] PLT: Pressure for dl_files/11-22-33-44-55-66
+[I 191016 09:44:50 ddh_app:280] PLT: cache hit
+[D 191016 09:44:50 ddh_app:418] SYS: elapsed time 242 ms.
+[D 191016 09:44:50 ddh_app:231] GUI: keypress 2.
+[I 191016 09:44:50 ddh_app:280] PLT: Temperature for dl_files/11-22-33-44-55-66
+[I 191016 09:44:51 ddh_app:280] PLT: cache hit
+[D 191016 09:44:51 ddh_app:418] SYS: elapsed time 269 ms.
+[I 191016 09:44:51 ddh_app:280] BLE: detecting loggers...
+[I 191016 09:44:52 ddh_app:280] SYS: internet, using NTP.
+[D 191016 09:44:53 ddh_app:231] GUI: keypress 2.
+[I 191016 09:44:53 ddh_app:280] PLT: Pressure for dl_files/11-22-33-44-55-66
+[I 191016 09:44:53 ddh_app:280] PLT: cache hit
+[D 191016 09:44:53 ddh_app:418] SYS: elapsed time 260 ms.
+[D 191016 09:44:54 ddh_app:239] GUI: keypress 3.
+[I 191016 09:44:54 ddh_app:280] PLT: Pressure for dl_files/11-22-33-44-55-66
+[D 191016 09:44:55 ddh_app:418] SYS: elapsed time 202 ms.
+[I 191016 09:44:56 ddh_app:280] BLE: 0 loggers to query.
+[D 191016 09:44:56 ddh_app:231] GUI: keypress 2.
+[I 191016 09:44:56 ddh_app:280] PLT: Temperature for dl_files/11-22-33-44-55-66
+[D 191016 09:44:56 ddh_app:418] SYS: elapsed time 320 ms.
+[I 191016 09:44:58 ddh_app:280] BLE: detecting loggers...
+[D 191016 09:45:02 ddh_app:167] SYS: closing GUI APP...
+[D 191016 09:45:08 ddh_app:80] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191016 09:45:08 ddh_app:81] SYS: recall re-RUN post download, search '###'
+[D 191016 09:45:08 ddh_app:164] SYS: this is NOT a raspberry system
+[I 191016 09:45:08 ddh_app:280] BLE: detecting loggers...
+[D 191016 09:45:13 ddh_app:226] GUI: keypress 1.
+[I 191016 09:45:13 ddh_app:280] PLT: Temperature for dl_files/ff-ff-ff-ff-ff-ff
+[D 191016 09:45:13 ddh_app:418] SYS: elapsed time 202 ms.
+[I 191016 09:45:13 ddh_app:280] BLE: 0 loggers to query.
+[D 191016 09:45:15 ddh_app:226] GUI: keypress 1.
+[I 191016 09:45:15 ddh_app:280] PLT: Temperature for dl_files/11-22-33-44-55-66
+[D 191016 09:45:15 ddh_app:418] SYS: elapsed time 189 ms.
+[I 191016 09:45:15 ddh_app:280] BLE: detecting loggers...
+[D 191016 09:45:18 ddh_app:231] GUI: keypress 2.
+[I 191016 09:45:18 ddh_app:280] PLT: Pressure for dl_files/11-22-33-44-55-66
+[D 191016 09:45:19 ddh_app:418] SYS: elapsed time 224 ms.
+[D 191016 09:45:19 ddh_app:231] GUI: keypress 2.
+[I 191016 09:45:19 ddh_app:280] PLT: Temperature for dl_files/11-22-33-44-55-66
+[I 191016 09:45:19 ddh_app:280] PLT: cache hit
+[D 191016 09:45:19 ddh_app:418] SYS: elapsed time 210 ms.
+[I 191016 09:45:21 ddh_app:280] BLE: 0 loggers to query.
+[I 191016 09:45:23 ddh_app:280] BLE: detecting loggers...
+[I 191016 09:45:28 ddh_app:280] BLE: 0 loggers to query.
+[I 191016 09:45:30 ddh_app:280] BLE: detecting loggers...
+[D 191016 09:45:35 ddh_app:231] GUI: keypress 2.
+[I 191016 09:45:35 ddh_app:280] PLT: Pressure for dl_files/11-22-33-44-55-66
+[I 191016 09:45:35 ddh_app:280] PLT: cache hit
+[D 191016 09:45:35 ddh_app:418] SYS: elapsed time 231 ms.
+[I 191016 09:45:35 ddh_app:280] BLE: 0 loggers to query.
+[D 191016 09:45:35 ddh_app:231] GUI: keypress 2.
+[I 191016 09:45:35 ddh_app:280] PLT: Temperature for dl_files/11-22-33-44-55-66
+[I 191016 09:45:35 ddh_app:280] PLT: cache hit
+[D 191016 09:45:36 ddh_app:418] SYS: elapsed time 219 ms.
+[I 191016 09:45:37 ddh_app:280] BLE: detecting loggers...
+[D 191016 09:45:38 ddh_app:231] GUI: keypress 2.
+[I 191016 09:45:38 ddh_app:280] PLT: Pressure for dl_files/11-22-33-44-55-66
+[I 191016 09:45:38 ddh_app:280] SYS: internet, using NTP.
+[I 191016 09:45:38 ddh_app:280] PLT: cache hit
+[D 191016 09:45:38 ddh_app:418] SYS: elapsed time 249 ms.
+[I 191016 09:45:42 ddh_app:280] BLE: 0 loggers to query.
+[I 191016 09:45:44 ddh_app:280] BLE: detecting loggers...
+[D 191016 09:45:45 ddh_app:167] SYS: closing GUI APP...
+[D 191016 11:23:29 ddh_app:80] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191016 11:23:29 ddh_app:81] SYS: recall re-RUN post download, search '###'
+[D 191016 11:23:29 ddh_app:164] SYS: this is NOT a raspberry system
+[I 191016 11:23:29 ddh_app:280] BLE: detecting loggers...
+[D 191016 11:23:32 ddh_app:167] SYS: closing GUI APP...

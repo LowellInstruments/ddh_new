@@ -54,7 +54,7 @@ DDH_BLE_MAC_FILTER = (
     # '00:1e:c0:4d:bf:c9',
     # '00:1e:c0:4d:d2:37',
     # '00:1e:c0:4d:bf:db',
-    '04:ee:03:6c:ef:49',
+    # '04:ee:03:6c:ef:49',
 )
 DDH_ERR_DISPLAY_TIMEOUT = 5
 DDH_PLT_DISPLAY_TIMEOUT = 25
