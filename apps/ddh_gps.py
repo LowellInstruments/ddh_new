@@ -15,7 +15,10 @@ class DeckDataHubGPS:
 
     @staticmethod
     def gps_loop(signals, ddh_gps_period):
+        # always sync upon start
+        DeckDataHubGPS.sync_sys_clock_gps_or_internet(signals)
         timeout_gps = ddh_gps_period
+
         while 1:
             if timeout_gps > 0:
                 timeout_gps -= 1
@@ -33,11 +36,13 @@ class DeckDataHubGPS:
             signals.status.emit(status)
             linux_set_time_to_use_ntp()
             signals.gps_result.emit('NTP', '_', '_', '_')
+            signals.internet_result.emit(True, '_')
         else:
             status = 'SYS: no internet, trying GPS...'
             signals.status.emit(status)
             # GPS receiver on USB but may receive frame in time, OR not
             DeckDataHubGPS._set_time_from_gps(signals)
+            signals.internet_result.emit(False, '_')
 
     # sync system clock upon receiving GPRMC frame successfully
     @staticmethod
@@ -46,7 +51,7 @@ class DeckDataHubGPS:
         frame = DeckDataHubGPS._get_gps_frame(signals)
         if frame is None:
             signals.status.emit('GPS: no frame to sync time.')
-            signals.gps_result.emit('local', '_', '_', '_')
+            signals.gps_result.emit('Local', '_', '_', '_')
             return False
 
         # set timezone in received datetime object and apply offset
@@ -54,7 +59,7 @@ class DeckDataHubGPS:
         dt_utc_zoned = dt_utc.astimezone(pytz.timezone('US/Eastern'))
         dt_est = str(dt_utc_zoned + dt_utc_zoned.utcoffset())[:19]
         lat, lon = str(frame.latitude), str(frame.longitude)
-        signals.gps_result.emit('gps', dt_est, lat, lon)
+        signals.gps_result.emit('GPS', dt_est, lat, lon)
 
         # build tuple for linux commands (Y,M,D,H,M,S,ms) and set local time
         time_tuple = (int(dt_est[0:4]),

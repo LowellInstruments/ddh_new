@@ -3,7 +3,7 @@ import sys
 import time
 import os
 import signal
-from gui.ble_gui_ui import Ui_tabs
+from gui.ble_gui import Ui_tabs
 from PyQt5.QtCore import (
     Qt,
     QThreadPool,
@@ -73,7 +73,8 @@ class DDHQtApp(QMainWindow):
         singleton.SingleInstance()
         assert sys.version_info >= (3, 5)
         assert check_config_file()
-        if os.path.exists('ddh_avg.db'): os.remove('ddh_avg.db')
+        if os.path.exists('ddh_avg.db'):
+            os.remove('ddh_avg.db')
         logzero.logfile("ddh.log", maxBytes=int(1e6), backupCount=3, mode='a')
 
         # banners
@@ -86,12 +87,13 @@ class DDHQtApp(QMainWindow):
         self.ui = Ui_tabs()
         self.ui.setupUi(self.tabs)
         self.setWindowTitle('Lowell Instruments\' Deck Data Hub')
-        self.ui.lbl_error.hide()
-        self.ui.lbl_busy_dl.hide()
+        # self.ui.lbl_error.hide()
+        # self.ui.lbl_busy_dl.hide()
         self.ui.lbl_busy_plot.hide()
         self.ui.img_time.setPixmap(QPixmap('gui/res/img_datetime.png'))
         self.ui.img_sync.setPixmap(QPixmap('gui/res/img_sync.png'))
         self.ui.img_boat.setPixmap(QPixmap('gui/res/img_boatname.png'))
+        self.ui.img_ble.setPixmap(QPixmap('gui/res/img_blue.png'))
         self.tabs.setTabIcon(0, QIcon('gui/res/icon_info.ico'))
         self.tabs.setTabIcon(1, QIcon('gui/res/icon_dl.ico'))
         self.tabs.setTabIcon(2, QIcon('gui/res/icon_graph.ico'))
@@ -190,6 +192,7 @@ class DDHQtApp(QMainWindow):
         self.th_gps.signals.status.connect(self.slot_status)
         self.th_gps.signals.error.connect(self.slot_error)
         self.th_gps.signals.gps_result.connect(self.slot_gps_result)
+        self.th_gps.signals.internet_result.connect(self.slot_internet_result)
 
     def _ddh_thread_throw_plt(self, folders_to_plot):
         fxn = DeckDataHubPLT.plt_plot
@@ -261,17 +264,14 @@ class DDHQtApp(QMainWindow):
 
     @pyqtSlot(name='slot_ble_scan_start')
     def slot_ble_scan_start(self):
-        self.ui.lbl_busy_dl.hide()
-        self.ui.lbl_dl_status_1.clear()
-        self.ui.lbl_dl_status_2.clear()
-        self.ui.lbl_dl_status_3.clear()
         self.ui.bar_dl.setValue(0)
-        self.ui.lbl_dl_status_1.setText('Scanning for loggers...\n\n\n')
+        self.ui.lbl_ble_short.setText('Scanning...')
 
     @pyqtSlot(object, name='slot_ble_scan_result')
     def slot_ble_scan_result(self, result):
+        # do nothing, wherever we are
         if result:
-            self.tabs.setCurrentIndex(1)
+            pass
         else:
             pass
 
@@ -290,10 +290,10 @@ class DDHQtApp(QMainWindow):
         # google: stylesheet named colors
         style = "background-color: LightYellow; border-style: outset;"
         style += "border-width: 2px; border-radius: 10px;"
-        self.ui.lbl_error.setText(t)
-        self.ui.lbl_error.setStyleSheet(style)
+        # self.ui.lbl_error.setText(t)
+        # self.ui.lbl_error.setStyleSheet(style)
         self.err_timeout_display = DDH_ERR_DISPLAY_TIMEOUT
-        self.ui.lbl_error.show()
+        # self.ui.lbl_error.show()
 
     @pyqtSlot(str, name='slot_error')
     def slot_error(self, e):
@@ -307,47 +307,53 @@ class DDHQtApp(QMainWindow):
         # google: stylesheet named colors
         style = "background-color: LightBlue; border-style: outset;"
         style += "border-width: 2px; border-radius: 10px;"
-        self.ui.lbl_error.setText(e)
-        self.ui.lbl_error.setStyleSheet(style)
+        # self.ui.lbl_error.setText(e)
+        # self.ui.lbl_error.setStyleSheet(style)
         self.err_timeout_display = DDH_ERR_DISPLAY_TIMEOUT
-        self.ui.lbl_error.show()
+        # self.ui.lbl_error.show()
 
     # a download session consists of 1 to n loggers
     @pyqtSlot(str, int, int, name='slot_ble_dl_session')
     def slot_ble_dl_session(self, desc, val_1, val_2):
-        text = 'Connected {}\n\nLogger {} of {}'.format(desc, val_1, val_2)
-        self.ui.lbl_dl_status_1.setText(text)
-        self.ui.lbl_busy_dl.show()
+        # desc: name, val_1: logger index, val_2: total num of loggers
+        text = 'Connected'
+        self.ui.lbl_ble_short.setText(text)
+        text = 'Logger name:\n{}'.format(desc)
+        self.ui.lbl_ble_long.setText(text)
         self.ui.bar_dl.setValue(0)
 
     # indicates current logger of current download session
     @pyqtSlot(name='slot_ble_dl_logger')
     def slot_ble_dl_logger(self):
-        text = '\nConfiguring logger for download...'
-        self.ui.lbl_dl_status_2.setText(text)
+        text = 'Configuring'
+        self.ui.lbl_ble_short.setText(text)
 
     # one logger can have 1 to n files
     @pyqtSlot(str, int, int, int, name='slot_ble_dl_file')
     def slot_ble_dl_file(self, desc, val_1, val_2, val_3):
-        text = '\nGetting file {} of {} -> {}'.format(val_1, val_2, desc)
-        text += '\n\n{} minutes to full logger download'.format(val_3)
-        self.ui.lbl_dl_status_2.setText(text)
+        # val_1: file index, val_2: total files, desc: file name
+        text = 'Downloading'
+        self.ui.lbl_ble_short.setText(text)
+        text += '\n\n{} minutes left'.format(val_3)
+        self.ui.lbl_ble_long.setText(text)
 
     # function post dl_file, note trailing '_'
     @pyqtSlot(int, int, name='slot_ble_dl_file_')
     def slot_ble_dl_file_(self, val_1, val_2):
-        text = '{} bytes/sec'.format(val_2)
+        # val_1: percentage increase, val_2: data rate
+        text = 'Got file at\n{} Bytes / second'.format(val_2)
+        self.ui.lbl_ble_long.setText(text)
         percentage = self.ui.bar_dl.value() + val_1
-        self.ui.lbl_dl_status_3.setText('\n{}'.format(text))
         self.ui.bar_dl.setValue(percentage)
 
     # function post dl_logger, note trailing '_'
     @pyqtSlot(str, int, name='slot_ble_dl_logger_')
     def slot_ble_dl_logger_(self, desc, val_1):
+        # desc: logger name, val_1: number of files sent
+        text = 'Completed'
+        self.ui.lbl_ble_short.setText(text)
         text = 'Logger {} sent {} files.'.format(desc, val_1)
-        self.ui.lbl_dl_status_1.setText(text)
-        self.ui.lbl_dl_status_2.clear()
-        self.ui.lbl_dl_status_3.clear()
+        self.ui.lbl_ble_long.setText(text)
         self.ui.bar_dl.setValue(100)
         # try to draw if something downloaded from last logger
         if val_1:
@@ -360,7 +366,7 @@ class DDHQtApp(QMainWindow):
     @pyqtSlot(object, name='slot_plt_result')
     def slot_plt_result(self, result):
         if result:
-            self.tabs.setCurrentIndex(2)
+            self.tabs.setCurrentIndex(1)
             self.plt_timeout_display = DDH_PLT_DISPLAY_TIMEOUT
         else:
             self.tabs.setCurrentIndex(0)
@@ -373,22 +379,32 @@ class DDHQtApp(QMainWindow):
 
     @pyqtSlot(str, str, str, str, name='slot_gps_result')
     def slot_gps_result(self, clk_source, gps_time, gps_lat, gps_lon):
-        self.ui.lbl_sync.setText(clk_source + ' clock sync')
+        self.ui.lbl_clock_sync.setText(clk_source + ' time')
         if clk_source == 'gps':
             t = 'GPS: received RMC frame.\n'
             t += '\t-> {} US/Eastern time offset adjusted.\n'.format(gps_time)
             t += '\t-> lat {} lon {}.'.format(gps_lat, gps_lon)
             console_log.info(t)
 
+    @pyqtSlot(bool, str, name='slot_internet_result')
+    def slot_internet_result(self, we_have, internet_source):
+        if we_have:
+            self.ui.lbl_internet.setText('Internet\nconnected')
+            t = 'SYS: we have internet'
+        else:
+            self.ui.lbl_internet.setText('Internet\ndisconnected')
+            t = 'SYS: NO internet connection detected'
+        console_log.info(t)
+
     @pyqtSlot(str, name='slot_gui_tick')
     def slot_gui_tick(self, desc):
         # update some widgets in GUI
         self.sys_seconds += 1
         self.bsy_indicator = desc
-        time_format = '\n%m / %d / %y\n%H : %M : %S'
+        time_format = '%m / %d / %y\n%H : %M : %S'
         formatted_time = datetime.datetime.now().strftime(time_format)
-        self.ui.lbl_time.setText(formatted_time)
-        self.ui.lbl_busy_dl.setText(self.bsy_indicator)
+        self.ui.lbl_clock_time.setText(formatted_time)
+        # self.ui.lbl_busy_dl.setText(self.bsy_indicator)
         self.ui.lbl_busy_plot.setText(self.bsy_indicator)
 
         # timeout to display plot tab, compare to 1 only runs once
@@ -398,8 +414,8 @@ class DDHQtApp(QMainWindow):
             self.plt_timeout_display -= 1
 
         # timeout to display error banner, compare to 1 only runs once
-        if self.err_timeout_display == 1:
-            self.ui.lbl_error.hide()
+        # if self.err_timeout_display == 1:
+        #     self.ui.lbl_error.hide()
         if self.err_timeout_display > 0:
             self.err_timeout_display -= 1
 

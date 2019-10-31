@@ -23,6 +23,8 @@ class SignalsGPS(QObject):
     error_gui = pyqtSignal(str)
     error = pyqtSignal(str)
     gps_result = pyqtSignal(str, str, str, str)
+    internet_result = pyqtSignal(bool, str)
+
 
 
 class SignalsPLT(QObject):
