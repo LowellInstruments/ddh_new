@@ -1,6 +1,7 @@
 import json
 import sqlite3
 import numpy as np
+from matplotlib.ticker import FormatStrFormatter
 
 from .ddh_utils import (
     mac_from_folder,
@@ -113,7 +114,7 @@ class DeckDataHubPLT:
         c = metric_to_column_name(metric)
         mac = mac_from_folder(folder)
 
-        # shape data to work with
+        # prune data to work with
         lid_files_to_csv(folder)
         df = csv_to_data_frames(folder, metric)
         x, y = del_frames_before(df, ts, c)
@@ -137,35 +138,36 @@ class DeckDataHubPLT:
     def plt_plot(signals, folder, cnv, ts, metric):
         # signals and metadata
         signals.clk_start.emit()
-        signals.status.emit('PLT: {} for {}'.format(metric, folder))
+        signals.status.emit('PLT: {} ({}) for {}'.format(metric, ts, folder))
+        c = metric_to_column_name(metric)
+        lbl = mac_dns(mac_from_folder(folder))
 
         # maybe database has this query
         try:
             t, y = DeckDataHubPLT.plt_cache_query(signals, folder, ts, metric)
-        except AttributeError:
-            e = 'PLT: can\'t {} for {}'.format(metric, folder)
+        except AttributeError as ae:
+            e = 'PLT: can\'t {} ({}) for {}'.format(metric, ts, folder)
             return DeckDataHubPLT.plt_error(signals, e)
 
         # check we have at least two points to plot a line
         if np.count_nonzero(~np.isnan(y)) < 2:
-            e = 'PLT: few {} points for {}'.format(metric, folder)
+            e = 'PLT: few {} ({}) points for {}'.format(metric, ts, folder)
             return DeckDataHubPLT.plt_error(signals, e)
 
-        # build plot axes axes
+        # build plot axis, not axes
         cnv.figure.clf()
-        c = metric_to_column_name(metric)
-        lbl = mac_dns(mac_from_folder(folder))
         clr = line_color(c)
         ax = cnv.figure.add_subplot(111)
         ax.plot(t, y, label=lbl, color=clr)
 
-        # plot labels and legends
+        # plot labels, axes and legends
         lbs = format_time_ticks(t, ts)
         ax.set_xticks(lbs)
         ax.set_xticklabels(format_time_labels(lbs, ts))
         ax.set_xlabel('time', fontsize='large', fontweight='bold')
         ax.set_ylabel(c, fontsize='large', fontweight='bold')
         ax.set_title(format_title(t, ts), fontsize='large')
+        # ax.yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
         ax.legend()
         cnv.draw()
 

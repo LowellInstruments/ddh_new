@@ -9,8 +9,8 @@
 	"name": "Maggie Sue"
     },
 	"metrics": [
-		"Temperature",
-		"Pressure"
+		"DOS",
+		"DOT"
 	],
 	"ftp_site": "ftp.lowellinstruments.com",
 	"ftp_username": "jeff@lowellinstruments.com",

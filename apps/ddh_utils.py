@@ -130,9 +130,21 @@ def lid_files_to_csv(folder):
             DataConverter(bn + '.lid', parameters).convert()
 
 
+def metric_to_file_suffix(metric):
+    metric_dict = {
+        'DOS': '_DissolvedOxygen',
+        'DOP': '_DissolvedOxygen',
+        'DOT': '_DissolvedOxygen',
+        'T': '_Temperature',
+        'P': '_Pressure',
+    }
+    return metric_dict[metric]
+
+
 def csv_to_data_frames(folder, metric):
+    suffix = metric_to_file_suffix(metric)
     try:
-        return dd.read_csv(os.path.join(folder, "*" + metric + "*.csv"))
+        return dd.read_csv(os.path.join(folder, "*" + suffix + "*.csv"))
     except (IOError, Exception):
         return None
 
@@ -196,7 +208,7 @@ def del_frames_before(df_in, span, column_name):
             a = s
 
         return _slice_w_idx(df_in, a, b, column_name)
-    except (KeyError, Exception):
+    except (KeyError, Exception) as e:
         return None, None
 
 
@@ -256,6 +268,10 @@ def metric_to_column_name(metric):
     metric_dict = {
         'Temperature':  'Temperature (C)',
         'Pressure':     'Pressure (psi)',
+        'DOS': 'Dissolved Oxygen (mg/l)',
+        'DOP': 'Dissolved Oxygen (%)',
+        'DOT': 'Temperature (C)',
+
     }
     return metric_dict[metric]
 
@@ -264,5 +280,7 @@ def line_color(column_name):
     color_dict = {
         'Temperature (C)':  'red',
         'Pressure (psi)':   'lime',
+        'Dissolved Oxygen (mg/l)': 'blue',
+        'Dissolved Oxygen (%)': 'orange',
     }
     return color_dict[column_name]
