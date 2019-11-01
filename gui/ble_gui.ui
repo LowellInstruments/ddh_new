@@ -74,10 +74,10 @@
    <widget class="QWidget" name="gridLayoutWidget_2">
     <property name="geometry">
      <rect>
-      <x>460</x>
+      <x>420</x>
       <y>20</y>
-      <width>301</width>
-      <height>401</height>
+      <width>341</width>
+      <height>261</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -87,54 +87,12 @@
      </sizepolicy>
     </property>
     <layout class="QGridLayout" name="gridLayout_3">
-     <item row="0" column="1">
-      <widget class="QLabel" name="lbl_ble_short">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-         <horstretch>5</horstretch>
-         <verstretch>4</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>20</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>&lt;bleshort&gt;</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0" colspan="2">
-      <widget class="QProgressBar" name="bar_dl">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-         <horstretch>1</horstretch>
-         <verstretch>2</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>16</pointsize>
-        </font>
-       </property>
-       <property name="value">
-        <number>0</number>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
      <item row="0" column="0">
       <widget class="QLabel" name="img_ble">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
-         <horstretch>5</horstretch>
-         <verstretch>4</verstretch>
+         <horstretch>3</horstretch>
+         <verstretch>6</verstretch>
         </sizepolicy>
        </property>
        <property name="text">
@@ -146,6 +104,9 @@
        <property name="scaledContents">
         <bool>true</bool>
        </property>
+       <property name="margin">
+        <number>5</number>
+       </property>
       </widget>
      </item>
      <item row="3" column="0" colspan="2">
@@ -153,11 +114,32 @@
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
          <horstretch>0</horstretch>
-         <verstretch>8</verstretch>
+         <verstretch>4</verstretch>
         </sizepolicy>
        </property>
        <property name="text">
         <string>&lt;blelong&gt;</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="lbl_ble_short">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>6</horstretch>
+         <verstretch>4</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>20</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>&lt;bleshort&gt;</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -177,6 +159,27 @@
        </property>
       </widget>
      </item>
+     <item row="2" column="0" colspan="2">
+      <widget class="QProgressBar" name="bar_dl">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>1</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>16</pointsize>
+        </font>
+       </property>
+       <property name="value">
+        <number>0</number>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
     </layout>
    </widget>
    <widget class="QWidget" name="gridLayoutWidget_3">
@@ -184,7 +187,7 @@
      <rect>
       <x>30</x>
       <y>20</y>
-      <width>411</width>
+      <width>361</width>
       <height>121</height>
      </rect>
     </property>
@@ -223,7 +226,7 @@
       <widget class="QLabel" name="img_boat">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
-         <horstretch>4</horstretch>
+         <horstretch>5</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
@@ -245,7 +248,7 @@
      <rect>
       <x>30</x>
       <y>160</y>
-      <width>411</width>
+      <width>361</width>
       <height>121</height>
      </rect>
     </property>
@@ -309,7 +312,7 @@
      <rect>
       <x>30</x>
       <y>300</y>
-      <width>411</width>
+      <width>361</width>
       <height>121</height>
      </rect>
     </property>
@@ -392,33 +395,69 @@
      </item>
     </layout>
    </widget>
-   <widget class="QLabel" name="label_13">
+   <widget class="QWidget" name="gridLayoutWidget_6">
     <property name="geometry">
      <rect>
-      <x>740</x>
-      <y>250</y>
-      <width>30</width>
-      <height>116</height>
+      <x>420</x>
+      <y>300</y>
+      <width>341</width>
+      <height>121</height>
      </rect>
     </property>
-    <property name="minimumSize">
-     <size>
-      <width>30</width>
-      <height>0</height>
-     </size>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
     </property>
-    <property name="maximumSize">
-     <size>
-      <width>100</width>
-      <height>16777215</height>
-     </size>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="scaledContents">
-     <bool>false</bool>
-    </property>
+    <layout class="QGridLayout" name="gridLayout_7">
+     <item row="0" column="0">
+      <widget class="QLabel" name="img_latnlon">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+         <horstretch>4</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>res/img_latnlon.png</pixmap>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
+       </property>
+       <property name="margin">
+        <number>7</number>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="lbl_gps">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>8</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>20</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>&lt;latnlon&gt;</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+       <property name="margin">
+        <number>0</number>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QWidget" name="tab_plot">

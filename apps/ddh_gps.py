@@ -13,9 +13,25 @@ from serial.tools.list_ports import grep
 
 class DeckDataHubGPS:
 
+    # sync system clock upon receiving GPRMC frame successfully
+    @staticmethod
+    def update_and_signal_gps(signals):
+        # try to get GPS frame
+        frame = DeckDataHubGPS._get_gps_frame(signals)
+        if frame is None:
+            signals.status.emit('GPS: could not obtain lat, lon.')
+            signals.gps_update.emit(False, '_', '_',)
+            return
+
+        # get coordinates
+        lat, lon = str(frame.latitude), str(frame.longitude)
+        signals.status.emit('GPS: obtained lat, lon.')
+        signals.gps_update.emit(True, lat, lon)
+
     @staticmethod
     def gps_loop(signals, ddh_gps_period):
         # always sync upon start
+        DeckDataHubGPS.update_and_signal_gps(signals)
         DeckDataHubGPS.sync_sys_clock_gps_or_internet(signals)
         timeout_gps = ddh_gps_period
 
@@ -26,6 +42,7 @@ class DeckDataHubGPS:
                 timeout_gps = ddh_gps_period
             if timeout_gps == 0:
                 DeckDataHubGPS.sync_sys_clock_gps_or_internet(signals)
+                DeckDataHubGPS.update_and_signal_gps(signals)
             time.sleep(1)
 
     # method to sync raspberry clock

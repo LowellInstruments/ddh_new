@@ -94,6 +94,12 @@ class DDHQtApp(QMainWindow):
         self.ui.img_sync.setPixmap(QPixmap('gui/res/img_sync.png'))
         self.ui.img_boat.setPixmap(QPixmap('gui/res/img_boatname.png'))
         self.ui.img_ble.setPixmap(QPixmap('gui/res/img_blue.png'))
+        self.ui.img_latnlon.setPixmap(QPixmap('gui/res/img_latnlon.png'))
+        self.ui.img_time.setPixmap(QPixmap('gui/res/img_datetime_color.png'))
+        self.ui.img_sync.setPixmap(QPixmap('gui/res/img_sync_color.png'))
+        self.ui.img_boat.setPixmap(QPixmap('gui/res/img_boatname_color.png'))
+        self.ui.img_ble.setPixmap(QPixmap('gui/res/img_blue_color.png'))
+        self.ui.img_latnlon.setPixmap(QPixmap('gui/res/img_latnlon_color.png'))
         self.tabs.setTabIcon(0, QIcon('gui/res/icon_info.ico'))
         self.tabs.setTabIcon(1, QIcon('gui/res/icon_dl.ico'))
         self.tabs.setTabIcon(2, QIcon('gui/res/icon_graph.ico'))
@@ -193,6 +199,8 @@ class DDHQtApp(QMainWindow):
         self.th_gps.signals.error.connect(self.slot_error)
         self.th_gps.signals.gps_result.connect(self.slot_gps_result)
         self.th_gps.signals.internet_result.connect(self.slot_internet_result)
+        self.th_gps.signals.gps_update.connect(self.slot_gps_update)
+
 
     def _ddh_thread_throw_plt(self, folders_to_plot):
         fxn = DeckDataHubPLT.plt_plot
@@ -385,6 +393,17 @@ class DDHQtApp(QMainWindow):
             t += '\t-> {} US/Eastern time offset adjusted.\n'.format(gps_time)
             t += '\t-> lat {} lon {}.'.format(gps_lat, gps_lon)
             console_log.info(t)
+
+    @pyqtSlot(bool, str, str, name='slot_gps_update')
+    def slot_gps_update(self, did_ok, gps_lat, gps_lon):
+        if did_ok:
+            gps_lat, gps_lon = gps_lat[:8], gps_lon[:8]
+            self.ui.lbl_gps.setText(gps_lat + ' N, \n' + gps_lon + ' W')
+            t = 'GPS: updated pos lat {} N, lon {} W'.format(gps_lat, gps_lon)
+        else:
+            self.ui.lbl_gps.setText('N/A')
+            t = 'GPS: no position update'
+        console_log.info(t)
 
     @pyqtSlot(bool, str, name='slot_internet_result')
     def slot_internet_result(self, we_have, internet_source):
