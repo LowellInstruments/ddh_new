@@ -266,11 +266,11 @@ def format_title(t, span):
 
 def metric_to_column_name(metric):
     metric_dict = {
-        'Temperature':  'Temperature (C)',
-        'Pressure':     'Pressure (psi)',
-        'DOS': 'Dissolved Oxygen (mg/l)',
-        'DOP': 'Dissolved Oxygen (%)',
-        'DOT': 'Temperature (C)',
+        'T':    'Temperature (C)',
+        'P':    'Pressure (psi)',
+        'DOS':  'Dissolved Oxygen (mg/l)',
+        'DOP':  'Dissolved Oxygen (%)',
+        'DOT':  'Temperature (C)',
 
     }
     return metric_dict[metric]

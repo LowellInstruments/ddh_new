@@ -138,7 +138,7 @@ class DeckDataHubPLT:
     def plt_plot(signals, folder, cnv, ts, metric):
         # signals and metadata
         signals.clk_start.emit()
-        signals.status.emit('PLT: {} ({}) for {}'.format(metric, ts, folder))
+        signals.status.emit('PLT: {}({}) for {}'.format(metric, ts, folder))
         c = metric_to_column_name(metric)
         lbl = mac_dns(mac_from_folder(folder))
 
@@ -146,12 +146,12 @@ class DeckDataHubPLT:
         try:
             t, y = DeckDataHubPLT.plt_cache_query(signals, folder, ts, metric)
         except AttributeError as ae:
-            e = 'PLT: can\'t {} ({}) for {}'.format(metric, ts, folder)
+            e = 'PLT: can\'t {}({}) for {}'.format(metric, ts, folder)
             return DeckDataHubPLT.plt_error(signals, e)
 
         # check we have at least two points to plot a line
         if np.count_nonzero(~np.isnan(y)) < 2:
-            e = 'PLT: few {} ({}) points for {}'.format(metric, ts, folder)
+            e = 'PLT: few {}({}) points for {}'.format(metric, ts, folder)
             return DeckDataHubPLT.plt_error(signals, e)
 
         # build plot axis, not axes
