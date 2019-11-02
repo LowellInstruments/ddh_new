@@ -246,7 +246,7 @@ class Ui_tabs(object):
         self.tab_plot = QtWidgets.QWidget()
         self.tab_plot.setObjectName("tab_plot")
         self.layoutWidget_2 = QtWidgets.QWidget(self.tab_plot)
-        self.layoutWidget_2.setGeometry(QtCore.QRect(0, 0, 781, 441))
+        self.layoutWidget_2.setGeometry(QtCore.QRect(0, 0, 771, 441))
         self.layoutWidget_2.setObjectName("layoutWidget_2")
         self.vl_3 = QtWidgets.QVBoxLayout(self.layoutWidget_2)
         self.vl_3.setSizeConstraint(QtWidgets.QLayout.SetDefaultConstraint)

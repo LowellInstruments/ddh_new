@@ -5956,3 +5956,61 @@
 [I 191101 22:52:26 ddh_app:288] GPS: could not obtain lat, lon.
 [I 191101 22:52:26 ddh_app:406] GPS: no position update
 [D 191101 22:52:26 ddh_app:175] SYS: closing GUI APP...
+[D 191101 22:55:06 ddh_app:81] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191101 22:55:06 ddh_app:82] SYS: recall re-RUN post download, search '###'
+[D 191101 22:55:06 ddh_app:172] SYS: this is NOT a raspberry system
+[I 191101 22:55:06 ddh_app:288] BLE: detecting loggers...
+[I 191101 22:55:06 ddh_app:288] GPS: no receiver found.
+[I 191101 22:55:06 ddh_app:288] GPS: could not obtain lat, lon.
+[I 191101 22:55:06 ddh_app:406] GPS: no position update
+[I 191101 22:55:07 ddh_app:288] SYS: internet, using NTP.
+[I 191101 22:55:07 ddh_app:416] SYS: we have internet
+[D 191101 22:55:07 ddh_app:237] GUI: keypress 1.
+[I 191101 22:55:07 ddh_app:288] PLT: T(h) for dl_files/ff-ff-ff-ff-ff-ff
+[D 191101 22:55:08 ddh_app:453] SYS: elapsed time 1277 ms.
+[D 191101 22:55:09 ddh_app:237] GUI: keypress 1.
+[I 191101 22:55:09 ddh_app:288] PLT: T(h) for dl_files/11-22-33-44-55-66
+[D 191101 22:55:09 ddh_app:453] SYS: elapsed time 443 ms.
+[D 191101 22:55:09 ddh_app:242] GUI: keypress 2.
+[I 191101 22:55:09 ddh_app:288] PLT: P(h) for dl_files/11-22-33-44-55-66
+[D 191101 22:55:10 ddh_app:453] SYS: elapsed time 449 ms.
+[I 191101 22:55:12 ddh_app:288] BLE: 0 loggers to query.
+[I 191101 22:55:14 ddh_app:288] BLE: detecting loggers...
+[D 191101 22:55:15 ddh_app:175] SYS: closing GUI APP...
+[D 191101 22:55:42 ddh_app:81] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191101 22:55:42 ddh_app:82] SYS: recall re-RUN post download, search '###'
+[D 191101 22:55:42 ddh_app:172] SYS: this is NOT a raspberry system
+[I 191101 22:55:42 ddh_app:288] BLE: detecting loggers...
+[I 191101 22:55:42 ddh_app:288] GPS: no receiver found.
+[I 191101 22:55:42 ddh_app:288] GPS: could not obtain lat, lon.
+[I 191101 22:55:42 ddh_app:406] GPS: no position update
+[I 191101 22:55:42 ddh_app:288] SYS: internet, using NTP.
+[I 191101 22:55:42 ddh_app:416] SYS: we have internet
+[D 191101 22:55:43 ddh_app:237] GUI: keypress 1.
+[I 191101 22:55:43 ddh_app:288] PLT: T(h) for dl_files/ff-ff-ff-ff-ff-ff
+[D 191101 22:55:43 ddh_app:453] SYS: elapsed time 1292 ms.
+[D 191101 22:55:44 ddh_app:242] GUI: keypress 2.
+[I 191101 22:55:44 ddh_app:288] PLT: P(h) for dl_files/ff-ff-ff-ff-ff-ff
+[E 191101 22:55:44 ddh_app:308] PLT: can't P(h) for dl_files/ff-ff-ff-ff-ff-ff
+[D 191101 22:55:44 ddh_app:453] SYS: elapsed time 5 ms.
+[D 191101 22:55:45 ddh_app:237] GUI: keypress 1.
+[I 191101 22:55:45 ddh_app:288] PLT: P(h) for dl_files/11-22-33-44-55-66
+[D 191101 22:55:46 ddh_app:453] SYS: elapsed time 380 ms.
+[D 191101 22:55:46 ddh_app:237] GUI: keypress 1.
+[I 191101 22:55:46 ddh_app:288] PLT: P(h) for dl_files/ff-ff-ff-ff-ff-ff
+[E 191101 22:55:46 ddh_app:308] PLT: can't P(h) for dl_files/ff-ff-ff-ff-ff-ff
+[D 191101 22:55:46 ddh_app:453] SYS: elapsed time 4 ms.
+[D 191101 22:55:47 ddh_app:237] GUI: keypress 1.
+[I 191101 22:55:47 ddh_app:288] PLT: P(h) for dl_files/11-22-33-44-55-66
+[I 191101 22:55:47 ddh_app:288] BLE: 0 loggers to query.
+[I 191101 22:55:47 ddh_app:288] PLT: cache hit
+[D 191101 22:55:47 ddh_app:453] SYS: elapsed time 217 ms.
+[D 191101 22:55:48 ddh_app:242] GUI: keypress 2.
+[I 191101 22:55:48 ddh_app:288] PLT: T(h) for dl_files/11-22-33-44-55-66
+[D 191101 22:55:49 ddh_app:453] SYS: elapsed time 435 ms.
+[I 191101 22:55:49 ddh_app:288] BLE: detecting loggers...
+[I 191101 22:55:54 ddh_app:288] BLE: 0 loggers to query.
+[I 191101 22:55:56 ddh_app:288] BLE: detecting loggers...
+[I 191101 22:56:01 ddh_app:288] BLE: 0 loggers to query.
+[I 191101 22:56:03 ddh_app:288] BLE: detecting loggers...
+[D 191101 22:56:06 ddh_app:175] SYS: closing GUI APP...
