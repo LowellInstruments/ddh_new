@@ -279,8 +279,8 @@ def metric_to_column_name(metric):
 def line_color(column_name):
     color_dict = {
         'Temperature (C)':  'red',
-        'Pressure (psi)':   'lime',
-        'Dissolved Oxygen (mg/l)': 'blue',
+        'Pressure (psi)':   'blue',
+        'Dissolved Oxygen (mg/l)': 'green',
         'Dissolved Oxygen (%)': 'orange',
     }
     return color_dict[column_name]

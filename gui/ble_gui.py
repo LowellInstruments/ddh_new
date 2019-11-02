@@ -2,13 +2,11 @@
 
 # Form implementation generated from reading ui file 'ble_gui.ui'
 #
-# Created by: PyQt5 UI code generator 5.13.1
+# Created by: PyQt5 UI code generator 5.10.1
 #
 # WARNING! All changes made in this file will be lost!
 
-
 from PyQt5 import QtCore, QtGui, QtWidgets
-
 
 class Ui_tabs(object):
     def setupUi(self, tabs):
@@ -248,7 +246,7 @@ class Ui_tabs(object):
         self.tab_plot = QtWidgets.QWidget()
         self.tab_plot.setObjectName("tab_plot")
         self.layoutWidget_2 = QtWidgets.QWidget(self.tab_plot)
-        self.layoutWidget_2.setGeometry(QtCore.QRect(20, 20, 751, 381))
+        self.layoutWidget_2.setGeometry(QtCore.QRect(0, 0, 781, 441))
         self.layoutWidget_2.setObjectName("layoutWidget_2")
         self.vl_3 = QtWidgets.QVBoxLayout(self.layoutWidget_2)
         self.vl_3.setSizeConstraint(QtWidgets.QLayout.SetDefaultConstraint)
@@ -412,7 +410,7 @@ class Ui_tabs(object):
         tabs.addTab(self.tab_log, icon2, "")
 
         self.retranslateUi(tabs)
-        tabs.setCurrentIndex(0)
+        tabs.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(tabs)
 
     def retranslateUi(self, tabs):
@@ -441,3 +439,4 @@ class Ui_tabs(object):
         self.label_3.setText(_translate("tabs", "-"))
         self.label_19.setText(_translate("tabs", "-"))
         tabs.setTabText(tabs.indexOf(self.tab_log), _translate("tabs", "Log"))
+
