@@ -199,10 +199,9 @@ class DeckDataHubPLT:
         ax.set_xticks(lbs)
         ax.set_xticklabels(format_time_labels(lbs, ts))
         ax.set_xlabel('time', fontsize='large', fontweight='bold')
-        ax.set_title(format_title(t, ts), fontsize='large')
+        ax.set_title('Logger ' + lbl + ', ' + format_title(t, ts), fontsize='x-large')
         # ax.legend()
         cnv.draw()
-
 
         # save context
         DeckDataHubPLT.last_folder = folder
