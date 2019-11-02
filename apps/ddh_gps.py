@@ -13,26 +13,11 @@ from serial.tools.list_ports import grep
 
 class DeckDataHubGPS:
 
-    # sync system clock upon receiving GPRMC frame successfully
-    @staticmethod
-    def update_and_signal_gps(signals):
-        # try to get GPS frame
-        frame = DeckDataHubGPS._get_gps_frame(signals)
-        if frame is None:
-            signals.status.emit('GPS: could not obtain lat, lon.')
-            signals.gps_update.emit(False, '_', '_',)
-            return
-
-        # get coordinates
-        lat, lon = str(frame.latitude), str(frame.longitude)
-        signals.status.emit('GPS: obtained lat, lon.')
-        signals.gps_update.emit(True, lat, lon)
-
     @staticmethod
     def gps_loop(signals, ddh_gps_period):
-        # always sync upon start
-        DeckDataHubGPS.update_and_signal_gps(signals)
-        DeckDataHubGPS.sync_sys_clock_gps_or_internet(signals)
+        # force sync upon program / thread starts
+        DeckDataHubGPS._gps_get_lan_n_lon(signals)
+        DeckDataHubGPS._sync_sys_clock_gps_or_internet(signals)
         timeout_gps = ddh_gps_period
 
         while 1:
@@ -41,25 +26,44 @@ class DeckDataHubGPS:
             else:
                 timeout_gps = ddh_gps_period
             if timeout_gps == 0:
-                DeckDataHubGPS.sync_sys_clock_gps_or_internet(signals)
-                DeckDataHubGPS.update_and_signal_gps(signals)
+                DeckDataHubGPS._sync_sys_clock_gps_or_internet(signals)
+                DeckDataHubGPS._gps_get_lan_n_lon(signals)
             time.sleep(1)
+
+    @staticmethod
+    def _gps_get_lan_n_lon(signals):
+        frame = DeckDataHubGPS._get_gps_frame(signals)
+        if frame is None:
+            # piggyback USB status in GPS error message
+            signals.status.emit('GPS: could not obtain lat, lon.')
+            t = 'No GPS\nin USB port'
+            if find_port():
+                t = 'Low GPS signal'
+            signals.gps_update.emit(False, t, None)
+            return
+
+        # get coordinates to 6 decimals
+        lat = '{:8.6f}'.format(float(frame.latitude))
+        lon = '{:8.6f}'.format(float(frame.longitude))
+        signals.status.emit('GPS: obtained lat, lon.')
+        signals.gps_update.emit(True, lat, lon)
 
     # method to sync raspberry clock
     @staticmethod
-    def sync_sys_clock_gps_or_internet(signals):
+    def _sync_sys_clock_gps_or_internet(signals):
         if have_internet_connection():
             status = 'SYS: internet, using NTP.'
             signals.status.emit(status)
             linux_set_time_to_use_ntp()
-            signals.gps_result.emit('NTP', '_', '_', '_')
+            signals.gps_result.emit('NTP', None, None, None)
             signals.internet_result.emit(True, '_')
         else:
             status = 'SYS: no internet, trying GPS...'
             signals.status.emit(status)
             # GPS receiver on USB but may receive frame in time, OR not
             DeckDataHubGPS._set_time_from_gps(signals)
-            signals.internet_result.emit(False, '_')
+            # what is sure is we don't have internet access
+            signals.internet_result.emit(False, None)
 
     # sync system clock upon receiving GPRMC frame successfully
     @staticmethod
@@ -68,7 +72,7 @@ class DeckDataHubGPS:
         frame = DeckDataHubGPS._get_gps_frame(signals)
         if frame is None:
             signals.status.emit('GPS: no frame to sync time.')
-            signals.gps_result.emit('Local', '_', '_', '_')
+            signals.gps_result.emit('Local', None, None, None)
             return False
 
         # set timezone in received datetime object and apply offset
@@ -91,7 +95,7 @@ class DeckDataHubGPS:
         linux_set_time_from_gps(time_tuple)
         return True
 
-    # try getting GPRMC frame among all (GGA, GSA...) during TIMEOUT_RX_GPS
+    # try getting GPRMC frame among all (GGA, GSA...)
     @staticmethod
     def _get_gps_frame(signals):
         usb_port = find_port()

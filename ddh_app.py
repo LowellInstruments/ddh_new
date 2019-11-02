@@ -397,11 +397,11 @@ class DDHQtApp(QMainWindow):
     @pyqtSlot(bool, str, str, name='slot_gps_update')
     def slot_gps_update(self, did_ok, gps_lat, gps_lon):
         if did_ok:
-            gps_lat, gps_lon = gps_lat[:8], gps_lon[:8]
-            self.ui.lbl_gps.setText(gps_lat + ' N, \n' + gps_lon + ' W')
+            self.ui.lbl_gps.setText(gps_lat + ' N\n' + gps_lon + ' W')
             t = 'GPS: updated pos lat, lon'.format(gps_lat, gps_lon)
         else:
-            self.ui.lbl_gps.setText('N/A')
+            # ugly and piggybacked GPS error message
+            self.ui.lbl_gps.setText(gps_lat)
             t = 'GPS: no position update'
         console_log.info(t)
 
