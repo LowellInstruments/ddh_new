@@ -399,7 +399,7 @@ class DDHQtApp(QMainWindow):
         if did_ok:
             gps_lat, gps_lon = gps_lat[:8], gps_lon[:8]
             self.ui.lbl_gps.setText(gps_lat + ' N, \n' + gps_lon + ' W')
-            t = 'GPS: updated pos lat {} N, lon {} W'.format(gps_lat, gps_lon)
+            t = 'GPS: updated pos lat, lon'.format(gps_lat, gps_lon)
         else:
             self.ui.lbl_gps.setText('N/A')
             t = 'GPS: no position update'
