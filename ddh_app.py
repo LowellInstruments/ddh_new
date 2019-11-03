@@ -100,6 +100,7 @@ class DDHQtApp(QMainWindow):
         self.ui.img_boat.setPixmap(QPixmap('gui/res/img_boatname_color.png'))
         self.ui.img_ble.setPixmap(QPixmap('gui/res/img_blue_color.png'))
         self.ui.img_latnlon.setPixmap(QPixmap('gui/res/img_latnlon_color.png'))
+        self.ui.img_output.setPixmap(QPixmap('gui/res/img_screen.png'))
         self.tabs.setTabIcon(0, QIcon('gui/res/icon_info.ico'))
         self.tabs.setTabIcon(1, QIcon('gui/res/icon_dl.ico'))
         self.tabs.setTabIcon(2, QIcon('gui/res/icon_graph.ico'))
@@ -193,6 +194,7 @@ class DDHQtApp(QMainWindow):
         self.th_ble.signals.ble_dl_file_.connect(self.slot_ble_dl_file_)
         self.th_ble.signals.status.connect(self.slot_status)
         self.th_ble.signals.error.connect(self.slot_error)
+        self.th_ble.signals.output.connect(self.slot_output)
         fxn = DeckDataHubGPS.gps_loop
         self.th_gps = DDHThread(fxn, SignalsGPS, DDH_GPS_PERIOD)
         self.th_gps.signals.status.connect(self.slot_status)
@@ -200,7 +202,6 @@ class DDHQtApp(QMainWindow):
         self.th_gps.signals.gps_result.connect(self.slot_gps_result)
         self.th_gps.signals.internet_result.connect(self.slot_internet_result)
         self.th_gps.signals.gps_update.connect(self.slot_gps_update)
-
 
     def _ddh_thread_throw_plt(self, folders_to_plot):
         fxn = DeckDataHubPLT.plt_plot
@@ -273,7 +274,7 @@ class DDHQtApp(QMainWindow):
     @pyqtSlot(name='slot_ble_scan_start')
     def slot_ble_scan_start(self):
         self.ui.bar_dl.setValue(0)
-        self.ui.lbl_ble_short.setText('Scanning...')
+        self.ui.lbl_ble_short.setText('Scanning ...')
 
     @pyqtSlot(object, name='slot_ble_scan_result')
     def slot_ble_scan_result(self, result):
@@ -451,6 +452,10 @@ class DDHQtApp(QMainWindow):
         elapsed_time = int((time.clock() - self.clk_start_time) * 1000)
         text = 'SYS: elapsed time {} ms.'.format(elapsed_time)
         console_log.debug(text)
+
+    @pyqtSlot(str, name='slot_output')
+    def slot_output(self, desc):
+        self.ui.lbl_output.setText(desc)
 
 
 def run_app():

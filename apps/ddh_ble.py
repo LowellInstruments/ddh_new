@@ -74,6 +74,7 @@ class DeckDataHubBLE:
 
         # show list of loggers to query
         signals.status.emit('BLE: {} loggers to query.'.format(len(loggers)))
+        signals.output.emit('{} loggers\nto query'.format(len(loggers)))
         DeckDataHubBLE.LOGGERS_TO_QUERY = loggers
         signals.ble_scan_result.emit(loggers)
         return loggers
