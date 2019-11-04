@@ -66,7 +66,7 @@
    </property>
    <attribute name="icon">
     <iconset>
-     <normaloff>res/icon_info.ico</normaloff>res/icon_info.ico</iconset>
+     <normaloff>res/icon_info.png</normaloff>res/icon_info.png</iconset>
    </attribute>
    <attribute name="title">
     <string> Information</string>
@@ -460,28 +460,6 @@
     </property>
     <layout class="QGridLayout" name="gridLayout_8">
      <item row="0" column="0">
-      <widget class="QLabel" name="img_output">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
-         <horstretch>4</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>res/img_screen.png</pixmap>
-       </property>
-       <property name="scaledContents">
-        <bool>true</bool>
-       </property>
-       <property name="margin">
-        <number>7</number>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
       <widget class="QLabel" name="lbl_output">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
