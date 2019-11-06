@@ -7,8 +7,8 @@ from mat.logger_controller import (
     STOP_CMD,
     RUN_CMD
 )
-from mat.logger_controller_ble_rn4020 import (
-    LoggerControllerBLERN4020 as LoggerControllerBLE
+from mat.logger_controller_ble import (
+    LoggerControllerBLE as LoggerControllerBLE
 )
 
 
@@ -57,7 +57,7 @@ class DeckDataHubBLE:
                 DeckDataHubBLE.RECENTLY_DONE.pop(key)
             else:
                 remaining_time = DeckDataHubBLE.FORGET - (time.time() - value)
-                signals.status.emit('BLE: {} already queried, delay {:.2f} s.'.
+                signals.status.emit('BLE: {} too recent, delay {:.2f} s.'.
                                     format(key, remaining_time))
 
         # build list w/ detected known macs NOT too recent
@@ -73,7 +73,7 @@ class DeckDataHubBLE:
                     signals.status.emit(text)
 
         # show list of loggers to query
-        signals.status.emit('BLE: {} loggers to query.'.format(len(loggers)))
+        signals.status.emit('BLE: {} loggers to query'.format(len(loggers)))
         signals.output.emit('{} loggers to query'.format(len(loggers)))
         DeckDataHubBLE.LOGGERS_TO_QUERY = loggers
         signals.ble_scan_result.emit(loggers)
@@ -87,22 +87,22 @@ class DeckDataHubBLE:
         # query every logger
         for counter, mac in enumerate(DeckDataHubBLE.LOGGERS_TO_QUERY):
             try:
-                signals.status.emit('BLE: connecting {}.'.format(mac))
+                signals.status.emit('BLE: connecting {}'.format(mac))
                 signals.ble_dl_session.emit(
                     mac, counter + 1, len(DeckDataHubBLE.LOGGERS_TO_QUERY))
                 with LoggerControllerBLE(mac) as lc_ble:
                     DeckDataHubBLE._ble_dl_files(lc_ble, signals)
             except ble.BTLEException as be:
                 # first Linux BLE interaction may fail
-                signals.error.emit('BLE: exception {}.'.format(be.message))
-                signals.error_gui.emit('BLE: download error, wait 30 s.')
+                signals.error.emit('BLE: exception {}'.format(be.message))
+                signals.error_gui.emit('BLE: download error, wait 30 s')
                 DeckDataHubBLE._ble_ignore_some_time(mac, 30)
             else:
                 # ok, next
                 DeckDataHubBLE._ble_add_mac_to_recent_connections(mac)
                 dl_logger_ok = True
             finally:
-                signals.status.emit('BLE: disconnecting {}.'.format(mac))
+                signals.status.emit('BLE: disconnecting {}'.format(mac))
                 if lc_ble:
                     lc_ble.close()
 
@@ -119,7 +119,7 @@ class DeckDataHubBLE:
         # remove files, useful for debug, label ***
         if remove_previous:
             remove_logger_folder(mac)
-            signals.error.emit('SYS: removing {} previous files...'.format(mac))
+            signals.error.emit('SYS: del {} local files'.format(mac))
 
         # list files
         folder, files = DeckDataHubBLE._ble_list_files(lc_ble, signals)
@@ -138,23 +138,23 @@ class DeckDataHubBLE:
         attempts = 0
         counter = 0
         total_left = total_size
-        signals.status.emit('BLE: {} has {} files.'.format(mac, num))
+        signals.status.emit('BLE: {} has {} files'.format(mac, num))
         for name, size in name_n_size.items():
             # statistics
             attempts += 1
             duration_logger = ((total_left // 5000) // 60) + 1
             total_left -= size
-            signals.status.emit('BLE: get {}, {} B.'.format(name, size))
+            signals.status.emit('BLE: get {}, {} B'.format(name, size))
             signals.ble_dl_file.emit(name, attempts, num, duration_logger)
 
-            # XMODEM file download
+            # x-modem file download
             start_time = time.time()
             for retries in range(3):
                 if lc_ble.get_file(name, folder, size):
-                    signals.status.emit('BLE: got {}.'.format(name))
+                    signals.status.emit('BLE: got {}'.format(name))
                     break
                 else:
-                    signals.status.emit('BLE: cannot get {}.'.format(name))
+                    signals.status.emit('BLE: cannot get {}'.format(name))
                     if retries == 2:
                         raise ble.BTLEException('exception while downloading')
                 time.sleep(10)
@@ -176,36 +176,35 @@ class DeckDataHubBLE:
         signals.ble_dl_logger.emit()
 
         status = lc_ble.command(STATUS_CMD)
-        signals.status.emit('BLE: get status = {}.'.format(status))
+        signals.status.emit('BLE: get status = {}'.format(status))
         if not status:
             raise ble.BTLEException(status)
 
         answer = lc_ble.command(STOP_CMD)
-        signals.status.emit('BLE: stop deploy = {}.'.format(answer))
+        signals.status.emit('BLE: stop deploy = {}'.format(answer))
         if not answer:
             raise ble.BTLEException(status)
-
         logger_time = lc_ble.get_time()
         if not logger_time:
             raise ble.BTLEException(logger_time)
         difference = datetime.datetime.now() - logger_time
         if abs(difference.total_seconds()) > 60:
             lc_ble.sync_time()
-            signals.status.emit('BLE: sync {}.'.format(lc_ble.get_time()))
+            signals.status.emit('BLE: sync {}'.format(lc_ble.get_time()))
         else:
-            signals.status.emit('BLE: logger time is up-to-date.')
+            signals.status.emit('BLE: logger time is good enough')
 
         # RN4020 loggers: CMD_CONTROL parameters BLE, CC26x2 ones will ignore this
         control = 'BTC 00T,0006,0000,0064'
         answer = lc_ble.command(control)
-        signals.status.emit('BLE: setup as = {}.'.format(answer))
+        signals.status.emit('BLE: setup only if RN4020 = {}'.format(answer))
         if not answer or b'ERR' in answer:
             raise ble.BTLEException(answer)
 
     # files: list_lid_files() one logger
     @staticmethod
     def _ble_list_files(lc_ble, signals):
-        folder = create_logger_folder(lc_ble.peripheral.addr)
+        folder = create_logger_folder(lc_ble.u.peripheral.addr)
         files = lc_ble.list_lid_files()
         signals.status.emit('BLE: logger DIR = {}.'.format(files))
         return folder, files

@@ -35,7 +35,6 @@ class DeckDataHubGPS:
         frame = DeckDataHubGPS._get_gps_frame(signals)
         if frame is None:
             # piggyback USB status in GPS error message
-            signals.status.emit('GPS: could not obtain lat, lon.')
             t = 'No GPS\nin USB port'
             if find_port():
                 t = 'Low GPS signal'
@@ -52,13 +51,13 @@ class DeckDataHubGPS:
     @staticmethod
     def _sync_sys_clock_gps_or_internet(signals):
         if have_internet_connection():
-            status = 'SYS: internet, using NTP.'
+            status = 'GPS: using NTP time'
             signals.status.emit(status)
             linux_set_time_to_use_ntp()
             signals.gps_result.emit('NTP', None, None, None)
             signals.internet_result.emit(True, '_')
         else:
-            status = 'SYS: no internet, trying GPS...'
+            status = 'GPS: no NTP, waiting for sat frame...'
             signals.status.emit(status)
             # GPS receiver on USB but may receive frame in time, OR not
             DeckDataHubGPS._set_time_from_gps(signals)
@@ -71,7 +70,7 @@ class DeckDataHubGPS:
         # try to get GPS frame
         frame = DeckDataHubGPS._get_gps_frame(signals)
         if frame is None:
-            signals.status.emit('GPS: no frame to sync time.')
+            signals.status.emit('GPS: no frame to sync time')
             signals.gps_result.emit('Local', None, None, None)
             return False
 
@@ -100,7 +99,7 @@ class DeckDataHubGPS:
     def _get_gps_frame(signals):
         usb_port = find_port()
         if usb_port:
-            status = 'GPS: USB device at {}.'.format(usb_port)
+            status = 'GPS: USB device at {}'.format(usb_port)
             signals.status.emit(status)
             if sys.platform == 'linux':
                 usb_port = '/dev/' + usb_port
@@ -108,7 +107,7 @@ class DeckDataHubGPS:
             # try to get a gps RMC frame for some time or return None
             return gps.get_gps_info(3)
         else:
-            status = 'GPS: no receiver found.'
+            status = 'GPS: no receiver found'
             signals.status.emit(status)
             return None
 
@@ -126,6 +125,6 @@ def find_port():
         return False
     pattern = port_patterns.get(sys.platform)
     if not pattern:
-        raise RuntimeError('SYS: unsupported operating system: ' + sys.platform)
+        raise RuntimeError('SYS: unsupported OS ' + sys.platform)
     return_value = re.search(pattern, field).group(1)
     return return_value

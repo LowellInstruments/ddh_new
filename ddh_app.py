@@ -32,7 +32,8 @@ from apps.ddh_utils import (
     check_config_file,
     get_ship_name,
     get_metrics,
-    linux_set_time_to_use_ntp
+    linux_set_time_to_use_ntp,
+    get_mac_filter
 )
 import logzero
 from logzero import logger as console_log
@@ -48,14 +49,7 @@ if detect_raspberry():
 
 
 # constants for the application
-DDH_BLE_MAC_FILTER = (
-    # remember ':' as separator, not '-'
-    # '00:1e:c0:3d:7a:f2',
-    # '00:1e:c0:4d:bf:c9',
-    # '00:1e:c0:4d:d2:37',
-    # '00:1e:c0:4d:bf:db',
-    # '04:ee:03:6c:ef:49',
-)
+DDH_BLE_MAC_FILTER = get_mac_filter()
 DDH_ERR_DISPLAY_TIMEOUT = 5
 DDH_PLT_DISPLAY_TIMEOUT = 25
 DDH_GPS_PERIOD = 30
@@ -327,7 +321,7 @@ class DDHQtApp(QMainWindow):
         text = 'Connected'
         self.ui.lbl_ble_short.setText(text)
         text = 'Logger name:\n{}'.format(desc)
-        self.ui.lbl_ble_long.setText(text)
+        self.ui.lbl_output.setText(text)
         self.ui.bar_dl.setValue(0)
 
     # indicates current logger of current download session
@@ -343,14 +337,14 @@ class DDHQtApp(QMainWindow):
         text = 'Downloading'
         self.ui.lbl_ble_short.setText(text)
         text += '\n\n{} minutes left'.format(val_3)
-        self.ui.lbl_ble_long.setText(text)
+        self.ui.lbl_output.setText(text)
 
     # function post dl_file, note trailing '_'
     @pyqtSlot(int, int, name='slot_ble_dl_file_')
     def slot_ble_dl_file_(self, val_1, val_2):
         # val_1: percentage increase, val_2: data rate
         text = 'Got file at\n{} Bytes / second'.format(val_2)
-        self.ui.lbl_ble_long.setText(text)
+        self.ui.lbl_output.setText(text)
         percentage = self.ui.bar_dl.value() + val_1
         self.ui.bar_dl.setValue(percentage)
 
@@ -361,7 +355,7 @@ class DDHQtApp(QMainWindow):
         text = 'Completed'
         self.ui.lbl_ble_short.setText(text)
         text = 'Logger {} sent {} files.'.format(desc, val_1)
-        self.ui.lbl_ble_long.setText(text)
+        self.ui.lbl_output.setText(text)
         self.ui.bar_dl.setValue(100)
         # try to draw if something downloaded from last logger
         if val_1:

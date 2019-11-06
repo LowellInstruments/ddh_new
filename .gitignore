@@ -3,3 +3,4 @@ __pycache__/
 apps/__pycache__/
 /venv/
 /ddh_avg.db
+/ddh.log*

@@ -104,6 +104,16 @@ def get_ship_name():
         return 'Unnamed ship'
 
 
+def get_mac_filter():
+    import json
+    try:
+        with open('ddh.json') as f:
+            ddh_cfg_string = json.load(f)
+            return [x.lower() for x in ddh_cfg_string['db_logger_macs'].keys()]
+    except TypeError:
+        return 'Unnamed ship'
+
+
 def get_metrics():
     import json
     with open('ddh.json') as f:
