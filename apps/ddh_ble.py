@@ -48,7 +48,7 @@ class DeckDataHubBLE:
             scanner = ble.Scanner()
             list_all_ble = scanner.scan(5.0)
         except ble.BTLEException:
-            signals.error_gui.emit('BLE: error scanning.')
+            signals.error_gui.emit('BLE: error scanning')
             return []
 
         # purge outdated connections, _ble_dl_files() refreshes this
@@ -57,7 +57,7 @@ class DeckDataHubBLE:
                 DeckDataHubBLE.RECENTLY_DONE.pop(key)
             else:
                 remaining_time = DeckDataHubBLE.FORGET - (time.time() - value)
-                signals.status.emit('BLE: {} too recent, delay {:.2f} s.'.
+                signals.status.emit('BLE: {} is recent, delay {:.2f} s.'.
                                     format(key, remaining_time))
 
         # build list w/ detected known macs NOT too recent
@@ -74,7 +74,7 @@ class DeckDataHubBLE:
 
         # show list of loggers to query
         signals.status.emit('BLE: {} loggers to query'.format(len(loggers)))
-        signals.output.emit('{} loggers to query'.format(len(loggers)))
+        signals.output.emit('{} loggers\nto query'.format(len(loggers)))
         DeckDataHubBLE.LOGGERS_TO_QUERY = loggers
         signals.ble_scan_result.emit(loggers)
         return loggers
@@ -106,7 +106,7 @@ class DeckDataHubBLE:
                 if lc_ble:
                     lc_ble.close()
 
-        signals.ble_dl_session_.emit('BLE: all loggers done.')
+        signals.ble_dl_session_.emit('BLE: all loggers done')
         return dl_logger_ok
 
     # download one entire logger
@@ -119,7 +119,7 @@ class DeckDataHubBLE:
         # remove files, useful for debug, label ***
         if remove_previous:
             remove_logger_folder(mac)
-            signals.error.emit('SYS: del {} local files'.format(mac))
+            signals.warning.emit('SYS: del {} local files'.format(mac))
 
         # list files
         folder, files = DeckDataHubBLE._ble_list_files(lc_ble, signals)
@@ -197,7 +197,7 @@ class DeckDataHubBLE:
         # RN4020 loggers: CMD_CONTROL parameters BLE, CC26x2 ones will ignore this
         control = 'BTC 00T,0006,0000,0064'
         answer = lc_ble.command(control)
-        signals.status.emit('BLE: setup only if RN4020 = {}'.format(answer))
+        signals.status.emit('BLE: attempt RN4020 setup = {}'.format(answer))
         if not answer or b'ERR' in answer:
             raise ble.BTLEException(answer)
 
@@ -206,7 +206,7 @@ class DeckDataHubBLE:
     def _ble_list_files(lc_ble, signals):
         folder = create_logger_folder(lc_ble.u.peripheral.addr)
         files = lc_ble.list_lid_files()
-        signals.status.emit('BLE: logger DIR = {}.'.format(files))
+        signals.status.emit('BLE: logger DIR = {}'.format(files))
         return folder, files
 
 

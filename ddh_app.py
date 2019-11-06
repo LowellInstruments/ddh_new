@@ -33,7 +33,8 @@ from apps.ddh_utils import (
     get_ship_name,
     get_metrics,
     linux_set_time_to_use_ntp,
-    get_mac_filter
+    get_mac_filter,
+    mac_dns
 )
 import logzero
 from logzero import logger as console_log
@@ -94,6 +95,7 @@ class DDHQtApp(QMainWindow):
         self.ui.img_boat.setPixmap(QPixmap('gui/res/img_boatname_color.png'))
         self.ui.img_ble.setPixmap(QPixmap('gui/res/img_blue_color.png'))
         self.ui.img_latnlon.setPixmap(QPixmap('gui/res/img_latnlon_color.png'))
+        self.ui.img_output.setPixmap(QPixmap('gui/res/img_wait_color.png'))
         self.tabs.setTabIcon(0, QIcon('gui/res/icon_info.png'))
         self.tabs.setTabIcon(1, QIcon('gui/res/icon_graph.ico'))
         self.tabs.setTabIcon(2, QIcon('gui/res/icon_history.ico'))
@@ -188,6 +190,7 @@ class DDHQtApp(QMainWindow):
         self.th_ble.signals.status.connect(self.slot_status)
         self.th_ble.signals.error.connect(self.slot_error)
         self.th_ble.signals.output.connect(self.slot_output)
+        self.th_ble.signals.warning.connect(self.slot_warning)
         fxn = DeckDataHubGPS.gps_loop
         self.th_gps = DDHThread(fxn, SignalsGPS, DDH_GPS_PERIOD)
         self.th_gps.signals.status.connect(self.slot_status)
@@ -196,9 +199,9 @@ class DDHQtApp(QMainWindow):
         self.th_gps.signals.internet_result.connect(self.slot_internet_result)
         self.th_gps.signals.gps_update.connect(self.slot_gps_update)
 
-    def _ddh_thread_throw_plt(self, folders_to_plot):
+    def _ddh_thread_throw_plt(self, folder_to_plot):
         fxn = DeckDataHubPLT.plt_plot
-        a = [folders_to_plot, self.plot_canvas, self.plt_ts, self.plt_metric]
+        a = [folder_to_plot, self.plot_canvas, self.plt_ts, self.plt_metric]
         self.th_plt = DDHThread(fxn, SignalsPLT, *a)
         self.th_plt.signals.status.connect(self.slot_status)
         self.th_plt.signals.debug.connect(self.slot_debug)
@@ -301,6 +304,10 @@ class DDHQtApp(QMainWindow):
     def slot_error(self, e):
         console_log.error(e)
 
+    @pyqtSlot(str, name='slot_warning')
+    def slot_warning(self, e):
+        console_log.warning(e)
+
     @pyqtSlot(str, name='slot_error_gui')
     def slot_error_gui(self, e):
         console_log.error(e)
@@ -320,7 +327,7 @@ class DDHQtApp(QMainWindow):
         # desc: name, val_1: logger index, val_2: total num of loggers
         text = 'Connected'
         self.ui.lbl_ble_short.setText(text)
-        text = 'Logger name:\n{}'.format(desc)
+        text = 'Logger \n{}'.format(mac_dns(desc))
         self.ui.lbl_output.setText(text)
         self.ui.bar_dl.setValue(0)
 
@@ -336,14 +343,14 @@ class DDHQtApp(QMainWindow):
         # val_1: file index, val_2: total files, desc: file name
         text = 'Downloading'
         self.ui.lbl_ble_short.setText(text)
-        text += '\n\n{} minutes left'.format(val_3)
+        text = '{} minutes left'.format(val_3)
         self.ui.lbl_output.setText(text)
 
     # function post dl_file, note trailing '_'
     @pyqtSlot(int, int, name='slot_ble_dl_file_')
     def slot_ble_dl_file_(self, val_1, val_2):
         # val_1: percentage increase, val_2: data rate
-        text = 'Got file at\n{} Bytes / second'.format(val_2)
+        text = '{} B/s'.format(val_2)
         self.ui.lbl_output.setText(text)
         percentage = self.ui.bar_dl.value() + val_1
         self.ui.bar_dl.setValue(percentage)
@@ -354,14 +361,13 @@ class DDHQtApp(QMainWindow):
         # desc: logger name, val_1: number of files sent
         text = 'Completed'
         self.ui.lbl_ble_short.setText(text)
-        text = 'Logger {} sent {} files.'.format(desc, val_1)
+        text = 'Got {} files'.format(val_1)
         self.ui.lbl_output.setText(text)
         self.ui.bar_dl.setValue(100)
         # try to draw if something downloaded from last logger
         if val_1:
             self.dl_last_dir = 'dl_files/' + str(desc).replace(':', '-')
-            self.plt_folders = [self.dl_last_dir, None]
-            self._ddh_thread_throw_plt(self.plt_folders)
+            self._ddh_thread_throw_plt(self.dl_last_dir)
             self.plt_folders = update_dl_folder_list()
 
     # display plot if we were successful

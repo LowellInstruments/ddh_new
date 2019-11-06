@@ -14,6 +14,7 @@ class SignalsBLE(QObject):
     error = pyqtSignal(str)
     error_gui = pyqtSignal(str)
     status = pyqtSignal(str)
+    warning = pyqtSignal(str)
     status_gui = pyqtSignal(str)
     output = pyqtSignal(str)
 

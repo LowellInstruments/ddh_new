@@ -7821,3 +7821,610 @@
 [I 191106 10:57:51 ddh_app:282] BLE: 04:ee:03:6c:ef:49 too recent, delay 585.82 s.
 [I 191106 10:57:51 ddh_app:282] BLE: 0 loggers to query
 [I 191106 10:57:53 ddh_app:282] BLE: detecting loggers...
+[D 191106 11:20:49 ddh_app:75] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191106 11:20:49 ddh_app:76] SYS: recall re-RUN post download, search '###'
+[D 191106 11:20:49 ddh_app:166] SYS: this is NOT a raspberry system
+[I 191106 11:20:49 ddh_app:282] BLE: detecting loggers...
+[I 191106 11:20:49 ddh_app:282] GPS: no receiver found
+[I 191106 11:20:49 ddh_app:400] GPS: no position update
+[I 191106 11:20:49 ddh_app:282] GPS: using NTP time
+[I 191106 11:20:49 ddh_app:410] SYS: we have internet
+[I 191106 11:20:54 ddh_app:282] BLE: 1 loggers to query
+[I 191106 11:20:54 ddh_app:282] BLE: connecting 04:ee:03:6c:ef:49
+[I 191106 11:20:56 ddh_app:282] BLE: get status = [b'STS', b'0201']
+[I 191106 11:20:57 ddh_app:282] BLE: stop deploy = [b'STP', b'00']
+[I 191106 11:21:02 ddh_app:282] BLE: sync 2019-11-06 11:20:59
+[I 191106 11:21:05 ddh_app:282] BLE: setup only if RN4020 = [b'INV']
+[E 191106 11:21:05 ddh_app:302] SYS: del 04:ee:03:6c:ef:49 local files
+[I 191106 11:21:07 ddh_app:282] BLE: logger DIR = {'1234567_my_file.lid': 2172}.
+[I 191106 11:21:07 ddh_app:282] BLE: 04:ee:03:6c:ef:49 has 1 files
+[I 191106 11:21:07 ddh_app:282] BLE: get 1234567_my_file.lid, 2172 B
+[I 191106 11:21:14 ddh_app:282] BLE: got 1234567_my_file.lid
+[I 191106 11:21:14 ddh_app:282] PLT: T(h) for ['dl_files/04-ee-03-6c-ef-49', None]
+[I 191106 11:21:14 ddh_app:282] BLE: disconnecting 04:ee:03:6c:ef:49
+[I 191106 11:21:14 ddh_app:380] BLE: all loggers done.
+[E 191106 11:21:14 ddh_app:302] 
+[D 191106 11:25:22 ddh_app:75] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191106 11:25:22 ddh_app:76] SYS: recall re-RUN post download, search '###'
+[D 191106 11:25:23 ddh_app:166] SYS: this is NOT a raspberry system
+[I 191106 11:25:23 ddh_app:282] BLE: detecting loggers...
+[I 191106 11:25:23 ddh_app:282] GPS: no receiver found
+[I 191106 11:25:23 ddh_app:399] GPS: no position update
+[I 191106 11:25:23 ddh_app:282] GPS: using NTP time
+[I 191106 11:25:23 ddh_app:409] SYS: we have internet
+[I 191106 11:25:28 ddh_app:282] BLE: 1 loggers to query
+[I 191106 11:25:28 ddh_app:282] BLE: connecting 04:ee:03:6c:ef:49
+[I 191106 11:25:30 ddh_app:282] BLE: get status = [b'STS', b'0201']
+[I 191106 11:25:31 ddh_app:282] BLE: stop deploy = [b'STP', b'00']
+[I 191106 11:25:33 ddh_app:282] BLE: logger time is good enough
+[I 191106 11:25:36 ddh_app:282] BLE: setup only if RN4020 = [b'INV']
+[E 191106 11:25:36 ddh_app:302] SYS: del 04:ee:03:6c:ef:49 local files
+[I 191106 11:25:37 ddh_app:282] BLE: logger DIR = {'1234567_my_file.lid': 2172}.
+[I 191106 11:25:37 ddh_app:282] BLE: 04:ee:03:6c:ef:49 has 1 files
+[I 191106 11:25:37 ddh_app:282] BLE: get 1234567_my_file.lid, 2172 B
+[I 191106 11:25:44 ddh_app:282] BLE: got 1234567_my_file.lid
+[I 191106 11:25:44 ddh_app:282] PLT: T(h) for dl_files/04-ee-03-6c-ef-49
+[I 191106 11:25:44 ddh_app:282] BLE: disconnecting 04:ee:03:6c:ef:49
+[I 191106 11:25:44 ddh_app:379] BLE: all loggers done.
+[D 191106 11:30:18 ddh_app:75] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191106 11:30:18 ddh_app:76] SYS: recall re-RUN post download, search '###'
+[D 191106 11:30:18 ddh_app:166] SYS: this is NOT a raspberry system
+[I 191106 11:30:18 ddh_app:282] BLE: detecting loggers...
+[I 191106 11:30:18 ddh_app:282] GPS: no receiver found
+[I 191106 11:30:18 ddh_app:399] GPS: no position update
+[I 191106 11:30:18 ddh_app:282] GPS: using NTP time
+[I 191106 11:30:18 ddh_app:409] SYS: we have internet
+[I 191106 11:30:23 ddh_app:282] BLE: 1 loggers to query
+[I 191106 11:30:23 ddh_app:282] BLE: connecting 04:ee:03:6c:ef:49
+[I 191106 11:30:25 ddh_app:282] BLE: get status = [b'STS', b'0201']
+[I 191106 11:30:26 ddh_app:282] BLE: stop deploy = [b'STP', b'00']
+[I 191106 11:30:28 ddh_app:282] BLE: logger time is good enough
+[I 191106 11:30:31 ddh_app:282] BLE: attempt RN4020 setup = [b'INV']
+[E 191106 11:30:31 ddh_app:302] SYS: del 04:ee:03:6c:ef:49 local files
+[I 191106 11:30:32 ddh_app:282] BLE: logger DIR = {'1234567_my_file.lid': 2172}.
+[I 191106 11:30:32 ddh_app:282] BLE: 04:ee:03:6c:ef:49 has 1 files
+[I 191106 11:30:32 ddh_app:282] BLE: get 1234567_my_file.lid, 2172 B
+[I 191106 11:30:39 ddh_app:282] BLE: got 1234567_my_file.lid
+[I 191106 11:30:39 ddh_app:282] PLT: T(h) for dl_files/04-ee-03-6c-ef-49
+[I 191106 11:30:39 ddh_app:282] BLE: disconnecting 04:ee:03:6c:ef:49
+[I 191106 11:30:39 ddh_app:379] BLE: all loggers done.
+[D 191106 11:33:25 ddh_app:75] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191106 11:33:25 ddh_app:76] SYS: recall re-RUN post download, search '###'
+[D 191106 11:33:25 ddh_app:166] SYS: this is NOT a raspberry system
+[I 191106 11:33:25 ddh_app:283] BLE: detecting loggers...
+[I 191106 11:33:25 ddh_app:283] GPS: no receiver found
+[I 191106 11:33:25 ddh_app:404] GPS: no position update
+[I 191106 11:33:26 ddh_app:283] GPS: using NTP time
+[I 191106 11:33:26 ddh_app:414] SYS: we have internet
+[I 191106 11:33:31 ddh_app:283] BLE: 1 loggers to query
+[I 191106 11:33:31 ddh_app:283] BLE: connecting 04:ee:03:6c:ef:49
+[I 191106 11:33:33 ddh_app:283] BLE: get status = [b'STS', b'0201']
+[I 191106 11:33:34 ddh_app:283] BLE: stop deploy = [b'STP', b'00']
+[I 191106 11:33:36 ddh_app:283] BLE: logger time is good enough
+[I 191106 11:33:39 ddh_app:283] BLE: attempt RN4020 setup = [b'INV']
+[W 191106 11:33:39 ddh_app:307] SYS: del 04:ee:03:6c:ef:49 local files
+[I 191106 11:33:40 ddh_app:283] BLE: logger DIR = {'1234567_my_file.lid': 2172}.
+[I 191106 11:33:40 ddh_app:283] BLE: 04:ee:03:6c:ef:49 has 1 files
+[I 191106 11:33:40 ddh_app:283] BLE: get 1234567_my_file.lid, 2172 B
+[I 191106 11:33:47 ddh_app:283] BLE: got 1234567_my_file.lid
+[D 191106 11:37:23 ddh_app:76] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191106 11:37:23 ddh_app:77] SYS: recall re-RUN post download, search '###'
+[D 191106 11:37:23 ddh_app:167] SYS: this is NOT a raspberry system
+[I 191106 11:37:23 ddh_app:284] BLE: detecting loggers...
+[I 191106 11:37:23 ddh_app:284] GPS: no receiver found
+[I 191106 11:37:23 ddh_app:405] GPS: no position update
+[I 191106 11:37:23 ddh_app:284] GPS: using NTP time
+[I 191106 11:37:24 ddh_app:415] SYS: we have internet
+[I 191106 11:37:28 ddh_app:284] BLE: 1 loggers to query
+[I 191106 11:37:28 ddh_app:284] BLE: connecting 04:ee:03:6c:ef:49
+[I 191106 11:37:31 ddh_app:284] BLE: get status = [b'STS', b'0201']
+[I 191106 11:37:32 ddh_app:284] BLE: stop deploy = [b'STP', b'00']
+[I 191106 11:37:34 ddh_app:284] BLE: logger time is good enough
+[I 191106 11:37:37 ddh_app:284] BLE: attempt RN4020 setup = [b'INV']
+[W 191106 11:37:37 ddh_app:308] SYS: del 04:ee:03:6c:ef:49 local files
+[I 191106 11:37:38 ddh_app:284] BLE: logger DIR = {'1234567_my_file.lid': 2172}.
+[I 191106 11:37:38 ddh_app:284] BLE: 04:ee:03:6c:ef:49 has 1 files
+[I 191106 11:37:38 ddh_app:284] BLE: get 1234567_my_file.lid, 2172 B
+[I 191106 11:37:45 ddh_app:284] BLE: got 1234567_my_file.lid
+[I 191106 11:37:45 ddh_app:284] PLT: T(h) for dl_files/04-ee-03-6c-ef-49
+[E 191106 11:37:45 ddh_app:304] PLT: can't T(h) for dl_files/04-ee-03-6c-ef-49
+[D 191106 11:37:45 ddh_app:452] SYS: elapsed time 0 ms.
+[I 191106 11:37:45 ddh_app:284] BLE: disconnecting 04:ee:03:6c:ef:49
+[I 191106 11:37:45 ddh_app:385] BLE: all loggers done.
+[I 191106 11:37:47 ddh_app:284] BLE: detecting loggers...
+[I 191106 11:37:52 ddh_app:284] BLE: 04:ee:03:6c:ef:49 too recent, delay 592.87 s.
+[I 191106 11:37:52 ddh_app:284] BLE: 0 loggers to query
+[I 191106 11:37:53 ddh_app:284] GPS: using NTP time
+[I 191106 11:37:53 ddh_app:415] SYS: we have internet
+[I 191106 11:37:53 ddh_app:284] GPS: no receiver found
+[I 191106 11:37:53 ddh_app:405] GPS: no position update
+[D 191106 11:39:40 ddh_app:76] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191106 11:39:40 ddh_app:77] SYS: recall re-RUN post download, search '###'
+[D 191106 11:39:41 ddh_app:167] SYS: this is NOT a raspberry system
+[I 191106 11:39:41 ddh_app:284] BLE: detecting loggers...
+[I 191106 11:39:41 ddh_app:284] GPS: no receiver found
+[I 191106 11:39:41 ddh_app:405] GPS: no position update
+[I 191106 11:39:41 ddh_app:284] GPS: using NTP time
+[I 191106 11:39:41 ddh_app:415] SYS: we have internet
+[I 191106 11:39:46 ddh_app:284] BLE: 1 loggers to query
+[I 191106 11:39:46 ddh_app:284] BLE: connecting 04:ee:03:6c:ef:49
+[I 191106 11:39:48 ddh_app:284] BLE: get status = [b'STS', b'0201']
+[I 191106 11:39:49 ddh_app:284] BLE: stop deploy = [b'STP', b'00']
+[D 191106 11:46:39 ddh_app:76] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191106 11:46:39 ddh_app:77] SYS: recall re-RUN post download, search '###'
+[D 191106 11:46:39 ddh_app:167] SYS: this is NOT a raspberry system
+[I 191106 11:46:39 ddh_app:284] BLE: detecting loggers...
+[I 191106 11:46:39 ddh_app:284] GPS: no receiver found
+[I 191106 11:46:39 ddh_app:405] GPS: no position update
+[I 191106 11:46:39 ddh_app:284] GPS: using NTP time
+[I 191106 11:46:39 ddh_app:415] SYS: we have internet
+[I 191106 11:46:44 ddh_app:284] BLE: 1 loggers to query
+[I 191106 11:46:44 ddh_app:284] BLE: connecting 04:ee:03:6c:ef:49
+[I 191106 11:46:46 ddh_app:284] BLE: get status = [b'STS', b'0201']
+[I 191106 11:46:47 ddh_app:284] BLE: stop deploy = [b'STP', b'00']
+[I 191106 11:46:49 ddh_app:284] BLE: logger time is good enough
+[I 191106 11:46:53 ddh_app:284] BLE: attempt RN4020 setup = [b'INV']
+[W 191106 11:46:53 ddh_app:308] SYS: del 04:ee:03:6c:ef:49 local files
+[D 191106 11:46:53 ddh_app:170] SYS: closing GUI APP...
+[D 191106 11:51:18 ddh_app:76] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191106 11:51:18 ddh_app:77] SYS: recall re-RUN post download, search '###'
+[D 191106 11:51:18 ddh_app:167] SYS: this is NOT a raspberry system
+[I 191106 11:51:18 ddh_app:284] BLE: detecting loggers...
+[I 191106 11:51:18 ddh_app:284] GPS: no receiver found
+[I 191106 11:51:18 ddh_app:405] GPS: no position update
+[I 191106 11:51:18 ddh_app:284] GPS: using NTP time
+[I 191106 11:51:19 ddh_app:415] SYS: we have internet
+[I 191106 11:51:23 ddh_app:284] BLE: 1 loggers to query
+[I 191106 11:51:23 ddh_app:284] BLE: connecting 04:ee:03:6c:ef:49
+[I 191106 11:51:25 ddh_app:284] BLE: get status = [b'STS', b'0201']
+[I 191106 11:51:26 ddh_app:284] BLE: stop deploy = [b'STP', b'00']
+[I 191106 11:51:28 ddh_app:284] BLE: logger time is good enough
+[I 191106 11:51:32 ddh_app:284] BLE: attempt RN4020 setup = [b'INV']
+[W 191106 11:51:32 ddh_app:308] SYS: del 04:ee:03:6c:ef:49 local files
+[I 191106 11:51:33 ddh_app:284] BLE: logger DIR = {'1234567_my_file.lid': 2172}.
+[I 191106 11:51:33 ddh_app:284] BLE: 04:ee:03:6c:ef:49 has 1 files
+[I 191106 11:51:33 ddh_app:284] BLE: get 1234567_my_file.lid, 2172 B
+[I 191106 11:51:40 ddh_app:284] BLE: got 1234567_my_file.lid
+[I 191106 11:51:40 ddh_app:284] PLT: T(h) for dl_files/04-ee-03-6c-ef-49
+[E 191106 11:51:40 ddh_app:304] PLT: can't T(h) for dl_files/04-ee-03-6c-ef-49
+[D 191106 11:51:40 ddh_app:452] SYS: elapsed time 8 ms.
+[I 191106 11:51:40 ddh_app:284] BLE: disconnecting 04:ee:03:6c:ef:49
+[I 191106 11:51:40 ddh_app:385] BLE: all loggers done.
+[I 191106 11:51:42 ddh_app:284] BLE: detecting loggers...
+[I 191106 11:51:47 ddh_app:284] BLE: 04:ee:03:6c:ef:49 is recent, delay 592.85 s.
+[I 191106 11:51:47 ddh_app:284] BLE: 0 loggers to query
+[I 191106 11:51:48 ddh_app:284] GPS: using NTP time
+[I 191106 11:51:48 ddh_app:415] SYS: we have internet
+[I 191106 11:51:48 ddh_app:284] GPS: no receiver found
+[I 191106 11:51:48 ddh_app:405] GPS: no position update
+[I 191106 11:51:49 ddh_app:284] BLE: detecting loggers...
+[D 191106 11:51:51 ddh_app:76] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191106 11:51:51 ddh_app:77] SYS: recall re-RUN post download, search '###'
+[D 191106 11:51:51 ddh_app:167] SYS: this is NOT a raspberry system
+[I 191106 11:51:51 ddh_app:284] BLE: detecting loggers...
+[D 191106 11:57:47 ddh_app:76] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191106 11:57:47 ddh_app:77] SYS: recall re-RUN post download, search '###'
+[D 191106 11:57:47 ddh_app:167] SYS: this is NOT a raspberry system
+[I 191106 11:57:47 ddh_app:284] BLE: detecting loggers...
+[I 191106 11:57:47 ddh_app:284] GPS: no receiver found
+[I 191106 11:57:47 ddh_app:405] GPS: no position update
+[I 191106 11:57:47 ddh_app:284] GPS: using NTP time
+[I 191106 11:57:47 ddh_app:415] SYS: we have internet
+[I 191106 11:57:52 ddh_app:284] BLE: 1 loggers to query
+[I 191106 11:57:52 ddh_app:284] BLE: connecting 04:ee:03:6c:ef:49
+[I 191106 11:57:54 ddh_app:284] BLE: get status = [b'STS', b'0201']
+[I 191106 11:57:55 ddh_app:284] BLE: stop deploy = [b'STP', b'00']
+[I 191106 11:57:57 ddh_app:284] BLE: logger time is good enough
+[I 191106 11:58:00 ddh_app:284] BLE: attempt RN4020 setup = [b'INV']
+[W 191106 11:58:00 ddh_app:308] SYS: del 04:ee:03:6c:ef:49 local files
+[I 191106 11:58:01 ddh_app:284] BLE: logger DIR = {'1234567_my_file.lid': 2172}
+[I 191106 11:58:01 ddh_app:284] BLE: 04:ee:03:6c:ef:49 has 1 files
+[I 191106 11:58:01 ddh_app:284] BLE: get 1234567_my_file.lid, 2172 B
+[I 191106 11:58:09 ddh_app:284] BLE: got 1234567_my_file.lid
+[I 191106 11:58:09 ddh_app:284] PLT: T(h) for dl_files/04-ee-03-6c-ef-49
+[E 191106 11:58:09 ddh_app:304] PLT: can't T(h) for dl_files/04-ee-03-6c-ef-49
+[D 191106 11:58:09 ddh_app:452] SYS: elapsed time 0 ms.
+[I 191106 11:58:09 ddh_app:284] BLE: disconnecting 04:ee:03:6c:ef:49
+[I 191106 11:58:09 ddh_app:385] BLE: all loggers done
+[I 191106 11:58:11 ddh_app:284] BLE: detecting loggers...
+[I 191106 11:58:16 ddh_app:284] BLE: 04:ee:03:6c:ef:49 is recent, delay 592.85 s.
+[I 191106 11:58:16 ddh_app:284] BLE: 0 loggers to query
+[I 191106 11:58:17 ddh_app:284] GPS: using NTP time
+[I 191106 11:58:17 ddh_app:415] SYS: we have internet
+[I 191106 11:58:17 ddh_app:284] GPS: no receiver found
+[I 191106 11:58:17 ddh_app:405] GPS: no position update
+[I 191106 11:58:18 ddh_app:284] BLE: detecting loggers...
+[D 191106 12:00:04 ddh_app:76] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191106 12:00:04 ddh_app:77] SYS: recall re-RUN post download, search '###'
+[D 191106 12:00:04 ddh_app:167] SYS: this is NOT a raspberry system
+[I 191106 12:00:04 ddh_app:284] BLE: detecting loggers...
+[I 191106 12:00:04 ddh_app:284] GPS: no receiver found
+[I 191106 12:00:04 ddh_app:405] GPS: no position update
+[I 191106 12:00:04 ddh_app:284] GPS: using NTP time
+[I 191106 12:00:04 ddh_app:415] SYS: we have internet
+[I 191106 12:00:09 ddh_app:284] BLE: 1 loggers to query
+[I 191106 12:00:09 ddh_app:284] BLE: connecting 04:ee:03:6c:ef:49
+[I 191106 12:00:11 ddh_app:284] BLE: get status = [b'STS', b'0201']
+[I 191106 12:00:12 ddh_app:284] BLE: stop deploy = [b'STP', b'00']
+[I 191106 12:00:14 ddh_app:284] BLE: logger time is good enough
+[I 191106 12:00:17 ddh_app:284] BLE: attempt RN4020 setup = [b'INV']
+[W 191106 12:00:17 ddh_app:308] SYS: del 04:ee:03:6c:ef:49 local files
+[I 191106 12:00:18 ddh_app:284] BLE: logger DIR = {'1234567_my_file.lid': 2172}
+[I 191106 12:00:18 ddh_app:284] BLE: 04:ee:03:6c:ef:49 has 1 files
+[I 191106 12:00:18 ddh_app:284] BLE: get 1234567_my_file.lid, 2172 B
+[I 191106 12:00:25 ddh_app:284] BLE: got 1234567_my_file.lid
+[I 191106 12:00:25 ddh_app:284] PLT: T(h) for dl_files/04-ee-03-6c-ef-49
+[E 191106 12:00:25 ddh_app:304] PLT: can't T(h) for dl_files/04-ee-03-6c-ef-49
+[D 191106 12:00:25 ddh_app:452] SYS: elapsed time 6 ms.
+[I 191106 12:00:25 ddh_app:284] BLE: disconnecting 04:ee:03:6c:ef:49
+[I 191106 12:00:25 ddh_app:385] BLE: all loggers done
+[I 191106 12:00:27 ddh_app:284] BLE: detecting loggers...
+[I 191106 12:00:32 ddh_app:284] BLE: 04:ee:03:6c:ef:49 is recent, delay 592.86 s.
+[I 191106 12:00:32 ddh_app:284] BLE: 0 loggers to query
+[I 191106 12:00:33 ddh_app:284] GPS: using NTP time
+[I 191106 12:00:33 ddh_app:415] SYS: we have internet
+[I 191106 12:00:33 ddh_app:284] GPS: no receiver found
+[I 191106 12:00:33 ddh_app:405] GPS: no position update
+[I 191106 12:00:34 ddh_app:284] BLE: detecting loggers...
+[I 191106 12:00:39 ddh_app:284] BLE: 04:ee:03:6c:ef:49 is recent, delay 585.82 s.
+[I 191106 12:00:39 ddh_app:284] BLE: 0 loggers to query
+[I 191106 12:00:41 ddh_app:284] BLE: detecting loggers...
+[I 191106 12:00:46 ddh_app:284] BLE: 04:ee:03:6c:ef:49 is recent, delay 578.79 s.
+[I 191106 12:00:46 ddh_app:284] BLE: 0 loggers to query
+[I 191106 12:00:48 ddh_app:284] BLE: detecting loggers...
+[I 191106 12:00:53 ddh_app:284] BLE: 04:ee:03:6c:ef:49 is recent, delay 571.73 s.
+[I 191106 12:00:53 ddh_app:284] BLE: 0 loggers to query
+[I 191106 12:00:55 ddh_app:284] BLE: detecting loggers...
+[I 191106 12:01:00 ddh_app:284] BLE: 04:ee:03:6c:ef:49 is recent, delay 564.70 s.
+[I 191106 12:01:00 ddh_app:284] BLE: 0 loggers to query
+[I 191106 12:01:02 ddh_app:284] BLE: detecting loggers...
+[I 191106 12:01:04 ddh_app:284] GPS: using NTP time
+[I 191106 12:01:05 ddh_app:415] SYS: we have internet
+[I 191106 12:01:05 ddh_app:284] GPS: no receiver found
+[I 191106 12:01:05 ddh_app:405] GPS: no position update
+[I 191106 12:01:08 ddh_app:284] BLE: 04:ee:03:6c:ef:49 is recent, delay 557.60 s.
+[I 191106 12:01:08 ddh_app:284] BLE: 0 loggers to query
+[I 191106 12:01:10 ddh_app:284] BLE: detecting loggers...
+[I 191106 12:01:15 ddh_app:284] BLE: 04:ee:03:6c:ef:49 is recent, delay 550.57 s.
+[I 191106 12:01:15 ddh_app:284] BLE: 0 loggers to query
+[I 191106 12:01:17 ddh_app:284] BLE: detecting loggers...
+[I 191106 12:01:22 ddh_app:284] BLE: 04:ee:03:6c:ef:49 is recent, delay 543.54 s.
+[I 191106 12:01:22 ddh_app:284] BLE: 0 loggers to query
+[I 191106 12:01:24 ddh_app:284] BLE: detecting loggers...
+[I 191106 12:01:29 ddh_app:284] BLE: 04:ee:03:6c:ef:49 is recent, delay 536.50 s.
+[I 191106 12:01:29 ddh_app:284] BLE: 0 loggers to query
+[I 191106 12:01:31 ddh_app:284] BLE: detecting loggers...
+[I 191106 12:01:36 ddh_app:284] BLE: 04:ee:03:6c:ef:49 is recent, delay 529.47 s.
+[I 191106 12:01:36 ddh_app:284] BLE: 0 loggers to query
+[I 191106 12:01:36 ddh_app:284] GPS: using NTP time
+[I 191106 12:01:36 ddh_app:415] SYS: we have internet
+[I 191106 12:01:36 ddh_app:284] GPS: no receiver found
+[I 191106 12:01:36 ddh_app:405] GPS: no position update
+[I 191106 12:01:38 ddh_app:284] BLE: detecting loggers...
+[I 191106 12:01:43 ddh_app:284] BLE: 04:ee:03:6c:ef:49 is recent, delay 522.43 s.
+[I 191106 12:01:43 ddh_app:284] BLE: 0 loggers to query
+[I 191106 12:01:45 ddh_app:284] BLE: detecting loggers...
+[I 191106 12:01:50 ddh_app:284] BLE: 04:ee:03:6c:ef:49 is recent, delay 515.39 s.
+[I 191106 12:01:50 ddh_app:284] BLE: 0 loggers to query
+[I 191106 12:01:52 ddh_app:284] BLE: detecting loggers...
+[I 191106 12:01:57 ddh_app:284] BLE: 04:ee:03:6c:ef:49 is recent, delay 508.35 s.
+[I 191106 12:01:57 ddh_app:284] BLE: 0 loggers to query
+[I 191106 12:01:59 ddh_app:284] BLE: detecting loggers...
+[I 191106 12:02:04 ddh_app:284] BLE: 04:ee:03:6c:ef:49 is recent, delay 501.30 s.
+[I 191106 12:02:04 ddh_app:284] BLE: 0 loggers to query
+[I 191106 12:02:06 ddh_app:284] BLE: detecting loggers...
+[I 191106 12:02:07 ddh_app:284] GPS: using NTP time
+[I 191106 12:02:08 ddh_app:415] SYS: we have internet
+[I 191106 12:02:08 ddh_app:284] GPS: no receiver found
+[I 191106 12:02:08 ddh_app:405] GPS: no position update
+[I 191106 12:02:11 ddh_app:284] BLE: 04:ee:03:6c:ef:49 is recent, delay 494.26 s.
+[I 191106 12:02:11 ddh_app:284] BLE: 0 loggers to query
+[I 191106 12:02:13 ddh_app:284] BLE: detecting loggers...
+[I 191106 12:02:18 ddh_app:284] BLE: 04:ee:03:6c:ef:49 is recent, delay 487.22 s.
+[I 191106 12:02:18 ddh_app:284] BLE: 0 loggers to query
+[I 191106 12:02:20 ddh_app:284] BLE: detecting loggers...
+[I 191106 12:02:25 ddh_app:284] BLE: 04:ee:03:6c:ef:49 is recent, delay 480.17 s.
+[I 191106 12:02:25 ddh_app:284] BLE: 0 loggers to query
+[I 191106 12:02:27 ddh_app:284] BLE: detecting loggers...
+[I 191106 12:02:32 ddh_app:284] BLE: 04:ee:03:6c:ef:49 is recent, delay 473.13 s.
+[I 191106 12:02:32 ddh_app:284] BLE: 0 loggers to query
+[I 191106 12:02:34 ddh_app:284] BLE: detecting loggers...
+[I 191106 12:02:39 ddh_app:284] GPS: using NTP time
+[I 191106 12:02:39 ddh_app:415] SYS: we have internet
+[I 191106 12:02:39 ddh_app:284] GPS: no receiver found
+[I 191106 12:02:39 ddh_app:405] GPS: no position update
+[I 191106 12:02:39 ddh_app:284] BLE: 04:ee:03:6c:ef:49 is recent, delay 465.98 s.
+[I 191106 12:02:39 ddh_app:284] BLE: 0 loggers to query
+[I 191106 12:02:41 ddh_app:284] BLE: detecting loggers...
+[D 191106 12:08:16 ddh_app:76] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191106 12:08:16 ddh_app:77] SYS: recall re-RUN post download, search '###'
+[D 191106 12:08:44 ddh_app:76] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191106 12:08:44 ddh_app:77] SYS: recall re-RUN post download, search '###'
+[D 191106 12:08:44 ddh_app:168] SYS: this is NOT a raspberry system
+[I 191106 12:08:44 ddh_app:285] BLE: detecting loggers...
+[I 191106 12:08:44 ddh_app:285] GPS: no receiver found
+[I 191106 12:08:44 ddh_app:406] GPS: no position update
+[I 191106 12:08:44 ddh_app:285] GPS: using NTP time
+[I 191106 12:08:44 ddh_app:416] SYS: we have internet
+[I 191106 12:08:49 ddh_app:285] BLE: 1 loggers to query
+[I 191106 12:08:49 ddh_app:285] BLE: connecting 04:ee:03:6c:ef:49
+[I 191106 12:08:51 ddh_app:285] BLE: get status = [b'STS', b'0201']
+[D 191106 12:08:52 ddh_app:171] SYS: closing GUI APP...
+[D 191106 12:29:23 ddh_app:76] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191106 12:29:23 ddh_app:77] SYS: recall re-RUN post download, search '###'
+[D 191106 12:29:23 ddh_app:168] SYS: this is NOT a raspberry system
+[I 191106 12:29:23 ddh_app:285] BLE: detecting loggers...
+[I 191106 12:29:23 ddh_app:285] GPS: no receiver found
+[I 191106 12:29:23 ddh_app:406] GPS: no position update
+[I 191106 12:29:23 ddh_app:285] GPS: using NTP time
+[I 191106 12:29:24 ddh_app:416] SYS: we have internet
+[I 191106 12:29:28 ddh_app:285] BLE: 1 loggers to query
+[I 191106 12:29:28 ddh_app:285] BLE: connecting 04:ee:03:6c:ef:49
+[I 191106 12:29:30 ddh_app:285] BLE: get status = [b'STS', b'0201']
+[I 191106 12:29:31 ddh_app:285] BLE: stop deploy = [b'STP', b'00']
+[I 191106 12:29:33 ddh_app:285] BLE: logger time is good enough
+[I 191106 12:29:36 ddh_app:285] BLE: attempt RN4020 setup = [b'INV']
+[W 191106 12:29:36 ddh_app:309] SYS: del 04:ee:03:6c:ef:49 local files
+[I 191106 12:29:37 ddh_app:285] BLE: logger DIR = {'1234567_my_file.lid': 2172}
+[I 191106 12:29:37 ddh_app:285] BLE: 04:ee:03:6c:ef:49 has 1 files
+[I 191106 12:29:37 ddh_app:285] BLE: get 1234567_my_file.lid, 2172 B
+[I 191106 12:29:45 ddh_app:285] BLE: got 1234567_my_file.lid
+[I 191106 12:29:45 ddh_app:285] PLT: T(h) for dl_files/04-ee-03-6c-ef-49
+[E 191106 12:29:45 ddh_app:305] PLT: can't T(h) for dl_files/04-ee-03-6c-ef-49
+[D 191106 12:29:45 ddh_app:453] SYS: elapsed time 1 ms.
+[I 191106 12:29:45 ddh_app:285] BLE: disconnecting 04:ee:03:6c:ef:49
+[I 191106 12:29:45 ddh_app:386] BLE: all loggers done
+[I 191106 12:29:47 ddh_app:285] BLE: detecting loggers...
+[I 191106 12:29:52 ddh_app:285] BLE: 04:ee:03:6c:ef:49 is recent, delay 592.84 s.
+[I 191106 12:29:52 ddh_app:285] BLE: 0 loggers to query
+[I 191106 12:29:53 ddh_app:285] GPS: using NTP time
+[I 191106 12:29:53 ddh_app:416] SYS: we have internet
+[I 191106 12:29:53 ddh_app:285] GPS: no receiver found
+[I 191106 12:29:53 ddh_app:406] GPS: no position update
+[I 191106 12:29:54 ddh_app:285] BLE: detecting loggers...
+[D 191106 12:29:59 ddh_app:256] GUI: keypress unknown.
+[D 191106 12:29:59 ddh_app:256] GUI: keypress unknown.
+[I 191106 12:29:59 ddh_app:285] BLE: 04:ee:03:6c:ef:49 is recent, delay 585.82 s.
+[I 191106 12:29:59 ddh_app:285] BLE: 0 loggers to query
+[I 191106 12:30:01 ddh_app:285] BLE: detecting loggers...
+[I 191106 12:30:06 ddh_app:285] BLE: 04:ee:03:6c:ef:49 is recent, delay 578.79 s.
+[I 191106 12:30:06 ddh_app:285] BLE: 0 loggers to query
+[I 191106 12:30:08 ddh_app:285] BLE: detecting loggers...
+[I 191106 12:30:13 ddh_app:285] BLE: 04:ee:03:6c:ef:49 is recent, delay 571.76 s.
+[I 191106 12:30:13 ddh_app:285] BLE: 0 loggers to query
+[I 191106 12:30:15 ddh_app:285] BLE: detecting loggers...
+[I 191106 12:30:20 ddh_app:285] BLE: 04:ee:03:6c:ef:49 is recent, delay 564.74 s.
+[I 191106 12:30:20 ddh_app:285] BLE: 0 loggers to query
+[I 191106 12:30:22 ddh_app:285] BLE: detecting loggers...
+[I 191106 12:30:24 ddh_app:285] GPS: using NTP time
+[I 191106 12:30:24 ddh_app:416] SYS: we have internet
+[I 191106 12:30:24 ddh_app:285] GPS: no receiver found
+[I 191106 12:30:24 ddh_app:406] GPS: no position update
+[I 191106 12:30:27 ddh_app:285] BLE: 04:ee:03:6c:ef:49 is recent, delay 557.70 s.
+[I 191106 12:30:27 ddh_app:285] BLE: 0 loggers to query
+[I 191106 12:30:29 ddh_app:285] BLE: detecting loggers...
+[I 191106 12:30:34 ddh_app:285] BLE: 04:ee:03:6c:ef:49 is recent, delay 550.67 s.
+[I 191106 12:30:34 ddh_app:285] BLE: 0 loggers to query
+[I 191106 12:30:36 ddh_app:285] BLE: detecting loggers...
+[I 191106 12:30:41 ddh_app:285] BLE: 04:ee:03:6c:ef:49 is recent, delay 543.65 s.
+[I 191106 12:30:41 ddh_app:285] BLE: 0 loggers to query
+[I 191106 12:30:43 ddh_app:285] BLE: detecting loggers...
+[I 191106 12:30:48 ddh_app:285] BLE: 04:ee:03:6c:ef:49 is recent, delay 536.62 s.
+[I 191106 12:30:48 ddh_app:285] BLE: 0 loggers to query
+[I 191106 12:30:50 ddh_app:285] BLE: detecting loggers...
+[I 191106 12:30:55 ddh_app:285] BLE: 04:ee:03:6c:ef:49 is recent, delay 529.56 s.
+[I 191106 12:30:55 ddh_app:285] BLE: 0 loggers to query
+[I 191106 12:30:55 ddh_app:285] GPS: using NTP time
+[I 191106 12:30:56 ddh_app:416] SYS: we have internet
+[I 191106 12:30:56 ddh_app:285] GPS: no receiver found
+[I 191106 12:30:56 ddh_app:406] GPS: no position update
+[I 191106 12:30:57 ddh_app:285] BLE: detecting loggers...
+[I 191106 12:31:02 ddh_app:285] BLE: 04:ee:03:6c:ef:49 is recent, delay 522.53 s.
+[I 191106 12:31:02 ddh_app:285] BLE: 0 loggers to query
+[I 191106 12:31:04 ddh_app:285] BLE: detecting loggers...
+[I 191106 12:31:09 ddh_app:285] BLE: 04:ee:03:6c:ef:49 is recent, delay 515.51 s.
+[I 191106 12:31:09 ddh_app:285] BLE: 0 loggers to query
+[I 191106 12:31:11 ddh_app:285] BLE: detecting loggers...
+[I 191106 12:31:16 ddh_app:285] BLE: 04:ee:03:6c:ef:49 is recent, delay 508.34 s.
+[I 191106 12:31:16 ddh_app:285] BLE: 0 loggers to query
+[I 191106 12:31:18 ddh_app:285] BLE: detecting loggers...
+[I 191106 12:31:23 ddh_app:285] BLE: 04:ee:03:6c:ef:49 is recent, delay 501.18 s.
+[I 191106 12:31:23 ddh_app:285] BLE: 0 loggers to query
+[I 191106 12:31:25 ddh_app:285] BLE: detecting loggers...
+[I 191106 12:31:27 ddh_app:285] GPS: using NTP time
+[I 191106 12:31:27 ddh_app:416] SYS: we have internet
+[I 191106 12:31:27 ddh_app:285] GPS: no receiver found
+[I 191106 12:31:27 ddh_app:406] GPS: no position update
+[I 191106 12:31:30 ddh_app:285] BLE: 04:ee:03:6c:ef:49 is recent, delay 494.14 s.
+[I 191106 12:31:30 ddh_app:285] BLE: 0 loggers to query
+[I 191106 12:31:32 ddh_app:285] BLE: detecting loggers...
+[I 191106 12:31:37 ddh_app:285] BLE: 04:ee:03:6c:ef:49 is recent, delay 487.11 s.
+[I 191106 12:31:37 ddh_app:285] BLE: 0 loggers to query
+[I 191106 12:31:39 ddh_app:285] BLE: detecting loggers...
+[I 191106 12:31:44 ddh_app:285] BLE: 04:ee:03:6c:ef:49 is recent, delay 480.07 s.
+[I 191106 12:31:44 ddh_app:285] BLE: 0 loggers to query
+[I 191106 12:31:46 ddh_app:285] BLE: detecting loggers...
+[I 191106 12:31:52 ddh_app:285] BLE: 04:ee:03:6c:ef:49 is recent, delay 473.05 s.
+[I 191106 12:31:52 ddh_app:285] BLE: 0 loggers to query
+[I 191106 12:31:54 ddh_app:285] BLE: detecting loggers...
+[I 191106 12:31:58 ddh_app:285] GPS: using NTP time
+[I 191106 12:31:58 ddh_app:416] SYS: we have internet
+[I 191106 12:31:58 ddh_app:285] GPS: no receiver found
+[I 191106 12:31:58 ddh_app:406] GPS: no position update
+[I 191106 12:31:59 ddh_app:285] BLE: 04:ee:03:6c:ef:49 is recent, delay 466.01 s.
+[I 191106 12:31:59 ddh_app:285] BLE: 0 loggers to query
+[I 191106 12:32:01 ddh_app:285] BLE: detecting loggers...
+[D 191106 12:32:04 ddh_app:171] SYS: closing GUI APP...
+[D 191106 12:32:06 ddh_app:76] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191106 12:32:06 ddh_app:77] SYS: recall re-RUN post download, search '###'
+[D 191106 12:32:06 ddh_app:168] SYS: this is NOT a raspberry system
+[I 191106 12:32:06 ddh_app:285] BLE: detecting loggers...
+[I 191106 12:32:06 ddh_app:285] GPS: no receiver found
+[I 191106 12:32:06 ddh_app:406] GPS: no position update
+[I 191106 12:32:06 ddh_app:285] GPS: using NTP time
+[I 191106 12:32:06 ddh_app:416] SYS: we have internet
+[I 191106 12:32:11 ddh_app:285] BLE: 1 loggers to query
+[I 191106 12:32:11 ddh_app:285] BLE: connecting 04:ee:03:6c:ef:49
+[I 191106 12:32:13 ddh_app:285] BLE: get status = [b'STS', b'0201']
+[I 191106 12:32:15 ddh_app:285] BLE: stop deploy = [b'STP', b'00']
+[I 191106 12:32:17 ddh_app:285] BLE: logger time is good enough
+[I 191106 12:32:20 ddh_app:285] BLE: attempt RN4020 setup = [b'INV']
+[W 191106 12:32:20 ddh_app:309] SYS: del 04:ee:03:6c:ef:49 local files
+[I 191106 12:32:21 ddh_app:285] BLE: logger DIR = {'1234567_my_file.lid': 2172}
+[I 191106 12:32:21 ddh_app:285] BLE: 04:ee:03:6c:ef:49 has 1 files
+[I 191106 12:32:21 ddh_app:285] BLE: get 1234567_my_file.lid, 2172 B
+[D 191106 12:32:23 ddh_app:171] SYS: closing GUI APP...
+[D 191106 12:39:33 ddh_app:76] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191106 12:39:33 ddh_app:77] SYS: recall re-RUN post download, search '###'
+[D 191106 12:39:33 ddh_app:168] SYS: this is NOT a raspberry system
+[I 191106 12:39:33 ddh_app:285] BLE: detecting loggers...
+[I 191106 12:39:33 ddh_app:285] GPS: no receiver found
+[I 191106 12:39:33 ddh_app:406] GPS: no position update
+[I 191106 12:39:34 ddh_app:285] GPS: using NTP time
+[I 191106 12:39:34 ddh_app:416] SYS: we have internet
+[I 191106 12:39:39 ddh_app:285] BLE: 1 loggers to query
+[I 191106 12:39:39 ddh_app:285] BLE: connecting 04:ee:03:6c:ef:49
+[I 191106 12:39:41 ddh_app:285] BLE: get status = [b'STS', b'0201']
+[I 191106 12:39:42 ddh_app:285] BLE: stop deploy = [b'STP', b'00']
+[I 191106 12:39:44 ddh_app:285] BLE: logger time is good enough
+[I 191106 12:39:47 ddh_app:285] BLE: attempt RN4020 setup = [b'INV']
+[W 191106 12:39:47 ddh_app:309] SYS: del 04:ee:03:6c:ef:49 local files
+[I 191106 12:39:48 ddh_app:285] BLE: logger DIR = {'1234567_my_file.lid': 2172}
+[I 191106 12:39:48 ddh_app:285] BLE: 04:ee:03:6c:ef:49 has 1 files
+[I 191106 12:39:48 ddh_app:285] BLE: get 1234567_my_file.lid, 2172 B
+[I 191106 12:39:53 ddh_app:285] BLE: cannot get 1234567_my_file.lid
+[I 191106 12:40:03 ddh_app:285] GPS: using NTP time
+[I 191106 12:40:03 ddh_app:416] SYS: we have internet
+[I 191106 12:40:03 ddh_app:285] GPS: no receiver found
+[I 191106 12:40:03 ddh_app:406] GPS: no position update
+[I 191106 12:40:08 ddh_app:285] BLE: cannot get 1234567_my_file.lid
+[D 191106 12:40:19 ddh_app:171] SYS: closing GUI APP...
+[D 191106 12:41:51 ddh_app:76] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191106 12:41:51 ddh_app:77] SYS: recall re-RUN post download, search '###'
+[D 191106 12:41:51 ddh_app:168] SYS: this is NOT a raspberry system
+[I 191106 12:41:51 ddh_app:285] BLE: detecting loggers...
+[I 191106 12:41:51 ddh_app:285] GPS: no receiver found
+[I 191106 12:41:51 ddh_app:406] GPS: no position update
+[I 191106 12:41:51 ddh_app:285] GPS: using NTP time
+[I 191106 12:41:52 ddh_app:416] SYS: we have internet
+[I 191106 12:41:56 ddh_app:285] BLE: 1 loggers to query
+[I 191106 12:41:56 ddh_app:285] BLE: connecting 04:ee:03:6c:ef:49
+[I 191106 12:41:58 ddh_app:285] BLE: get status = [b'STS', b'0201']
+[I 191106 12:41:59 ddh_app:285] BLE: stop deploy = [b'STP', b'00']
+[I 191106 12:42:01 ddh_app:285] BLE: logger time is good enough
+[I 191106 12:42:05 ddh_app:285] BLE: attempt RN4020 setup = [b'INV']
+[W 191106 12:42:05 ddh_app:309] SYS: del 04:ee:03:6c:ef:49 local files
+[I 191106 12:42:06 ddh_app:285] BLE: logger DIR = {'1234567_my_file.lid': 2172}
+[I 191106 12:42:06 ddh_app:285] BLE: 04:ee:03:6c:ef:49 has 1 files
+[I 191106 12:42:06 ddh_app:285] BLE: get 1234567_my_file.lid, 2172 B
+[I 191106 12:42:13 ddh_app:285] BLE: got 1234567_my_file.lid
+[I 191106 12:42:13 ddh_app:285] PLT: T(h) for dl_files/04-ee-03-6c-ef-49
+[E 191106 12:42:13 ddh_app:305] PLT: can't T(h) for dl_files/04-ee-03-6c-ef-49
+[D 191106 12:42:13 ddh_app:453] SYS: elapsed time 1 ms.
+[I 191106 12:42:13 ddh_app:285] BLE: disconnecting 04:ee:03:6c:ef:49
+[I 191106 12:42:13 ddh_app:386] BLE: all loggers done
+[I 191106 12:42:15 ddh_app:285] BLE: detecting loggers...
+[D 191106 12:42:15 ddh_app:171] SYS: closing GUI APP...
+[D 191106 12:42:57 ddh_app:76] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191106 12:42:57 ddh_app:77] SYS: recall re-RUN post download, search '###'
+[D 191106 12:42:57 ddh_app:168] SYS: this is NOT a raspberry system
+[I 191106 12:42:57 ddh_app:285] BLE: detecting loggers...
+[I 191106 12:42:57 ddh_app:285] GPS: no receiver found
+[I 191106 12:42:57 ddh_app:406] GPS: no position update
+[I 191106 12:42:57 ddh_app:285] GPS: using NTP time
+[I 191106 12:42:57 ddh_app:416] SYS: we have internet
+[I 191106 12:43:02 ddh_app:285] BLE: 1 loggers to query
+[I 191106 12:43:02 ddh_app:285] BLE: connecting 04:ee:03:6c:ef:49
+[I 191106 12:43:04 ddh_app:285] BLE: get status = [b'STS', b'0201']
+[I 191106 12:43:05 ddh_app:285] BLE: stop deploy = [b'STP', b'00']
+[I 191106 12:43:07 ddh_app:285] BLE: logger time is good enough
+[I 191106 12:43:10 ddh_app:285] BLE: attempt RN4020 setup = [b'INV']
+[W 191106 12:43:10 ddh_app:309] SYS: del 04:ee:03:6c:ef:49 local files
+[I 191106 12:43:12 ddh_app:285] BLE: logger DIR = {'1234567_my_file.lid': 2172}
+[I 191106 12:43:12 ddh_app:285] BLE: 04:ee:03:6c:ef:49 has 1 files
+[I 191106 12:43:12 ddh_app:285] BLE: get 1234567_my_file.lid, 2172 B
+[I 191106 12:43:19 ddh_app:285] BLE: got 1234567_my_file.lid
+[I 191106 12:43:19 ddh_app:285] PLT: T(h) for dl_files/04-ee-03-6c-ef-49
+[E 191106 12:43:19 ddh_app:305] PLT: can't T(h) for dl_files/04-ee-03-6c-ef-49
+[D 191106 12:43:19 ddh_app:453] SYS: elapsed time 1 ms.
+[I 191106 12:43:19 ddh_app:285] BLE: disconnecting 04:ee:03:6c:ef:49
+[I 191106 12:43:19 ddh_app:386] BLE: all loggers done
+[I 191106 12:43:21 ddh_app:285] BLE: detecting loggers...
+[D 191106 12:43:24 ddh_app:171] SYS: closing GUI APP...
+[D 191106 12:44:37 ddh_app:76] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191106 12:44:37 ddh_app:77] SYS: recall re-RUN post download, search '###'
+[D 191106 12:44:37 ddh_app:168] SYS: this is NOT a raspberry system
+[I 191106 12:44:37 ddh_app:285] BLE: detecting loggers...
+[I 191106 12:44:37 ddh_app:285] GPS: no receiver found
+[I 191106 12:44:37 ddh_app:406] GPS: no position update
+[I 191106 12:44:37 ddh_app:285] GPS: using NTP time
+[I 191106 12:44:38 ddh_app:416] SYS: we have internet
+[I 191106 12:44:42 ddh_app:285] BLE: 1 loggers to query
+[I 191106 12:44:42 ddh_app:285] BLE: connecting 04:ee:03:6c:ef:49
+[I 191106 12:44:44 ddh_app:285] BLE: get status = [b'STS', b'0201']
+[I 191106 12:44:46 ddh_app:285] BLE: stop deploy = [b'STP', b'00']
+[I 191106 12:44:48 ddh_app:285] BLE: logger time is good enough
+[I 191106 12:44:51 ddh_app:285] BLE: attempt RN4020 setup = [b'INV']
+[W 191106 12:44:51 ddh_app:309] SYS: del 04:ee:03:6c:ef:49 local files
+[I 191106 12:44:52 ddh_app:285] BLE: logger DIR = {'1234567_my_file.lid': 2172}
+[I 191106 12:44:52 ddh_app:285] BLE: 04:ee:03:6c:ef:49 has 1 files
+[I 191106 12:44:52 ddh_app:285] BLE: get 1234567_my_file.lid, 2172 B
+[I 191106 12:44:59 ddh_app:285] BLE: got 1234567_my_file.lid
+[I 191106 12:44:59 ddh_app:285] PLT: T(h) for dl_files/04-ee-03-6c-ef-49
+[I 191106 12:44:59 ddh_app:285] BLE: disconnecting 04:ee:03:6c:ef:49
+[I 191106 12:44:59 ddh_app:386] BLE: all loggers done
+[E 191106 12:44:59 ddh_app:305] PLT: can't T(h) for dl_files/04-ee-03-6c-ef-49
+[D 191106 12:44:59 ddh_app:453] SYS: elapsed time 2 ms.
+[I 191106 12:45:01 ddh_app:285] BLE: detecting loggers...
+[I 191106 12:45:06 ddh_app:285] BLE: 04:ee:03:6c:ef:49 is recent, delay 592.86 s.
+[I 191106 12:45:06 ddh_app:285] BLE: 0 loggers to query
+[I 191106 12:45:07 ddh_app:285] GPS: using NTP time
+[I 191106 12:45:07 ddh_app:416] SYS: we have internet
+[I 191106 12:45:07 ddh_app:285] GPS: no receiver found
+[I 191106 12:45:07 ddh_app:406] GPS: no position update
+[I 191106 12:45:08 ddh_app:285] BLE: detecting loggers...
+[I 191106 12:45:13 ddh_app:285] BLE: 04:ee:03:6c:ef:49 is recent, delay 585.82 s.
+[I 191106 12:45:13 ddh_app:285] BLE: 0 loggers to query
+[I 191106 12:45:15 ddh_app:285] BLE: detecting loggers...
+[I 191106 12:45:20 ddh_app:285] BLE: 04:ee:03:6c:ef:49 is recent, delay 578.77 s.
+[I 191106 12:45:20 ddh_app:285] BLE: 0 loggers to query
+[I 191106 12:45:22 ddh_app:285] BLE: detecting loggers...
+[I 191106 12:45:27 ddh_app:285] BLE: 04:ee:03:6c:ef:49 is recent, delay 571.73 s.
+[I 191106 12:45:27 ddh_app:285] BLE: 0 loggers to query
+[D 191106 12:45:28 ddh_app:171] SYS: closing GUI APP...
+[D 191106 12:45:45 ddh_app:76] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191106 12:45:45 ddh_app:77] SYS: recall re-RUN post download, search '###'
+[D 191106 12:45:45 ddh_app:168] SYS: this is NOT a raspberry system
+[I 191106 12:45:45 ddh_app:285] BLE: detecting loggers...
+[I 191106 12:45:45 ddh_app:285] GPS: no receiver found
+[I 191106 12:45:45 ddh_app:406] GPS: no position update
+[I 191106 12:45:45 ddh_app:285] GPS: using NTP time
+[I 191106 12:45:45 ddh_app:416] SYS: we have internet
+[I 191106 12:45:50 ddh_app:285] BLE: 1 loggers to query
+[I 191106 12:45:50 ddh_app:285] BLE: connecting 04:ee:03:6c:ef:49
+[I 191106 12:45:53 ddh_app:285] BLE: get status = [b'STS', b'0201']
+[I 191106 12:45:54 ddh_app:285] BLE: stop deploy = [b'STP', b'00']
+[I 191106 12:45:56 ddh_app:285] BLE: logger time is good enough
+[I 191106 12:45:59 ddh_app:285] BLE: attempt RN4020 setup = [b'INV']
+[W 191106 12:45:59 ddh_app:309] SYS: del 04:ee:03:6c:ef:49 local files
+[I 191106 12:46:00 ddh_app:285] BLE: logger DIR = {'1234567_my_file.lid': 2172}
+[I 191106 12:46:00 ddh_app:285] BLE: 04:ee:03:6c:ef:49 has 1 files
+[I 191106 12:46:00 ddh_app:285] BLE: get 1234567_my_file.lid, 2172 B
+[I 191106 12:46:07 ddh_app:285] BLE: got 1234567_my_file.lid
+[I 191106 12:46:07 ddh_app:285] PLT: DOT(h) for dl_files/04-ee-03-6c-ef-49
+[E 191106 12:46:07 ddh_app:305] PLT: can't DOT(h) for dl_files/04-ee-03-6c-ef-49
+[D 191106 12:46:07 ddh_app:453] SYS: elapsed time 1 ms.
+[I 191106 12:46:07 ddh_app:285] BLE: disconnecting 04:ee:03:6c:ef:49
+[I 191106 12:46:07 ddh_app:386] BLE: all loggers done
+[I 191106 12:46:09 ddh_app:285] BLE: detecting loggers...
+[I 191106 12:46:14 ddh_app:285] BLE: 04:ee:03:6c:ef:49 is recent, delay 592.85 s.
+[I 191106 12:46:14 ddh_app:285] BLE: 0 loggers to query
+[I 191106 12:46:15 ddh_app:285] GPS: using NTP time
+[I 191106 12:46:15 ddh_app:416] SYS: we have internet
+[I 191106 12:46:15 ddh_app:285] GPS: no receiver found
+[I 191106 12:46:15 ddh_app:406] GPS: no position update
+[I 191106 12:46:16 ddh_app:285] BLE: detecting loggers...
+[I 191106 12:46:21 ddh_app:285] BLE: 04:ee:03:6c:ef:49 is recent, delay 585.70 s.
+[I 191106 12:46:21 ddh_app:285] BLE: 0 loggers to query
+[I 191106 12:46:23 ddh_app:285] BLE: detecting loggers...
+[D 191106 12:46:26 ddh_app:171] SYS: closing GUI APP...

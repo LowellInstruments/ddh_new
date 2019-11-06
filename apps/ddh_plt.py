@@ -156,7 +156,7 @@ class DeckDataHubPLT:
         # query database for this data, or process it from scratch
         try:
             t, y = DeckDataHubPLT.plt_cache_query(signals, folder, ts, metric)
-        except AttributeError as ae:
+        except (AttributeError, Exception):
             e = 'PLT: can\'t {}({}) for {}'.format(metric, ts, folder)
             return DeckDataHubPLT.plt_error(signals, e)
 

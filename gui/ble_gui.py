@@ -2,11 +2,13 @@
 
 # Form implementation generated from reading ui file 'ble_gui.ui'
 #
-# Created by: PyQt5 UI code generator 5.10.1
+# Created by: PyQt5 UI code generator 5.13.1
 #
 # WARNING! All changes made in this file will be lost!
 
+
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_tabs(object):
     def setupUi(self, tabs):
@@ -254,7 +256,18 @@ class Ui_tabs(object):
         self.lbl_output.setFont(font)
         self.lbl_output.setAlignment(QtCore.Qt.AlignCenter)
         self.lbl_output.setObjectName("lbl_output")
-        self.gridLayout_8.addWidget(self.lbl_output, 0, 0, 1, 1)
+        self.gridLayout_8.addWidget(self.lbl_output, 0, 1, 1, 1)
+        self.img_output = QtWidgets.QLabel(self.gridLayoutWidget_7)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Ignored, QtWidgets.QSizePolicy.Ignored)
+        sizePolicy.setHorizontalStretch(4)
+        sizePolicy.setVerticalStretch(6)
+        sizePolicy.setHeightForWidth(self.img_output.sizePolicy().hasHeightForWidth())
+        self.img_output.setSizePolicy(sizePolicy)
+        self.img_output.setText("")
+        self.img_output.setPixmap(QtGui.QPixmap("res/img_cpu.png"))
+        self.img_output.setScaledContents(True)
+        self.img_output.setObjectName("img_output")
+        self.gridLayout_8.addWidget(self.img_output, 0, 0, 1, 1)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("res/icon_info.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         tabs.addTab(self.tab_info, icon, "")
@@ -453,4 +466,3 @@ class Ui_tabs(object):
         self.label_3.setText(_translate("tabs", "-"))
         self.label_19.setText(_translate("tabs", "-"))
         tabs.setTabText(tabs.indexOf(self.tab_log), _translate("tabs", " History"))
-
