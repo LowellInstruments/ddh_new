@@ -1,6 +1,6 @@
-# requirements for x64
-# (check README.md, too)
-# ----------------------
+# python requirements for x64
+# (check README.md for Linux requirements)
+# ----------------------------------------
 
 PyQt5==5.12
 numpy==1.16.1
