@@ -8835,3 +8835,14 @@
 [I 191108 11:21:13 ddh_app:285] GPS: using NTP time
 [I 191108 11:21:13 ddh_app:416] SYS: we have internet
 [D 191108 11:21:15 ddh_app:171] SYS: closing GUI APP...
+[D 191119 12:05:34 ddh_app:76] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191119 12:05:34 ddh_app:77] SYS: recall re-RUN post download, search '###'
+[D 191119 12:05:34 ddh_app:168] SYS: this is NOT a raspberry system
+[I 191119 12:05:34 ddh_app:285] BLE: detecting loggers...
+[I 191119 12:05:34 ddh_app:285] GPS: no receiver found
+[I 191119 12:05:34 ddh_app:406] GPS: no position update
+[I 191119 12:05:34 ddh_app:285] GPS: using NTP time
+[I 191119 12:05:34 ddh_app:416] SYS: we have internet
+[I 191119 12:05:39 ddh_app:285] BLE: 1 loggers to query
+[I 191119 12:05:39 ddh_app:285] BLE: connecting 04:ee:03:6c:ef:49
+[D 191119 12:05:41 ddh_app:171] SYS: closing GUI APP...

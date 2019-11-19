@@ -121,7 +121,7 @@ def find_port():
     try:
         # BU-353S4 GPS receiver: idVendor=067b, idProduct=2303
         field = list(grep('067b:23[0909]'))[0][0]
-    except (TypeError, IndexError):
+    except (TypeError, IndexError, FileNotFoundError):
         return False
     pattern = port_patterns.get(sys.platform)
     if not pattern:
