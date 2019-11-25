@@ -9171,3 +9171,155 @@
 [I 191125 11:15:54 ddh_app:285] BLE: 0 loggers to query
 [I 191125 11:15:56 ddh_app:285] BLE: detecting loggers...
 [D 191125 11:15:57 ddh_app:171] SYS: closing GUI APP...
+[D 191125 11:55:02 ddh_app:76] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191125 11:55:02 ddh_app:77] SYS: recall re-RUN post download, search '###'
+[D 191125 11:55:02 ddh_app:168] SYS: this is NOT a raspberry system
+[I 191125 11:55:02 ddh_app:286] BLE: detecting loggers...
+[I 191125 11:55:02 ddh_app:286] GPS: no receiver found
+[I 191125 11:55:02 ddh_app:407] GPS: no position update
+[I 191125 11:55:02 ddh_app:286] GPS: using NTP time
+[I 191125 11:55:03 ddh_app:417] SYS: we have internet
+[D 191125 11:55:05 ddh_app:173] SYS: closing GUI APP...
+[D 191125 11:55:34 ddh_app:76] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191125 11:55:34 ddh_app:77] SYS: recall re-RUN post download, search '###'
+[D 191125 11:55:34 ddh_app:168] SYS: this is NOT a raspberry system
+[I 191125 11:55:34 ddh_app:287] BLE: detecting loggers...
+[I 191125 11:55:34 ddh_app:287] GPS: no receiver found
+[I 191125 11:55:34 ddh_app:408] GPS: no position update
+[I 191125 11:55:34 ddh_app:287] GPS: using NTP time
+[I 191125 11:55:34 ddh_app:418] SYS: we have internet
+[D 191125 11:55:37 ddh_app:173] SYS: closing GUI APP...
+[D 191125 11:56:16 ddh_app:76] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191125 11:56:16 ddh_app:77] SYS: recall re-RUN post download, search '###'
+[D 191125 11:56:16 ddh_app:168] SYS: this is NOT a raspberry system
+[I 191125 11:56:16 ddh_app:287] BLE: detecting loggers...
+[I 191125 11:56:16 ddh_app:287] GPS: no receiver found
+[I 191125 11:56:16 ddh_app:408] GPS: no position update
+[I 191125 11:56:16 ddh_app:287] GPS: using NTP time
+[I 191125 11:56:17 ddh_app:418] SYS: we have internet
+[D 191125 11:56:19 ddh_app:173] SYS: closing GUI APP...
+[D 191125 12:08:57 ddh_app:76] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191125 12:08:57 ddh_app:77] SYS: recall re-RUN post download, search '###'
+[D 191125 12:08:57 ddh_app:170] SYS: this is NOT a raspberry system
+[I 191125 12:08:57 ddh_app:290] BLE: detecting loggers...
+[I 191125 12:08:57 ddh_app:290] GPS: no receiver found
+[I 191125 12:08:57 ddh_app:411] GPS: no position update
+[I 191125 12:08:57 ddh_app:290] GPS: using NTP time
+[I 191125 12:08:57 ddh_app:421] SYS: we have internet
+[D 191125 12:09:31 ddh_app:76] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191125 12:09:31 ddh_app:77] SYS: recall re-RUN post download, search '###'
+[D 191125 12:10:13 ddh_app:76] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191125 12:10:13 ddh_app:77] SYS: recall re-RUN post download, search '###'
+[D 191125 12:10:13 ddh_app:170] SYS: this is NOT a raspberry system
+[I 191125 12:10:13 ddh_app:290] BLE: detecting loggers...
+[I 191125 12:10:13 ddh_app:290] GPS: no receiver found
+[I 191125 12:10:13 ddh_app:411] GPS: no position update
+[I 191125 12:10:13 ddh_app:290] GPS: using NTP time
+[I 191125 12:10:13 ddh_app:421] SYS: we have internet
+[D 191125 12:12:55 ddh_app:76] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191125 12:12:55 ddh_app:77] SYS: recall re-RUN post download, search '###'
+[D 191125 12:12:55 ddh_app:170] SYS: this is NOT a raspberry system
+[I 191125 12:12:55 ddh_app:290] BLE: detecting loggers...
+[I 191125 12:12:55 ddh_app:290] GPS: no receiver found
+[I 191125 12:12:55 ddh_app:411] GPS: no position update
+[I 191125 12:12:55 ddh_app:290] GPS: using NTP time
+[I 191125 12:12:55 ddh_app:421] SYS: we have internet
+[I 191125 12:13:00 ddh_app:290] BLE: 0 loggers to query
+[I 191125 12:13:02 ddh_app:290] BLE: detecting loggers...
+[I 191125 12:13:07 ddh_app:290] BLE: 0 loggers to query
+[D 191125 12:13:07 ddh_app:175] SYS: closing GUI APP...
+[D 191125 12:17:40 ddh_app:76] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191125 12:17:40 ddh_app:77] SYS: recall re-RUN post download, search '###'
+[D 191125 12:17:40 ddh_app:170] SYS: this is NOT a raspberry system
+[I 191125 12:17:40 ddh_app:294] BLE: detecting loggers...
+[I 191125 12:17:40 ddh_app:294] GPS: no receiver found
+[I 191125 12:17:40 ddh_app:415] GPS: no position update
+[I 191125 12:17:40 ddh_app:294] GPS: using NTP time
+[I 191125 12:17:40 ddh_app:425] SYS: we have internet
+[D 191125 12:17:50 ddh_app:76] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191125 12:17:50 ddh_app:77] SYS: recall re-RUN post download, search '###'
+[D 191125 12:17:50 ddh_app:170] SYS: this is NOT a raspberry system
+[I 191125 12:17:50 ddh_app:295] BLE: detecting loggers...
+[I 191125 12:17:50 ddh_app:295] GPS: no receiver found
+[I 191125 12:17:50 ddh_app:416] GPS: no position update
+[I 191125 12:17:50 ddh_app:295] GPS: using NTP time
+[I 191125 12:17:50 ddh_app:426] SYS: we have internet
+[D 191125 12:17:52 ddh_app:176] SYS: closing GUI APP...
+[D 191125 12:19:41 ddh_app:77] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191125 12:19:41 ddh_app:78] SYS: recall re-RUN post download, search '###'
+[D 191125 12:19:41 ddh_app:171] SYS: this is NOT a raspberry system
+[I 191125 12:19:41 ddh_app:297] BLE: detecting loggers...
+[I 191125 12:19:41 ddh_app:297] GPS: no receiver found
+[I 191125 12:19:41 ddh_app:418] GPS: no position update
+[I 191125 12:19:41 ddh_app:297] GPS: using NTP time
+[I 191125 12:19:42 ddh_app:428] SYS: we have internet
+[D 191125 12:19:59 ddh_app:77] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191125 12:19:59 ddh_app:78] SYS: recall re-RUN post download, search '###'
+[D 191125 12:19:59 ddh_app:171] SYS: this is NOT a raspberry system
+[I 191125 12:19:59 ddh_app:297] BLE: detecting loggers...
+[I 191125 12:19:59 ddh_app:297] GPS: no receiver found
+[I 191125 12:19:59 ddh_app:418] GPS: no position update
+[I 191125 12:19:59 ddh_app:297] GPS: using NTP time
+[I 191125 12:19:59 ddh_app:428] SYS: we have internet
+[D 191125 12:20:00 ddh_app:183] GUI: clicked secret bye!
+[D 191125 12:20:00 ddh_app:177] SYS: closing GUI APP...
+[D 191125 12:20:34 ddh_app:77] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191125 12:20:34 ddh_app:78] SYS: recall re-RUN post download, search '###'
+[D 191125 12:20:34 ddh_app:171] SYS: this is NOT a raspberry system
+[I 191125 12:20:34 ddh_app:296] BLE: detecting loggers...
+[I 191125 12:20:34 ddh_app:296] GPS: no receiver found
+[I 191125 12:20:34 ddh_app:417] GPS: no position update
+[I 191125 12:20:34 ddh_app:296] GPS: using NTP time
+[I 191125 12:20:34 ddh_app:427] SYS: we have internet
+[D 191125 12:20:36 ddh_app:183] GUI: clicked secret bye!
+[D 191125 12:20:36 ddh_app:177] SYS: closing GUI APP...
+[D 191125 12:20:52 ddh_app:77] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191125 12:20:52 ddh_app:78] SYS: recall re-RUN post download, search '###'
+[D 191125 12:20:52 ddh_app:171] SYS: this is NOT a raspberry system
+[I 191125 12:20:52 ddh_app:295] BLE: detecting loggers...
+[I 191125 12:20:52 ddh_app:295] GPS: no receiver found
+[I 191125 12:20:52 ddh_app:416] GPS: no position update
+[I 191125 12:20:52 ddh_app:295] GPS: using NTP time
+[I 191125 12:20:52 ddh_app:426] SYS: we have internet
+[D 191125 12:20:54 ddh_app:182] GUI: clicked secret bye!
+[D 191125 12:20:54 ddh_app:176] SYS: closing GUI APP...
+[D 191125 12:21:32 ddh_app:77] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191125 12:21:32 ddh_app:78] SYS: recall re-RUN post download, search '###'
+[D 191125 12:21:32 ddh_app:171] SYS: this is NOT a raspberry system
+[I 191125 12:21:32 ddh_app:298] BLE: detecting loggers...
+[I 191125 12:21:32 ddh_app:298] GPS: no receiver found
+[I 191125 12:21:32 ddh_app:419] GPS: no position update
+[I 191125 12:21:32 ddh_app:298] GPS: using NTP time
+[I 191125 12:21:33 ddh_app:429] SYS: we have internet
+[D 191125 12:21:33 ddh_app:185] GUI: clicked secret bye!
+[D 191125 12:21:34 ddh_app:177] SYS: closing GUI APP...
+[D 191125 12:22:08 ddh_app:77] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191125 12:22:08 ddh_app:78] SYS: recall re-RUN post download, search '###'
+[D 191125 12:22:08 ddh_app:171] SYS: this is NOT a raspberry system
+[I 191125 12:22:08 ddh_app:295] BLE: detecting loggers...
+[I 191125 12:22:08 ddh_app:295] GPS: no receiver found
+[I 191125 12:22:08 ddh_app:416] GPS: no position update
+[I 191125 12:22:08 ddh_app:295] GPS: using NTP time
+[I 191125 12:22:08 ddh_app:426] SYS: we have internet
+[D 191125 12:22:10 ddh_app:182] GUI: clicked secret bye!
+[D 191125 12:22:10 ddh_app:176] SYS: closing GUI APP...
+[D 191125 12:45:40 ddh_app:77] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191125 12:45:40 ddh_app:78] SYS: recall re-RUN post download, search '###'
+[D 191125 12:45:40 ddh_app:171] SYS: this is NOT a raspberry system
+[I 191125 12:45:40 ddh_app:295] BLE: detecting loggers...
+[I 191125 12:45:40 ddh_app:295] GPS: no receiver found
+[I 191125 12:45:40 ddh_app:416] GPS: no position update
+[I 191125 12:45:40 ddh_app:295] GPS: using NTP time
+[I 191125 12:45:41 ddh_app:426] SYS: we have internet
+[I 191125 12:45:45 ddh_app:295] BLE: 0 loggers to query
+[D 191125 12:45:47 ddh_app:176] SYS: closing GUI APP...
+[D 191125 12:45:54 ddh_app:77] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191125 12:45:54 ddh_app:78] SYS: recall re-RUN post download, search '###'
+[D 191125 12:45:54 ddh_app:171] SYS: this is NOT a raspberry system
+[I 191125 12:45:55 ddh_app:295] BLE: detecting loggers...
+[I 191125 12:45:55 ddh_app:295] GPS: no receiver found
+[I 191125 12:45:55 ddh_app:416] GPS: no position update
+[I 191125 12:45:55 ddh_app:295] GPS: using NTP time
+[I 191125 12:45:55 ddh_app:426] SYS: we have internet
+[I 191125 12:46:00 ddh_app:295] BLE: 0 loggers to query
+[D 191125 12:46:00 ddh_app:176] SYS: closing GUI APP...

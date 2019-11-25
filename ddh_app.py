@@ -11,7 +11,8 @@ from PyQt5.QtCore import (
 )
 from PyQt5.QtGui import (
     QIcon,
-    QPixmap
+    QPixmap,
+    QCloseEvent
 )
 from PyQt5.QtWidgets import (
     QMainWindow,
@@ -95,7 +96,7 @@ class DDHQtApp(QMainWindow):
         self.ui.img_boat.setPixmap(QPixmap('gui/res/img_boatname_color.png'))
         self.ui.img_ble.setPixmap(QPixmap('gui/res/img_blue_color.png'))
         self.ui.img_latnlon.setPixmap(QPixmap('gui/res/img_latnlon_color.png'))
-        self.ui.img_output.setPixmap(QPixmap('gui/res/img_wait_color.png'))
+        self.ui.img_output.setPixmap(QPixmap('gui/res/img_wait_green.png'))
         self.tabs.setTabIcon(0, QIcon('gui/res/icon_info.png'))
         self.tabs.setTabIcon(1, QIcon('gui/res/icon_graph.ico'))
         self.tabs.setTabIcon(2, QIcon('gui/res/icon_history.ico'))
@@ -106,6 +107,8 @@ class DDHQtApp(QMainWindow):
         self._window_center()
         self.plot_canvas = FigureCanvasQTAgg(Figure(figsize=(5, 3)))
         self.ui.vl_3.addWidget(self.plot_canvas)
+        self.ui.img_time.mousePressEvent = self.on_clock_click
+
 
         # automatic flow stuff
         self.sys_seconds = 0
@@ -168,9 +171,16 @@ class DDHQtApp(QMainWindow):
             console_log.debug('SYS: this is NOT a raspberry system')
 
     def closeEvent(self, event):
-        console_log.debug('SYS: closing GUI APP...')
         linux_set_time_to_use_ntp()
         event.accept()
+        console_log.debug('SYS: closing GUI APP...')
+        # dirty, but ok, we are done
+        sys.stderr.close()
+        sys.exit(0)
+
+    def on_clock_click(self, ev):
+        console_log.debug('GUI: clicked secret bye!')
+        self.closeEvent(ev)
 
     def _ddh_threads_create(self):
         # threads: creation
@@ -470,3 +480,6 @@ def on_ctrl_c(signal_num, _):
     console_log.debug('SYS: captured signal {}...'.format(signal_num))
     linux_set_time_to_use_ntp()
     sys.exit(signal_num)
+
+
+
