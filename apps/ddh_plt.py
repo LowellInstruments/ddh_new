@@ -9,12 +9,12 @@ from .ddh_utils import (
     csv_to_data_frames,
     del_frames_before,
     slice_n_average,
-    format_time_labels,
-    format_time_ticks,
-    format_title,
-    mac_dns,
+    plot_format_time_labels,
+    plot_format_time_ticks,
+    plot_format_title,
+    json_mac_dns,
     metric_to_column_name,
-    line_color,
+    plot_line_color,
 )
 
 
@@ -150,8 +150,8 @@ class DeckDataHubPLT:
         signals.clk_start.emit()
         signals.status.emit('PLT: {}({}) for {}'.format(metric, ts, folder))
         c = metric_to_column_name(metric)
-        lbl = mac_dns(mac_from_folder(folder))
-        clr = line_color(c)
+        lbl = json_mac_dns(mac_from_folder(folder))
+        clr = plot_line_color(c)
 
         # query database for this data, or process it from scratch
         try:
@@ -195,11 +195,11 @@ class DeckDataHubPLT:
 
         # plot labels, axes and legends
         DeckDataHubPLT.current_plots.append(p)
-        lbs = format_time_ticks(t, ts)
+        lbs = plot_format_time_ticks(t, ts)
         ax.set_xticks(lbs)
-        ax.set_xticklabels(format_time_labels(lbs, ts))
+        ax.set_xticklabels(plot_format_time_labels(lbs, ts))
         ax.set_xlabel('time', fontsize='large', fontweight='bold')
-        ax.set_title('Logger ' + lbl + ', ' + format_title(t, ts), fontsize='x-large')
+        ax.set_title('Logger ' + lbl + ', ' + plot_format_title(t, ts), fontsize='x-large')
         # ax.legend()
         cnv.draw()
 

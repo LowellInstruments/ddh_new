@@ -1,8 +1,6 @@
 .idea/
 __pycache__/
 apps/__pycache__/
-/venv/
-/ddh_avg.db
-/ddh.log*
+ddh.lo*
 *.lid
 *.csv

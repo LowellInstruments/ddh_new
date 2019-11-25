@@ -38,7 +38,7 @@ def linux_set_time_to_use_ntp():
     subprocess.call(shlex.split('sudo timedatectl set-ntp true'))
 
 
-def have_internet_connection():
+def linux_have_internet_connection():
     conn = http.client.HTTPConnection('www.google.com', timeout=3)
     try:
         conn.request('HEAD', '/')
@@ -58,13 +58,6 @@ def list_files_by_extension_in_dir(dir_name, extension):
         return glob.glob(wildcard, recursive=True)
 
 
-# recursively remove all files w/ indicated extension
-def rm_files_by_extension_in_dir(path, ext):
-    if os.path.isdir(path):
-        for filename in list_files_by_extension_in_dir(path, ext):
-            os.remove(filename)
-
-
 # be sure we are up-to-date with downloaded logger folders
 def update_dl_folder_list():
     dl_root_folder = 'dl_files'
@@ -82,7 +75,7 @@ def detect_raspberry():
     return False
 
 
-def check_config_file():
+def json_check_config_file():
     import json
     try:
         with open('ddh.json') as f:
@@ -94,7 +87,7 @@ def check_config_file():
     return True
 
 
-def get_ship_name():
+def json_get_ship_name():
     import json
     try:
         with open('ddh.json') as f:
@@ -104,7 +97,7 @@ def get_ship_name():
         return 'Unnamed ship'
 
 
-def get_mac_filter():
+def json_get_mac_filter():
     import json
     try:
         with open('ddh.json') as f:
@@ -114,7 +107,7 @@ def get_mac_filter():
         return 'Unnamed ship'
 
 
-def get_metrics():
+def json_get_metrics():
     import json
     with open('ddh.json') as f:
         ddh_cfg_string = json.load(f)
@@ -140,7 +133,7 @@ def lid_files_to_csv(folder):
             DataConverter(bn + '.lid', parameters).convert()
 
 
-def metric_to_file_suffix(metric):
+def _metric_to_csv_file_suffix(metric):
     metric_dict = {
         'DOS': '_DissolvedOxygen',
         'DOP': '_DissolvedOxygen',
@@ -152,14 +145,14 @@ def metric_to_file_suffix(metric):
 
 
 def csv_to_data_frames(folder, metric):
-    suffix = metric_to_file_suffix(metric)
+    suffix = _metric_to_csv_file_suffix(metric)
     try:
         return dd.read_csv(os.path.join(folder, "*" + suffix + "*.csv"))
     except (IOError, Exception):
         return None
 
 
-def mac_dns(logger_mac):
+def json_mac_dns(logger_mac):
     import json
     name = 'unnamed_logger'
     try:
@@ -251,18 +244,18 @@ def slice_n_average(t, d, span):
     return x, y
 
 
-def format_time_labels(t, span):
+def plot_format_time_labels(t, span):
     lb = []
     for each_t in t:
         lb.append(iso8601.parse_date(each_t).strftime(span_dict[span][3]))
     return lb
 
 
-def format_time_ticks(t, span):
+def plot_format_time_ticks(t, span):
     return t[::(span_dict[span][4])]
 
 
-def format_title(t, span):
+def plot_format_title(t, span):
     last_time = iso8601.parse_date(t[-1])
     title_dict = {
         'h': 'last hour: {}'.format(last_time.strftime('%b. %d, %Y')),
@@ -274,23 +267,24 @@ def format_title(t, span):
     return title_dict[span]
 
 
+def plot_line_color(column_name):
+    color_dict = {
+        'Temperature (C)':  'tab:red',
+        'Pressure (psi)':   'tab:blue',
+        'Dissolved Oxygen (mg/l)': 'tab:green',
+        'Dissolved Oxygen (%)': 'tab:purple',
+        'DO Temperature (C)': 'tab:orange',
+    }
+    return color_dict[column_name]
+
+
 def metric_to_column_name(metric):
     metric_dict = {
         'T':    'Temperature (C)',
         'P':    'Pressure (psi)',
         'DOS':  'Dissolved Oxygen (mg/l)',
         'DOP':  'Dissolved Oxygen (%)',
-        'DOT':  'Temperature (C)',
+        'DOT':  'DO Temperature (C)',
 
     }
     return metric_dict[metric]
-
-
-def line_color(column_name):
-    color_dict = {
-        'Temperature (C)':  'tab:red',
-        'Pressure (psi)':   'tab:blue',
-        'Dissolved Oxygen (mg/l)': 'green',
-        'Dissolved Oxygen (%)': 'orange',
-    }
-    return color_dict[column_name]

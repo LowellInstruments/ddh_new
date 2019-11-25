@@ -6,7 +6,7 @@ import pytz
 from apps.ddh_utils import (
     linux_set_time_to_use_ntp,
     linux_set_time_from_gps,
-    have_internet_connection
+    linux_have_internet_connection
 )
 from serial.tools.list_ports import grep
 
@@ -50,7 +50,7 @@ class DeckDataHubGPS:
     # method to sync raspberry clock
     @staticmethod
     def _sync_sys_clock_gps_or_internet(signals):
-        if have_internet_connection():
+        if linux_have_internet_connection():
             status = 'GPS: using NTP time'
             signals.status.emit(status)
             linux_set_time_to_use_ntp()

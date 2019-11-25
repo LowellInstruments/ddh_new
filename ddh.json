@@ -2,15 +2,16 @@
     "db_logger_macs": {
 		"11:22:33:44:55:66": "Long Pond",
 		"ff:ff:ff:ff:ff:ff": "Woodneck #7",
-		"04:ee:03:6c:ef:49": "Joaquim"
+		"04:ee:03:6c:ef:49": "Joaquim",
+		"04:ee:03:6c:ef:e0": "Prototype"
 	},
     "ship_info":
     {
 	"name": "Maggie Sue"
     },
 	"metrics": [
-		"T",
-		"P"
+		"DOS",
+		"DOT"
 	],
 	"ftp_site": "ftp.lowellinstruments.com",
 	"ftp_username": "jeff@lowellinstruments.com",

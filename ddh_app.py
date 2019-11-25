@@ -29,12 +29,12 @@ from apps.ddh_gui import DeckDataHubGUI, ButtonPressEvent
 from apps.ddh_utils import (
     update_dl_folder_list,
     detect_raspberry,
-    check_config_file,
-    get_ship_name,
-    get_metrics,
+    json_check_config_file,
+    json_get_ship_name,
+    json_get_metrics,
     linux_set_time_to_use_ntp,
-    get_mac_filter,
-    mac_dns
+    json_get_mac_filter,
+    json_mac_dns
 )
 import logzero
 from logzero import logger as console_log
@@ -50,7 +50,7 @@ if detect_raspberry():
 
 
 # constants for the application
-DDH_BLE_MAC_FILTER = get_mac_filter()
+DDH_BLE_MAC_FILTER = json_get_mac_filter()
 DDH_ERR_DISPLAY_TIMEOUT = 5
 DDH_PLT_DISPLAY_TIMEOUT = 25
 DDH_GPS_PERIOD = 30
@@ -67,7 +67,7 @@ class DDHQtApp(QMainWindow):
         # checks
         singleton.SingleInstance()
         assert sys.version_info >= (3, 5)
-        assert check_config_file()
+        assert json_check_config_file()
         if os.path.exists('ddh_avg.db'):
             os.remove('ddh_avg.db')
         logzero.logfile("ddh.log", maxBytes=int(1e6), backupCount=3, mode='a')
@@ -100,7 +100,7 @@ class DDHQtApp(QMainWindow):
         self.tabs.setTabIcon(1, QIcon('gui/res/icon_graph.ico'))
         self.tabs.setTabIcon(2, QIcon('gui/res/icon_history.ico'))
         self.setWindowIcon(QIcon('gui/res/icon_lowell.ico'))
-        self.ui.lbl_boatname.setText(get_ship_name())
+        self.ui.lbl_boatname.setText(json_get_ship_name())
         self.setCentralWidget(self.tabs)
         self.tabs.setCurrentIndex(0)
         self._window_center()
@@ -119,7 +119,7 @@ class DDHQtApp(QMainWindow):
         self.plt_time_spans = ('h', 'd', 'w', 'm', 'y')
         self.plt_ts_idx = 0
         self.plt_ts = self.plt_time_spans[0]
-        self.plt_metrics = get_metrics()
+        self.plt_metrics = json_get_metrics()
         self.plt_metrics_idx = 0
         self.plt_metric = self.plt_metrics[0]
         self.plt_is_busy = False
@@ -327,7 +327,7 @@ class DDHQtApp(QMainWindow):
         # desc: name, val_1: logger index, val_2: total num of loggers
         text = 'Connected'
         self.ui.lbl_ble_short.setText(text)
-        text = 'Logger \n{}'.format(mac_dns(desc))
+        text = 'Logger \n{}'.format(json_mac_dns(desc))
         self.ui.lbl_output.setText(text)
         self.ui.bar_dl.setValue(0)
 
@@ -440,7 +440,7 @@ class DDHQtApp(QMainWindow):
 
         # things updated less often
         if self.sys_seconds % 30 == 0:
-            self.ui.lbl_boatname.setText(get_ship_name())
+            self.ui.lbl_boatname.setText(json_get_ship_name())
 
     @pyqtSlot(name='slot_clk_start')
     def slot_clk_start(self):
