@@ -211,7 +211,7 @@ def del_frames_before(df_in, span, column_name):
             a = s
 
         return _slice_w_idx(df_in, a, b, column_name)
-    except (KeyError, Exception) as e:
+    except (KeyError, Exception):
         return None, None
 
 
