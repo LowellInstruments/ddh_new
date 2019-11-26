@@ -271,7 +271,7 @@ def plot_line_color(column_name):
     color_dict = {
         'Temperature (C)':  'tab:red',
         'Pressure (psi)':   'tab:blue',
-        'Dissolved Oxygen (mg/l)': 'tab:green',
+        'Dissolved Oxygen (mg/l)': 'tab:black',
         'Dissolved Oxygen (%)': 'tab:black',
         'DO Temperature (C)': 'tab:red',
     }

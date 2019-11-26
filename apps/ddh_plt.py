@@ -1,6 +1,5 @@
-import json
-import sqlite3
 import numpy as np
+from .ddh_db import LIAvgDB
 from .ddh_utils import (
     mac_from_folder,
     lid_files_to_csv,
@@ -14,90 +13,6 @@ from .ddh_utils import (
     metric_to_column_name,
     plot_line_color,
 )
-
-
-class LIAvgDB:
-
-    def __init__(self):
-        self.dbfilename = 'ddh_avg.db'
-        db = sqlite3.connect(self.dbfilename)
-        c = db.cursor()
-        c.execute(
-            "CREATE TABLE IF NOT EXISTS records\
-            ( \
-            id              INTEGER PRIMARY KEY, \
-            mac             TEXT, \
-            start_time      TEXT, \
-            end_time        TEXT, \
-            time_span       TEXT, \
-            metric          TEXT, \
-            the_times       TEXT, \
-            the_values      TEXT  \
-            )"
-        )
-        db.commit()
-        c.close()
-
-    # v is a list which gets converted to string
-    def add_record(self, w, s, e, p, m, t, v):
-        db = sqlite3.connect(self.dbfilename)
-        c = db.cursor()
-        c.execute('INSERT INTO records('
-                  'mac, start_time, end_time, time_span,'
-                  'metric, the_times, the_values) '
-                  'VALUES(?,?,?,?,?,?,?)',
-                  (w, s, e, p, m, json.dumps(t), json.dumps(v)))
-        db.commit()
-        c.close()
-
-    def delete_record(self, record_id):
-        db = sqlite3.connect(self.dbfilename)
-        c = db.cursor()
-        c.execute('DELETE FROM records where id=?', (record_id,))
-        db.commit()
-        c.close()
-
-    def list_all_records(self, ):
-        db = sqlite3.connect(self.dbfilename)
-        c = db.cursor()
-        c.execute('SELECT * from records')
-        records = c.fetchall()
-        c.close()
-        return records
-
-    def get_record(self, record_id):
-        db = sqlite3.connect(self.dbfilename)
-        c = db.cursor()
-        c.execute('SELECT * from records WHERE id=?', record_id)
-        records = c.fetchall()
-        c.close()
-        return records[0]
-
-    def get_record_values(self, record_id):
-        return json.loads(self.get_record(record_id)[7])
-
-    def get_record_times(self, record_id):
-        return json.loads(self.get_record(record_id)[6])
-
-    def get_record_id(self, w, s, e, p, m):
-        db = sqlite3.connect(self.dbfilename)
-        c = db.cursor()
-        c.execute('SELECT id from records WHERE mac=? AND '
-                  'start_time=? AND end_time=? AND time_span=?'
-                  'AND metric=?', (w, s, e, p, m))
-        records = c.fetchall()
-        c.close()
-        return records[0]
-
-    def does_record_exist(self, w, s, e, p, m):
-        db = sqlite3.connect(self.dbfilename)
-        c = db.cursor()
-        c.execute('SELECT EXISTS(SELECT 1 from records WHERE mac=? AND '
-                  'start_time=? AND end_time=? AND time_span=?'
-                  'AND metric=?)', (w, s, e, p, m))
-        records = c.fetchall()
-        c.close()
-        return records[0][0]
 
 
 class DeckDataHubPLT:
@@ -138,7 +53,7 @@ class DeckDataHubPLT:
 
     @staticmethod
     def plt_plot(signals, folder, cnv, ts, metric):
-        # signals and metadata
+        # metadata and signals
         f = folder.split('/')[-1]
         c = metric_to_column_name(metric)
         lbl = json_mac_dns(mac_from_folder(folder))
@@ -146,7 +61,7 @@ class DeckDataHubPLT:
         signals.clk_start.emit()
         signals.status.emit('PLT: {}({}) for {}'.format(metric, ts, folder))
 
-        # query database for this data, or process it from scratch
+        # query database for the data, or process it from scratch
         try:
             t, y = DeckDataHubPLT.plt_cache_query(signals, folder, ts, metric)
         except (AttributeError, Exception):
@@ -175,8 +90,7 @@ class DeckDataHubPLT:
             signals.clk_end.emit()
             return
 
-
-        # find out metric number we are plotting
+        # brand new base plot or additional metric line to base plot
         same_folder = (DeckDataHubPLT.last_folder == folder)
         same_ts = (DeckDataHubPLT.last_ts == ts)
         same_metric = (DeckDataHubPLT.last_metric == metric)
@@ -184,14 +98,13 @@ class DeckDataHubPLT:
         print('same_ts {}'.format(same_ts))
         print('same_metric {}'.format(same_metric))
         if same_folder and same_ts and not same_metric:
-            # second metric, additional to an existing plot
-            ax = DeckDataHubPLT.last_ax
-            bx = ax.twinx()
-            bx.set_ylabel(c, fontsize='large', fontweight='bold', color=clr)
-            bx.tick_params(axis='y', labelcolor=clr)
-            bx.plot(t, y, label=lbl, color=clr)
+            # build second, additional metric to existing base
+            ax = DeckDataHubPLT.last_ax.twinx()
+            ax.set_ylabel(c, fontsize='large', fontweight='bold', color=clr)
+            ax.tick_params(axis='y', labelcolor=clr)
+            ax.plot(t, y, label=lbl, color=clr)
         else:
-            # first one, brand new axis (not axes)
+            # build first, base plot
             DeckDataHubPLT.current_plots = []
             cnv.figure.clf()
             cnv.figure.tight_layout()
@@ -199,22 +112,22 @@ class DeckDataHubPLT:
             ax.set_ylabel(c, fontsize='large', fontweight='bold', color=clr)
             ax.tick_params(axis='y', labelcolor=clr)
             ax.plot(t, y, label=lbl, color=clr)
+            ax.set_xlabel('time', fontsize='large', fontweight='bold')
+            ax.set_title('Logger ' + lbl + ', ' + plot_format_title(t, ts), fontsize='x-large')
+            # ax.legend()
 
-        # plot labels, axes and legends
-        DeckDataHubPLT.current_plots.append(p)
+            # save base plot's context
+            DeckDataHubPLT.last_folder = folder
+            DeckDataHubPLT.last_ts = ts
+            DeckDataHubPLT.last_metric = metric
+            DeckDataHubPLT.last_ax = ax
+
+        # add built plot, either base or additional, and draw it
         lbs = plot_format_time_ticks(t, ts)
         ax.set_xticks(lbs)
         ax.set_xticklabels(plot_format_time_labels(lbs, ts))
-        ax.set_xlabel('time', fontsize='large', fontweight='bold')
-        ax.set_title('Logger ' + lbl + ', ' + plot_format_title(t, ts), fontsize='x-large')
-        # ax.legend()
+        DeckDataHubPLT.current_plots.append(p)
         cnv.draw()
-
-        # save context
-        DeckDataHubPLT.last_folder = folder
-        DeckDataHubPLT.last_ts = ts
-        DeckDataHubPLT.last_metric = metric
-        DeckDataHubPLT.last_ax = ax
 
         # signal we finished plotting
         signals.plt_result.emit(True)

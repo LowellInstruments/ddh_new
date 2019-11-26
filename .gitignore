@@ -5,3 +5,4 @@ ddh.lo*
 ddh*.db
 *.lid
 *.csv
+venv/
