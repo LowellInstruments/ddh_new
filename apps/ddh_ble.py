@@ -43,12 +43,11 @@ class DeckDataHubBLE:
     @staticmethod
     def _ble_scan_loggers(signals, ble_mac_filter):
         signals.ble_scan_start.emit()
-        signals.status.emit('BLE: detecting loggers...')
         try:
             scanner = ble.Scanner()
             list_all_ble = scanner.scan(5.0)
         except ble.BTLEException:
-            signals.error_gui.emit('BLE: error scanning')
+            signals.lbl_debug.emit('BLE: error scanning')
             return []
 
         # purge outdated connections, _ble_dl_files() refreshes this
@@ -74,7 +73,6 @@ class DeckDataHubBLE:
 
         # show list of loggers to query
         signals.status.emit('BLE: {} loggers to query'.format(len(loggers)))
-        signals.output.emit('{} loggers\nto query'.format(len(loggers)))
         DeckDataHubBLE.LOGGERS_TO_QUERY = loggers
         signals.ble_scan_result.emit(loggers)
         return loggers
@@ -95,7 +93,7 @@ class DeckDataHubBLE:
             except ble.BTLEException as be:
                 # first Linux BLE interaction may fail
                 signals.error.emit('BLE: exception {}'.format(be.message))
-                signals.error_gui.emit('BLE: download error, wait 30 s')
+                signals.lbl_debug.emit('BLE: download error, wait 30 s')
                 DeckDataHubBLE._ble_ignore_some_time(mac, 30)
             else:
                 # ok, next
@@ -106,6 +104,7 @@ class DeckDataHubBLE:
                 if lc_ble:
                     lc_ble.close()
 
+        signals.status.emit('BLE: all loggers done')
         signals.ble_dl_session_.emit('BLE: all loggers done')
         return dl_logger_ok
 
@@ -119,7 +118,7 @@ class DeckDataHubBLE:
         # remove files, useful for debug, label ***
         if remove_previous:
             remove_logger_folder(mac)
-            signals.warning.emit('SYS: del {} local files'.format(mac))
+            signals.warning.emit('SYS: rm {} local files'.format(mac))
 
         # list files
         folder, files = DeckDataHubBLE._ble_list_files(lc_ble, signals)
@@ -166,7 +165,7 @@ class DeckDataHubBLE:
                 speed = size / (time.time() - start_time)
                 signals.ble_dl_file_.emit(percent_x_size, speed)
 
-        # RUN again this logger, or not, label ###
+        # RUN again this logger or not, label ###
         # t = 'BLE: re-start = {}.'.format(lc_ble.command(RUN_CMD))
         # signals.status.emit(t)
         signals.ble_dl_logger_.emit(lc_ble.address, counter)

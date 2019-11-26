@@ -53,7 +53,7 @@ if detect_raspberry():
 # constants for the application
 DDH_BLE_MAC_FILTER = json_get_mac_filter()
 DDH_ERR_DISPLAY_TIMEOUT = 5
-DDH_PLT_DISPLAY_TIMEOUT = 25
+DDH_PLT_DISPLAY_TIMEOUT = 120
 DDH_GPS_PERIOD = 30
 
 
@@ -220,7 +220,6 @@ class DDHQtApp(QMainWindow):
         self.th_plt.signals.plt_result.connect(self.slot_plt_result)
         self.th_plt.signals.clk_start.connect(self.slot_clk_start)
         self.th_plt.signals.clk_end.connect(self.slot_clk_end)
-        self.th_plt.signals.status_gui.connect(self.slot_status_gui)
         self.thread_pool.start(self.th_plt)
 
     def _window_center(self):
@@ -277,19 +276,6 @@ class DDHQtApp(QMainWindow):
         else:
             console_log.debug('GUI: busy to plot')
 
-    @pyqtSlot(name='slot_ble_scan_start')
-    def slot_ble_scan_start(self):
-        self.ui.bar_dl.setValue(0)
-        self.ui.lbl_ble_short.setText('Scanning ...')
-
-    @pyqtSlot(object, name='slot_ble_scan_result')
-    def slot_ble_scan_result(self, result):
-        # do nothing, wherever we are
-        if result:
-            pass
-        else:
-            pass
-
     @pyqtSlot(str, name='slot_status')
     def slot_status(self, t):
         console_log.info(t)
@@ -298,70 +284,65 @@ class DDHQtApp(QMainWindow):
     def slot_debug(self, t):
         console_log.debug(t)
 
-    @pyqtSlot(str, name='slot_status_gui')
-    def slot_status_gui(self, t):
-        console_log.info(t)
-
-        # google: stylesheet named colors
-        style = "background-color: LightYellow; border-style: outset;"
-        style += "border-width: 2px; border-radius: 10px;"
-        # self.ui.lbl_error.setText(t)
-        # self.ui.lbl_error.setStyleSheet(style)
-        self.err_timeout_display = DDH_ERR_DISPLAY_TIMEOUT
-        # self.ui.lbl_error.show()
+    @pyqtSlot(str, name='slot_warning')
+    def slot_warning(self, e):
+        console_log.warning(e)
+        self.ui.lbl_error.setText(e)
 
     @pyqtSlot(str, name='slot_error')
     def slot_error(self, e):
         console_log.error(e)
 
-    @pyqtSlot(str, name='slot_warning')
-    def slot_warning(self, e):
-        console_log.warning(e)
-
     @pyqtSlot(str, name='slot_error_gui')
     def slot_error_gui(self, e):
-        console_log.error(e)
-        self.tabs.setCurrentIndex(0)
-
-        # google: stylesheet named colors
-        style = "background-color: LightBlue; border-style: outset;"
-        style += "border-width: 2px; border-radius: 10px;"
-        # self.ui.lbl_error.setText(e)
-        # self.ui.lbl_error.setStyleSheet(style)
+        self.ui.lbl_error.setText(e)
         self.err_timeout_display = DDH_ERR_DISPLAY_TIMEOUT
-        # self.ui.lbl_error.show()
+
+    @pyqtSlot(str, name='slot_output')
+    def slot_output(self, desc):
+        self.ui.lbl_out.setText(desc)
+
+    @pyqtSlot(name='slot_ble_scan_start')
+    def slot_ble_scan_start(self):
+        self.ui.bar_dl.setValue(0)
+        self.ui.lbl_ble.setText('Scanning ...')
+
+
+    @pyqtSlot(object, name='slot_ble_scan_result')
+    def slot_ble_scan_result(self, result):
+        self.ui.lbl_out.setText('{} loggers\nfound'.format(len(result)))
 
     # a download session consists of 1 to n loggers
     @pyqtSlot(str, int, int, name='slot_ble_dl_session')
     def slot_ble_dl_session(self, desc, val_1, val_2):
         # desc: name, val_1: logger index, val_2: total num of loggers
         text = 'Connected'
-        self.ui.lbl_ble_short.setText(text)
+        self.ui.lbl_ble.setText(text)
         text = 'Logger \n{}'.format(json_mac_dns(desc))
-        self.ui.lbl_output.setText(text)
+        self.ui.lbl_out.setText(text)
         self.ui.bar_dl.setValue(0)
 
     # indicates current logger of current download session
     @pyqtSlot(name='slot_ble_dl_logger')
     def slot_ble_dl_logger(self):
         text = 'Configuring'
-        self.ui.lbl_ble_short.setText(text)
+        self.ui.lbl_ble.setText(text)
 
     # one logger can have 1 to n files
     @pyqtSlot(str, int, int, int, name='slot_ble_dl_file')
     def slot_ble_dl_file(self, desc, val_1, val_2, val_3):
         # val_1: file index, val_2: total files, desc: file name
         text = 'Downloading'
-        self.ui.lbl_ble_short.setText(text)
-        text = '{} minutes left'.format(val_3)
-        self.ui.lbl_output.setText(text)
+        self.ui.lbl_ble.setText(text)
+        text = '{} minute(s) left'.format(val_3)
+        self.ui.lbl_out.setText(text)
 
     # function post dl_file, note trailing '_'
     @pyqtSlot(int, int, name='slot_ble_dl_file_')
     def slot_ble_dl_file_(self, val_1, val_2):
         # val_1: percentage increase, val_2: data rate
         text = '{} B/s'.format(val_2)
-        self.ui.lbl_output.setText(text)
+        self.ui.lbl_out.setText(text)
         percentage = self.ui.bar_dl.value() + val_1
         self.ui.bar_dl.setValue(percentage)
 
@@ -370,15 +351,20 @@ class DDHQtApp(QMainWindow):
     def slot_ble_dl_logger_(self, desc, val_1):
         # desc: logger name, val_1: number of files sent
         text = 'Completed'
-        self.ui.lbl_ble_short.setText(text)
-        text = 'Got {} files'.format(val_1)
-        self.ui.lbl_output.setText(text)
+        self.ui.lbl_ble.setText(text)
+        text = 'Got {} file(s)'.format(val_1)
+        self.ui.lbl_out.setText(text)
         self.ui.bar_dl.setValue(100)
         # try to draw if something downloaded from last logger
         if val_1:
             self.dl_last_dir = 'dl_files/' + str(desc).replace(':', '-')
             self._ddh_thread_throw_plt(self.dl_last_dir)
             self.plt_folders = update_dl_folder_list()
+
+    # function post dl_session, note trailing '_'
+    @pyqtSlot(str, name='slot_ble_dl_session_')
+    def slot_ble_dl_session_(self, desc):
+        self.ui.lbl_out.setText(desc)
 
     # display plot if we were successful
     @pyqtSlot(object, name='slot_plt_result')
@@ -389,11 +375,6 @@ class DDHQtApp(QMainWindow):
         else:
             self.tabs.setCurrentIndex(0)
         self.plt_is_busy = False
-
-    # function post dl_session, note trailing '_'
-    @pyqtSlot(str, name='slot_ble_dl_session_')
-    def slot_ble_dl_session_(self, desc):
-        console_log.info(desc)
 
     @pyqtSlot(str, str, str, str, name='slot_gps_result')
     def slot_gps_result(self, clk_source, gps_time, gps_lat, gps_lon):
@@ -433,7 +414,6 @@ class DDHQtApp(QMainWindow):
         time_format = '%m / %d / %y\n%H : %M : %S'
         formatted_time = datetime.datetime.now().strftime(time_format)
         self.ui.lbl_clock_time.setText(formatted_time)
-        # self.ui.lbl_busy_dl.setText(self.bsy_indicator)
         self.ui.lbl_busy_plot.setText(self.bsy_indicator)
 
         # timeout to display plot tab, compare to 1 only runs once
@@ -443,8 +423,9 @@ class DDHQtApp(QMainWindow):
             self.plt_timeout_display -= 1
 
         # timeout to display error banner, compare to 1 only runs once
-        # if self.err_timeout_display == 1:
-        #     self.ui.lbl_error.hide()
+        if self.err_timeout_display == 1:
+            self.ui.lbl_error.clear()
+            self.ui.lbl_error.setText('No issues found')
         if self.err_timeout_display > 0:
             self.err_timeout_display -= 1
 
@@ -461,10 +442,6 @@ class DDHQtApp(QMainWindow):
         elapsed_time = int((time.clock() - self.clk_start_time) * 1000)
         text = 'SYS: elapsed time {} ms.'.format(elapsed_time)
         console_log.debug(text)
-
-    @pyqtSlot(str, name='slot_output')
-    def slot_output(self, desc):
-        self.ui.lbl_output.setText(desc)
 
 
 def run_app():

@@ -1,8 +1,6 @@
 import json
 import sqlite3
 import numpy as np
-from matplotlib.ticker import FormatStrFormatter
-
 from .ddh_utils import (
     mac_from_folder,
     lid_files_to_csv,
@@ -112,12 +110,6 @@ class DeckDataHubPLT:
     last_ax = None
 
     @staticmethod
-    def plt_error(signals, e):
-        signals.error.emit(e)
-        signals.plt_result.emit(False)
-        signals.clk_end.emit()
-
-    @staticmethod
     def plt_cache_query(signals, folder, ts, metric):
         # collect metadata
         c = metric_to_column_name(metric)
@@ -147,20 +139,26 @@ class DeckDataHubPLT:
     @staticmethod
     def plt_plot(signals, folder, cnv, ts, metric):
         # signals and metadata
-        signals.clk_start.emit()
-        signals.status.emit('PLT: {}({}) for {}'.format(metric, ts, folder))
+        f = folder.split('/')[-1]
         c = metric_to_column_name(metric)
         lbl = json_mac_dns(mac_from_folder(folder))
         clr = plot_line_color(c)
+        signals.clk_start.emit()
+        signals.status.emit('PLT: {}({}) for {}'.format(metric, ts, folder))
 
         # query database for this data, or process it from scratch
         try:
             t, y = DeckDataHubPLT.plt_cache_query(signals, folder, ts, metric)
         except (AttributeError, Exception):
-            e = 'PLT: can\'t {}({}) for {}'.format(metric, ts, folder)
-            return DeckDataHubPLT.plt_error(signals, e)
+            e = 'No {}({}) for\n{}'.format(metric, ts, f)
+            signals.error_gui.emit(e)
+            e = 'PLT: no {}({}) for {}'.format(metric, ts, f)
+            signals.error.emit(e)
+            signals.plt_result.emit(False)
+            signals.clk_end.emit()
+            return
 
-        # don't plot something already there
+        # don't plot something already being displayed
         p = [folder, ts, metric]
         if p in DeckDataHubPLT.current_plots:
             signals.plt_result.emit(True)
@@ -169,13 +167,22 @@ class DeckDataHubPLT:
 
         # need at least two points to plot a line
         if np.count_nonzero(~np.isnan(y)) < 2:
-            e = 'PLT: few {}({}) points for {}'.format(metric, ts, folder)
-            return DeckDataHubPLT.plt_error(signals, e)
+            e = 'Few plot {}({}) points for {}'.format(metric, ts, f)
+            signals.error_gui.emit(e)
+            e = 'PLT: few {}({}) points for {}'.format(metric, ts, f)
+            signals.error.emit(e)
+            signals.plt_result.emit(False)
+            signals.clk_end.emit()
+            return
+
 
         # find out metric number we are plotting
         same_folder = (DeckDataHubPLT.last_folder == folder)
         same_ts = (DeckDataHubPLT.last_ts == ts)
         same_metric = (DeckDataHubPLT.last_metric == metric)
+        print('same_folder {}'.format(same_folder))
+        print('same_ts {}'.format(same_ts))
+        print('same_metric {}'.format(same_metric))
         if same_folder and same_ts and not same_metric:
             # second metric, additional to an existing plot
             ax = DeckDataHubPLT.last_ax
