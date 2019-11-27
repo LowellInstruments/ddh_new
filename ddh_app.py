@@ -73,7 +73,6 @@ class DDHQtApp(QMainWindow):
         logzero.logfile("ddh.log", maxBytes=int(1e6), backupCount=3, mode='a')
 
         # banners
-        console_log.debug('SYS: recall \'rm_previous\' pre_dl, search \'***\'')
         console_log.debug('SYS: recall re-RUN post download, search \'###\'')
 
         # ui stuff
@@ -219,8 +218,7 @@ class DDHQtApp(QMainWindow):
     def _window_center(self):
         if detect_raspberry():
             # in raspberry, use full screen on production code
-            # self.showFullScreen()
-            self.setFixedSize(self.tabs.size())
+            self.showFullScreen()
         else:
             # make window as big as tabs widget
             self.setFixedSize(self.tabs.size())

@@ -80,7 +80,8 @@ class DeckDataHubBLE:
                 signals.ble_dl_session.emit(
                     mac, counter + 1, len(DeckDataHubBLE.LOGGERS_TO_QUERY))
                 with LoggerControllerBLE(mac) as lc_ble:
-                    DeckDataHubBLE._ble_dl_files(lc_ble, signals)
+                    # download files from this logger
+                    DeckDataHubBLE._ble_dl_files(lc_ble, signals, pre_rm=False)
             except ble.BTLEException as be:
                 # first Linux BLE interaction may fail
                 signals.error.emit('BLE: exception {}'.format(be.message))
@@ -103,10 +104,10 @@ class DeckDataHubBLE:
         signals.ble_dl_session_.emit('All loggers\ndone')
         return dl_logger_ok
 
-    # download one entire logger
+    # download files from this logger
     @staticmethod
     def _ble_dl_files(lc_ble, signals, pre_rm=False):
-        # pre-configure logger
+        # setup logger
         DeckDataHubBLE._pre_dl_configuration(lc_ble, signals)
         mac = lc_ble.address
 
@@ -123,7 +124,7 @@ class DeckDataHubBLE:
                 num += 1
                 total_size += size
 
-        # download one by one
+        # download files one by one
         attempts = 0
         counter = 0
         total_left = total_size
@@ -185,7 +186,7 @@ class DeckDataHubBLE:
 
     # files: list_lid_files() one logger
     @staticmethod
-    def _pre_dl_ls(lc_ble, signals, pre_rm):
+    def _pre_dl_ls(lc_ble, signals, pre_rm=False):
         # remove files, useful for debug, label ***
         mac = lc_ble.u.peripheral.addr
         if pre_rm:

@@ -14507,3 +14507,73 @@
 [I 191127 11:50:18 ddh_app:277] GPS: using NTP time
 [I 191127 11:50:18 ddh_app:405] SYS: we have internet
 [I 191127 11:50:23 ddh_app:277] BLE: 0 loggers to query
+[D 191127 11:58:49 ddh_app:76] SYS: recall re-RUN post download, search '###'
+[D 191127 11:58:49 ddh_app:164] SYS: this is NOT a raspberry system
+[I 191127 11:58:49 ddh_app:275] GPS: no receiver found
+[I 191127 11:58:49 ddh_app:393] GPS: no position update
+[I 191127 11:58:49 ddh_app:275] GPS: using NTP time
+[I 191127 11:58:50 ddh_app:403] SYS: we have internet
+[D 191127 11:58:52 ddh_app:236] GUI: keypress 1.
+[I 191127 11:58:52 ddh_app:275] PLT: ['T', 'P'](h) for dl_files/00-1e-c0-4d-bf-c9
+[E 191127 11:58:53 ddh_app:288] No T(h) data for 00-1e-c0-4d-bf-c9
+[I 191127 11:58:53 ddh_app:275] PLT: ['DOS', 'DOT'](h) for dl_files/00-1e-c0-4d-bf-c9
+[E 191127 11:58:54 ddh_app:288] No DOS(h) data for 00-1e-c0-4d-bf-c9
+[D 191127 11:58:54 ddh_app:440] SYS: elapsed time 1969 ms.
+[I 191127 11:58:55 ddh_app:275] BLE: 0 loggers to query
+[D 191127 11:58:55 ddh_app:236] GUI: keypress 1.
+[I 191127 11:58:55 ddh_app:275] PLT: ['T', 'P'](h) for dl_files/04-ee-03-6c-ef-49
+[E 191127 11:58:55 ddh_app:288] No T(h) data for 04-ee-03-6c-ef-49
+[I 191127 11:58:55 ddh_app:275] PLT: ['DOS', 'DOT'](h) for dl_files/04-ee-03-6c-ef-49
+[E 191127 11:58:55 ddh_app:288] No DOS(h) data for 04-ee-03-6c-ef-49
+[D 191127 11:58:55 ddh_app:440] SYS: elapsed time 10 ms.
+[D 191127 11:58:56 ddh_app:236] GUI: keypress 1.
+[I 191127 11:58:56 ddh_app:275] PLT: ['T', 'P'](h) for dl_files/04-ee-03-6c-ef-e0
+[E 191127 11:58:56 ddh_app:288] No T(h) data for 04-ee-03-6c-ef-e0
+[I 191127 11:58:56 ddh_app:275] PLT: ['DOS', 'DOT'](h) for dl_files/04-ee-03-6c-ef-e0
+[D 191127 11:58:56 ddh_app:440] SYS: elapsed time 236 ms.
+[D 191127 11:59:00 ddh_app:236] GUI: keypress 1.
+[I 191127 11:59:00 ddh_app:275] PLT: ['T', 'P'](h) for dl_files/11-22-33-44-55-66
+[D 191127 11:59:00 ddh_app:440] SYS: elapsed time 366 ms.
+[I 191127 11:59:02 ddh_app:275] BLE: 0 loggers to query
+[I 191127 11:59:09 ddh_app:275] BLE: 0 loggers to query
+[I 191127 11:59:16 ddh_app:275] BLE: 0 loggers to query
+[I 191127 11:59:19 ddh_app:275] GPS: using NTP time
+[I 191127 11:59:19 ddh_app:403] SYS: we have internet
+[I 191127 11:59:19 ddh_app:275] GPS: no receiver found
+[I 191127 11:59:19 ddh_app:393] GPS: no position update
+[I 191127 11:59:23 ddh_app:275] BLE: 0 loggers to query
+[I 191127 11:59:30 ddh_app:275] BLE: 0 loggers to query
+[I 191127 11:59:37 ddh_app:275] BLE: 0 loggers to query
+[I 191127 11:59:44 ddh_app:275] BLE: 0 loggers to query
+[I 191127 11:59:50 ddh_app:275] GPS: using NTP time
+[I 191127 11:59:50 ddh_app:403] SYS: we have internet
+[I 191127 11:59:50 ddh_app:275] GPS: no receiver found
+[I 191127 11:59:50 ddh_app:393] GPS: no position update
+[I 191127 11:59:51 ddh_app:275] BLE: 0 loggers to query
+[I 191127 11:59:58 ddh_app:275] BLE: 0 loggers to query
+[I 191127 12:00:05 ddh_app:275] BLE: 0 loggers to query
+[I 191127 12:00:12 ddh_app:275] BLE: 0 loggers to query
+[I 191127 12:00:19 ddh_app:275] BLE: 0 loggers to query
+[I 191127 12:00:22 ddh_app:275] GPS: using NTP time
+[I 191127 12:00:22 ddh_app:403] SYS: we have internet
+[I 191127 12:00:22 ddh_app:275] GPS: no receiver found
+[I 191127 12:00:22 ddh_app:393] GPS: no position update
+[I 191127 12:00:26 ddh_app:275] BLE: 0 loggers to query
+[I 191127 12:00:33 ddh_app:275] BLE: 0 loggers to query
+[I 191127 12:00:41 ddh_app:275] BLE: 0 loggers to query
+[I 191127 12:00:48 ddh_app:275] BLE: 0 loggers to query
+[I 191127 12:00:53 ddh_app:275] GPS: using NTP time
+[I 191127 12:00:53 ddh_app:403] SYS: we have internet
+[I 191127 12:00:53 ddh_app:275] GPS: no receiver found
+[I 191127 12:00:53 ddh_app:393] GPS: no position update
+[I 191127 12:00:55 ddh_app:275] BLE: 0 loggers to query
+[I 191127 12:01:02 ddh_app:275] BLE: 0 loggers to query
+[I 191127 12:01:09 ddh_app:275] BLE: 0 loggers to query
+[I 191127 12:01:16 ddh_app:275] BLE: 0 loggers to query
+[I 191127 12:01:23 ddh_app:275] BLE: 0 loggers to query
+[I 191127 12:01:24 ddh_app:275] GPS: using NTP time
+[I 191127 12:01:25 ddh_app:403] SYS: we have internet
+[I 191127 12:01:25 ddh_app:275] GPS: no receiver found
+[I 191127 12:01:25 ddh_app:393] GPS: no position update
+[I 191127 12:01:30 ddh_app:275] BLE: 0 loggers to query
+[D 191127 12:01:33 ddh_app:169] SYS: closing GUI APP...
