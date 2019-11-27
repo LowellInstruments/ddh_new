@@ -15,6 +15,7 @@ from .ddh_utils import (
 )
 
 
+
 class DeckDataHubPLT:
 
     # state
@@ -52,46 +53,54 @@ class DeckDataHubPLT:
         return t, y_avg
 
     @staticmethod
-    def plt_plot(signals, folder, cnv, ts, metric):
+    def plt_plot(signals, folder, cnv, ts, pairs_of_metrics):
+        f = folder.split('/')[-1]
+        lg = json_mac_dns(mac_from_folder(folder))
+        signals.clk_start.emit()
+        for pair in pairs_of_metrics:
+            if ddh_p._plot(signals, folder, cnv, ts, pair):
+                signals.plt_result.emit(True)
+                signals.clk_end.emit()
+                return
+
+        # we could not plot any pair of metrics
+        e = 'No ({}) plots for logger\n\'{}\'\n{}'.format(ts, lg, f)
+        signals.error_gui.emit(e)
+        signals.plt_result.emit(False)
+        signals.clk_end.emit()
+
+    @staticmethod
+    def _plot(signals, folder, cnv, ts, metric_pair):
         # metadata and signals
         f = folder.split('/')[-1]
-        c0 = metric_to_column_name(metric[0])
-        c1 = metric_to_column_name(metric[1])
+        c0 = metric_to_column_name(metric_pair[0])
+        c1 = metric_to_column_name(metric_pair[1])
         lg = json_mac_dns(mac_from_folder(folder))
         clr0 = plot_line_color(c0)
         clr1 = plot_line_color(c1)
-        signals.clk_start.emit()
-        signals.status.emit('PLT: {} for {}'.format(ts, folder))
+        signals.status.emit('PLT: {}({}) for {}'.format(metric_pair, ts, folder))
 
         # query database for 1st data, important one
         try:
-            t, y0 = DeckDataHubPLT.plt_cache_query(signals, folder, ts, metric[0])
+            t, y0 = DeckDataHubPLT.plt_cache_query(signals, folder, ts, metric_pair[0])
         except (AttributeError, Exception):
-            e = 'No {}({}) for\n{}'.format(metric[0], ts, f)
-            signals.error_gui.emit(e)
-            e = 'PLT: no {}({}) for {}'.format(metric[0], ts, f)
+            e = 'No {}({}) data for\n{}'.format(metric_pair[0], ts, f)
             signals.error.emit(e)
-            signals.plt_result.emit(False)
-            signals.clk_end.emit()
-            return
+            return False
 
         # query DB for 2nd data, not critical
         try:
-            _, y1 = DeckDataHubPLT.plt_cache_query(signals, folder, ts, metric[1])
+            _, y1 = DeckDataHubPLT.plt_cache_query(signals, folder, ts, metric_pair[1])
         except (AttributeError, Exception):
-            e = 'PLT: no {}({}) for {}'.format(metric[1], ts, f)
+            e = 'PLT: no {}({}) data for {}'.format(metric_pair[1], ts, f)
             y1 = None
             signals.error.emit(e)
 
         # need at least two points to plot a 1st data line
         if np.count_nonzero(~np.isnan(y0)) < 2:
-            e = 'Few plot {}({}) points for {}'.format(metric, ts, f)
-            signals.error_gui.emit(e)
-            e = 'PLT: few {}({}) points for {}'.format(metric, ts, f)
+            e = 'PLT: few {}({}) data for {}'.format(metric_pair, ts, f)
             signals.error.emit(e)
-            signals.plt_result.emit(False)
-            signals.clk_end.emit()
-            return
+            return False
 
         # prepare for plotting 1st data
         cnv.figure.clf()
@@ -118,7 +127,7 @@ class DeckDataHubPLT:
         ax.set_xticklabels(plot_format_time_labels(lbs, ts))
         ax.set_xticks(lbs)
         cnv.draw()
+        return True
 
-        # signal we finished plotting
-        signals.plt_result.emit(True)
-        signals.clk_end.emit()
+ddh_p = DeckDataHubPLT
+
