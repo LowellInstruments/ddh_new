@@ -97,13 +97,12 @@ class DeckDataHubPLT:
         ax.plot(t, y0, label=lbl, color=clr0)
         ax.set_xlabel('time', fontsize='large', fontweight='bold')
         ax.set_title('Logger ' + lbl + ', ' + plot_format_title(t, ts), fontsize='x-large')
-        # ax.legend()
 
         # build second, additional metric to existing base
         ax2 = ax.twinx()
         ax2.set_ylabel(c1, fontsize='large', fontweight='bold', color=clr1)
         ax2.tick_params(axis='y', labelcolor=clr1)
-        ax2.plot(t, y1, label=lbl, color=clr1)
+        ax2.plot(t, y1, '--', label=lbl, color=clr1)
 
         # format it properly
         lbs = plot_format_time_ticks(t, ts)
