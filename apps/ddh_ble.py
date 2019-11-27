@@ -100,7 +100,7 @@ class DeckDataHubBLE:
                     lc_ble.close()
 
         signals.status.emit('BLE: all loggers done')
-        signals.ble_dl_session_.emit('BLE: all loggers done')
+        signals.ble_dl_session_.emit('All loggers\ndone')
         return dl_logger_ok
 
     # download one entire logger
@@ -174,7 +174,7 @@ class DeckDataHubBLE:
             lc_ble.sync_time()
             signals.status.emit('BLE: sync {}'.format(lc_ble.get_time()))
         else:
-            signals.status.emit('BLE: logger time is good enough')
+            signals.status.emit('BLE: logger time valid')
 
         # RN4020 loggers: CMD_CONTROL parameters BLE, CC26x2 ones will ignore this
         control = 'BTC 00T,0006,0000,0064'

@@ -15,6 +15,7 @@ class SignalsBLE(QObject):
     status = pyqtSignal(str)
     warning = pyqtSignal(str)
     output = pyqtSignal(str)
+    error_gui = pyqtSignal(str)
 
 
 class SignalsGPS(QObject):

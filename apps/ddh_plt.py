@@ -15,7 +15,6 @@ from .ddh_utils import (
 )
 
 
-
 class DeckDataHubPLT:
 
     # state
@@ -84,7 +83,7 @@ class DeckDataHubPLT:
         try:
             t, y0 = DeckDataHubPLT.plt_cache_query(signals, folder, ts, metric_pair[0])
         except (AttributeError, Exception):
-            e = 'No {}({}) data for\n{}'.format(metric_pair[0], ts, f)
+            e = 'No {}({}) data for {}'.format(metric_pair[0], ts, f)
             signals.error.emit(e)
             return False
 

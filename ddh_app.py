@@ -83,8 +83,6 @@ class DDHQtApp(QMainWindow):
         self.ui = Ui_tabs()
         self.ui.setupUi(self.tabs)
         self.setWindowTitle('Lowell Instruments\' Deck Data Hub')
-        # self.ui.lbl_error.hide()
-        # self.ui.lbl_busy_dl.hide()
         self.ui.lbl_busy_plot.hide()
         self.ui.img_time.setPixmap(QPixmap('gui/res/img_datetime.png'))
         self.ui.img_sync.setPixmap(QPixmap('gui/res/img_sync.png'))
@@ -108,11 +106,10 @@ class DDHQtApp(QMainWindow):
         self.plot_canvas = FigureCanvasQTAgg(Figure(figsize=(5, 3)))
         self.ui.vl_3.addWidget(self.plot_canvas)
         self.ui.img_time.mousePressEvent = self.on_clock_click
-
+        self.ui.lbl_dbg.setText('DDH operation ok')
 
         # automatic flow stuff
         self.sys_seconds = 0
-        self.dl_last_dir = ''
         self.bsy_indicator = ''
         self.plt_timeout_display = 0
         self.err_timeout_display = 0
@@ -286,7 +283,7 @@ class DDHQtApp(QMainWindow):
     @pyqtSlot(str, name='slot_warning')
     def slot_warning(self, e):
         console_log.warning(e)
-        self.ui.lbl_error.setText(e)
+        self.ui.lbl_dbg.setText(e)
 
     @pyqtSlot(str, name='slot_error')
     def slot_error(self, e):
@@ -294,7 +291,7 @@ class DDHQtApp(QMainWindow):
 
     @pyqtSlot(str, name='slot_error_gui')
     def slot_error_gui(self, e):
-        self.ui.lbl_error.setText(e)
+        self.ui.lbl_dbg.setText(e)
         self.err_timeout_display = DDH_ERR_DISPLAY_TIMEOUT
 
     @pyqtSlot(str, name='slot_output')
@@ -304,11 +301,11 @@ class DDHQtApp(QMainWindow):
     @pyqtSlot(name='slot_ble_scan_start')
     def slot_ble_scan_start(self):
         self.ui.bar_dl.setValue(0)
-        self.ui.lbl_ble.setText('Scanning ...')
+        self.ui.lbl_ble.setText('Scanning')
 
     @pyqtSlot(object, name='slot_ble_scan_result')
     def slot_ble_scan_result(self, result):
-        self.ui.lbl_out.setText('{} loggers\nfound'.format(len(result)))
+        self.ui.lbl_dbg.setText('{} loggers\nfound'.format(len(result)))
 
     # a download session consists of 1 to n loggers
     @pyqtSlot(str, int, int, name='slot_ble_dl_session')
@@ -316,7 +313,7 @@ class DDHQtApp(QMainWindow):
         # desc: name, val_1: logger index, val_2: total num of loggers
         text = 'Connected'
         self.ui.lbl_ble.setText(text)
-        text = 'Logger \n{}'.format(json_mac_dns(desc))
+        text = 'Logger \n\'{}\''.format(json_mac_dns(desc))
         self.ui.lbl_out.setText(text)
         self.ui.bar_dl.setValue(0)
 
@@ -355,8 +352,8 @@ class DDHQtApp(QMainWindow):
         self.ui.bar_dl.setValue(100)
         # try to draw if something downloaded from last logger
         if val_1:
-            self.dl_last_dir = 'dl_files/' + str(desc).replace(':', '-')
-            self._ddh_thread_throw_plt(self.dl_last_dir)
+            self.plt_dir = 'dl_files/' + str(desc).replace(':', '-')
+            self._ddh_thread_throw_plt()
             self.plt_folders = update_dl_folder_list()
 
     # function post dl_session, note trailing '_'
@@ -422,8 +419,8 @@ class DDHQtApp(QMainWindow):
 
         # timeout to display error banner, compare to 1 only runs once
         if self.err_timeout_display == 1:
-            self.ui.lbl_error.clear()
-            self.ui.lbl_error.setText('No issues found')
+            self.ui.lbl_dbg.clear()
+            self.ui.lbl_dbg.setText('DDH operation ok')
         if self.err_timeout_display > 0:
             self.err_timeout_display -= 1
 

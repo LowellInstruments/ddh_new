@@ -14015,3 +14015,334 @@
 [I 191127 11:15:16 ddh_app:280] PLT: ['T', 'P'](h) for dl_files/11-22-33-44-55-66
 [D 191127 11:15:16 ddh_app:442] SYS: elapsed time 226 ms.
 [D 191127 11:15:19 ddh_app:174] SYS: closing GUI APP...
+[D 191127 11:16:14 ddh_app:77] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191127 11:16:14 ddh_app:78] SYS: recall re-RUN post download, search '###'
+[D 191127 11:16:14 ddh_app:169] SYS: this is NOT a raspberry system
+[I 191127 11:16:14 ddh_app:280] GPS: no receiver found
+[I 191127 11:16:14 ddh_app:395] GPS: no position update
+[I 191127 11:16:14 ddh_app:280] GPS: using NTP time
+[I 191127 11:16:14 ddh_app:405] SYS: we have internet
+[D 191127 11:16:15 ddh_app:241] GUI: keypress 1.
+[I 191127 11:16:15 ddh_app:280] PLT: ['T', 'P'](h) for dl_files/00-1e-c0-4d-bf-c9
+[E 191127 11:16:15 ddh_app:293] No T(h) data for
+    00-1e-c0-4d-bf-c9
+[I 191127 11:16:15 ddh_app:280] PLT: ['DOS', 'DOT'](h) for dl_files/00-1e-c0-4d-bf-c9
+[E 191127 11:16:15 ddh_app:293] No DOS(h) data for
+    00-1e-c0-4d-bf-c9
+[D 191127 11:16:15 ddh_app:442] SYS: elapsed time 13 ms.
+[D 191127 11:16:15 ddh_app:241] GUI: keypress 1.
+[I 191127 11:16:15 ddh_app:280] PLT: ['T', 'P'](h) for dl_files/04-ee-03-6c-ef-49
+[E 191127 11:16:15 ddh_app:293] No T(h) data for
+    04-ee-03-6c-ef-49
+[I 191127 11:16:15 ddh_app:280] PLT: ['DOS', 'DOT'](h) for dl_files/04-ee-03-6c-ef-49
+[E 191127 11:16:15 ddh_app:293] No DOS(h) data for
+    04-ee-03-6c-ef-49
+[D 191127 11:16:15 ddh_app:442] SYS: elapsed time 9 ms.
+[D 191127 11:16:16 ddh_app:241] GUI: keypress 1.
+[I 191127 11:16:16 ddh_app:280] PLT: ['T', 'P'](h) for dl_files/04-ee-03-6c-ef-e0
+[E 191127 11:16:16 ddh_app:293] No T(h) data for
+    04-ee-03-6c-ef-e0
+[I 191127 11:16:16 ddh_app:280] PLT: ['DOS', 'DOT'](h) for dl_files/04-ee-03-6c-ef-e0
+[D 191127 11:16:17 ddh_app:442] SYS: elapsed time 236 ms.
+[D 191127 11:16:19 ddh_app:241] GUI: keypress 1.
+[I 191127 11:16:19 ddh_app:280] PLT: ['T', 'P'](h) for dl_files/11-22-33-44-55-66
+[D 191127 11:16:19 ddh_app:442] SYS: elapsed time 255 ms.
+[I 191127 11:16:19 ddh_app:280] BLE: 0 loggers to query
+[D 191127 11:16:20 ddh_app:241] GUI: keypress 1.
+[I 191127 11:16:20 ddh_app:280] PLT: ['T', 'P'](h) for dl_files/00-1e-c0-4d-bf-c9
+[E 191127 11:16:20 ddh_app:293] No T(h) data for
+    00-1e-c0-4d-bf-c9
+[I 191127 11:16:20 ddh_app:280] PLT: ['DOS', 'DOT'](h) for dl_files/00-1e-c0-4d-bf-c9
+[E 191127 11:16:20 ddh_app:293] No DOS(h) data for
+    00-1e-c0-4d-bf-c9
+[D 191127 11:16:20 ddh_app:442] SYS: elapsed time 9 ms.
+[D 191127 11:16:25 ddh_app:241] GUI: keypress 1.
+[I 191127 11:16:25 ddh_app:280] PLT: ['T', 'P'](h) for dl_files/04-ee-03-6c-ef-49
+[E 191127 11:16:25 ddh_app:293] No T(h) data for
+    04-ee-03-6c-ef-49
+[I 191127 11:16:25 ddh_app:280] PLT: ['DOS', 'DOT'](h) for dl_files/04-ee-03-6c-ef-49
+[E 191127 11:16:25 ddh_app:293] No DOS(h) data for
+    04-ee-03-6c-ef-49
+[D 191127 11:16:25 ddh_app:442] SYS: elapsed time 11 ms.
+[D 191127 11:16:25 ddh_app:241] GUI: keypress 1.
+[I 191127 11:16:25 ddh_app:280] PLT: ['T', 'P'](h) for dl_files/04-ee-03-6c-ef-e0
+[E 191127 11:16:25 ddh_app:293] No T(h) data for
+    04-ee-03-6c-ef-e0
+[I 191127 11:16:25 ddh_app:280] PLT: ['DOS', 'DOT'](h) for dl_files/04-ee-03-6c-ef-e0
+[I 191127 11:16:26 ddh_app:280] PLT: cache hit
+[I 191127 11:16:26 ddh_app:280] PLT: cache hit
+[D 191127 11:16:26 ddh_app:442] SYS: elapsed time 263 ms.
+[I 191127 11:16:26 ddh_app:280] BLE: 0 loggers to query
+[I 191127 11:16:33 ddh_app:280] BLE: 0 loggers to query
+[D 191127 11:16:34 ddh_app:241] GUI: keypress 1.
+[I 191127 11:16:34 ddh_app:280] PLT: ['T', 'P'](h) for dl_files/11-22-33-44-55-66
+[I 191127 11:16:34 ddh_app:280] PLT: cache hit
+[I 191127 11:16:35 ddh_app:280] PLT: cache hit
+[D 191127 11:16:35 ddh_app:442] SYS: elapsed time 264 ms.
+[D 191127 11:16:35 ddh_app:241] GUI: keypress 1.
+[I 191127 11:16:35 ddh_app:280] PLT: ['T', 'P'](h) for dl_files/00-1e-c0-4d-bf-c9
+[E 191127 11:16:35 ddh_app:293] No T(h) data for
+    00-1e-c0-4d-bf-c9
+[I 191127 11:16:35 ddh_app:280] PLT: ['DOS', 'DOT'](h) for dl_files/00-1e-c0-4d-bf-c9
+[E 191127 11:16:35 ddh_app:293] No DOS(h) data for
+    00-1e-c0-4d-bf-c9
+[D 191127 11:16:35 ddh_app:442] SYS: elapsed time 9 ms.
+[D 191127 11:16:38 ddh_app:174] SYS: closing GUI APP...
+[D 191127 11:19:35 ddh_app:77] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191127 11:19:35 ddh_app:78] SYS: recall re-RUN post download, search '###'
+[D 191127 11:19:35 ddh_app:169] SYS: this is NOT a raspberry system
+[I 191127 11:19:35 ddh_app:280] GPS: no receiver found
+[I 191127 11:19:35 ddh_app:395] GPS: no position update
+[I 191127 11:19:35 ddh_app:280] GPS: using NTP time
+[I 191127 11:19:36 ddh_app:405] SYS: we have internet
+[D 191127 11:19:36 ddh_app:241] GUI: keypress 1.
+[I 191127 11:19:36 ddh_app:280] PLT: ['T', 'P'](h) for dl_files/00-1e-c0-4d-bf-c9
+[E 191127 11:19:36 ddh_app:293] No T(h) data for
+    00-1e-c0-4d-bf-c9
+[I 191127 11:19:36 ddh_app:280] PLT: ['DOS', 'DOT'](h) for dl_files/00-1e-c0-4d-bf-c9
+[E 191127 11:19:36 ddh_app:293] No DOS(h) data for
+    00-1e-c0-4d-bf-c9
+[D 191127 11:19:36 ddh_app:442] SYS: elapsed time 13 ms.
+[D 191127 11:19:38 ddh_app:241] GUI: keypress 1.
+[I 191127 11:19:38 ddh_app:280] PLT: ['T', 'P'](h) for dl_files/04-ee-03-6c-ef-49
+[E 191127 11:19:38 ddh_app:293] No T(h) data for
+    04-ee-03-6c-ef-49
+[I 191127 11:19:38 ddh_app:280] PLT: ['DOS', 'DOT'](h) for dl_files/04-ee-03-6c-ef-49
+[E 191127 11:19:38 ddh_app:293] No DOS(h) data for
+    04-ee-03-6c-ef-49
+[D 191127 11:19:38 ddh_app:442] SYS: elapsed time 13 ms.
+[D 191127 11:19:40 ddh_app:241] GUI: keypress 1.
+[I 191127 11:19:40 ddh_app:280] PLT: ['T', 'P'](h) for dl_files/04-ee-03-6c-ef-e0
+[E 191127 11:19:40 ddh_app:293] No T(h) data for
+    04-ee-03-6c-ef-e0
+[I 191127 11:19:40 ddh_app:280] PLT: ['DOS', 'DOT'](h) for dl_files/04-ee-03-6c-ef-e0
+[D 191127 11:19:40 ddh_app:442] SYS: elapsed time 234 ms.
+[I 191127 11:19:40 ddh_app:280] BLE: 2 loggers to query
+[I 191127 11:19:40 ddh_app:280] BLE: connecting 04:ee:03:6c:ef:e0
+[D 191127 11:19:44 ddh_app:241] GUI: keypress 1.
+[I 191127 11:19:44 ddh_app:280] PLT: ['T', 'P'](h) for dl_files/11-22-33-44-55-66
+[D 191127 11:19:44 ddh_app:442] SYS: elapsed time 282 ms.
+[I 191127 11:19:44 ddh_app:280] BLE: get status = [b'STS', b'0200']
+[I 191127 11:19:45 ddh_app:280] BLE: stop deploy = [b'STS', b'0200STP', b'00']
+[E 191127 11:19:49 ddh_app:293] BLE: exception False
+[I 191127 11:19:49 ddh_app:280] BLE: disconnecting 04:ee:03:6c:ef:e0
+[D 191127 11:23:00 ddh_app:77] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191127 11:23:00 ddh_app:78] SYS: recall re-RUN post download, search '###'
+[D 191127 11:23:00 ddh_app:169] SYS: this is NOT a raspberry system
+[I 191127 11:23:00 ddh_app:280] GPS: no receiver found
+[I 191127 11:23:00 ddh_app:395] GPS: no position update
+[I 191127 11:23:00 ddh_app:280] GPS: using NTP time
+[I 191127 11:23:00 ddh_app:405] SYS: we have internet
+[I 191127 11:23:05 ddh_app:280] BLE: 2 loggers to query
+[I 191127 11:23:05 ddh_app:280] BLE: connecting 00:1e:c0:4d:bf:c9
+[I 191127 11:23:09 ddh_app:280] BLE: get status = [b'STS', b'0201']
+[I 191127 11:23:10 ddh_app:280] BLE: stop deploy = [b'STP', b'0200']
+[I 191127 11:23:12 ddh_app:280] BLE: logger time is good enough
+[I 191127 11:23:16 ddh_app:280] BLE: attempt RN4020 setup = [b'CMD', b'AOK', b'MLDP']
+[I 191127 11:23:21 ddh_app:280] BLE: logger DIR = {'18106C9_MATP_(0).lid': 297177, '18106C9_MATP_(1).lid': 218847, '18106C9_MATP_(2).lid': 856944, '18106C9_MATP_(3).lid': 32992, '18106C9_MATP_(4).lid': 33024}
+[I 191127 11:23:21 ddh_app:280] BLE: 00:1e:c0:4d:bf:c9 has 5 files
+[I 191127 11:23:21 ddh_app:280] BLE: get 18106C9_MATP_(0).lid, 297177 B
+[I 191127 11:23:29 ddh_app:280] GPS: using NTP time
+[I 191127 11:23:29 ddh_app:405] SYS: we have internet
+[I 191127 11:23:29 ddh_app:280] GPS: no receiver found
+[I 191127 11:23:29 ddh_app:395] GPS: no position update
+[I 191127 11:24:01 ddh_app:280] GPS: using NTP time
+[I 191127 11:24:01 ddh_app:405] SYS: we have internet
+[I 191127 11:24:01 ddh_app:280] GPS: no receiver found
+[I 191127 11:24:01 ddh_app:395] GPS: no position update
+[I 191127 11:24:06 ddh_app:280] BLE: got 18106C9_MATP_(0).lid
+[I 191127 11:24:06 ddh_app:280] BLE: get 18106C9_MATP_(1).lid, 218847 B
+[I 191127 11:24:32 ddh_app:280] GPS: using NTP time
+[I 191127 11:24:32 ddh_app:405] SYS: we have internet
+[I 191127 11:24:32 ddh_app:280] GPS: no receiver found
+[I 191127 11:24:32 ddh_app:395] GPS: no position update
+[I 191127 11:24:43 ddh_app:280] BLE: got 18106C9_MATP_(1).lid
+[I 191127 11:24:43 ddh_app:280] BLE: get 18106C9_MATP_(2).lid, 856944 B
+[I 191127 11:25:03 ddh_app:280] GPS: using NTP time
+[I 191127 11:25:04 ddh_app:405] SYS: we have internet
+[I 191127 11:25:04 ddh_app:280] GPS: no receiver found
+[I 191127 11:25:04 ddh_app:395] GPS: no position update
+[I 191127 11:25:35 ddh_app:280] GPS: using NTP time
+[I 191127 11:25:35 ddh_app:405] SYS: we have internet
+[I 191127 11:25:35 ddh_app:280] GPS: no receiver found
+[I 191127 11:25:35 ddh_app:395] GPS: no position update
+[I 191127 11:26:06 ddh_app:280] GPS: using NTP time
+[I 191127 11:26:07 ddh_app:405] SYS: we have internet
+[I 191127 11:26:07 ddh_app:280] GPS: no receiver found
+[I 191127 11:26:07 ddh_app:395] GPS: no position update
+[I 191127 11:26:38 ddh_app:280] GPS: using NTP time
+[I 191127 11:26:38 ddh_app:405] SYS: we have internet
+[I 191127 11:26:38 ddh_app:280] GPS: no receiver found
+[I 191127 11:26:38 ddh_app:395] GPS: no position update
+[I 191127 11:26:44 ddh_app:280] BLE: got 18106C9_MATP_(2).lid
+[I 191127 11:26:44 ddh_app:280] BLE: get 18106C9_MATP_(3).lid, 32992 B
+[I 191127 11:26:55 ddh_app:280] BLE: got 18106C9_MATP_(3).lid
+[I 191127 11:26:55 ddh_app:280] BLE: get 18106C9_MATP_(4).lid, 33024 B
+[I 191127 11:27:05 ddh_app:280] BLE: got 18106C9_MATP_(4).lid
+[D 191127 11:29:24 ddh_app:77] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191127 11:29:24 ddh_app:78] SYS: recall re-RUN post download, search '###'
+[D 191127 11:29:24 ddh_app:168] SYS: this is NOT a raspberry system
+[I 191127 11:29:24 ddh_app:279] GPS: no receiver found
+[I 191127 11:29:24 ddh_app:394] GPS: no position update
+[I 191127 11:29:24 ddh_app:279] GPS: using NTP time
+[I 191127 11:29:25 ddh_app:404] SYS: we have internet
+[I 191127 11:29:29 ddh_app:279] BLE: 2 loggers to query
+[I 191127 11:29:29 ddh_app:279] BLE: connecting 04:ee:03:6c:ef:e0
+[I 191127 11:29:33 ddh_app:279] BLE: get status = [b'STS', b'0201']
+[I 191127 11:29:34 ddh_app:279] BLE: stop deploy = [b'STP', b'00']
+[I 191127 11:29:35 ddh_app:279] BLE: logger time is good enough
+[I 191127 11:29:38 ddh_app:279] BLE: attempt RN4020 setup = [b'INV']
+[I 191127 11:29:39 ddh_app:279] BLE: logger DIR = {'1234567_big.lid': 49002}
+[I 191127 11:29:39 ddh_app:279] BLE: 04:ee:03:6c:ef:e0 has 1 files
+[I 191127 11:29:39 ddh_app:279] BLE: get 1234567_big.lid, 49002 B
+[I 191127 11:29:51 ddh_app:279] BLE: got 1234567_big.lid
+[I 191127 11:29:51 ddh_app:279] PLT: ['T', 'P'](h) for dl_files/04-ee-03-6c-ef-e0
+[E 191127 11:29:51 ddh_app:292] No T(h) data for
+    04-ee-03-6c-ef-e0
+[I 191127 11:29:51 ddh_app:279] BLE: disconnecting 04:ee:03:6c:ef:e0
+[I 191127 11:29:51 ddh_app:279] BLE: connecting 00:1e:c0:4d:bf:c9
+[I 191127 11:29:51 ddh_app:279] PLT: ['DOS', 'DOT'](h) for dl_files/04-ee-03-6c-ef-e0
+[D 191127 11:29:51 ddh_app:441] SYS: elapsed time 449 ms.
+[I 191127 11:29:54 ddh_app:279] GPS: using NTP time
+[I 191127 11:29:54 ddh_app:404] SYS: we have internet
+[I 191127 11:29:54 ddh_app:279] GPS: no receiver found
+[I 191127 11:29:54 ddh_app:394] GPS: no position update
+[I 191127 11:29:58 ddh_app:279] BLE: get status = [b'STS', b'0201']
+[I 191127 11:30:00 ddh_app:279] BLE: stop deploy = [b'STP', b'0200']
+[I 191127 11:30:01 ddh_app:279] BLE: logger time is good enough
+[D 191127 11:30:03 ddh_app:173] SYS: closing GUI APP...
+[D 191127 11:33:16 ddh_app:77] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191127 11:33:16 ddh_app:78] SYS: recall re-RUN post download, search '###'
+[D 191127 11:33:16 ddh_app:168] SYS: this is NOT a raspberry system
+[I 191127 11:33:16 ddh_app:279] GPS: no receiver found
+[I 191127 11:33:16 ddh_app:394] GPS: no position update
+[I 191127 11:33:16 ddh_app:279] GPS: using NTP time
+[I 191127 11:33:16 ddh_app:404] SYS: we have internet
+[I 191127 11:33:21 ddh_app:279] BLE: 2 loggers to query
+[I 191127 11:33:21 ddh_app:279] BLE: connecting 04:ee:03:6c:ef:e0
+[I 191127 11:33:24 ddh_app:279] BLE: get status = [b'STS', b'0201']
+[D 191127 11:33:24 ddh_app:173] SYS: closing GUI APP...
+[D 191127 11:33:48 ddh_app:77] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191127 11:33:48 ddh_app:78] SYS: recall re-RUN post download, search '###'
+[D 191127 11:33:48 ddh_app:168] SYS: this is NOT a raspberry system
+[I 191127 11:33:48 ddh_app:279] GPS: no receiver found
+[I 191127 11:33:48 ddh_app:394] GPS: no position update
+[I 191127 11:33:48 ddh_app:279] GPS: using NTP time
+[I 191127 11:33:48 ddh_app:404] SYS: we have internet
+[D 191127 11:33:49 ddh_app:240] GUI: keypress 1.
+[I 191127 11:33:49 ddh_app:279] PLT: ['T', 'P'](h) for dl_files/00-1e-c0-4d-bf-c9
+[I 191127 11:33:53 ddh_app:279] BLE: 2 loggers to query
+[I 191127 11:33:53 ddh_app:279] BLE: connecting 04:ee:03:6c:ef:e0
+[E 191127 11:33:53 ddh_app:292] No T(h) data for 00-1e-c0-4d-bf-c9
+[I 191127 11:33:53 ddh_app:279] PLT: ['DOS', 'DOT'](h) for dl_files/00-1e-c0-4d-bf-c9
+[E 191127 11:33:54 ddh_app:292] No DOS(h) data for 00-1e-c0-4d-bf-c9
+[D 191127 11:33:54 ddh_app:441] SYS: elapsed time 6654 ms.
+[I 191127 11:33:56 ddh_app:279] BLE: get status = [b'STS', b'0201']
+[I 191127 11:33:57 ddh_app:279] BLE: stop deploy = [b'STP', b'00']
+[I 191127 11:33:59 ddh_app:279] BLE: logger time is good enough
+[D 191127 11:34:01 ddh_app:173] SYS: closing GUI APP...
+[D 191127 11:34:04 ddh_app:77] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191127 11:34:04 ddh_app:78] SYS: recall re-RUN post download, search '###'
+[D 191127 11:34:04 ddh_app:168] SYS: this is NOT a raspberry system
+[I 191127 11:34:04 ddh_app:279] GPS: no receiver found
+[I 191127 11:34:04 ddh_app:394] GPS: no position update
+[I 191127 11:34:04 ddh_app:279] GPS: using NTP time
+[I 191127 11:34:04 ddh_app:404] SYS: we have internet
+[I 191127 11:34:09 ddh_app:279] BLE: 2 loggers to query
+[I 191127 11:34:09 ddh_app:279] BLE: connecting 04:ee:03:6c:ef:e0
+[I 191127 11:34:12 ddh_app:279] BLE: get status = [b'STS', b'0201']
+[I 191127 11:34:14 ddh_app:279] BLE: stop deploy = [b'STP', b'00']
+[I 191127 11:34:15 ddh_app:279] BLE: logger time is good enough
+[I 191127 11:34:18 ddh_app:279] BLE: attempt RN4020 setup = [b'INV']
+[I 191127 11:34:18 ddh_app:279] BLE: logger DIR = {'1234567_big.lid': 49002}
+[I 191127 11:34:18 ddh_app:279] BLE: 04:ee:03:6c:ef:e0 has 0 files
+[I 191127 11:34:18 ddh_app:279] BLE: disconnecting 04:ee:03:6c:ef:e0
+[I 191127 11:34:18 ddh_app:279] BLE: connecting 00:1e:c0:4d:bf:c9
+[D 191127 11:34:24 ddh_app:173] SYS: closing GUI APP...
+[D 191127 11:37:26 ddh_app:77] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191127 11:37:26 ddh_app:78] SYS: recall re-RUN post download, search '###'
+[D 191127 11:37:26 ddh_app:166] SYS: this is NOT a raspberry system
+[I 191127 11:37:26 ddh_app:277] GPS: no receiver found
+[I 191127 11:37:26 ddh_app:392] GPS: no position update
+[I 191127 11:37:26 ddh_app:277] GPS: using NTP time
+[I 191127 11:37:27 ddh_app:402] SYS: we have internet
+[I 191127 11:37:32 ddh_app:277] BLE: 2 loggers to query
+[I 191127 11:37:32 ddh_app:277] BLE: connecting 00:1e:c0:4d:bf:c9
+[I 191127 11:37:39 ddh_app:277] BLE: get status = [b'STS', b'0201']
+[I 191127 11:37:40 ddh_app:277] BLE: stop deploy = [b'STP', b'0200']
+[I 191127 11:37:42 ddh_app:277] BLE: logger time is good enough
+[I 191127 11:37:46 ddh_app:277] BLE: attempt RN4020 setup = [b'CMD', b'AOK', b'MLDP']
+[I 191127 11:37:46 ddh_app:277] BLE: logger DIR = {'18106C9_MATP_(0).lid': 297177, '18106C9_MATP_(1).lid': 218847, '18106C9_MATP_(2).lid': 856944, '18106C9_MATP_(3).lid': 32992, '18106C9_MATP_(4).lid': 33024}
+[I 191127 11:37:46 ddh_app:277] BLE: 00:1e:c0:4d:bf:c9 has 0 files
+[I 191127 11:37:46 ddh_app:277] BLE: disconnecting 00:1e:c0:4d:bf:c9
+[I 191127 11:37:46 ddh_app:277] BLE: connecting 04:ee:03:6c:ef:e0
+[I 191127 11:37:49 ddh_app:277] BLE: get status = [b'STS', b'0201']
+[D 191127 11:37:50 ddh_app:171] SYS: closing GUI APP...
+[D 191127 11:39:13 ddh_app:77] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191127 11:39:13 ddh_app:78] SYS: recall re-RUN post download, search '###'
+[D 191127 11:39:13 ddh_app:166] SYS: this is NOT a raspberry system
+[I 191127 11:39:13 ddh_app:277] GPS: no receiver found
+[I 191127 11:39:13 ddh_app:392] GPS: no position update
+[I 191127 11:39:13 ddh_app:277] GPS: using NTP time
+[I 191127 11:39:13 ddh_app:402] SYS: we have internet
+[I 191127 11:39:18 ddh_app:277] BLE: 2 loggers to query
+[I 191127 11:39:18 ddh_app:277] BLE: connecting 04:ee:03:6c:ef:e0
+[I 191127 11:39:21 ddh_app:277] BLE: get status = [b'STS', b'0201']
+[I 191127 11:39:22 ddh_app:277] BLE: stop deploy = [b'STP', b'00']
+[I 191127 11:39:23 ddh_app:277] BLE: logger time is good enough
+[I 191127 11:39:26 ddh_app:277] BLE: attempt RN4020 setup = [b'INV']
+[I 191127 11:39:27 ddh_app:277] BLE: logger DIR = {'1234567_big.lid': 49002}
+[I 191127 11:39:27 ddh_app:277] BLE: 04:ee:03:6c:ef:e0 has 0 files
+[I 191127 11:39:27 ddh_app:277] BLE: disconnecting 04:ee:03:6c:ef:e0
+[I 191127 11:39:27 ddh_app:277] BLE: connecting 00:1e:c0:4d:bf:c9
+[I 191127 11:39:34 ddh_app:277] BLE: get status = [b'STS', b'0201']
+[I 191127 11:39:36 ddh_app:277] BLE: stop deploy = [b'STP', b'0200']
+[I 191127 11:39:37 ddh_app:277] BLE: logger time is good enough
+[I 191127 11:39:41 ddh_app:277] BLE: attempt RN4020 setup = [b'CMD', b'AOK', b'MLDP']
+[I 191127 11:39:41 ddh_app:277] BLE: logger DIR = {'18106C9_MATP_(0).lid': 297177, '18106C9_MATP_(1).lid': 218847, '18106C9_MATP_(2).lid': 856944, '18106C9_MATP_(3).lid': 32992, '18106C9_MATP_(4).lid': 33024}
+[I 191127 11:39:41 ddh_app:277] BLE: 00:1e:c0:4d:bf:c9 has 0 files
+[I 191127 11:39:41 ddh_app:277] BLE: disconnecting 00:1e:c0:4d:bf:c9
+[I 191127 11:39:41 ddh_app:277] BLE: all loggers done
+[I 191127 11:39:42 ddh_app:277] GPS: using NTP time
+[I 191127 11:39:42 ddh_app:402] SYS: we have internet
+[I 191127 11:39:43 ddh_app:277] GPS: no receiver found
+[I 191127 11:39:43 ddh_app:392] GPS: no position update
+[I 191127 11:39:48 ddh_app:277] BLE: 04:ee:03:6c:ef:e0 is fresh, wait 578.46 s
+[I 191127 11:39:48 ddh_app:277] BLE: 00:1e:c0:4d:bf:c9 is fresh, wait 592.96 s
+[I 191127 11:39:48 ddh_app:277] BLE: 0 loggers to query
+[D 191127 11:40:53 ddh_app:77] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191127 11:40:53 ddh_app:78] SYS: recall re-RUN post download, search '###'
+[D 191127 11:40:54 ddh_app:166] SYS: this is NOT a raspberry system
+[I 191127 11:40:54 ddh_app:277] GPS: no receiver found
+[I 191127 11:40:54 ddh_app:392] GPS: no position update
+[I 191127 11:40:54 ddh_app:277] GPS: using NTP time
+[I 191127 11:40:54 ddh_app:402] SYS: we have internet
+[I 191127 11:40:59 ddh_app:277] BLE: 2 loggers to query
+[I 191127 11:40:59 ddh_app:277] BLE: connecting 04:ee:03:6c:ef:e0
+[I 191127 11:41:02 ddh_app:277] BLE: get status = [b'STS', b'0201']
+[I 191127 11:41:03 ddh_app:277] BLE: stop deploy = [b'STP', b'00']
+[I 191127 11:41:04 ddh_app:277] BLE: logger time valid
+[I 191127 11:41:07 ddh_app:277] BLE: attempt RN4020 setup = [b'INV']
+[I 191127 11:41:08 ddh_app:277] BLE: logger DIR = {'1234567_big.lid': 49002}
+[I 191127 11:41:08 ddh_app:277] BLE: 04:ee:03:6c:ef:e0 has 0 files
+[I 191127 11:41:08 ddh_app:277] BLE: disconnecting 04:ee:03:6c:ef:e0
+[I 191127 11:41:08 ddh_app:277] BLE: connecting 00:1e:c0:4d:bf:c9
+[I 191127 11:41:13 ddh_app:277] BLE: get status = [b'STS', b'0201']
+[I 191127 11:41:14 ddh_app:277] BLE: stop deploy = [b'STP', b'0200']
+[I 191127 11:41:16 ddh_app:277] BLE: logger time valid
+[I 191127 11:41:20 ddh_app:277] BLE: attempt RN4020 setup = [b'CMD', b'AOK', b'MLDP']
+[I 191127 11:41:23 ddh_app:277] GPS: using NTP time
+[I 191127 11:41:23 ddh_app:402] SYS: we have internet
+[I 191127 11:41:23 ddh_app:277] GPS: no receiver found
+[I 191127 11:41:23 ddh_app:392] GPS: no position update
+[I 191127 11:41:25 ddh_app:277] BLE: logger DIR = {'18106C9_MATP_(0).lid': 297177, '18106C9_MATP_(1).lid': 218847, '18106C9_MATP_(2).lid': 856944, '18106C9_MATP_(3).lid': 32992, '18106C9_MATP_(4).lid': 33024}
+[I 191127 11:41:25 ddh_app:277] BLE: 00:1e:c0:4d:bf:c9 has 0 files
+[I 191127 11:41:25 ddh_app:277] BLE: disconnecting 00:1e:c0:4d:bf:c9
+[I 191127 11:41:25 ddh_app:277] BLE: all loggers done
+[I 191127 11:41:33 ddh_app:277] BLE: 04:ee:03:6c:ef:e0 is fresh, wait 575.32 s
+[I 191127 11:41:33 ddh_app:277] BLE: 00:1e:c0:4d:bf:c9 is fresh, wait 592.85 s
+[I 191127 11:41:33 ddh_app:277] BLE: 0 loggers to query
+[I 191127 11:41:40 ddh_app:277] BLE: 04:ee:03:6c:ef:e0 is fresh, wait 568.29 s
+[I 191127 11:41:40 ddh_app:277] BLE: 00:1e:c0:4d:bf:c9 is fresh, wait 585.81 s
+[I 191127 11:41:40 ddh_app:277] BLE: 0 loggers to query
+[D 191127 11:41:43 ddh_app:171] SYS: closing GUI APP...
