@@ -12,7 +12,6 @@ from PyQt5.QtCore import (
 from PyQt5.QtGui import (
     QIcon,
     QPixmap,
-    QCloseEvent
 )
 from PyQt5.QtWidgets import (
     QMainWindow,
@@ -305,7 +304,10 @@ class DDHQtApp(QMainWindow):
 
     @pyqtSlot(object, name='slot_ble_scan_result')
     def slot_ble_scan_result(self, result):
-        self.ui.lbl_dbg.setText('{} loggers\nfound'.format(len(result)))
+        t = self.ui.lbl_ble.text()
+        if t.startswith('Connected'):
+            t = 'Connected\n{} loggers found'.format(len(result))
+            self.ui.lbl_ble.setText(t)
 
     # a download session consists of 1 to n loggers
     @pyqtSlot(str, int, int, name='slot_ble_dl_session')
