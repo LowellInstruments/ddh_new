@@ -123,8 +123,6 @@ class DDHQtApp(QMainWindow):
         self.plt_ts_idx = 0
         self.plt_ts = self.plt_time_spans[0]
         self.plt_metrics = json_get_metrics()
-        self.plt_metrics_idx = 0
-        self.plt_metric = self.plt_metrics[0]
         self.plt_is_busy = False
 
         # threads
@@ -209,9 +207,9 @@ class DDHQtApp(QMainWindow):
         self.th_gps.signals.internet_result.connect(self.slot_internet_result)
         self.th_gps.signals.gps_update.connect(self.slot_gps_update)
 
-    def _ddh_thread_throw_plt(self, folder_to_plot):
+    def _ddh_thread_throw_plt(self):
         fxn = DeckDataHubPLT.plt_plot
-        a = [folder_to_plot, self.plot_canvas, self.plt_ts, self.plt_metric]
+        a = [self.plt_dir, self.plot_canvas, self.plt_ts, self.plt_metrics]
         self.th_plt = DDHThread(fxn, SignalsPLT, *a)
         self.th_plt.signals.status.connect(self.slot_status)
         self.th_plt.signals.debug.connect(self.slot_debug)
@@ -246,9 +244,6 @@ class DDHQtApp(QMainWindow):
             self.plt_dir = self.plt_folders[self.plt_folders_idx]
         elif e.key() == Qt.Key_2:
             console_log.debug('GUI: keypress 2.')
-            self.plt_metrics_idx += 1
-            self.plt_metrics_idx %= len(self.plt_metrics)
-            self.plt_metric = self.plt_metrics[self.plt_metrics_idx]
         elif e.key() == Qt.Key_3:
             self.plt_ts_idx += 1
             self.plt_ts_idx %= len(self.plt_time_spans)
@@ -272,7 +267,7 @@ class DDHQtApp(QMainWindow):
 
         if not self.plt_is_busy:
             self.plt_is_busy = True
-            self._ddh_thread_throw_plt(self.plt_dir)
+            self._ddh_thread_throw_plt()
         else:
             console_log.debug('GUI: busy to plot')
 
@@ -306,7 +301,6 @@ class DDHQtApp(QMainWindow):
     def slot_ble_scan_start(self):
         self.ui.bar_dl.setValue(0)
         self.ui.lbl_ble.setText('Scanning ...')
-
 
     @pyqtSlot(object, name='slot_ble_scan_result')
     def slot_ble_scan_result(self, result):

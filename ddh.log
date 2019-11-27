@@ -11091,3 +11091,280 @@
 [D 191126 18:28:15 ddh_app:444] SYS: elapsed time 587 ms.
 [I 191126 18:28:18 ddh_app:281] BLE: 0 loggers to query
 [D 191126 18:28:20 ddh_app:176] SYS: closing GUI APP...
+[D 191127 06:25:35 ddh_app:77] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191127 06:25:35 ddh_app:78] SYS: recall re-RUN post download, search '###'
+[D 191127 06:25:35 ddh_app:169] SYS: this is NOT a raspberry system
+[I 191127 06:25:35 ddh_app:276] GPS: no receiver found
+[I 191127 06:25:35 ddh_app:391] GPS: no position update
+[I 191127 06:25:35 ddh_app:276] GPS: using NTP time
+[I 191127 06:25:36 ddh_app:401] SYS: we have internet
+[D 191127 06:25:37 ddh_app:241] GUI: keypress 1.
+[D 191127 06:25:58 ddh_app:77] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191127 06:25:58 ddh_app:78] SYS: recall re-RUN post download, search '###'
+[D 191127 06:25:58 ddh_app:169] SYS: this is NOT a raspberry system
+[I 191127 06:25:58 ddh_app:276] GPS: no receiver found
+[I 191127 06:25:58 ddh_app:391] GPS: no position update
+[I 191127 06:25:58 ddh_app:276] GPS: using NTP time
+[I 191127 06:25:58 ddh_app:401] SYS: we have internet
+[D 191127 06:25:59 ddh_app:241] GUI: keypress 1.
+[D 191127 06:34:01 ddh_app:77] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191127 06:34:01 ddh_app:78] SYS: recall re-RUN post download, search '###'
+[D 191127 06:34:01 ddh_app:169] SYS: this is NOT a raspberry system
+[I 191127 06:34:02 ddh_app:276] GPS: no receiver found
+[I 191127 06:34:02 ddh_app:391] GPS: no position update
+[I 191127 06:34:02 ddh_app:276] GPS: using NTP time
+[I 191127 06:34:02 ddh_app:401] SYS: we have internet
+[D 191127 06:34:02 ddh_app:241] GUI: keypress 1.
+[I 191127 06:34:02 ddh_app:276] PLT: h for dl_files/11-22-33-44-55-66
+[D 191127 06:34:02 ddh_app:438] SYS: elapsed time 1109 ms.
+[I 191127 06:34:07 ddh_app:276] BLE: 0 loggers to query
+[D 191127 06:34:07 ddh_app:251] GUI: keypress 3.
+[I 191127 06:34:07 ddh_app:276] PLT: d for dl_files/11-22-33-44-55-66
+[D 191127 06:34:08 ddh_app:438] SYS: elapsed time 486 ms.
+[D 191127 06:34:08 ddh_app:251] GUI: keypress 3.
+[I 191127 06:34:08 ddh_app:276] PLT: w for dl_files/11-22-33-44-55-66
+[D 191127 06:34:09 ddh_app:438] SYS: elapsed time 472 ms.
+[D 191127 06:34:09 ddh_app:251] GUI: keypress 3.
+[I 191127 06:34:09 ddh_app:276] PLT: m for dl_files/11-22-33-44-55-66
+[D 191127 06:34:10 ddh_app:438] SYS: elapsed time 1130 ms.
+[I 191127 06:34:14 ddh_app:276] BLE: 0 loggers to query
+[I 191127 06:34:21 ddh_app:276] BLE: 0 loggers to query
+[D 191127 06:34:25 ddh_app:251] GUI: keypress 3.
+[I 191127 06:34:25 ddh_app:276] PLT: y for dl_files/11-22-33-44-55-66
+[E 191127 06:34:25 ddh_app:289] PLT: E2
+[D 191127 06:34:25 ddh_app:438] SYS: elapsed time 168 ms.
+[D 191127 06:34:27 ddh_app:174] SYS: closing GUI APP...
+[D 191127 06:35:24 ddh_app:77] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191127 06:35:24 ddh_app:78] SYS: recall re-RUN post download, search '###'
+[D 191127 06:35:24 ddh_app:169] SYS: this is NOT a raspberry system
+[I 191127 06:35:24 ddh_app:276] GPS: no receiver found
+[I 191127 06:35:24 ddh_app:391] GPS: no position update
+[I 191127 06:35:24 ddh_app:276] GPS: using NTP time
+[I 191127 06:35:24 ddh_app:401] SYS: we have internet
+[D 191127 06:35:27 ddh_app:241] GUI: keypress 1.
+[I 191127 06:35:27 ddh_app:276] PLT: h for dl_files/11-22-33-44-55-66
+[D 191127 06:35:28 ddh_app:438] SYS: elapsed time 1328 ms.
+[D 191127 06:35:29 ddh_app:251] GUI: keypress 3.
+[I 191127 06:35:29 ddh_app:276] PLT: d for dl_files/11-22-33-44-55-66
+[D 191127 06:35:29 ddh_app:438] SYS: elapsed time 506 ms.
+[I 191127 06:35:29 ddh_app:276] BLE: 0 loggers to query
+[D 191127 06:35:29 ddh_app:251] GUI: keypress 3.
+[I 191127 06:35:29 ddh_app:276] PLT: w for dl_files/11-22-33-44-55-66
+[D 191127 06:35:30 ddh_app:438] SYS: elapsed time 412 ms.
+[D 191127 06:35:31 ddh_app:251] GUI: keypress 3.
+[I 191127 06:35:31 ddh_app:276] PLT: m for dl_files/11-22-33-44-55-66
+[D 191127 06:35:31 ddh_app:438] SYS: elapsed time 556 ms.
+[D 191127 06:35:35 ddh_app:251] GUI: keypress 3.
+[I 191127 06:35:35 ddh_app:276] PLT: y for dl_files/11-22-33-44-55-66
+[E 191127 06:35:35 ddh_app:289] PLT: E2
+[D 191127 06:35:35 ddh_app:438] SYS: elapsed time 161 ms.
+[I 191127 06:35:37 ddh_app:276] BLE: 0 loggers to query
+[D 191127 06:35:40 ddh_app:174] SYS: closing GUI APP...
+[D 191127 06:36:34 ddh_app:77] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191127 06:36:34 ddh_app:78] SYS: recall re-RUN post download, search '###'
+[D 191127 06:36:34 ddh_app:169] SYS: this is NOT a raspberry system
+[I 191127 06:36:35 ddh_app:276] GPS: no receiver found
+[I 191127 06:36:35 ddh_app:391] GPS: no position update
+[I 191127 06:36:35 ddh_app:276] GPS: using NTP time
+[I 191127 06:36:35 ddh_app:401] SYS: we have internet
+[D 191127 06:36:35 ddh_app:241] GUI: keypress 1.
+[I 191127 06:36:35 ddh_app:276] PLT: h for dl_files/11-22-33-44-55-66
+[D 191127 06:36:36 ddh_app:438] SYS: elapsed time 1241 ms.
+[D 191127 06:36:37 ddh_app:246] GUI: keypress 2.
+[I 191127 06:36:37 ddh_app:276] PLT: h for dl_files/11-22-33-44-55-66
+[I 191127 06:36:37 ddh_app:276] PLT: cache hit
+[I 191127 06:36:37 ddh_app:276] PLT: cache hit
+[D 191127 06:36:37 ddh_app:438] SYS: elapsed time 490 ms.
+[I 191127 06:36:40 ddh_app:276] BLE: 0 loggers to query
+[D 191127 06:36:40 ddh_app:251] GUI: keypress 3.
+[I 191127 06:36:40 ddh_app:276] PLT: d for dl_files/11-22-33-44-55-66
+[D 191127 06:36:40 ddh_app:438] SYS: elapsed time 673 ms.
+[D 191127 06:36:41 ddh_app:251] GUI: keypress 3.
+[I 191127 06:36:41 ddh_app:276] PLT: w for dl_files/11-22-33-44-55-66
+[D 191127 06:36:41 ddh_app:438] SYS: elapsed time 482 ms.
+[D 191127 06:36:42 ddh_app:251] GUI: keypress 3.
+[I 191127 06:36:42 ddh_app:276] PLT: m for dl_files/11-22-33-44-55-66
+[D 191127 06:36:42 ddh_app:438] SYS: elapsed time 468 ms.
+[D 191127 06:36:43 ddh_app:251] GUI: keypress 3.
+[I 191127 06:36:43 ddh_app:276] PLT: y for dl_files/11-22-33-44-55-66
+[E 191127 06:36:43 ddh_app:289] PLT: E2
+[D 191127 06:36:43 ddh_app:438] SYS: elapsed time 235 ms.
+[D 191127 06:36:46 ddh_app:174] SYS: closing GUI APP...
+[D 191127 06:37:16 ddh_app:77] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191127 06:37:16 ddh_app:78] SYS: recall re-RUN post download, search '###'
+[D 191127 06:37:16 ddh_app:169] SYS: this is NOT a raspberry system
+[I 191127 06:37:16 ddh_app:276] GPS: no receiver found
+[I 191127 06:37:16 ddh_app:391] GPS: no position update
+[I 191127 06:37:16 ddh_app:276] GPS: using NTP time
+[I 191127 06:37:16 ddh_app:401] SYS: we have internet
+[D 191127 06:37:17 ddh_app:241] GUI: keypress 1.
+[I 191127 06:37:17 ddh_app:276] PLT: h for dl_files/11-22-33-44-55-66
+[D 191127 06:37:18 ddh_app:438] SYS: elapsed time 1233 ms.
+[D 191127 06:37:20 ddh_app:251] GUI: keypress 3.
+[I 191127 06:37:20 ddh_app:276] PLT: d for dl_files/11-22-33-44-55-66
+[D 191127 06:37:20 ddh_app:438] SYS: elapsed time 546 ms.
+[D 191127 06:37:20 ddh_app:251] GUI: keypress 3.
+[I 191127 06:37:20 ddh_app:276] PLT: w for dl_files/11-22-33-44-55-66
+[D 191127 06:37:21 ddh_app:438] SYS: elapsed time 436 ms.
+[D 191127 06:37:21 ddh_app:251] GUI: keypress 3.
+[I 191127 06:37:21 ddh_app:276] PLT: m for dl_files/11-22-33-44-55-66
+[I 191127 06:37:21 ddh_app:276] BLE: 0 loggers to query
+[D 191127 06:37:21 ddh_app:438] SYS: elapsed time 694 ms.
+[D 191127 06:37:24 ddh_app:174] SYS: closing GUI APP...
+[D 191127 06:38:22 ddh_app:77] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191127 06:38:22 ddh_app:78] SYS: recall re-RUN post download, search '###'
+[D 191127 06:38:22 ddh_app:169] SYS: this is NOT a raspberry system
+[I 191127 06:38:22 ddh_app:276] GPS: no receiver found
+[I 191127 06:38:22 ddh_app:391] GPS: no position update
+[I 191127 06:38:22 ddh_app:276] GPS: using NTP time
+[I 191127 06:38:23 ddh_app:401] SYS: we have internet
+[D 191127 06:38:23 ddh_app:241] GUI: keypress 1.
+[I 191127 06:38:23 ddh_app:276] PLT: h for dl_files/11-22-33-44-55-66
+[E 191127 06:38:23 ddh_app:289] 
+[D 191127 06:39:22 ddh_app:77] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191127 06:39:22 ddh_app:78] SYS: recall re-RUN post download, search '###'
+[D 191127 06:39:22 ddh_app:169] SYS: this is NOT a raspberry system
+[I 191127 06:39:22 ddh_app:276] GPS: no receiver found
+[I 191127 06:39:23 ddh_app:391] GPS: no position update
+[I 191127 06:39:23 ddh_app:276] GPS: using NTP time
+[I 191127 06:39:23 ddh_app:401] SYS: we have internet
+[D 191127 06:39:23 ddh_app:241] GUI: keypress 1.
+[I 191127 06:39:23 ddh_app:276] PLT: h for dl_files/11-22-33-44-55-66
+[D 191127 06:39:23 ddh_app:438] SYS: elapsed time 1188 ms.
+[D 191127 06:39:27 ddh_app:246] GUI: keypress 2.
+[I 191127 06:39:27 ddh_app:276] PLT: h for dl_files/11-22-33-44-55-66
+[I 191127 06:39:27 ddh_app:276] PLT: cache hit
+[I 191127 06:39:27 ddh_app:276] PLT: cache hit
+[D 191127 06:39:27 ddh_app:438] SYS: elapsed time 474 ms.
+[I 191127 06:39:28 ddh_app:276] BLE: 0 loggers to query
+[D 191127 06:39:33 ddh_app:174] SYS: closing GUI APP...
+[D 191127 06:39:50 ddh_app:77] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191127 06:39:50 ddh_app:78] SYS: recall re-RUN post download, search '###'
+[D 191127 06:39:50 ddh_app:169] SYS: this is NOT a raspberry system
+[I 191127 06:39:50 ddh_app:276] GPS: no receiver found
+[I 191127 06:39:50 ddh_app:391] GPS: no position update
+[I 191127 06:39:50 ddh_app:276] GPS: using NTP time
+[I 191127 06:39:50 ddh_app:401] SYS: we have internet
+[D 191127 06:39:50 ddh_app:241] GUI: keypress 1.
+[I 191127 06:39:50 ddh_app:276] PLT: h for dl_files/11-22-33-44-55-66
+[D 191127 06:39:51 ddh_app:438] SYS: elapsed time 1292 ms.
+[D 191127 06:39:51 ddh_app:246] GUI: keypress 2.
+[I 191127 06:39:51 ddh_app:276] PLT: h for dl_files/11-22-33-44-55-66
+[I 191127 06:39:51 ddh_app:276] PLT: cache hit
+[I 191127 06:39:51 ddh_app:276] PLT: cache hit
+[D 191127 06:39:52 ddh_app:438] SYS: elapsed time 513 ms.
+[D 191127 06:39:53 ddh_app:251] GUI: keypress 3.
+[I 191127 06:39:53 ddh_app:276] PLT: d for dl_files/11-22-33-44-55-66
+[D 191127 06:39:53 ddh_app:438] SYS: elapsed time 622 ms.
+[D 191127 06:39:53 ddh_app:251] GUI: keypress 3.
+[I 191127 06:39:53 ddh_app:276] PLT: w for dl_files/11-22-33-44-55-66
+[D 191127 06:39:54 ddh_app:438] SYS: elapsed time 424 ms.
+[D 191127 06:39:54 ddh_app:251] GUI: keypress 3.
+[I 191127 06:39:54 ddh_app:276] PLT: m for dl_files/11-22-33-44-55-66
+[D 191127 06:39:54 ddh_app:438] SYS: elapsed time 605 ms.
+[I 191127 06:39:55 ddh_app:276] BLE: 0 loggers to query
+[D 191127 06:39:57 ddh_app:174] SYS: closing GUI APP...
+[D 191127 06:40:16 ddh_app:77] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191127 06:40:16 ddh_app:78] SYS: recall re-RUN post download, search '###'
+[D 191127 06:40:16 ddh_app:169] SYS: this is NOT a raspberry system
+[I 191127 06:40:16 ddh_app:276] GPS: no receiver found
+[I 191127 06:40:16 ddh_app:391] GPS: no position update
+[I 191127 06:40:16 ddh_app:276] GPS: using NTP time
+[I 191127 06:40:16 ddh_app:401] SYS: we have internet
+[D 191127 06:40:17 ddh_app:241] GUI: keypress 1.
+[I 191127 06:40:17 ddh_app:276] PLT: h for dl_files/11-22-33-44-55-66
+[D 191127 06:40:17 ddh_app:438] SYS: elapsed time 1373 ms.
+[D 191127 06:40:18 ddh_app:251] GUI: keypress 3.
+[I 191127 06:40:18 ddh_app:276] PLT: d for dl_files/11-22-33-44-55-66
+[D 191127 06:40:19 ddh_app:438] SYS: elapsed time 585 ms.
+[D 191127 06:40:19 ddh_app:251] GUI: keypress 3.
+[I 191127 06:40:19 ddh_app:276] PLT: w for dl_files/11-22-33-44-55-66
+[D 191127 06:40:20 ddh_app:438] SYS: elapsed time 433 ms.
+[D 191127 06:40:20 ddh_app:251] GUI: keypress 3.
+[I 191127 06:40:20 ddh_app:276] PLT: m for dl_files/11-22-33-44-55-66
+[D 191127 06:40:21 ddh_app:438] SYS: elapsed time 709 ms.
+[I 191127 06:40:21 ddh_app:276] BLE: 0 loggers to query
+[D 191127 06:40:25 ddh_app:174] SYS: closing GUI APP...
+[D 191127 06:40:34 ddh_app:77] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191127 06:40:34 ddh_app:78] SYS: recall re-RUN post download, search '###'
+[D 191127 06:40:34 ddh_app:169] SYS: this is NOT a raspberry system
+[I 191127 06:40:34 ddh_app:276] GPS: no receiver found
+[I 191127 06:40:34 ddh_app:391] GPS: no position update
+[I 191127 06:40:34 ddh_app:276] GPS: using NTP time
+[I 191127 06:40:34 ddh_app:401] SYS: we have internet
+[D 191127 06:40:35 ddh_app:251] GUI: keypress 3.
+[D 191127 06:40:35 ddh_app:265] GUI: no folder to plot
+[D 191127 06:40:36 ddh_app:246] GUI: keypress 2.
+[D 191127 06:40:36 ddh_app:265] GUI: no folder to plot
+[D 191127 06:40:37 ddh_app:241] GUI: keypress 1.
+[I 191127 06:40:37 ddh_app:276] PLT: d for dl_files/11-22-33-44-55-66
+[D 191127 06:40:37 ddh_app:438] SYS: elapsed time 1109 ms.
+[D 191127 06:40:38 ddh_app:251] GUI: keypress 3.
+[I 191127 06:40:38 ddh_app:276] PLT: w for dl_files/11-22-33-44-55-66
+[D 191127 06:40:38 ddh_app:438] SYS: elapsed time 486 ms.
+[D 191127 06:40:39 ddh_app:251] GUI: keypress 3.
+[I 191127 06:40:39 ddh_app:276] PLT: m for dl_files/11-22-33-44-55-66
+[D 191127 06:40:39 ddh_app:438] SYS: elapsed time 594 ms.
+[I 191127 06:40:39 ddh_app:276] BLE: 0 loggers to query
+[D 191127 06:40:40 ddh_app:251] GUI: keypress 3.
+[I 191127 06:40:40 ddh_app:276] PLT: y for dl_files/11-22-33-44-55-66
+[E 191127 06:40:40 ddh_app:289] PLT: E2
+[D 191127 06:40:40 ddh_app:438] SYS: elapsed time 247 ms.
+[D 191127 06:40:44 ddh_app:174] SYS: closing GUI APP...
+[D 191127 06:41:57 ddh_app:77] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191127 06:41:57 ddh_app:78] SYS: recall re-RUN post download, search '###'
+[D 191127 06:41:57 ddh_app:169] SYS: this is NOT a raspberry system
+[I 191127 06:41:57 ddh_app:276] GPS: no receiver found
+[I 191127 06:41:57 ddh_app:391] GPS: no position update
+[I 191127 06:41:57 ddh_app:276] GPS: using NTP time
+[I 191127 06:41:57 ddh_app:401] SYS: we have internet
+[I 191127 06:42:02 ddh_app:276] BLE: 0 loggers to query
+[D 191127 06:42:04 ddh_app:241] GUI: keypress 1.
+[I 191127 06:42:04 ddh_app:276] PLT: h for dl_files/11-22-33-44-55-66
+[D 191127 06:42:04 ddh_app:438] SYS: elapsed time 1285 ms.
+[D 191127 06:42:08 ddh_app:251] GUI: keypress 3.
+[I 191127 06:42:08 ddh_app:276] PLT: d for dl_files/11-22-33-44-55-66
+[D 191127 06:42:08 ddh_app:438] SYS: elapsed time 1022 ms.
+[D 191127 06:42:09 ddh_app:251] GUI: keypress 3.
+[I 191127 06:42:09 ddh_app:276] PLT: w for dl_files/11-22-33-44-55-66
+[D 191127 06:42:09 ddh_app:438] SYS: elapsed time 453 ms.
+[I 191127 06:42:10 ddh_app:276] BLE: 0 loggers to query
+[I 191127 06:42:17 ddh_app:276] BLE: 0 loggers to query
+[D 191127 06:42:19 ddh_app:251] GUI: keypress 3.
+[I 191127 06:42:19 ddh_app:276] PLT: m for dl_files/11-22-33-44-55-66
+[D 191127 06:42:19 ddh_app:438] SYS: elapsed time 1038 ms.
+[I 191127 06:42:24 ddh_app:276] BLE: 0 loggers to query
+[I 191127 06:42:26 ddh_app:276] GPS: using NTP time
+[I 191127 06:42:26 ddh_app:401] SYS: we have internet
+[I 191127 06:42:26 ddh_app:276] GPS: no receiver found
+[I 191127 06:42:26 ddh_app:391] GPS: no position update
+[I 191127 06:42:31 ddh_app:276] BLE: 0 loggers to query
+[D 191127 06:42:35 ddh_app:174] SYS: closing GUI APP...
+[D 191127 06:42:40 ddh_app:77] SYS: recall 'rm_previous' pre_dl, search '***'
+[D 191127 06:42:40 ddh_app:78] SYS: recall re-RUN post download, search '###'
+[D 191127 06:42:40 ddh_app:169] SYS: this is NOT a raspberry system
+[I 191127 06:42:40 ddh_app:276] GPS: no receiver found
+[I 191127 06:42:40 ddh_app:391] GPS: no position update
+[I 191127 06:42:40 ddh_app:276] GPS: using NTP time
+[I 191127 06:42:40 ddh_app:401] SYS: we have internet
+[D 191127 06:42:41 ddh_app:251] GUI: keypress 3.
+[D 191127 06:42:41 ddh_app:265] GUI: no folder to plot
+[D 191127 06:42:42 ddh_app:241] GUI: keypress 1.
+[I 191127 06:42:42 ddh_app:276] PLT: d for dl_files/11-22-33-44-55-66
+[D 191127 06:42:42 ddh_app:438] SYS: elapsed time 1346 ms.
+[I 191127 06:42:46 ddh_app:276] BLE: 0 loggers to query
+[D 191127 06:42:51 ddh_app:251] GUI: keypress 3.
+[I 191127 06:42:51 ddh_app:276] PLT: w for dl_files/11-22-33-44-55-66
+[D 191127 06:42:51 ddh_app:438] SYS: elapsed time 834 ms.
+[I 191127 06:42:53 ddh_app:276] BLE: 0 loggers to query
+[D 191127 06:42:55 ddh_app:251] GUI: keypress 3.
+[I 191127 06:42:55 ddh_app:276] PLT: m for dl_files/11-22-33-44-55-66
+[D 191127 06:42:56 ddh_app:438] SYS: elapsed time 1118 ms.
+[I 191127 06:43:00 ddh_app:276] BLE: 0 loggers to query
+[I 191127 06:43:07 ddh_app:276] BLE: 0 loggers to query
+[I 191127 06:43:09 ddh_app:276] GPS: using NTP time
+[I 191127 06:43:09 ddh_app:401] SYS: we have internet
+[I 191127 06:43:09 ddh_app:276] GPS: no receiver found
+[I 191127 06:43:09 ddh_app:391] GPS: no position update
+[I 191127 06:43:14 ddh_app:276] BLE: 0 loggers to query
+[D 191127 06:43:17 ddh_app:174] SYS: closing GUI APP...

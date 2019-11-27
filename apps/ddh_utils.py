@@ -252,7 +252,9 @@ def plot_format_time_labels(t, span):
 
 
 def plot_format_time_ticks(t, span):
-    return t[::(span_dict[span][4])]
+    rv = t[::(span_dict[span][4])]
+    print(rv)
+    return rv
 
 
 def plot_format_title(t, span):
