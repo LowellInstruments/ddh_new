@@ -227,7 +227,7 @@ class Ui_tabs(object):
         sizePolicy.setHeightForWidth(self.img_output.sizePolicy().hasHeightForWidth())
         self.img_output.setSizePolicy(sizePolicy)
         self.img_output.setText("")
-        self.img_output.setPixmap(QtGui.QPixmap("res/img_wait_green.png"))
+        self.img_output.setPixmap(QtGui.QPixmap("res/img_wait_black.png"))
         self.img_output.setScaledContents(True)
         self.img_output.setObjectName("img_output")
         self.gridLayout_8.addWidget(self.img_output, 0, 0, 1, 1)
@@ -465,7 +465,7 @@ class Ui_tabs(object):
         tabs.addTab(self.tab_log, icon2, "")
 
         self.retranslateUi(tabs)
-        tabs.setCurrentIndex(0)
+        tabs.setCurrentIndex(2)
         QtCore.QMetaObject.connectSlotsByName(tabs)
 
     def retranslateUi(self, tabs):

@@ -36,7 +36,7 @@ class DeckDataHubPLT:
         x, y = del_frames_before(df, ts, c)
         s, e = x.values[0], x.values[-1]
 
-        # database check...
+        # DB cache check...
         db = LIAvgDB()
         if db.does_record_exist(mac, s, e, ts, c):
             # ... success! we already had this data in cache
@@ -46,7 +46,7 @@ class DeckDataHubPLT:
             y_avg = db.get_record_values(r_id)
             return t, y_avg
 
-        # nope, let's process and cache this data for the future
+        # ... not in DB, process from scratch and cache it to DB
         t, y_avg = slice_n_average(x, y, ts)
         db.add_record(mac, s, e, ts, c, t, y_avg)
         return t, y_avg
@@ -57,58 +57,66 @@ class DeckDataHubPLT:
         f = folder.split('/')[-1]
         c0 = metric_to_column_name(metric[0])
         c1 = metric_to_column_name(metric[1])
-        lbl = json_mac_dns(mac_from_folder(folder))
+        lg = json_mac_dns(mac_from_folder(folder))
         clr0 = plot_line_color(c0)
         clr1 = plot_line_color(c1)
         signals.clk_start.emit()
         signals.status.emit('PLT: {} for {}'.format(ts, folder))
 
-        # query database for the data, or process it from scratch
+        # query database for 1st data, important one
         try:
             t, y0 = DeckDataHubPLT.plt_cache_query(signals, folder, ts, metric[0])
-            _, y1 = DeckDataHubPLT.plt_cache_query(signals, folder, ts, metric[1])
         except (AttributeError, Exception):
-            # e = 'No {}({}) for\n{}'.format(metric, ts, f)
-            # signals.error_gui.emit(e)
-            # e = 'PLT: no {}({}) for {}'.format(metric, ts, f)
-            e = 'PLT: E1'
+            e = 'No {}({}) for\n{}'.format(metric[0], ts, f)
+            signals.error_gui.emit(e)
+            e = 'PLT: no {}({}) for {}'.format(metric[0], ts, f)
             signals.error.emit(e)
             signals.plt_result.emit(False)
             signals.clk_end.emit()
             return
+
+        # query DB for 2nd data, not critical
+        try:
+            _, y1 = DeckDataHubPLT.plt_cache_query(signals, folder, ts, metric[1])
+        except (AttributeError, Exception):
+            e = 'PLT: no {}({}) for {}'.format(metric[1], ts, f)
+            y1 = None
+            signals.error.emit(e)
 
         # need at least two points to plot a line
         if np.count_nonzero(~np.isnan(y0)) < 2:
-            # e = 'Few plot {}({}) points for {}'.format(metric, ts, f)
-            # signals.error_gui.emit(e)
-            # e = 'PLT: few {}({}) points for {}'.format(metric, ts, f)
-            e = 'PLT: E2'
+            e = 'Few plot {}({}) points for {}'.format(metric, ts, f)
+            signals.error_gui.emit(e)
+            e = 'PLT: few {}({}) points for {}'.format(metric, ts, f)
             signals.error.emit(e)
             signals.plt_result.emit(False)
             signals.clk_end.emit()
             return
 
-        # brand new base plot or additional metric line to base plot
+        # prepare for plotting 1st data
         cnv.figure.clf()
         cnv.figure.tight_layout()
+        tit =  plot_format_title(t, ts)
         ax = cnv.figure.add_subplot(111)
         ax.set_ylabel(c0, fontsize='large', fontweight='bold', color=clr0)
         ax.tick_params(axis='y', labelcolor=clr0)
-        ax.plot(t, y0, label=lbl, color=clr0)
+        ax.plot(t, y0, label=c0, color=clr0)
         ax.set_xlabel('time', fontsize='large', fontweight='bold')
-        ax.set_title('Logger ' + lbl + ', ' + plot_format_title(t, ts), fontsize='x-large')
-
-        # build second, additional metric to existing base
-        ax2 = ax.twinx()
-        ax2.set_ylabel(c1, fontsize='large', fontweight='bold', color=clr1)
-        ax2.tick_params(axis='y', labelcolor=clr1)
-        ax2.plot(t, y1, '--', label=lbl, color=clr1)
-
-        # format it properly
+        ax.set_title('Logger ' + lg + ', ' + tit , fontsize='x-large')
         lbs = plot_format_time_ticks(t, ts)
-        ax.set_xticks(lbs)
-        ax2.set_xticks(lbs)
+
+        # prepare for plotting 2nd data, if any
+        if y1:
+            ax2 = ax.twinx()
+            ax2.set_ylabel(c1, fontsize='large', fontweight='bold', color=clr1)
+            ax2.tick_params(axis='y', labelcolor=clr1)
+            ax2.plot(t, y1, '.', label=c1, color=clr1)
+            ax2.set_xticks(lbs)
+
+        # common labels MUST be formatted here, at the end
+        cnv.figure.legend(bbox_to_anchor=[0.9, 0.5], loc='center right')
         ax.set_xticklabels(plot_format_time_labels(lbs, ts))
+        ax.set_xticks(lbs)
         cnv.draw()
 
         # signal we finished plotting

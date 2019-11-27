@@ -252,9 +252,7 @@ def plot_format_time_labels(t, span):
 
 
 def plot_format_time_ticks(t, span):
-    rv = t[::(span_dict[span][4])]
-    print(rv)
-    return rv
+    return t[::(span_dict[span][4])]
 
 
 def plot_format_title(t, span):
@@ -273,8 +271,8 @@ def plot_line_color(column_name):
     color_dict = {
         'Temperature (C)':  'tab:red',
         'Pressure (psi)':   'tab:blue',
-        'Dissolved Oxygen (mg/l)': 'tab:black',
-        'Dissolved Oxygen (%)': 'tab:black',
+        'Dissolved Oxygen (mg/l)': 'black',
+        'Dissolved Oxygen (%)': 'black',
         'DO Temperature (C)': 'tab:red',
     }
     return color_dict[column_name]

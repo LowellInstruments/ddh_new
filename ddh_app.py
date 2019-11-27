@@ -96,7 +96,7 @@ class DDHQtApp(QMainWindow):
         self.ui.img_boat.setPixmap(QPixmap('gui/res/img_boatname_color.png'))
         self.ui.img_ble.setPixmap(QPixmap('gui/res/img_blue_color.png'))
         self.ui.img_latnlon.setPixmap(QPixmap('gui/res/img_latnlon_color.png'))
-        self.ui.img_output.setPixmap(QPixmap('gui/res/img_wait_green.png'))
+        self.ui.img_output.setPixmap(QPixmap('gui/res/img_wait_black.png'))
         self.tabs.setTabIcon(0, QIcon('gui/res/icon_info.png'))
         self.tabs.setTabIcon(1, QIcon('gui/res/icon_graph.ico'))
         self.tabs.setTabIcon(2, QIcon('gui/res/icon_history.ico'))
@@ -258,6 +258,10 @@ class DDHQtApp(QMainWindow):
             console_log.debug('GUI: keypress 6.')
         else:
             console_log.debug('GUI: keypress unknown.')
+            return
+
+        # filter valid keys
+        if e.key() not in [Qt.Key_1, Qt.Key_3]:
             return
 
         # logic checks and do the thing
