@@ -9,8 +9,8 @@
 	"name": "Maggie Sue"
     },
 	"metrics": [
-		"DOT",
-		"DOS"
+		"T",
+		"P"
 	],
 	"ftp_site": "ftp.lowellinstruments.com",
 	"ftp_username": "jeff@lowellinstruments.com",

@@ -83,7 +83,7 @@ class DeckDataHubPLT:
             y1 = None
             signals.error.emit(e)
 
-        # need at least two points to plot a line
+        # need at least two points to plot a 1st data line
         if np.count_nonzero(~np.isnan(y0)) < 2:
             e = 'Few plot {}({}) points for {}'.format(metric, ts, f)
             signals.error_gui.emit(e)
@@ -110,7 +110,7 @@ class DeckDataHubPLT:
             ax2 = ax.twinx()
             ax2.set_ylabel(c1, fontsize='large', fontweight='bold', color=clr1)
             ax2.tick_params(axis='y', labelcolor=clr1)
-            ax2.plot(t, y1, '.', label=c1, color=clr1)
+            ax2.plot(t, y1, '--', label=c1, color=clr1)
             ax2.set_xticks(lbs)
 
         # common labels MUST be formatted here, at the end

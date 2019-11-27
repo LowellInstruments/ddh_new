@@ -15,23 +15,14 @@ from mat.logger_controller_ble import (
 class DeckDataHubBLE:
 
     WANTED_FILE_TYPES = '.lid'
-    RECENTLY_DONE = {}
-    FORGET = 600
-    IGNORE = 30
+    B_LIST = {}
+    FORGET_S = 600
+    IGNORE_S = 30
     LOGGERS_TO_QUERY = []
 
     @staticmethod
-    def _ble_add_mac_to_recent_connections(mac):
-        DeckDataHubBLE.RECENTLY_DONE[mac] = time.time()
-
-    @staticmethod
-    def _ble_blacklist_some_time(mac, seconds):
-        time_blacklisted = time.time() - DeckDataHubBLE.FORGET + seconds
-        DeckDataHubBLE.RECENTLY_DONE[mac] = time_blacklisted
-
-    @staticmethod
-    def _ble_ignore_some_time(mac, seconds):
-        DeckDataHubBLE._ble_blacklist_some_time(mac, seconds)
+    def _ble_ignore_for(mac, seconds):
+        DeckDataHubBLE.B_LIST[mac] = time.time() + seconds
 
     @staticmethod
     def ble_loop(signals, ble_mac_filter):
@@ -51,19 +42,19 @@ class DeckDataHubBLE:
             return []
 
         # purge outdated connections, _ble_dl_files() refreshes this
-        for key, value in list(DeckDataHubBLE.RECENTLY_DONE.items()):
-            if time.time() - value > DeckDataHubBLE.FORGET:
-                DeckDataHubBLE.RECENTLY_DONE.pop(key)
+        for key, value in list(DeckDataHubBLE.B_LIST.items()):
+            if time.time() > value:
+                DeckDataHubBLE.B_LIST.pop(key)
             else:
-                remaining_time = DeckDataHubBLE.FORGET - (time.time() - value)
-                signals.status.emit('BLE: {} is recent, delay {:.2f} s.'.
-                                    format(key, remaining_time))
+                yet = value - time.time()
+                t = 'BLE: {} is fresh, wait {:.2f} s'
+                signals.status.emit(t.format(key, yet))
 
         # build list w/ detected known macs NOT too recent
         loggers = []
         for dev in list_all_ble:
-            if dev.addr in ble_mac_filter and\
-                    dev.addr not in DeckDataHubBLE.RECENTLY_DONE:
+            d = dev.addr
+            if d in ble_mac_filter and d not in DeckDataHubBLE.B_LIST:
                 r = int(dev.rssi)
                 if r > -90:
                     loggers.append(dev.addr)
@@ -93,11 +84,15 @@ class DeckDataHubBLE:
             except ble.BTLEException as be:
                 # first Linux BLE interaction may fail
                 signals.error.emit('BLE: exception {}'.format(be.message))
-                signals.lbl_debug.emit('BLE: download error, wait 30 s')
-                DeckDataHubBLE._ble_ignore_some_time(mac, 30)
+                t = 'Download error, retrying in {} s'.format(DeckDataHubBLE.IGNORE_S)
+                signals.error_gui.emit(t)
+                signals.lbl_debug.emit('BLE: ' + t)
+                DeckDataHubBLE._ble_ignore_for(mac, DeckDataHubBLE.IGNORE_S)
             else:
-                # ok, next
-                DeckDataHubBLE._ble_add_mac_to_recent_connections(mac)
+                # ok, next logger, choose if we re-run this one, label ###
+                # t = 'BLE: re-start = {}.'.format(lc_ble.command(RUN_CMD))
+                # signals.status.emit(t)
+                DeckDataHubBLE._ble_ignore_for(mac, DeckDataHubBLE.FORGET_S)
                 dl_logger_ok = True
             finally:
                 signals.status.emit('BLE: disconnecting {}'.format(mac))
@@ -110,25 +105,20 @@ class DeckDataHubBLE:
 
     # download one entire logger
     @staticmethod
-    def _ble_dl_files(lc_ble, signals, remove_previous=True):
+    def _ble_dl_files(lc_ble, signals, pre_rm=False):
         # pre-configure logger
-        DeckDataHubBLE._ble_pre_dl_files(lc_ble, signals)
+        DeckDataHubBLE._pre_dl_configuration(lc_ble, signals)
         mac = lc_ble.address
 
-        # remove files, useful for debug, label ***
-        if remove_previous:
-            remove_logger_folder(mac)
-            signals.warning.emit('SYS: rm {} local files'.format(mac))
-
         # list files
-        folder, files = DeckDataHubBLE._ble_list_files(lc_ble, signals)
+        folder, files = DeckDataHubBLE._pre_dl_ls(lc_ble, signals, pre_rm)
         num = 0
         name_n_size = {}
         total_size = 0
         for each_file in files.items():
             name = each_file[0]
             size = each_file[1]
-            if not do_we_have_this_file(name, size, folder):
+            if not _exists_file(name, size, folder):
                 name_n_size[name] = size
                 num += 1
                 total_size += size
@@ -146,32 +136,25 @@ class DeckDataHubBLE:
             signals.status.emit('BLE: get {}, {} B'.format(name, size))
             signals.ble_dl_file.emit(name, attempts, num, duration_logger)
 
-            # x-modem file download
+            # x-modem file download, exceptions propagated to _ble_dl_loggers()
             start_time = time.time()
-            for retries in range(3):
-                if lc_ble.get_file(name, folder, size):
-                    signals.status.emit('BLE: got {}'.format(name))
-                    break
-                else:
-                    signals.status.emit('BLE: cannot get {}'.format(name))
-                    if retries == 2:
-                        raise ble.BTLEException('exception while downloading')
-                time.sleep(10)
+            if lc_ble.get_file(name, folder, size):
+                signals.status.emit('BLE: got {}'.format(name))
+            else:
+                signals.status.emit('BLE: cannot get {}'.format(name))
 
             # check received file ok
-            if do_we_have_this_file(name, size, folder):
+            if _exists_file(name, size, folder):
                 counter += 1
                 percent_x_size = (size / total_size) * 100
                 speed = size / (time.time() - start_time)
                 signals.ble_dl_file_.emit(percent_x_size, speed)
 
-        # RUN again this logger or not, label ###
-        # t = 'BLE: re-start = {}.'.format(lc_ble.command(RUN_CMD))
-        # signals.status.emit(t)
+        # all files from this logger downloaded ok
         signals.ble_dl_logger_.emit(lc_ble.address, counter)
 
     @staticmethod
-    def _ble_pre_dl_files(lc_ble, signals):
+    def _pre_dl_configuration(lc_ble, signals):
         signals.ble_dl_logger.emit()
 
         status = lc_ble.command(STATUS_CMD)
@@ -202,20 +185,25 @@ class DeckDataHubBLE:
 
     # files: list_lid_files() one logger
     @staticmethod
-    def _ble_list_files(lc_ble, signals):
-        folder = create_logger_folder(lc_ble.u.peripheral.addr)
-        files = lc_ble.list_lid_files()
+    def _pre_dl_ls(lc_ble, signals, pre_rm):
+        # remove files, useful for debug, label ***
+        mac = lc_ble.u.peripheral.addr
+        if pre_rm:
+            _rm_folder(mac)
+            signals.warning.emit('SYS: rm {} local files'.format(mac))
+        folder = _create_folder(mac)
+        files = lc_ble.ls_lid()
         signals.status.emit('BLE: logger DIR = {}'.format(files))
         return folder, files
 
 
-def create_logger_folder(folder_name):
+def _create_folder(folder_name):
     folder_name = 'dl_files/' + folder_name.replace(':', '-').lower() + '/'
     os.makedirs(folder_name, exist_ok=True)
     return folder_name
 
 
-def do_we_have_this_file(file_name, size, folder_name):
+def _exists_file(file_name, size, folder_name):
     file_path = os.path.join(folder_name, file_name)
     if os.path.isfile(file_path):
         if os.path.getsize(file_path) == size:
@@ -223,8 +211,7 @@ def do_we_have_this_file(file_name, size, folder_name):
     return False
 
 
-def remove_logger_folder(mac):
+def _rm_folder(mac):
     import shutil
     folder_name = 'dl_files/' + mac.replace(':', '-').lower() + '/'
     shutil.rmtree(folder_name, ignore_errors=True)
-
