@@ -60,12 +60,12 @@ def list_files_by_extension_in_dir(dir_name, extension):
 
 # be sure we are up-to-date with downloaded logger folders
 def update_dl_folder_list():
-    dl_root_folder = 'dl_files'
-    if os.path.isdir(dl_root_folder):
-        output_list = [f.path for f in os.scandir(dl_root_folder) if f.is_dir()]
-        return output_list
+    d = 'dl_files'
+    if os.path.isdir(d):
+        l = [f.path for f in os.scandir(d) if f.is_dir()]
+        return l
     else:
-        os.makedirs(dl_root_folder, exist_ok=True)
+        os.makedirs(d, exist_ok=True)
 
 
 def detect_raspberry():

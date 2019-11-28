@@ -38,7 +38,7 @@ class DeckDataHubBLE:
             scanner = ble.Scanner()
             list_all_ble = scanner.scan(5.0)
         except ble.BTLEException:
-            signals.lbl_debug.emit('BLE: error scanning')
+            signals.error.emit('BLE: error scanning')
             return []
 
         # purge outdated connections, _ble_dl_files() refreshes this
@@ -47,7 +47,7 @@ class DeckDataHubBLE:
                 DeckDataHubBLE.B_LIST.pop(key)
             else:
                 yet = value - time.time()
-                t = 'BLE: {} is fresh, wait {:.2f} s'
+                t = 'BLE: {} omit for {:.2f} s'
                 signals.status.emit(t.format(key, yet))
 
         # build list w/ detected known macs NOT too recent
@@ -87,7 +87,7 @@ class DeckDataHubBLE:
                 signals.error.emit('BLE: exception {}'.format(be.message))
                 t = 'Download error, retrying in {} s'.format(DeckDataHubBLE.IGNORE_S)
                 signals.error_gui.emit(t)
-                signals.lbl_debug.emit('BLE: ' + t)
+                signals.error.emit('BLE: ' + t)
                 DeckDataHubBLE._ble_ignore_for(mac, DeckDataHubBLE.IGNORE_S)
             else:
                 # ok, next logger, choose if we re-run this one, label ###
@@ -116,9 +116,9 @@ class DeckDataHubBLE:
         num = 0
         name_n_size = {}
         total_size = 0
-        for each_file in files.items():
-            name = each_file[0]
-            size = each_file[1]
+        for each in files.items():
+            name = each[0]
+            size = each[1]
             if not _exists_file(name, size, folder):
                 name_n_size[name] = size
                 num += 1
@@ -142,7 +142,7 @@ class DeckDataHubBLE:
             if lc_ble.get_file(name, folder, size):
                 signals.status.emit('BLE: got {}'.format(name))
             else:
-                signals.status.emit('BLE: cannot get {}'.format(name))
+                signals.status.emit('BLE: can\'t get {}'.format(name))
 
             # check received file ok
             if _exists_file(name, size, folder):
@@ -159,12 +159,12 @@ class DeckDataHubBLE:
         signals.ble_dl_logger.emit()
 
         status = lc_ble.command(STATUS_CMD)
-        signals.status.emit('BLE: get status = {}'.format(status))
+        signals.status.emit('BLE: status = {}'.format(status))
         if not status:
             raise ble.BTLEException(status)
 
         answer = lc_ble.command(STOP_CMD)
-        signals.status.emit('BLE: stop deploy = {}'.format(answer))
+        signals.status.emit('BLE: stop = {}'.format(answer))
         if not answer:
             raise ble.BTLEException(status)
         logger_time = lc_ble.get_time()
@@ -175,12 +175,12 @@ class DeckDataHubBLE:
             lc_ble.sync_time()
             signals.status.emit('BLE: sync {}'.format(lc_ble.get_time()))
         else:
-            signals.status.emit('BLE: logger time valid')
+            signals.status.emit('BLE: time is valid')
 
         # RN4020 loggers: CMD_CONTROL parameters BLE, CC26x2 ones will ignore this
         control = 'BTC 00T,0006,0000,0064'
         answer = lc_ble.command(control)
-        signals.status.emit('BLE: attempt RN4020 setup = {}'.format(answer))
+        signals.status.emit('BLE: maybe RN4020 setup = {}'.format(answer))
         if not answer or b'ERR' in answer:
             raise ble.BTLEException(answer)
 
@@ -191,10 +191,10 @@ class DeckDataHubBLE:
         mac = lc_ble.u.peripheral.addr
         if pre_rm:
             _rm_folder(mac)
-            signals.warning.emit('SYS: rm {} local files'.format(mac))
+            signals.warning.emit('SYS: local rm {} files'.format(mac))
         folder = _create_folder(mac)
         files = lc_ble.ls_lid()
-        signals.status.emit('BLE: logger DIR = {}'.format(files))
+        signals.status.emit('BLE: ls = {}'.format(files))
         return folder, files
 
 

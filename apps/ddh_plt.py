@@ -1,5 +1,5 @@
 import numpy as np
-from .ddh_db import LIAvgDB
+from .ddh_db import DBAverage
 from .ddh_utils import (
     mac_from_folder,
     lid_files_to_csv,
@@ -37,7 +37,7 @@ class DeckDataHubPLT:
         s, e = x.values[0], x.values[-1]
 
         # DB cache check...
-        db = LIAvgDB()
+        db = DBAverage()
         if db.does_record_exist(mac, s, e, ts, c):
             # ... success! we already had this data in cache
             signals.status.emit('PLT: cache hit')
@@ -104,7 +104,7 @@ class DeckDataHubPLT:
         # prepare for plotting 1st data
         cnv.figure.clf()
         cnv.figure.tight_layout()
-        tit =  plot_format_title(t, ts)
+        tit = plot_format_title(t, ts)
         ax = cnv.figure.add_subplot(111)
         ax.set_ylabel(c0, fontsize='large', fontweight='bold', color=clr0)
         ax.tick_params(axis='y', labelcolor=clr0)

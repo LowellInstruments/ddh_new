@@ -39,6 +39,7 @@ from apps.ddh_utils import (
 import logzero
 from logzero import logger as console_log
 from tendo import singleton
+from apps.ddh_db import DBHistory
 from apps.ddh_signals import (
     SignalsBLE,
     SignalsGPS,
@@ -68,8 +69,8 @@ class DDHQtApp(QMainWindow):
         singleton.SingleInstance()
         assert sys.version_info >= (3, 5)
         assert json_check_config_file()
-        if os.path.exists('ddh_avg.db'):
-            os.remove('ddh_avg.db')
+        if os.path.exists('ddh.db'):
+            os.remove('ddh.db')
         logzero.logfile("ddh.log", maxBytes=int(1e6), backupCount=3, mode='a')
 
         # banners
@@ -120,7 +121,7 @@ class DDHQtApp(QMainWindow):
         self.plt_metrics = json_get_metrics()
         self.plt_is_busy = False
 
-        # threads
+        # threads, all but plot ones
         self.th_ble = None
         self.th_gps = None
         self.th_plt = None
@@ -130,7 +131,6 @@ class DDHQtApp(QMainWindow):
         self.thread_pool.start(self.th_gui)
         self.thread_pool.start(self.th_ble)
         self.thread_pool.start(self.th_gps)
-        # do not boot a thread plot
 
         # particular hardware stuff
         if detect_raspberry():
@@ -140,7 +140,7 @@ class DDHQtApp(QMainWindow):
             def button2_pressed_cb():
                 self.keyPressEvent(ButtonPressEvent(Qt.Key_2))
 
-            # upon release, check if it was a press or a hold
+            # upon release, check it was a press or a hold
             def button3_released_cb():
                 if DDHQtApp.btn_3_held:
                     self.keyPressEvent(ButtonPressEvent(Qt.Key_6))
@@ -156,7 +156,7 @@ class DDHQtApp(QMainWindow):
             self.button3 = Button(21, pull_up=True)
             self.button1.when_pressed = button1_pressed_cb
             self.button2.when_pressed = button2_pressed_cb
-            # a more featured button
+            # more featured button
             self.button3.when_held = button3_held_cb
             self.button3.when_released = button3_released_cb
 
@@ -166,8 +166,8 @@ class DDHQtApp(QMainWindow):
     def closeEvent(self, event):
         linux_set_time_to_use_ntp()
         event.accept()
-        console_log.debug('SYS: closing GUI APP...')
-        # dirty, but ok, we are done
+        console_log.debug('SYS: closing GUI ...')
+        # dirty but ok, we are done anyway
         sys.stderr.close()
         sys.exit(0)
 
@@ -217,10 +217,10 @@ class DDHQtApp(QMainWindow):
 
     def _window_center(self):
         if detect_raspberry():
-            # in raspberry, use full screen on production code
+            # on RPi, use full screen
             self.showFullScreen()
         else:
-            # make window as big as tabs widget
+            # on laptop, PC... make window as big as tabs widget
             self.setFixedSize(self.tabs.size())
 
         # get window + screen shape, match both, adjust upper left corner
@@ -256,13 +256,18 @@ class DDHQtApp(QMainWindow):
 
         # filter valid keys
         if e.key() not in [Qt.Key_1, Qt.Key_3]:
+            e = 'Unknown keypress'
+            self.ui.lbl_dbg.setText(e)
             return
 
-        # logic checks and do the thing
+        # logic checks and go plotting...
         if not self.plt_dir:
             console_log.debug('GUI: no folder to plot')
+            e = 'No folder to plot'
+            self.ui.lbl_dbg.setText(e)
             return
 
+        # ... if not busy plotting a previous one
         if not self.plt_is_busy:
             self.plt_is_busy = True
             self._ddh_thread_throw_plt()
@@ -310,7 +315,7 @@ class DDHQtApp(QMainWindow):
     # a download session consists of 1 to n loggers
     @pyqtSlot(str, int, int, name='slot_ble_dl_session')
     def slot_ble_dl_session(self, desc, val_1, val_2):
-        # desc: name, val_1: logger index, val_2: total num of loggers
+        # desc: mac, val_1: logger index, val_2: total num of loggers
         text = 'Connected'
         self.ui.lbl_ble.setText(text)
         text = 'Logger \n\'{}\''.format(json_mac_dns(desc))
@@ -327,7 +332,7 @@ class DDHQtApp(QMainWindow):
     @pyqtSlot(str, int, int, int, name='slot_ble_dl_file')
     def slot_ble_dl_file(self, desc, val_1, val_2, val_3):
         # val_1: file index, val_2: total files, desc: file name
-        text = 'Downloading'
+        text = 'Downloading\n file {} of {}'.format(val_1, val_2)
         self.ui.lbl_ble.setText(text)
         text = '{} minute(s) left'.format(val_3)
         self.ui.lbl_out.setText(text)
@@ -344,17 +349,24 @@ class DDHQtApp(QMainWindow):
     # function post dl_logger, note trailing '_'
     @pyqtSlot(str, int, name='slot_ble_dl_logger_')
     def slot_ble_dl_logger_(self, desc, val_1):
-        # desc: logger name, val_1: number of files sent
+        # desc: logger mac, val_1: number of files sent
         text = 'Completed'
         self.ui.lbl_ble.setText(text)
         text = 'Got {} file(s)'.format(val_1)
         self.ui.lbl_out.setText(text)
         self.ui.bar_dl.setValue(100)
-        # try to draw if something downloaded from last logger
+        # plot what downloaded from last logger
         if val_1:
-            self.plt_dir = 'dl_files/' + str(desc).replace(':', '-')
-            self._ddh_thread_throw_plt()
             self.plt_folders = update_dl_folder_list()
+            self.plt_dir = 'dl_files/' + str(desc).replace(':', '-')
+            print(self.plt_dir)
+            self._ddh_thread_throw_plt()
+
+        # update history tab
+        # db = DBHistory()
+        # print(desc)
+        # if db.does_record_exist(desc):
+        #     db.delete_record()
 
     # function post dl_session, note trailing '_'
     @pyqtSlot(str, name='slot_ble_dl_session_')
