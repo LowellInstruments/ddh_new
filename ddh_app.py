@@ -28,7 +28,7 @@ from matplotlib.figure import Figure
 from apps.ddh_gui import DeckDataHubGUI, ButtonPressEvent
 from apps.ddh_utils import (
     update_dl_folder_list,
-    detect_raspberry,
+    linux_detect_raspberry,
     json_check_config_file,
     json_get_ship_name,
     json_get_metrics,
@@ -46,7 +46,7 @@ from apps.ddh_signals import (
     SignalsPLT,
     SignalsGUI,
 )
-if detect_raspberry():
+if linux_detect_raspberry():
     from gpiozero import Button
 
 
@@ -134,7 +134,7 @@ class DDHQtApp(QMainWindow):
         self.thread_pool.start(self.th_gps)
 
         # particular hardware stuff
-        if detect_raspberry():
+        if linux_detect_raspberry():
             def button1_pressed_cb():
                 self.keyPressEvent(ButtonPressEvent(Qt.Key_1))
 
@@ -217,7 +217,7 @@ class DDHQtApp(QMainWindow):
         self.thread_pool.start(self.th_plt)
 
     def _window_center(self):
-        if detect_raspberry():
+        if linux_detect_raspberry():
             # on RPi, use full screen
             self.showFullScreen()
         else:

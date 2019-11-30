@@ -5002,3 +5002,20 @@
 [I 191130 07:03:32 ddh_app:280] PLT: ['DOS', 'DOT'](d) for dl_files/04-ee-03-6c-ef-e0
 [D 191130 07:03:32 ddh_app:457] SYS: elapsed time 429 ms.
 [D 191130 07:03:34 ddh_app:170] SYS: closing GUI ...
+[D 191130 07:07:57 ddh_app:78] SYS: recall re-RUN post download, search '###'
+[D 191130 07:07:57 ddh_app:165] SYS: this is NOT a raspberry system
+[I 191130 07:07:57 ddh_app:280] GPS: no receiver found
+[I 191130 07:07:57 ddh_app:410] GPS: no position update
+[I 191130 07:07:57 ddh_app:280] GPS: using NTP time
+[I 191130 07:07:57 ddh_app:420] SYS: we have internet access
+[D 191130 07:07:58 ddh_app:236] GUI: keypress 1.
+[I 191130 07:07:58 ddh_app:280] PLT: ['T', 'P'](h) for dl_files/04-ee-03-6c-ef-e0
+[E 191130 07:07:58 ddh_app:293] No T(h) data for 04-ee-03-6c-ef-e0
+[I 191130 07:07:58 ddh_app:280] PLT: ['DOS', 'DOT'](h) for dl_files/04-ee-03-6c-ef-e0
+[D 191130 07:07:58 ddh_app:457] SYS: elapsed time 1165 ms.
+[D 191130 07:07:58 ddh_app:246] GUI: keypress 3.
+[I 191130 07:07:58 ddh_app:280] PLT: ['T', 'P'](d) for dl_files/04-ee-03-6c-ef-e0
+[E 191130 07:07:58 ddh_app:293] No T(d) data for 04-ee-03-6c-ef-e0
+[I 191130 07:07:58 ddh_app:280] PLT: ['DOS', 'DOT'](d) for dl_files/04-ee-03-6c-ef-e0
+[D 191130 07:07:59 ddh_app:457] SYS: elapsed time 397 ms.
+[D 191130 07:08:01 ddh_app:170] SYS: closing GUI ...

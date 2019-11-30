@@ -33,6 +33,13 @@ def linux_set_time_from_gps(when):
     # subprocess.call(shlex.split('sudo hwclock -w'))
 
 
+def linux_detect_raspberry():
+    node_name = os.uname()[1]
+    if node_name.endswith('raspberrypi') or node_name.startswith('rpi'):
+        return True
+    return False
+
+
 def linux_set_time_to_use_ntp():
     subprocess.call(shlex.split('sudo timedatectl set-ntp true'))
 
@@ -49,7 +56,7 @@ def linux_have_internet_connection():
 
 
 # recursively collect all logger files w/ indicated extension
-def list_files_by_extension_in_dir(dir_name, extension):
+def linux_ls_by_ext(dir_name, extension):
     if not dir_name:
         return []
     if os.path.isdir(dir_name):
@@ -57,7 +64,7 @@ def list_files_by_extension_in_dir(dir_name, extension):
         return glob.glob(wildcard, recursive=True)
 
 
-# be sure we are up-to-date with downloaded logger folders
+# be sure we up-to-date w/ downloaded logger folders
 def update_dl_folder_list():
     d = 'dl_files'
     if os.path.isdir(d):
@@ -65,13 +72,6 @@ def update_dl_folder_list():
         return f_l
     else:
         os.makedirs(d, exist_ok=True)
-
-
-def detect_raspberry():
-    node_name = os.uname()[1]
-    if node_name.endswith('raspberrypi') or node_name.startswith('rpi'):
-        return True
-    return False
 
 
 def json_check_config_file():
@@ -113,6 +113,18 @@ def json_get_metrics():
         return ddh_cfg_string['metrics']
 
 
+def json_mac_dns(logger_mac):
+    import json
+    name = 'unnamed_logger'
+    try:
+        with open('ddh.json') as f:
+            ddh_cfg_string = json.load(f)
+            name = ddh_cfg_string['db_logger_macs'][logger_mac]
+    except (FileNotFoundError, TypeError, KeyError):
+        pass
+    return name
+
+
 def mac_from_folder(d):
     try:
         return d.split('/')[1].replace('-', ':')
@@ -125,7 +137,7 @@ def lid_to_csv(folder):
         return None
 
     parameters = default_parameters()
-    for f in list_files_by_extension_in_dir(folder, 'lid'):
+    for f in linux_ls_by_ext(folder, 'lid'):
         bn = f.split('.')[0]
         if not glob.glob(bn + '*.csv'):
             # converting takes about 1.5 seconds per file
@@ -154,18 +166,6 @@ def csv_to_df(folder, metric):
     except (IOError, Exception):
         # e.g. nothing to concatenate
         return None
-
-
-def json_mac_dns(logger_mac):
-    import json
-    name = 'unnamed_logger'
-    try:
-        with open('ddh.json') as f:
-            ddh_cfg_string = json.load(f)
-            name = ddh_cfg_string['db_logger_macs'][logger_mac]
-    except (FileNotFoundError, TypeError, KeyError):
-        pass
-    return name
 
 
 # t is a string
@@ -256,7 +256,7 @@ def plot_line_color(column_name):
     return color_dict[column_name]
 
 
-def metric_to_column_name(metric):
+def plot_metric_to_column_name(metric):
     metric_dict = {
         'T':    'Temperature (C)',
         'P':    'Pressure (psi)',

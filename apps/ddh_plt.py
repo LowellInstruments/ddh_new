@@ -10,7 +10,7 @@ from .ddh_utils import (
     plot_format_time_ticks,
     plot_format_title,
     json_mac_dns,
-    metric_to_column_name,
+    plot_metric_to_column_name,
     plot_line_color,
 )
 
@@ -27,7 +27,7 @@ class DeckDataHubPLT:
     @staticmethod
     def _db_cache_maybe(signals, folder, ts, metric):
         # collect metadata
-        c = metric_to_column_name(metric)
+        c = plot_metric_to_column_name(metric)
         mac = mac_from_folder(folder)
 
         # load + prune data within most recent 'ts'
@@ -72,8 +72,8 @@ class DeckDataHubPLT:
     def _plot(signals, folder, cnv, ts, metric_pair):
         # metadata and signals
         f = folder.split('/')[-1]
-        c0 = metric_to_column_name(metric_pair[0])
-        c1 = metric_to_column_name(metric_pair[1])
+        c0 = plot_metric_to_column_name(metric_pair[0])
+        c1 = plot_metric_to_column_name(metric_pair[1])
         lg = json_mac_dns(mac_from_folder(folder))
         clr0 = plot_line_color(c0)
         clr1 = plot_line_color(c1)
