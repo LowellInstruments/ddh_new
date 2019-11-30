@@ -77,7 +77,7 @@ class DeckDataHubPLT:
         lg = json_mac_dns(mac_from_folder(folder))
         clr0 = plot_line_color(c0)
         clr1 = plot_line_color(c1)
-        signals.status.emit('PLT: {}({}) for {}'.format(metric_pair, ts, folder))
+        signals.status.emit('PLT: {}({}) for {}'.format(metric_pair, ts, f))
 
         # query database for 1st data, important one
         try:

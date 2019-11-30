@@ -195,6 +195,7 @@ def rm_df_before(df, span, c):
 
 # t is time series, d data series
 def slice_n_avg(t, d, span):
+    # todo: we may not need index since already sorted, check
     n_slices = span_dict[span][0]
     step = span_dict[span][1]
     if t is None:
