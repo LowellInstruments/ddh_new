@@ -25,12 +25,12 @@ class DeckDataHubPLT:
     last_ax = None
 
     @staticmethod
-    def plt_cache_query(signals, folder, ts, metric):
+    def _db_cache_maybe(signals, folder, ts, metric):
         # collect metadata
         c = metric_to_column_name(metric)
         mac = mac_from_folder(folder)
 
-        # load and prune data within most recent 'ts'
+        # load + prune data within most recent 'ts'
         lid_files_to_csv(folder)
         df = csv_to_data_frames(folder, metric)
         x, y = del_frames_before(df, ts, c)
@@ -39,14 +39,14 @@ class DeckDataHubPLT:
         # DB cache check...
         db = DBAverage()
         if db.does_record_exist(mac, s, e, ts, c):
-            # ... success! we already had this data in cache
+            # ... success! get this data from cache
             signals.status.emit('PLT: cache hit')
             r_id = db.get_record_id(mac, s, e, ts, c)
             t = db.get_record_times(r_id)
             y_avg = db.get_record_values(r_id)
             return t, y_avg
 
-        # ... not in DB, process from scratch and cache it to DB
+        # ... not in DB, process from scratch and cache it
         t, y_avg = slice_n_average(x, y, ts)
         db.add_record(mac, s, e, ts, c, t, y_avg)
         return t, y_avg
@@ -81,7 +81,7 @@ class DeckDataHubPLT:
 
         # query database for 1st data, important one
         try:
-            t, y0 = DeckDataHubPLT.plt_cache_query(signals, folder, ts, metric_pair[0])
+            t, y0 = DeckDataHubPLT._db_cache_maybe(signals, folder, ts, metric_pair[0])
         except (AttributeError, Exception):
             e = 'No {}({}) data for {}'.format(metric_pair[0], ts, f)
             signals.error.emit(e)
@@ -89,7 +89,7 @@ class DeckDataHubPLT:
 
         # query DB for 2nd data, not critical
         try:
-            _, y1 = DeckDataHubPLT.plt_cache_query(signals, folder, ts, metric_pair[1])
+            _, y1 = DeckDataHubPLT._db_cache_maybe(signals, folder, ts, metric_pair[1])
         except (AttributeError, Exception):
             e = 'PLT: no {}({}) data for {}'.format(metric_pair[1], ts, f)
             y1 = None
@@ -106,7 +106,8 @@ class DeckDataHubPLT:
         cnv.figure.tight_layout()
         tit = plot_format_title(t, ts)
         ax = cnv.figure.add_subplot(111)
-        ax.set_ylabel(c0, fontsize='large', fontweight='bold', color=clr0)
+        sym = '{} '.format('\u2014')
+        ax.set_ylabel(sym + c0, fontsize='large', fontweight='bold', color=clr0)
         ax.tick_params(axis='y', labelcolor=clr0)
         ax.plot(t, y0, label=c0, color=clr0)
         ax.set_xlabel('time', fontsize='large', fontweight='bold')
@@ -115,14 +116,15 @@ class DeckDataHubPLT:
 
         # prepare for plotting 2nd data, if any
         if y1:
+            sym = '- -  '
             ax2 = ax.twinx()
-            ax2.set_ylabel(c1, fontsize='large', fontweight='bold', color=clr1)
+            ax2.set_ylabel(sym + c1, fontsize='large', fontweight='bold', color=clr1)
             ax2.tick_params(axis='y', labelcolor=clr1)
             ax2.plot(t, y1, '--', label=c1, color=clr1)
             ax2.set_xticks(lbs)
 
         # common labels MUST be formatted here, at the end
-        cnv.figure.legend(bbox_to_anchor=[0.9, 0.5], loc='center right')
+        # cnv.figure.legend(bbox_to_anchor=[0.9, 0.5], loc='center right')
         ax.set_xticklabels(plot_format_time_labels(lbs, ts))
         ax.set_xticks(lbs)
         cnv.draw()

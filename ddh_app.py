@@ -55,6 +55,7 @@ DDH_BLE_MAC_FILTER = json_get_mac_filter()
 DDH_ERR_DISPLAY_TIMEOUT = 5
 DDH_PLT_DISPLAY_TIMEOUT = 120
 DDH_GPS_PERIOD = 30
+g_num_lg = ''
 
 
 # main code
@@ -316,25 +317,27 @@ class DDHQtApp(QMainWindow):
     @pyqtSlot(str, int, int, name='slot_ble_dl_session')
     def slot_ble_dl_session(self, desc, val_1, val_2):
         # desc: mac, val_1: logger index, val_2: total num of loggers
-        text = 'Connected'
-        self.ui.lbl_ble.setText(text)
-        text = 'Logger \n\'{}\''.format(json_mac_dns(desc))
-        self.ui.lbl_out.setText(text)
+        t = 'Logger {} of {} '.format(val_1, val_2)
+        set_g_num_lg(t)
+        t = 'Connected\n{}'.format(get_g_num_lg())
+        self.ui.lbl_ble.setText(t)
+        t = '\'{}\''.format(json_mac_dns(desc))
+        self.ui.lbl_out.setText(t)
         self.ui.bar_dl.setValue(0)
 
     # indicates current logger of current download session
     @pyqtSlot(name='slot_ble_dl_logger')
     def slot_ble_dl_logger(self):
-        text = 'Configuring'
-        self.ui.lbl_ble.setText(text)
+        t = 'Configuring\n{}'.format(get_g_num_lg())
+        self.ui.lbl_ble.setText(t)
 
     # one logger can have 1 to n files
     @pyqtSlot(str, int, int, int, name='slot_ble_dl_file')
     def slot_ble_dl_file(self, desc, val_1, val_2, val_3):
         # val_1: file index, val_2: total files, desc: file name
-        text = 'Downloading\n file {} of {}'.format(val_1, val_2)
+        text = 'Downloading\nfile {} of {}'.format(val_1, val_2)
         self.ui.lbl_ble.setText(text)
-        text = '{} minute(s) left'.format(val_3)
+        text = '{} minute(s)\nleft'.format(val_3)
         self.ui.lbl_out.setText(text)
 
     # function post dl_file, note trailing '_'
@@ -357,6 +360,7 @@ class DDHQtApp(QMainWindow):
         self.ui.bar_dl.setValue(100)
         # plot what downloaded from last logger
         if val_1:
+            self.ui.lbl_out.setText('Plotting')
             self.plt_folders = update_dl_folder_list()
             self.plt_dir = 'dl_files/' + str(desc).replace(':', '-')
             print(self.plt_dir)
@@ -373,13 +377,15 @@ class DDHQtApp(QMainWindow):
     def slot_ble_dl_session_(self, desc):
         self.ui.lbl_out.setText(desc)
 
-    # display plot if we were successful
+    # display any successfully built plot
     @pyqtSlot(object, name='slot_plt_result')
     def slot_plt_result(self, result):
         if result:
+            self.ui.lbl_out.setText('Plot ok')
             self.tabs.setCurrentIndex(1)
             self.plt_timeout_display = DDH_PLT_DISPLAY_TIMEOUT
         else:
+            self.ui.lbl_out.setText('Plot not ok')
             self.tabs.setCurrentIndex(0)
         self.plt_is_busy = False
 
@@ -407,10 +413,10 @@ class DDHQtApp(QMainWindow):
     def slot_internet_result(self, we_have, internet_source):
         if we_have:
             self.ui.lbl_internet.setText('Internet\nconnected')
-            t = 'SYS: we have internet'
+            t = 'SYS: we have internet access'
         else:
             self.ui.lbl_internet.setText('Internet\ndisconnected')
-            t = 'SYS: NO internet connection detected'
+            t = 'SYS: NO internet connection'
         console_log.info(t)
 
     @pyqtSlot(str, name='slot_gui_tick')
@@ -466,4 +472,11 @@ def on_ctrl_c(signal_num, _):
     sys.exit(signal_num)
 
 
+def set_g_num_lg(t):
+    global g_num_lg
+    g_num_lg = t
 
+
+def get_g_num_lg():
+    global g_num_lg
+    return g_num_lg

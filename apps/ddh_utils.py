@@ -9,7 +9,6 @@ import glob
 import iso8601
 from logzero import logger as console_log
 from mat.data_converter import DataConverter, default_parameters
-import dask.dataframe as dd
 import pandas as pd
 import numpy as np
 
@@ -145,10 +144,16 @@ def _metric_to_csv_file_suffix(metric):
 
 
 def csv_to_data_frames(folder, metric):
-    suffix = _metric_to_csv_file_suffix(metric)
     try:
-        return dd.read_csv(os.path.join(folder, "*" + suffix + "*.csv"))
-    except (IOError, Exception):
+        # get all csv rows, concat them, ensure ordered
+        suffix = _metric_to_csv_file_suffix(metric)
+        mask = folder + '/*' + suffix + '.csv'
+        all_csv_rows = [pd.read_csv(f) for f in glob.glob(mask)]
+        p_df = pd.concat(all_csv_rows, ignore_index=True)
+        p_df = p_df.sort_values(by=['ISO 8601 Time'])
+        return p_df
+    except (IOError, Exception) as e:
+        print(e)
         return None
 
 
@@ -164,21 +169,6 @@ def json_mac_dns(logger_mac):
     return name
 
 
-# returns last row time value as str
-def df_last_time(df_in):
-    # p pandas data frame, t numpy array
-    p = df_in.tail(1)
-    t = p['ISO 8601 Time'].values
-    return str(t[0])
-
-
-# returns first row time value as str
-def df_first_time(df_in):
-    p = df_in.head(1)
-    t = p['ISO 8601 Time'].values
-    return str(t[0])
-
-
 # t is a string
 def offset_time_mm(t, mm):
     a = datetime.datetime.strptime(t, '%Y-%m-%dT%H:%M:%S.000')
@@ -187,31 +177,50 @@ def offset_time_mm(t, mm):
 
 
 # a and b are time strings
-def _slice_w_idx(df_in, a, b, column_name):
-    # compute() returns a panda series
-    t = df_in['ISO 8601 Time'].compute()
-    c = df_in[column_name].compute()
-    # create an index to the pandas series
-    i = pd.Index(t)
-    i_start = i.get_loc(a)
-    i_end = i.get_loc(b)
+# def _slice_w_idx(df_in, a, b, column_name):
+#     # compute() returns a panda series
+#     t = df_in['ISO 8601 Time'].compute()
+#     c = df_in[column_name].compute()
+#     # create an index to the pandas series
+#     i = pd.Index(t)
+#     i_start = i.get_loc(a)
+#     print(i_start)
+#     # i_end = i.get_loc(b)
+#     # print('4')
+#     # t = t[i_start:i_end]
+#     # c = c[i_start:i_end]
+#     w = t[t == object(a)]
+#     print(w)
+#     return t, c
+
+
+def _slice_w_idx(p_df, a, b, column_name):
+    t = p_df['ISO 8601 Time']
+    c = p_df[column_name]
+    print('1')
+    i_start = t[t == a].keys()[0]
+    i_end = t[t == b].keys()[0]
+    print(i_start)
+    print(i_end)
     t = t[i_start:i_end]
     c = c[i_start:i_end]
-    return t, c
+    return t,c
 
 
-def del_frames_before(df_in, span, column_name):
+def del_frames_before(p_df, span, column_name):
     try:
-        b = df_last_time(df_in)
+        # get ending time and starting time
+        b = p_df['ISO 8601 Time'].values[-1]
         a = offset_time_mm(b, -1 * span_dict[span][2])
 
         # safety check
-        s = df_first_time(df_in)
+        s = p_df['ISO 8601 Time'].values[0]
         if a < s:
             a = s
-
-        return _slice_w_idx(df_in, a, b, column_name)
-    except (KeyError, Exception):
+        return _slice_w_idx(p_df, a, b, column_name)
+    except (KeyError, Exception) as e:
+        print('PUTA')
+        print(e)
         return None, None
 
 
