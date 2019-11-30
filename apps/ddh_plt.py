@@ -2,10 +2,10 @@ import numpy as np
 from .ddh_db import DBAverage
 from .ddh_utils import (
     mac_from_folder,
-    lid_files_to_csv,
-    csv_to_data_frames,
-    del_frames_before,
-    slice_n_average,
+    lid_to_csv,
+    csv_to_df,
+    rm_df_before,
+    slice_n_avg,
     plot_format_time_labels,
     plot_format_time_ticks,
     plot_format_title,
@@ -31,9 +31,9 @@ class DeckDataHubPLT:
         mac = mac_from_folder(folder)
 
         # load + prune data within most recent 'ts'
-        lid_files_to_csv(folder)
-        df = csv_to_data_frames(folder, metric)
-        x, y = del_frames_before(df, ts, c)
+        lid_to_csv(folder)
+        df = csv_to_df(folder, metric)
+        x, y = rm_df_before(df, ts, c)
         s, e = x.values[0], x.values[-1]
 
         # DB cache check...
@@ -47,7 +47,7 @@ class DeckDataHubPLT:
             return t, y_avg
 
         # ... not in DB, process from scratch and cache it
-        t, y_avg = slice_n_average(x, y, ts)
+        t, y_avg = slice_n_avg(x, y, ts)
         db.add_record(mac, s, e, ts, c, t, y_avg)
         return t, y_avg
 

@@ -61,8 +61,8 @@ def list_files_by_extension_in_dir(dir_name, extension):
 def update_dl_folder_list():
     d = 'dl_files'
     if os.path.isdir(d):
-        l = [f.path for f in os.scandir(d) if f.is_dir()]
-        return l
+        f_l = [f.path for f in os.scandir(d) if f.is_dir()]
+        return f_l
     else:
         os.makedirs(d, exist_ok=True)
 
@@ -120,7 +120,7 @@ def mac_from_folder(d):
         return None
 
 
-def lid_files_to_csv(folder):
+def lid_to_csv(folder):
     if not os.path.exists(folder):
         return None
 
@@ -132,7 +132,7 @@ def lid_files_to_csv(folder):
             DataConverter(bn + '.lid', parameters).convert()
 
 
-def _metric_to_csv_file_suffix(metric):
+def _metric_to_csv_suffix(metric):
     metric_dict = {
         'DOS': '_DissolvedOxygen',
         'DOP': '_DissolvedOxygen',
@@ -143,17 +143,16 @@ def _metric_to_csv_file_suffix(metric):
     return metric_dict[metric]
 
 
-def csv_to_data_frames(folder, metric):
+def csv_to_df(folder, metric):
     try:
         # get all csv rows, concat them, ensure ordered
-        suffix = _metric_to_csv_file_suffix(metric)
+        suffix = _metric_to_csv_suffix(metric)
         mask = folder + '/*' + suffix + '.csv'
         all_csv_rows = [pd.read_csv(f) for f in glob.glob(mask)]
-        p_df = pd.concat(all_csv_rows, ignore_index=True)
-        p_df = p_df.sort_values(by=['ISO 8601 Time'])
-        return p_df
-    except (IOError, Exception) as e:
-        print(e)
+        df = pd.concat(all_csv_rows, ignore_index=True)
+        return df.sort_values(by=['ISO 8601 Time'])
+    except (IOError, Exception):
+        # e.g. nothing to concatenate
         return None
 
 
@@ -170,63 +169,32 @@ def json_mac_dns(logger_mac):
 
 
 # t is a string
-def offset_time_mm(t, mm):
+def off_mm(t, mm):
     a = datetime.datetime.strptime(t, '%Y-%m-%dT%H:%M:%S.000')
     a += datetime.timedelta(minutes=mm)
     return a.strftime('%Y-%m-%dT%H:%M:%S.000')
 
 
-# a and b are time strings
-# def _slice_w_idx(df_in, a, b, column_name):
-#     # compute() returns a panda series
-#     t = df_in['ISO 8601 Time'].compute()
-#     c = df_in[column_name].compute()
-#     # create an index to the pandas series
-#     i = pd.Index(t)
-#     i_start = i.get_loc(a)
-#     print(i_start)
-#     # i_end = i.get_loc(b)
-#     # print('4')
-#     # t = t[i_start:i_end]
-#     # c = c[i_start:i_end]
-#     w = t[t == object(a)]
-#     print(w)
-#     return t, c
-
-
-def _slice_w_idx(p_df, a, b, column_name):
-    t = p_df['ISO 8601 Time']
-    c = p_df[column_name]
-    print('1')
-    i_start = t[t == a].keys()[0]
-    i_end = t[t == b].keys()[0]
-    print(i_start)
-    print(i_end)
-    t = t[i_start:i_end]
-    c = c[i_start:i_end]
-    return t,c
-
-
-def del_frames_before(p_df, span, column_name):
+def rm_df_before(df, span, c):
     try:
-        # get ending time and starting time
-        b = p_df['ISO 8601 Time'].values[-1]
-        a = offset_time_mm(b, -1 * span_dict[span][2])
+        # get ending (e) time and adjusted (a) starting (s) time
+        e = df['ISO 8601 Time'].values[-1]
+        s = off_mm(e, -1 * span_dict[span][2])
+        a = df['ISO 8601 Time'].values[0]
+        if s < a:
+            s = a
 
-        # safety check
-        s = p_df['ISO 8601 Time'].values[0]
-        if a < s:
-            a = s
-        return _slice_w_idx(p_df, a, b, column_name)
-    except (KeyError, Exception) as e:
-        print('PUTA')
-        print(e)
+        # slice data frame and return two series
+        df = df[df['ISO 8601 Time'] >= s]
+        df = df[df['ISO 8601 Time'] <= e]
+        return df['ISO 8601 Time'], df[c]
+    except (KeyError, Exception):
+        # print(exc)
         return None, None
 
 
 # t is time series, d data series
-def slice_n_average(t, d, span):
-    # prepare time jumps forward
+def slice_n_avg(t, d, span):
     n_slices = span_dict[span][0]
     step = span_dict[span][1]
     if t is None:
@@ -236,27 +204,28 @@ def slice_n_average(t, d, span):
     # build averaged output lists
     x = []
     y = []
-    start = t.values[0]
-    end = offset_time_mm(start, step)
+    s = t.values[0]
+    e = off_mm(s, step)
     for _ in range(n_slices):
         try:
-            i_start = i.get_loc(start)
-            i_end = i.get_loc(end)
-            y.append(np.nanmean(d.values[i_start:i_end]))
+            i_s = i.get_loc(s)
+            i_e = i.get_loc(e)
+            y.append(np.nanmean(d.values[i_s:i_e]))
         except (KeyError, AttributeError):
             y.append(np.nan)
         finally:
-            x.append(str(start))
-            start = end
-            end = offset_time_mm(start, step)
+            x.append(str(s))
+            s = e
+            e = off_mm(s, step)
 
     return x, y
 
 
 def plot_format_time_labels(t, span):
     lb = []
-    for each_t in t:
-        lb.append(iso8601.parse_date(each_t).strftime(span_dict[span][3]))
+    for each in t:
+        fmt_t = iso8601.parse_date(each).strftime(span_dict[span][3])
+        lb.append(fmt_t)
     return lb
 
 
