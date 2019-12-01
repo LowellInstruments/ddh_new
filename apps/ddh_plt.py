@@ -61,43 +61,46 @@ class DeckDataHubPLT:
                 signals.plt_result.emit(True)
                 signals.clk_end.emit()
                 return
+            else:
+                a = (pair, ts, lg, f)
+                e = 'No {}({}) plots\nfor logger\n\'{}\'\n{}'.format(*a)
+                signals.error_gui.emit(e)
 
         # we could not plot any pair of metrics
-        e = 'No ({}) plots for logger\n\'{}\'\n{}'.format(ts, lg, f)
-        signals.error_gui.emit(e)
         signals.plt_result.emit(False)
         signals.clk_end.emit()
 
     @staticmethod
     def _plot(signals, folder, cnv, ts, metric_pair):
         # metadata and signals
+        m_p = metric_pair
         f = folder.split('/')[-1]
-        c0 = plot_metric_to_column_name(metric_pair[0])
-        c1 = plot_metric_to_column_name(metric_pair[1])
+        c0 = plot_metric_to_column_name(m_p[0])
+        c1 = plot_metric_to_column_name(m_p[1])
         lg = json_mac_dns(mac_from_folder(folder))
         clr0 = plot_line_color(c0)
         clr1 = plot_line_color(c1)
-        signals.status.emit('PLT: {}({}) for {}'.format(metric_pair, ts, f))
+        signals.status.emit('PLT: {}({}) for {}'.format(m_p, ts, f))
 
         # query database for 1st data, important one
         try:
-            t, y0 = DeckDataHubPLT._db_cache_maybe(signals, folder, ts, metric_pair[0])
+            t, y0 = DeckDataHubPLT._db_cache_maybe(signals, folder, ts, m_p[0])
         except (AttributeError, Exception):
-            e = 'No {}({}) data for {}'.format(metric_pair[0], ts, f)
+            e = 'No {}({}) data for {}'.format(m_p[0], ts, f)
             signals.error.emit(e)
             return False
 
         # query DB for 2nd data, not critical
         try:
-            _, y1 = DeckDataHubPLT._db_cache_maybe(signals, folder, ts, metric_pair[1])
+            _, y1 = DeckDataHubPLT._db_cache_maybe(signals, folder, ts, m_p[1])
         except (AttributeError, Exception):
-            e = 'PLT: no {}({}) data for {}'.format(metric_pair[1], ts, f)
+            e = 'PLT: no {}({}) data for {}'.format(m_p[1], ts, f)
             y1 = None
             signals.error.emit(e)
 
         # need at least two points to plot a 1st data line
         if np.count_nonzero(~np.isnan(y0)) < 2:
-            e = 'PLT: few {}({}) data for {}'.format(metric_pair, ts, f)
+            e = 'PLT: few {}({}) data for {}'.format(m_p, ts, f)
             signals.error.emit(e)
             return False
 

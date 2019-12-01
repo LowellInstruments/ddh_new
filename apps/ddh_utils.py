@@ -5,7 +5,7 @@ import shlex
 import socket
 import os
 import glob
-
+import bisect
 import iso8601
 from logzero import logger as console_log
 from mat.data_converter import DataConverter, default_parameters
@@ -195,30 +195,32 @@ def rm_df_before(df, span, c):
 
 # t is time series, d data series
 def slice_n_avg(t, d, span):
-    # todo: we may not need index since already sorted, check
     n_slices = span_dict[span][0]
-    step = span_dict[span][1]
+    step_mm = span_dict[span][1]
     if t is None:
         return None, None
-    i = pd.Index(t)
 
     # build averaged output lists
     x = []
     y = []
     s = t.values[0]
-    e = off_mm(s, step)
+    e = off_mm(s, step_mm)
+    i = list(t.values)
+
+    # t.values is np.array, t is np.series, t.values[x] is str
     for _ in range(n_slices):
         try:
-            i_s = i.get_loc(s)
-            i_e = i.get_loc(e)
-            y.append(np.nanmean(d.values[i_s:i_e]))
-        except (KeyError, AttributeError):
-            y.append(np.nan)
+            i_s = bisect.bisect_left(i, s)
+            i_e= bisect.bisect_left(i, e)
+            sl = d.values[i_s:i_e]
+            v = np.nanmean(sl)
+            y.append(v) if sl.any() else y.append(np.nan)
+        except (KeyError, Exception) as e:
+            print('** {}'.format(e))
         finally:
-            x.append(str(s))
+            x.append(s)
             s = e
-            e = off_mm(s, step)
-
+            e = off_mm(s, step_mm)
     return x, y
 
 
