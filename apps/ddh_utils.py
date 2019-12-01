@@ -211,9 +211,12 @@ def slice_n_avg(t, d, span):
     for _ in range(n_slices):
         try:
             i_s = bisect.bisect_left(i, s)
-            i_e= bisect.bisect_left(i, e)
+            i_e = bisect.bisect_left(i, e)
             sl = d.values[i_s:i_e]
             v = np.nanmean(sl)
+            print(v)
+            # line 5081 of file (1) DO.csv
+            BAD VALUES
             y.append(v) if sl.any() else y.append(np.nan)
         except (KeyError, Exception) as e:
             print('** {}'.format(e))
