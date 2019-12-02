@@ -394,8 +394,8 @@ class DDHQtApp(QMainWindow):
         self.ui.lbl_clock_sync.setText(clk_source + ' time')
         if clk_source == 'gps':
             t = 'GPS: received RMC frame.\n'
-            t += '\t-> {} US/Eastern time offset adjusted.\n'.format(gps_time)
-            t += '\t-> lat {} lon {}.'.format(gps_lat, gps_lon)
+            t += '\t-> {} US/Eastern time offset adjusted\n'.format(gps_time)
+            t += '\t-> lat {} lon {}'.format(gps_lat, gps_lon)
             console_log.info(t)
 
     @pyqtSlot(bool, str, str, name='slot_gps_update')
@@ -453,7 +453,7 @@ class DDHQtApp(QMainWindow):
     @pyqtSlot(name='slot_clk_end')
     def slot_clk_end(self):
         elapsed_time = int((time.clock() - self.clk_start_time) * 1000)
-        text = 'SYS: elapsed time {} ms.'.format(elapsed_time)
+        text = 'SYS: elapsed time {} ms'.format(elapsed_time)
         console_log.debug(text)
 
 
@@ -467,7 +467,7 @@ def run_app():
 
 
 def on_ctrl_c(signal_num, _):
-    console_log.debug('SYS: captured signal {}...'.format(signal_num))
+    console_log.debug('SYS: captured signal {}'.format(signal_num))
     linux_set_time_to_use_ntp()
     sys.exit(signal_num)
 
