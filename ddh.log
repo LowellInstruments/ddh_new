@@ -8429,3 +8429,101 @@
 [I 191202 12:54:38 ddh_app:410] GPS: no position update
 [I 191202 12:54:39 ddh_app:280] BLE: 0 loggers to query
 [I 191202 12:54:46 ddh_app:280] BLE: 0 loggers to query
+[I 191202 12:54:53 ddh_app:280] BLE: 0 loggers to query
+[D 191202 12:54:53 ddh_app:170] SYS: closing GUI ...
+[D 191202 13:01:22 ddh_app:78] SYS: recall re-RUN post download, search '###'
+[D 191202 13:01:22 ddh_app:165] SYS: this is NOT a raspberry system
+[I 191202 13:01:22 ddh_app:280] GPS: no receiver found
+[I 191202 13:01:22 ddh_app:410] GPS: no position update
+[I 191202 13:01:22 ddh_app:280] GPS: using NTP time
+[I 191202 13:01:22 ddh_app:420] SYS: we have internet access
+[D 191202 13:01:25 ddh_app:236] GUI: keypress 1.
+[I 191202 13:01:25 ddh_app:280] PLT: ['T', 'P'](h) for ff-ff-ff-ff-ff-ff
+[E 191202 13:01:25 ddh_app:293] No T(h) data for ff-ff-ff-ff-ff-ff
+[I 191202 13:01:25 ddh_app:280] PLT: ['DOS', 'DOT'](h) for ff-ff-ff-ff-ff-ff
+[D 191202 13:01:25 ddh_app:457] SYS: elapsed time 168 ms
+[I 191202 13:01:27 ddh_app:280] BLE: 0 loggers to query
+[D 191202 13:01:30 ddh_app:246] GUI: keypress 3.
+[I 191202 13:01:30 ddh_app:280] PLT: ['T', 'P'](d) for ff-ff-ff-ff-ff-ff
+[E 191202 13:01:30 ddh_app:293] No T(d) data for ff-ff-ff-ff-ff-ff
+[I 191202 13:01:30 ddh_app:280] PLT: ['DOS', 'DOT'](d) for ff-ff-ff-ff-ff-ff
+[D 191202 13:01:30 ddh_app:457] SYS: elapsed time 197 ms
+[D 191202 13:01:31 ddh_app:246] GUI: keypress 3.
+[I 191202 13:01:31 ddh_app:280] PLT: ['T', 'P'](w) for ff-ff-ff-ff-ff-ff
+[E 191202 13:01:31 ddh_app:293] No T(w) data for ff-ff-ff-ff-ff-ff
+[I 191202 13:01:31 ddh_app:280] PLT: ['DOS', 'DOT'](w) for ff-ff-ff-ff-ff-ff
+[E 191202 13:01:31 ddh_app:293] PLT: few ['DOS', 'DOT'](w) data for ff-ff-ff-ff-ff-ff
+[D 191202 13:01:31 ddh_app:457] SYS: elapsed time 55 ms
+[D 191202 13:01:32 ddh_app:236] GUI: keypress 1.
+[I 191202 13:01:32 ddh_app:280] PLT: ['T', 'P'](w) for 11-22-33-44-55-66
+[D 191202 13:01:32 ddh_app:457] SYS: elapsed time 144 ms
+[D 191202 13:01:33 ddh_app:246] GUI: keypress 3.
+[I 191202 13:01:33 ddh_app:280] PLT: ['T', 'P'](m) for 11-22-33-44-55-66
+[D 191202 13:01:33 ddh_app:457] SYS: elapsed time 320 ms
+[D 191202 13:01:34 ddh_app:246] GUI: keypress 3.
+[I 191202 13:01:34 ddh_app:280] PLT: ['T', 'P'](y) for 11-22-33-44-55-66
+[E 191202 13:01:34 ddh_app:293] PLT: few ['T', 'P'](y) data for 11-22-33-44-55-66
+[I 191202 13:01:34 ddh_app:280] PLT: ['DOS', 'DOT'](y) for 11-22-33-44-55-66
+[E 191202 13:01:34 ddh_app:293] No DOS(y) data for 11-22-33-44-55-66
+[D 191202 13:01:34 ddh_app:457] SYS: elapsed time 63 ms
+[I 191202 13:01:34 ddh_app:280] BLE: 0 loggers to query
+[D 191202 13:01:35 ddh_app:236] GUI: keypress 1.
+[I 191202 13:01:35 ddh_app:280] PLT: ['T', 'P'](y) for ff-ff-ff-ff-ff-ff
+[E 191202 13:01:35 ddh_app:293] No T(y) data for ff-ff-ff-ff-ff-ff
+[I 191202 13:01:35 ddh_app:280] PLT: ['DOS', 'DOT'](y) for ff-ff-ff-ff-ff-ff
+[E 191202 13:01:35 ddh_app:293] PLT: few ['DOS', 'DOT'](y) data for ff-ff-ff-ff-ff-ff
+[D 191202 13:01:35 ddh_app:457] SYS: elapsed time 64 ms
+[D 191202 13:01:35 ddh_app:236] GUI: keypress 1.
+[I 191202 13:01:35 ddh_app:280] PLT: ['T', 'P'](y) for 11-22-33-44-55-66
+[I 191202 13:01:35 ddh_app:280] PLT: cache hit
+[I 191202 13:01:36 ddh_app:280] PLT: cache hit
+[E 191202 13:01:36 ddh_app:293] PLT: few ['T', 'P'](y) data for 11-22-33-44-55-66
+[I 191202 13:01:36 ddh_app:280] PLT: ['DOS', 'DOT'](y) for 11-22-33-44-55-66
+[E 191202 13:01:36 ddh_app:293] No DOS(y) data for 11-22-33-44-55-66
+[D 191202 13:01:36 ddh_app:457] SYS: elapsed time 41 ms
+[D 191202 13:01:37 ddh_app:236] GUI: keypress 1.
+[I 191202 13:01:37 ddh_app:280] PLT: ['T', 'P'](y) for ff-ff-ff-ff-ff-ff
+[E 191202 13:01:37 ddh_app:293] No T(y) data for ff-ff-ff-ff-ff-ff
+[I 191202 13:01:37 ddh_app:280] PLT: ['DOS', 'DOT'](y) for ff-ff-ff-ff-ff-ff
+[I 191202 13:01:37 ddh_app:280] PLT: cache hit
+[I 191202 13:01:37 ddh_app:280] PLT: cache hit
+[E 191202 13:01:37 ddh_app:293] PLT: few ['DOS', 'DOT'](y) data for ff-ff-ff-ff-ff-ff
+[D 191202 13:01:37 ddh_app:457] SYS: elapsed time 52 ms
+[D 191202 13:01:37 ddh_app:236] GUI: keypress 1.
+[I 191202 13:01:37 ddh_app:280] PLT: ['T', 'P'](y) for 11-22-33-44-55-66
+[I 191202 13:01:37 ddh_app:280] PLT: cache hit
+[I 191202 13:01:37 ddh_app:280] PLT: cache hit
+[E 191202 13:01:37 ddh_app:293] PLT: few ['T', 'P'](y) data for 11-22-33-44-55-66
+[I 191202 13:01:37 ddh_app:280] PLT: ['DOS', 'DOT'](y) for 11-22-33-44-55-66
+[E 191202 13:01:37 ddh_app:293] No DOS(y) data for 11-22-33-44-55-66
+[D 191202 13:01:37 ddh_app:457] SYS: elapsed time 43 ms
+[D 191202 13:01:39 ddh_app:246] GUI: keypress 3.
+[I 191202 13:01:39 ddh_app:280] PLT: ['T', 'P'](h) for 11-22-33-44-55-66
+[D 191202 13:01:39 ddh_app:457] SYS: elapsed time 162 ms
+[D 191202 13:01:40 ddh_app:236] GUI: keypress 1.
+[I 191202 13:01:40 ddh_app:280] PLT: ['T', 'P'](h) for ff-ff-ff-ff-ff-ff
+[E 191202 13:01:40 ddh_app:293] No T(h) data for ff-ff-ff-ff-ff-ff
+[I 191202 13:01:40 ddh_app:280] PLT: ['DOS', 'DOT'](h) for ff-ff-ff-ff-ff-ff
+[I 191202 13:01:40 ddh_app:280] PLT: cache hit
+[I 191202 13:01:40 ddh_app:280] PLT: cache hit
+[D 191202 13:01:40 ddh_app:457] SYS: elapsed time 339 ms
+[D 191202 13:01:41 ddh_app:236] GUI: keypress 1.
+[I 191202 13:01:41 ddh_app:280] PLT: ['T', 'P'](h) for 11-22-33-44-55-66
+[I 191202 13:01:41 ddh_app:280] PLT: cache hit
+[I 191202 13:01:41 ddh_app:280] PLT: cache hit
+[D 191202 13:01:41 ddh_app:457] SYS: elapsed time 209 ms
+[I 191202 13:01:41 ddh_app:280] BLE: 0 loggers to query
+[D 191202 13:01:41 ddh_app:236] GUI: keypress 1.
+[I 191202 13:01:41 ddh_app:280] PLT: ['T', 'P'](h) for ff-ff-ff-ff-ff-ff
+[E 191202 13:01:41 ddh_app:293] No T(h) data for ff-ff-ff-ff-ff-ff
+[I 191202 13:01:41 ddh_app:280] PLT: ['DOS', 'DOT'](h) for ff-ff-ff-ff-ff-ff
+[I 191202 13:01:41 ddh_app:280] PLT: cache hit
+[I 191202 13:01:41 ddh_app:280] PLT: cache hit
+[D 191202 13:01:42 ddh_app:457] SYS: elapsed time 323 ms
+[I 191202 13:01:48 ddh_app:280] BLE: 0 loggers to query
+[I 191202 13:01:51 ddh_app:280] GPS: using NTP time
+[I 191202 13:01:51 ddh_app:420] SYS: we have internet access
+[I 191202 13:01:51 ddh_app:280] GPS: no receiver found
+[I 191202 13:01:52 ddh_app:410] GPS: no position update
+[I 191202 13:01:55 ddh_app:280] BLE: 0 loggers to query
+[D 191202 13:01:57 ddh_app:170] SYS: closing GUI ...

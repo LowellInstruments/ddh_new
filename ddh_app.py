@@ -233,26 +233,26 @@ class DDHQtApp(QMainWindow):
     def keyPressEvent(self, e):
         # emulate raspberry button presses, no holds
         if e.key() == Qt.Key_1:
-            console_log.debug('GUI: keypress 1.')
+            console_log.debug('GUI: keypress 1')
             self.plt_folders_idx += 1
             self.plt_folders_idx %= len(self.plt_folders)
             self.plt_dir = self.plt_folders[self.plt_folders_idx]
         elif e.key() == Qt.Key_2:
-            console_log.debug('GUI: keypress 2.')
+            console_log.debug('GUI: keypress 2')
         elif e.key() == Qt.Key_3:
             self.plt_ts_idx += 1
             self.plt_ts_idx %= len(self.plt_time_spans)
             self.plt_ts = self.plt_time_spans[self.plt_ts_idx]
-            console_log.debug('GUI: keypress 3.')
+            console_log.debug('GUI: keypress 3')
         # emulate raspberry button holds
         elif e.key() == Qt.Key_4:
-            console_log.debug('GUI: keypress 4.')
+            console_log.debug('GUI: keypress 4')
         elif e.key() == Qt.Key_5:
-            console_log.debug('GUI: keypress 5.')
+            console_log.debug('GUI: keypress 5')
         elif e.key() == Qt.Key_6:
-            console_log.debug('GUI: keypress 6.')
+            console_log.debug('GUI: keypress 6')
         else:
-            console_log.debug('GUI: keypress unknown.')
+            console_log.debug('GUI: keypress unknown')
             return
 
         # filter valid keys
