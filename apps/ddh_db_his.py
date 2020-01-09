@@ -1,0 +1,93 @@
+import sqlite3
+
+
+class DBHis:
+
+    def __init__(self):
+        self.dbfilename = 'ddh_his.db'
+        db = sqlite3.connect(self.dbfilename)
+        c = db.cursor()
+        c.execute(
+            "CREATE TABLE IF NOT EXISTS records\
+            ( \
+            id              INTEGER PRIMARY KEY, \
+            mac             TEXT, \
+            name            TEXT, \
+            sws_time        TEXT  \
+            )"
+        )
+        db.commit()
+        c.close()
+
+    # v is a list which gets converted to string
+    def add_record(self, m, n, t):
+        db = sqlite3.connect(self.dbfilename)
+        c = db.cursor()
+        c.execute('INSERT INTO records('
+                  'mac, name, sws_time) '
+                  'VALUES(?,?,?)',
+                  (m, n, t))
+        db.commit()
+        c.close()
+
+    def update_record(self, m, n, t, i):
+        db = sqlite3.connect(self.dbfilename)
+        c = db.cursor()
+        c.execute('UPDATE records set mac=?, name=?, sws_time=? \
+                    WHERE id=?', (m, n, t, i))
+        db.commit()
+        c.close()
+
+    def delete_record(self, record_id):
+        db = sqlite3.connect(self.dbfilename)
+        c = db.cursor()
+        c.execute('DELETE FROM records where id=?', record_id)
+        db.commit()
+        c.close()
+
+    def delete_all_records(self):
+        db = sqlite3.connect(self.dbfilename)
+        c = db.cursor()
+        c.execute('DELETE FROM records')
+        db.commit()
+        c.close()
+
+    def list_all_records(self):
+        db = sqlite3.connect(self.dbfilename)
+        c = db.cursor()
+        c.execute('SELECT * from records')
+        records = c.fetchall()
+        c.close()
+        return records
+
+    def get_record(self, record_id):
+        db = sqlite3.connect(self.dbfilename)
+        c = db.cursor()
+        c.execute('SELECT * from records WHERE id=?', (record_id, ))
+        records = c.fetchall()
+        c.close()
+        return records[0]
+
+    def get_record_id(self, m):
+        db = sqlite3.connect(self.dbfilename)
+        c = db.cursor()
+        c.execute('SELECT id from records WHERE mac=?', (m, ))
+        records = c.fetchall()
+        c.close()
+        return records[0][0]
+
+    def does_record_exist(self, m):
+        db = sqlite3.connect(self.dbfilename)
+        c = db.cursor()
+        c.execute('SELECT EXISTS(SELECT 1 from records WHERE mac=?)', (m, ))
+        records = c.fetchall()
+        c.close()
+        return records[0][0]
+
+    def count_records(self):
+        db = sqlite3.connect(self.dbfilename)
+        c = db.cursor()
+        c.execute('SELECT Count(*) FROM records')
+        r = c.fetchall()
+        c.close()
+        return r[0][0]

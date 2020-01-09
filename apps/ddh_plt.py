@@ -1,5 +1,5 @@
 import numpy as np
-from .ddh_db import DBAverage
+from .ddh_db_plt import DBPlt
 from .ddh_utils import (
     mac_from_folder,
     lid_to_csv,
@@ -37,7 +37,7 @@ class DeckDataHubPLT:
         s, e = x.values[0], x.values[-1]
 
         # DB cache check...
-        db = DBAverage()
+        db = DBPlt()
         if db.does_record_exist(mac, s, e, ts, c):
             # ... success! get this data from cache
             signals.status.emit('PLT: cache hit')

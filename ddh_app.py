@@ -39,7 +39,7 @@ from apps.ddh_utils import (
 import logzero
 from logzero import logger as console_log
 from tendo import singleton
-from apps.ddh_db import DBHistory
+from apps.ddh_db_plt import DBPlt
 from apps.ddh_signals import (
     SignalsBLE,
     SignalsGPS,
@@ -70,8 +70,10 @@ class DDHQtApp(QMainWindow):
         singleton.SingleInstance()
         assert sys.version_info >= (3, 5)
         assert json_check_config_file()
-        if os.path.exists('ddh.db'):
-            os.remove('ddh.db')
+
+        # data bases and logs
+        # if os.path.exists('ddh_plt.db'):
+        #     os.remove('ddh_plt.db')
         logzero.logfile("ddh.log", maxBytes=int(1e6), backupCount=3, mode='a')
 
         # banners

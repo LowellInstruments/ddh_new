@@ -2,10 +2,10 @@ import json
 import sqlite3
 
 
-class DBAverage:
+class DBPlt:
 
     def __init__(self):
-        self.dbfilename = 'ddh.db'
+        self.dbfilename = 'ddh_plt.db'
         db = sqlite3.connect(self.dbfilename)
         c = db.cursor()
         c.execute(
@@ -43,7 +43,7 @@ class DBAverage:
         db.commit()
         c.close()
 
-    def list_all_records(self, ):
+    def list_all_records(self):
         db = sqlite3.connect(self.dbfilename)
         c = db.cursor()
         c.execute('SELECT * from records')
@@ -54,7 +54,7 @@ class DBAverage:
     def get_record(self, record_id):
         db = sqlite3.connect(self.dbfilename)
         c = db.cursor()
-        c.execute('SELECT * from records WHERE id=?', record_id)
+        c.execute('SELECT * from records WHERE id=?', (record_id,))
         records = c.fetchall()
         c.close()
         return records[0]
@@ -81,75 +81,6 @@ class DBAverage:
         c.execute('SELECT EXISTS(SELECT 1 from records WHERE mac=? AND '
                   'start_time=? AND end_time=? AND time_span=?'
                   'AND metric=?)', (w, s, e, p, m))
-        records = c.fetchall()
-        c.close()
-        return records[0][0]
-
-
-class DBHistory:
-
-    def __init__(self):
-        self.dbfilename = 'ddh.db'
-        db = sqlite3.connect(self.dbfilename)
-        c = db.cursor()
-        c.execute(
-            "CREATE TABLE IF NOT EXISTS records\
-            ( \
-            id              INTEGER PRIMARY KEY, \
-            mac             TEXT, \
-            name            TEXT, \
-            log_time        TEXT  \
-            )"
-        )
-        db.commit()
-        c.close()
-
-    # v is a list which gets converted to string
-    def add_record(self, m, n, l):
-        db = sqlite3.connect(self.dbfilename)
-        c = db.cursor()
-        c.execute('INSERT INTO records('
-                  'mac, name, log_time) '
-                  'VALUES(?,?,?)',
-                  (m, n, l))
-        db.commit()
-        c.close()
-
-    def delete_record(self, record_id):
-        db = sqlite3.connect(self.dbfilename)
-        c = db.cursor()
-        c.execute('DELETE FROM records where id=?', record_id)
-        db.commit()
-        c.close()
-
-    def list_all_records(self, ):
-        db = sqlite3.connect(self.dbfilename)
-        c = db.cursor()
-        c.execute('SELECT * from records')
-        records = c.fetchall()
-        c.close()
-        return records
-
-    def get_record(self, record_id):
-        db = sqlite3.connect(self.dbfilename)
-        c = db.cursor()
-        c.execute('SELECT * from records WHERE id=?', record_id)
-        records = c.fetchall()
-        c.close()
-        return records[0]
-
-    def get_record_id(self, m, n, l):
-        db = sqlite3.connect(self.dbfilename)
-        c = db.cursor()
-        c.execute('SELECT id from records WHERE mac=?', m)
-        records = c.fetchall()
-        c.close()
-        return records[0]
-
-    def does_record_exist(self, m):
-        db = sqlite3.connect(self.dbfilename)
-        c = db.cursor()
-        c.execute('SELECT EXISTS(SELECT 1 from records WHERE mac=?)', m)
         records = c.fetchall()
         c.close()
         return records[0][0]
