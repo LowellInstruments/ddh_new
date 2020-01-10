@@ -12,7 +12,7 @@ class TestDDHDBHis:
         db = DBHis()
         db.delete_all_records()
         t = '2019-11-25T09:41:34.000'
-        db.add_record('11:11:11:11:11:11', 'name_1', t)
+        db.add_record('11:11:11:11:11:11', 'name_1', 'lat_1', 'lon_1', t)
         i = db.get_record_id('11:11:11:11:11:11')
         c = db.count_records()
         assert (i == 1)
@@ -22,8 +22,8 @@ class TestDDHDBHis:
         db = DBHis()
         db.delete_all_records()
         t = '2019-11-25T09:41:34.000'
-        db.add_record('11:11:11:11:11:11', 'name_1', t)
-        db.update_record('11:11:11:11:11:11', 'hello', t, 1)
+        db.add_record('11:11:11:11:11:11', 'name_1', 'lat_1', 'lon_1', t)
+        db.update_record('11:11:11:11:11:11', 'hello', 'lat_1', 'lon_1', t, 1)
         r = db.get_record(1)
         c = db.count_records()
         assert (r[2] == 'hello')
@@ -39,8 +39,8 @@ class TestDDHDBHis:
         db = DBHis()
         db.delete_all_records()
         t = '2019-11-25T09:41:34.000'
-        db.add_record('11:11:11:11:11:11', 'name_1', t)
-        db.add_record('22:22:22:22:22:22', 'name_2', t)
+        db.add_record('11:11:11:11:11:11', 'name_1', 'lat_1', 'lon_1', t)
+        db.add_record('22:22:22:22:22:22', 'name_2', 'lat_2', 'lon_2', t)
         c = db.count_records()
         assert (c == 2)
 
@@ -48,8 +48,14 @@ class TestDDHDBHis:
         db = DBHis()
         db.delete_all_records()
         t = '2019-11-25T09:41:34.000'
-        db.add_record('11:11:11:11:11:11', 'name_1', t)
+        db.add_record('11:11:11:11:11:11', 'name_1', 'lat_1', 'lon_1', t)
         e = db.does_record_exist('11:11:11:11:11:11')
         assert (e == 1)
         e = db.does_record_exist('66:66:66:66:66:66')
         assert (e == 0)
+
+    def test_get_recent_records(self):
+        db = DBHis()
+        r = db.get_recent_records()
+        pass
+

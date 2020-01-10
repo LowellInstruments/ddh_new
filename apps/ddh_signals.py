@@ -11,6 +11,7 @@ class SignalsBLE(QObject):
     ble_dl_file_ = pyqtSignal(int, int)
     ble_dl_logger_ = pyqtSignal(str, int)
     ble_dl_session_ = pyqtSignal(str)
+    ble_deployed = pyqtSignal(str, str, str)
     error = pyqtSignal(str)
     status = pyqtSignal(str)
     warning = pyqtSignal(str)
@@ -26,7 +27,6 @@ class SignalsGPS(QObject):
     internet_result = pyqtSignal(bool, str)
 
 
-
 class SignalsPLT(QObject):
     status = pyqtSignal(str)
     debug = pyqtSignal(str)
@@ -35,7 +35,6 @@ class SignalsPLT(QObject):
     clk_start = pyqtSignal()
     clk_end = pyqtSignal()
     error_gui = pyqtSignal(str)
-
 
 class SignalsGUI(QObject):
     gui_tick = pyqtSignal(str)

@@ -49,7 +49,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>0</number>
+   <number>2</number>
   </property>
   <property name="iconSize">
    <size>
@@ -579,7 +579,7 @@
     </property>
     <layout class="QGridLayout" name="gridLayout_2">
      <item row="1" column="2">
-      <widget class="QLabel" name="label_19">
+      <widget class="QLabel" name="lbl_his_m_1">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
          <horstretch>1</horstretch>
@@ -616,7 +616,7 @@
       </widget>
      </item>
      <item row="1" column="4">
-      <widget class="QLabel" name="label_15">
+      <widget class="QLabel" name="lbl_his_l_1">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
          <horstretch>1</horstretch>
@@ -653,7 +653,7 @@
       </widget>
      </item>
      <item row="3" column="4">
-      <widget class="QLabel" name="label_17">
+      <widget class="QLabel" name="lbl_his_l_3">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
          <horstretch>1</horstretch>
@@ -669,7 +669,7 @@
       </widget>
      </item>
      <item row="3" column="2">
-      <widget class="QLabel" name="label_21">
+      <widget class="QLabel" name="lbl_his_m_3">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
          <horstretch>1</horstretch>
@@ -685,7 +685,7 @@
       </widget>
      </item>
      <item row="2" column="0">
-      <widget class="QLabel" name="label">
+      <widget class="QLabel" name="lbl_his_n_2">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
          <horstretch>1</horstretch>
@@ -714,7 +714,7 @@
       </widget>
      </item>
      <item row="3" column="0">
-      <widget class="QLabel" name="label_3">
+      <widget class="QLabel" name="lbl_his_n_3">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
          <horstretch>1</horstretch>
@@ -733,7 +733,7 @@
       </widget>
      </item>
      <item row="2" column="4">
-      <widget class="QLabel" name="label_16">
+      <widget class="QLabel" name="lbl_his_l_2">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
          <horstretch>1</horstretch>
@@ -770,7 +770,7 @@
       </widget>
      </item>
      <item row="1" column="0">
-      <widget class="QLabel" name="label_4">
+      <widget class="QLabel" name="lbl_his_n_1">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
          <horstretch>1</horstretch>
@@ -786,7 +786,7 @@
       </widget>
      </item>
      <item row="2" column="2">
-      <widget class="QLabel" name="label_20">
+      <widget class="QLabel" name="lbl_his_m_2">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
          <horstretch>1</horstretch>

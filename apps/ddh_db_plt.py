@@ -73,7 +73,7 @@ class DBPlt:
                   'AND metric=?', (w, s, e, p, m))
         records = c.fetchall()
         c.close()
-        return records[0]
+        return records[0][0]
 
     def does_record_exist(self, w, s, e, p, m):
         db = sqlite3.connect(self.dbfilename)

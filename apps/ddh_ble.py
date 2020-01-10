@@ -5,11 +5,13 @@ import datetime
 from mat.logger_controller import (
     STATUS_CMD,
     STOP_CMD,
-    RUN_CMD
+    RWS_CMD,
+    SWS_CMD
 )
 from mat.logger_controller_ble import (
     LoggerControllerBLE as LoggerControllerBLE
 )
+from apps.ddh_gps import DeckDataHubGPS
 
 
 class DeckDataHubBLE:
@@ -19,6 +21,12 @@ class DeckDataHubBLE:
     FORGET_S = 600
     IGNORE_S = 30
     LOGGERS_TO_QUERY = []
+    dl_flag = False
+
+    @staticmethod
+    def ble_toggle_dl():
+        DeckDataHubBLE.dl_flag = not DeckDataHubBLE.dl_flag
+        return DeckDataHubBLE.dl_flag
 
     @staticmethod
     def _ble_ignore_for(mac, seconds):
@@ -73,15 +81,29 @@ class DeckDataHubBLE:
         lc_ble = None
         dl_logger_ok = False
 
+        # prevent this from working on-demand
+        if not DeckDataHubBLE.dl_flag:
+            return
+
         # query every logger
         for counter, mac in enumerate(DeckDataHubBLE.LOGGERS_TO_QUERY):
             try:
                 signals.status.emit('BLE: connecting {}'.format(mac))
                 signals.ble_dl_session.emit(
                     mac, counter + 1, len(DeckDataHubBLE.LOGGERS_TO_QUERY))
+
+                # download + restart logger
                 with LoggerControllerBLE(mac) as lc_ble:
-                    # download files from this logger
                     DeckDataHubBLE._ble_dl_files(lc_ble, signals, pre_rm=False)
+                    lat, lon = DeckDataHubGPS.gps_get_last()
+                    s = ''
+                    if lat and lon:
+                        s = '{}{}'.format(lat, lon)
+                    lc_ble.command(RWS_CMD, s)
+                    t = 'BLE: RWS {}{}'.format(lat, lon)
+                    signals.status.emit(t)
+                    signals.ble_deployed.emit(mac, lat, lon)
+
             except ble.BTLEException as be:
                 # first Linux BLE interaction may fail
                 signals.error.emit('BLE: exception {}'.format(be.message))
@@ -90,9 +112,7 @@ class DeckDataHubBLE:
                 signals.error.emit('BLE: ' + t)
                 DeckDataHubBLE._ble_ignore_for(mac, DeckDataHubBLE.IGNORE_S)
             else:
-                # ok, next logger, choose if we re-run this one, label ###
-                # t = 'BLE: re-start = {}.'.format(lc_ble.command(RUN_CMD))
-                # signals.status.emit(t)
+                # everything ok
                 DeckDataHubBLE._ble_ignore_for(mac, DeckDataHubBLE.FORGET_S)
                 dl_logger_ok = True
             finally:
@@ -158,24 +178,32 @@ class DeckDataHubBLE:
     def _pre_dl_configuration(lc_ble, signals):
         signals.ble_dl_logger.emit()
 
+        # how are you
         status = lc_ble.command(STATUS_CMD)
         signals.status.emit('BLE: status = {}'.format(status))
         if not status:
             raise ble.BTLEException(status)
 
-        answer = lc_ble.command(STOP_CMD)
-        signals.status.emit('BLE: stop = {}'.format(answer))
+        # stop you, with string
+        lat, lon = DeckDataHubGPS.gps_get_last()
+        s = ''
+        if lat and lon:
+            s = '{}{}'.format(lat, lon)
+        answer = lc_ble.command(SWS_CMD, s)
+        signals.status.emit('BLE: SWS {}{} = {}'.format(lat, lon, answer))
         if not answer:
             raise ble.BTLEException(status)
+
+        # what time do you have
         logger_time = lc_ble.get_time()
         if not logger_time:
             raise ble.BTLEException(logger_time)
         difference = datetime.datetime.now() - logger_time
         if abs(difference.total_seconds()) > 60:
             lc_ble.sync_time()
-            signals.status.emit('BLE: sync {}'.format(lc_ble.get_time()))
+            signals.status.emit('BLE: GTM sync {}'.format(lc_ble.get_time()))
         else:
-            signals.status.emit('BLE: time is valid')
+            signals.status.emit('BLE: GTM valid time')
 
         # RN4020 loggers: CMD_CONTROL parameters BLE, CC26x2 ones will ignore this
         control = 'BTC 00T,0006,0000,0064'

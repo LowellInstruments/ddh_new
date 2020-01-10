@@ -1,7 +1,6 @@
 import datetime
 import sys
 import time
-import os
 import signal
 from gui.ble_gui import Ui_tabs
 from PyQt5.QtCore import (
@@ -20,12 +19,12 @@ from PyQt5.QtWidgets import (
     QDesktopWidget,
 )
 from apps.ddh_threads import DDHThread
-from apps.ddh_gps import DeckDataHubGPS
 from apps.ddh_ble import DeckDataHubBLE
 from apps.ddh_plt import DeckDataHubPLT
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from apps.ddh_gui import DeckDataHubGUI, ButtonPressEvent
+from apps.ddh_db_his import DBHis
 from apps.ddh_utils import (
     update_dl_folder_list,
     linux_detect_raspberry,
@@ -37,9 +36,9 @@ from apps.ddh_utils import (
     json_mac_dns
 )
 import logzero
+from apps.ddh_gps import DeckDataHubGPS
 from logzero import logger as console_log
 from tendo import singleton
-from apps.ddh_db_plt import DBPlt
 from apps.ddh_signals import (
     SignalsBLE,
     SignalsGPS,
@@ -54,7 +53,6 @@ if linux_detect_raspberry():
 DDH_BLE_MAC_FILTER = json_get_mac_filter()
 DDH_ERR_DISPLAY_TIMEOUT = 5
 DDH_PLT_DISPLAY_TIMEOUT = 120
-DDH_GPS_PERIOD = 30
 g_num_lg = ''
 
 
@@ -76,9 +74,6 @@ class DDHQtApp(QMainWindow):
         #     os.remove('ddh_plt.db')
         logzero.logfile("ddh.log", maxBytes=int(1e6), backupCount=3, mode='a')
 
-        # banners
-        console_log.debug('SYS: recall re-RUN post download, search \'###\'')
-
         # ui stuff
         super(DDHQtApp, self).__init__(*args, **kwargs)
         self.tabs = QTabWidget()
@@ -94,7 +89,7 @@ class DDHQtApp(QMainWindow):
         self.ui.img_time.setPixmap(QPixmap('gui/res/img_datetime_color.png'))
         self.ui.img_sync.setPixmap(QPixmap('gui/res/img_sync_color.png'))
         self.ui.img_boat.setPixmap(QPixmap('gui/res/img_boatname_color.png'))
-        self.ui.img_ble.setPixmap(QPixmap('gui/res/img_blue_color.png'))
+        self.ui.img_ble.setPixmap(QPixmap('gui/res/img_blue.png'))
         self.ui.img_latnlon.setPixmap(QPixmap('gui/res/img_latnlon_color.png'))
         self.ui.img_output.setPixmap(QPixmap('gui/res/img_wait_black.png'))
         self.tabs.setTabIcon(0, QIcon('gui/res/icon_info.png'))
@@ -108,7 +103,9 @@ class DDHQtApp(QMainWindow):
         self.plot_canvas = FigureCanvasQTAgg(Figure(figsize=(5, 3)))
         self.ui.vl_3.addWidget(self.plot_canvas)
         self.ui.img_time.mousePressEvent = self.on_clock_click
+        self.ui.img_ble.mousePressEvent = self.on_ble_click
         self.ui.lbl_dbg.setText('DDH operation ok')
+        self.his_populate()
 
         # automatic flow stuff
         self.sys_seconds = 0
@@ -178,6 +175,47 @@ class DDHQtApp(QMainWindow):
         console_log.debug('GUI: clicked secret bye!')
         self.closeEvent(ev)
 
+    def on_ble_click(self, ev):
+        console_log.debug('GUI: clicked secret sea toggle!')
+        b = DeckDataHubBLE.ble_toggle_dl()
+        if b:
+            self.ui.img_ble.setPixmap(QPixmap('gui/res/img_blue_color.png'))
+        else:
+            self.ui.img_ble.setPixmap(QPixmap('gui/res/img_blue.png'))
+
+    def on_his_update(self, his_ev):
+        # shift shown rows one below
+        self.ui.lbl_his_n_3.setText(self.ui.lbl_his_n_2.text())
+        self.ui.lbl_his_m_3.setText(self.ui.lbl_his_m_2.text())
+        self.ui.lbl_his_l_3.setText(self.ui.lbl_his_l_2.text())
+        self.ui.lbl_his_n_2.setText(self.ui.lbl_his_n_1.text())
+        self.ui.lbl_his_m_2.setText(self.ui.lbl_his_m_1.text())
+        self.ui.lbl_his_l_2.setText(self.ui.lbl_his_l_1.text())
+
+        # add new one on top
+        self.ui.lbl_his_n_1.setText(his_ev[0])
+        self.ui.lbl_his_m_1.setText(his_ev[1])
+        # ignore lat, lon, for now
+        self.ui.lbl_his_l_1.setText(his_ev[4])
+
+    def his_populate(self):
+        db = DBHis()
+        r = db.get_recent_records()
+
+        for i, h in enumerate(r):
+            if i == 0:
+                self.ui.lbl_his_n_1.setText(h[1])
+                self.ui.lbl_his_m_1.setText(h[2])
+                self.ui.lbl_his_l_1.setText(h[5])
+            elif i == 1:
+                self.ui.lbl_his_n_2.setText(h[1])
+                self.ui.lbl_his_m_2.setText(h[2])
+                self.ui.lbl_his_l_2.setText(h[5])
+            elif i == 2:
+                self.ui.lbl_his_n_3.setText(h[1])
+                self.ui.lbl_his_m_3.setText(h[2])
+                self.ui.lbl_his_l_3.setText(h[5])
+
     def _ddh_threads_create(self):
         # threads: creation
         fxn = DeckDataHubGUI.gui_loop
@@ -197,8 +235,9 @@ class DDHQtApp(QMainWindow):
         self.th_ble.signals.error.connect(self.slot_error)
         self.th_ble.signals.output.connect(self.slot_output)
         self.th_ble.signals.warning.connect(self.slot_warning)
+        self.th_ble.signals.ble_deployed.connect(self.slot_his_update)
         fxn = DeckDataHubGPS.gps_loop
-        self.th_gps = DDHThread(fxn, SignalsGPS, DDH_GPS_PERIOD)
+        self.th_gps = DDHThread(fxn, SignalsGPS, DeckDataHubGPS.DDH_GPS_PERIOD)
         self.th_gps.signals.status.connect(self.slot_status)
         self.th_gps.signals.error.connect(self.slot_error)
         self.th_gps.signals.gps_result.connect(self.slot_gps_result)
@@ -368,12 +407,6 @@ class DDHQtApp(QMainWindow):
             print(self.plt_dir)
             self._ddh_thread_throw_plt()
 
-        # update history tab
-        # db = DBHistory()
-        # print(desc)
-        # if db.does_record_exist(desc):
-        #     db.delete_record()
-
     # function post dl_session, note trailing '_'
     @pyqtSlot(str, name='slot_ble_dl_session_')
     def slot_ble_dl_session_(self, desc):
@@ -455,8 +488,17 @@ class DDHQtApp(QMainWindow):
     @pyqtSlot(name='slot_clk_end')
     def slot_clk_end(self):
         elapsed_time = int((time.clock() - self.clk_start_time) * 1000)
-        text = 'SYS: elapsed time {} ms'.format(elapsed_time)
-        console_log.debug(text)
+        t = 'SYS: elapsed time {} ms'.format(elapsed_time)
+        console_log.debug(t)
+
+    @pyqtSlot(str, str, str, name='slot_his_update')
+    def slot_his_update(self, mac, lat, lon):
+        name = json_mac_dns(mac)
+        frm = '%m / %d / %y\n%H : %M : %S'
+        frm_t = datetime.datetime.now().strftime(frm)
+        db = DBHis()
+        db.safe_update(mac, name, lat, lon, frm_t)
+        self.on_his_update((mac, name, lat, lon, frm_t))
 
 
 def run_app():

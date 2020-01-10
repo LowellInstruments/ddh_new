@@ -1,4 +1,5 @@
 from mat.gps import GPS
+import datetime
 import time
 import re
 import sys
@@ -13,39 +14,70 @@ from serial.tools.list_ports import grep
 
 class DeckDataHubGPS:
 
+    DDH_GPS_PERIOD = 30
+    gps_last = [None, None, None]
+
     @staticmethod
     def gps_loop(signals, ddh_gps_period):
         # force sync upon program / thread starts
         DeckDataHubGPS._gps_get_lan_n_lon(signals)
         DeckDataHubGPS._sync_sys_clock_gps_or_internet(signals)
-        timeout_gps = ddh_gps_period
+        gps_timeout = ddh_gps_period
 
         while 1:
-            if timeout_gps > 0:
-                timeout_gps -= 1
+            if gps_timeout > 0:
+                gps_timeout -= 1
             else:
-                timeout_gps = ddh_gps_period
-            if timeout_gps == 0:
+                gps_timeout = ddh_gps_period
+            if gps_timeout == 0:
                 DeckDataHubGPS._sync_sys_clock_gps_or_internet(signals)
                 DeckDataHubGPS._gps_get_lan_n_lon(signals)
             time.sleep(1)
 
     @staticmethod
     def _gps_get_lan_n_lon(signals):
+        DeckDataHubGPS.gps_last = [None, None, None]
         frame = DeckDataHubGPS._get_gps_frame(signals)
+
+        # no frame at all, piggyback USB status in error message
         if frame is None:
-            # piggyback USB status in GPS error message
             t = 'No GPS\nin USB port'
             if find_port():
                 t = 'Low GPS signal'
             signals.gps_update.emit(False, t, None)
             return
 
+        # frame, but an incomplete one
+        if not frame.latitude or not frame.longitude:
+            t = 'No lat, lon info in frame'
+            signals.gps_update.emit(False, t, None)
+            return
+
         # get coordinates to 6 decimals
         lat = '{:8.6f}'.format(float(frame.latitude))
         lon = '{:8.6f}'.format(float(frame.longitude))
-        signals.status.emit('GPS: obtained lat, lon.')
+        DeckDataHubGPS.gps_last = [lat, lon, datetime.datetime.now()]
+        signals.status.emit('GPS: obtained lat, lon')
         signals.gps_update.emit(True, lat, lon)
+
+    @staticmethod
+    def _gps_is_fresh(t):
+        if not t:
+            return False
+        n = datetime.datetime.now()
+        if (n - t).seconds < DeckDataHubGPS.DDH_GPS_PERIOD:
+            return True
+        return False
+
+    @staticmethod
+    def gps_get_last():
+        g = DeckDataHubGPS.gps_last
+        t = g[2]
+        lat, lon = None, None
+        if DeckDataHubGPS._gps_is_fresh(t):
+            print('gps_fresh {}'.format(t))
+            lat, lon = g[0], g[1]
+        return lat, lon
 
     # method to sync raspberry clock
     @staticmethod
@@ -57,7 +89,7 @@ class DeckDataHubGPS:
             signals.gps_result.emit('NTP', None, None, None)
             signals.internet_result.emit(True, '_')
         else:
-            status = 'GPS: no NTP, waiting for sat frame...'
+            status = 'GPS: no NTP, waiting for sat frame'
             signals.status.emit(status)
             # GPS receiver on USB but may receive frame in time, OR not
             DeckDataHubGPS._set_time_from_gps(signals)

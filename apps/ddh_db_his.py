@@ -13,6 +13,8 @@ class DBHis:
             id              INTEGER PRIMARY KEY, \
             mac             TEXT, \
             name            TEXT, \
+            lat             TEXT, \
+            lon             TEXT, \
             sws_time        TEXT  \
             )"
         )
@@ -20,28 +22,29 @@ class DBHis:
         c.close()
 
     # v is a list which gets converted to string
-    def add_record(self, m, n, t):
+    def add_record(self, m, n, lat, lon, t):
         db = sqlite3.connect(self.dbfilename)
         c = db.cursor()
         c.execute('INSERT INTO records('
-                  'mac, name, sws_time) '
-                  'VALUES(?,?,?)',
-                  (m, n, t))
+                  'mac, name, lat, lon, sws_time) '
+                  'VALUES(?,?,?,?,?)',
+                  (m, n, lat, lon, t))
         db.commit()
         c.close()
 
-    def update_record(self, m, n, t, i):
+    def update_record(self, m, n, lat, lon, t, i):
         db = sqlite3.connect(self.dbfilename)
         c = db.cursor()
-        c.execute('UPDATE records set mac=?, name=?, sws_time=? \
-                    WHERE id=?', (m, n, t, i))
+        c.execute('UPDATE records set mac=?, name=?, \
+                    lat=?, lon=?, sws_time=? \
+                    WHERE id=?', (m, n, lat, lon, t, i))
         db.commit()
         c.close()
 
     def delete_record(self, record_id):
         db = sqlite3.connect(self.dbfilename)
         c = db.cursor()
-        c.execute('DELETE FROM records where id=?', record_id)
+        c.execute('DELETE FROM records where id=?', (record_id,))
         db.commit()
         c.close()
 
@@ -91,3 +94,17 @@ class DBHis:
         r = c.fetchall()
         c.close()
         return r[0][0]
+
+    def safe_update(self, m, n, lat, lon, t):
+        if self.does_record_exist(m):
+            i = self.get_record_id(m)
+            self.delete_record(i)
+        self.add_record(m, n, lat, lon, t)
+
+    def get_recent_records(self):
+        db = sqlite3.connect(self.dbfilename)
+        c = db.cursor()
+        c.execute('SELECT * from records ORDER BY sws_time')
+        records = c.fetchall()
+        c.close()
+        return records

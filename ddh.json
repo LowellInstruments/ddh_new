@@ -1,5 +1,8 @@
 {
     "db_logger_macs": {
+    	"04:ee:03:6c:ef:49": "Red Wire",
+		"11:22:33:44:55:66": "TD-enabled",
+		"ff:ff:ff:ff:ff:ff": "Alpha"
 	},
     "ship_info":
     {
