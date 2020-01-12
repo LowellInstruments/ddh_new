@@ -14,10 +14,9 @@ develop with pycharm.sh, for example, add to sudoers:
 - tim  ALL=NOPASSWD:/home/tim/pycharm-community-2019.2/bin/pycharm.sh
 
 ## Installing
-For Raspbian (2018-11-13):
+For Raspbian, run ddh_utils/ddh_update.py and:
 ```
 sudo apt-get install libatlas3-base libglib2.0-dev python3-pyqt5 libhdf5-dev
-pip3 install -r requirements_rpi.txt
 ```
 For Debian / Ubuntu x64 installation:
 ```

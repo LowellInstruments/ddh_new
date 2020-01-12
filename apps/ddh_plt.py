@@ -26,27 +26,27 @@ class DeckDataHubPLT:
 
     @staticmethod
     def _db_cache_maybe(signals, folder, ts, metric):
-        # collect metadata
+        # metadata
         c = plot_metric_to_column_name(metric)
         mac = mac_from_folder(folder)
 
-        # load + prune data within most recent 'ts'
+        # load + prune data within last 'ts'
         lid_to_csv(folder)
         df = csv_to_df(folder, metric)
         x, y = rm_df_before(df, ts, c)
         s, e = x.values[0], x.values[-1]
 
-        # DB cache check...
+        # DBPlt cache check
         db = DBPlt()
         if db.does_record_exist(mac, s, e, ts, c):
-            # ... success! get this data from cache
+            # yey! already have this data in cache
             signals.status.emit('PLT: cache hit')
             r_id = db.get_record_id(mac, s, e, ts, c)
             t = db.get_record_times(r_id)
             y_avg = db.get_record_values(r_id)
             return t, y_avg
 
-        # ... not in DB, process from scratch and cache it
+        # not cached, process data and cache
         t, y_avg = slice_n_avg(x, y, ts)
         db.add_record(mac, s, e, ts, c, t, y_avg)
         return t, y_avg
@@ -56,6 +56,8 @@ class DeckDataHubPLT:
         f = folder.split('/')[-1]
         lg = json_mac_dns(mac_from_folder(folder))
         signals.clk_start.emit()
+
+        # try to plot any metric of a logger
         for pair in pairs_of_metrics:
             if ddh_p._plot(signals, folder, cnv, ts, pair):
                 signals.plt_result.emit(True)
@@ -63,7 +65,7 @@ class DeckDataHubPLT:
                 return
             else:
                 a = (pair, ts, lg, f)
-                e = 'No {}({}) plots\nfor logger\n\'{}\'\n{}'.format(*a)
+                e = 'PLT: no {}({}) plots\nfor \n\'{}\'\n{}'.format(*a)
                 signals.error_gui.emit(e)
 
         # we could not plot any pair of metrics
@@ -82,19 +84,19 @@ class DeckDataHubPLT:
         clr1 = plot_line_color(c1)
         signals.status.emit('PLT: {}({}) for {}'.format(m_p, ts, f))
 
-        # query database for 1st data, important one
+        # query database for 1st metric in pair, important one
         try:
             t, y0 = DeckDataHubPLT._db_cache_maybe(signals, folder, ts, m_p[0])
         except (AttributeError, Exception):
-            e = 'No {}({}) data for {}'.format(m_p[0], ts, f)
+            e = 'PLT: no {}({}) for {}'.format(m_p[0], ts, f)
             signals.error.emit(e)
             return False
 
-        # query DB for 2nd data, not critical
+        # query DB for 2nd metric in pair, not critical
         try:
             _, y1 = DeckDataHubPLT._db_cache_maybe(signals, folder, ts, m_p[1])
         except (AttributeError, Exception):
-            e = 'PLT: no {}({}) data for {}'.format(m_p[1], ts, f)
+            e = 'PLT: no {}({}) for {}'.format(m_p[1], ts, f)
             y1 = None
             signals.error.emit(e)
 

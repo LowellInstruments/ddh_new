@@ -139,6 +139,8 @@ def lid_to_csv(folder):
     parameters = default_parameters()
     for f in linux_ls_by_ext(folder, 'lid'):
         bn = f.split('.')[0]
+
+        # check if csv file exists
         if not glob.glob(bn + '*.csv'):
             # converting takes about 1.5 seconds per file
             DataConverter(bn + '.lid', parameters).convert()
@@ -207,18 +209,19 @@ def slice_n_avg(t, d, span):
     e = off_mm(s, step_mm)
     i = list(t.values)
 
-    # t.values is np.array, t is np.series, t.values[x] is str
+    # t.values: np.array, t: np.series, t.values[x]: str
     for _ in range(n_slices):
         try:
+            # y axis: contains data
             i_s = bisect.bisect_left(i, s)
             i_e = bisect.bisect_left(i, e)
             sl = d.values[i_s:i_e]
             v = np.nanmean(sl)
-            # print(v)
             y.append(v) if sl.any() else y.append(np.nan)
         except (KeyError, Exception) as e:
             print('** {}'.format(e))
         finally:
+            # x axis: contains timestamps
             x.append(s)
             s = e
             e = off_mm(s, step_mm)
@@ -252,7 +255,7 @@ def plot_format_title(t, span):
 def plot_line_color(column_name):
     color_dict = {
         'Temperature (C)':  'tab:red',
-        'Pressure (psi)':   'tab:blue',
+        'Pressure (dbar)':   'tab:blue',
         'Dissolved Oxygen (mg/l)': 'black',
         'Dissolved Oxygen (%)': 'black',
         'DO Temperature (C)': 'tab:red',
@@ -263,7 +266,7 @@ def plot_line_color(column_name):
 def plot_metric_to_column_name(metric):
     metric_dict = {
         'T':    'Temperature (C)',
-        'P':    'Pressure (psi)',
+        'P':    'Pressure (dbar)',
         'DOS':  'Dissolved Oxygen (mg/l)',
         'DOP':  'Dissolved Oxygen (%)',
         'DOT':  'DO Temperature (C)',

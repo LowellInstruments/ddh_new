@@ -45,6 +45,7 @@ from apps.ddh_signals import (
     SignalsPLT,
     SignalsGUI,
 )
+import os
 if linux_detect_raspberry():
     from gpiozero import Button
 
@@ -70,8 +71,8 @@ class DDHQtApp(QMainWindow):
         assert json_check_config_file()
 
         # data bases and logs
-        # if os.path.exists('ddh_plt.db'):
-        #     os.remove('ddh_plt.db')
+        if os.path.exists('ddh_plt.db'):
+            os.remove('ddh_plt.db')
         logzero.logfile("ddh.log", maxBytes=int(1e6), backupCount=3, mode='a')
 
         # ui stuff
@@ -131,6 +132,7 @@ class DDHQtApp(QMainWindow):
         self.thread_pool.start(self.th_gui)
         self.thread_pool.start(self.th_ble)
         self.thread_pool.start(self.th_gps)
+
 
         # particular hardware stuff
         if linux_detect_raspberry():
