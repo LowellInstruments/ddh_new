@@ -608,7 +608,7 @@
         </font>
        </property>
        <property name="text">
-        <string>MAC address</string>
+        <string>Logger name</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -762,7 +762,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Logger name</string>
+        <string>MAC address</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>

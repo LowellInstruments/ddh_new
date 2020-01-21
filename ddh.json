@@ -2,7 +2,8 @@
     "db_logger_macs": {
     	"04:ee:03:6c:ef:49": "Red Wire",
 		"11:22:33:44:55:66": "TD-enabled",
-		"ff:ff:ff:ff:ff:ff": "Alpha"
+		"ff:ff:ff:ff:ff:ff": "Alpha",
+		"04:ee:03:6c:ef:e0": "DO-enabled"
 	},
     "ship_info":
     {
@@ -11,8 +12,5 @@
 	"metrics": [
 		["T", "P"],
 		["DOS", "DOT"]
-	],
-	"ftp_site": "ftp.lowellinstruments.com",
-	"ftp_username": "jeff@lowellinstruments.com",
-	"ftp_password": "DDHftp5Woodland"
+	]
 }

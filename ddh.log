@@ -10633,3 +10633,69 @@
 [D 200112 16:53:44 ddh_app:181] GUI: clicked secret sea toggle!
 [D 200112 16:53:47 ddh_app:177] GUI: clicked secret bye!
 [D 200112 16:53:47 ddh_app:171] SYS: closing GUI ...
+[D 200112 20:20:09 ddh_app:166] SYS: this is NOT a raspberry system
+[I 200112 20:20:09 ddh_app:323] GPS: no receiver found
+[I 200112 20:20:09 ddh_app:447] GPS: no position update
+[I 200112 20:20:09 ddh_app:323] GPS: using NTP time
+[I 200112 20:20:09 ddh_app:457] SYS: we have internet access
+[I 200112 20:20:14 ddh_app:323] BLE: 0 loggers to query
+[I 200112 20:20:21 ddh_app:323] BLE: 0 loggers to query
+[I 200112 20:20:28 ddh_app:323] BLE: 0 loggers to query
+[I 200112 20:20:35 ddh_app:323] BLE: 0 loggers to query
+[I 200112 20:20:38 ddh_app:323] GPS: using NTP time
+[I 200112 20:20:38 ddh_app:457] SYS: we have internet access
+[I 200112 20:20:38 ddh_app:323] GPS: no receiver found
+[I 200112 20:20:38 ddh_app:447] GPS: no position update
+[I 200112 20:20:42 ddh_app:323] BLE: 0 loggers to query
+[I 200112 20:20:49 ddh_app:323] BLE: 0 loggers to query
+[I 200112 20:20:56 ddh_app:323] BLE: 0 loggers to query
+[I 200112 20:21:04 ddh_app:323] BLE: 0 loggers to query
+[D 200112 20:21:04 ddh_app:181] GUI: clicked secret sea toggle!
+[D 200112 20:21:05 ddh_app:181] GUI: clicked secret sea toggle!
+[I 200112 20:21:10 ddh_app:323] GPS: using NTP time
+[I 200112 20:21:10 ddh_app:457] SYS: we have internet access
+[I 200112 20:21:10 ddh_app:323] GPS: no receiver found
+[I 200112 20:21:10 ddh_app:447] GPS: no position update
+[I 200112 20:21:11 ddh_app:323] BLE: 0 loggers to query
+[I 200112 20:21:18 ddh_app:323] BLE: 0 loggers to query
+[I 200112 20:21:25 ddh_app:323] BLE: 0 loggers to query
+[D 200112 20:21:26 ddh_app:279] GUI: keypress 1
+[I 200112 20:21:26 ddh_app:323] PLT: ['T', 'P'](h) for 04-ee-03-6c-ef-49
+[E 200112 20:21:26 ddh_app:336] PLT: no T(h) for 04-ee-03-6c-ef-49
+[I 200112 20:21:26 ddh_app:323] PLT: ['DOS', 'DOT'](h) for 04-ee-03-6c-ef-49
+[E 200112 20:21:26 ddh_app:336] PLT: no DOS(h) for 04-ee-03-6c-ef-49
+[D 200112 20:21:26 ddh_app:494] SYS: elapsed time 8 ms
+[D 200112 20:21:29 ddh_app:279] GUI: keypress 1
+[I 200112 20:21:29 ddh_app:323] PLT: ['T', 'P'](h) for ff-ff-ff-ff-ff-ff
+[E 200112 20:21:29 ddh_app:336] PLT: no T(h) for ff-ff-ff-ff-ff-ff
+[I 200112 20:21:29 ddh_app:323] PLT: ['DOS', 'DOT'](h) for ff-ff-ff-ff-ff-ff
+[D 200112 20:21:29 ddh_app:494] SYS: elapsed time 158 ms
+[D 200112 20:21:32 ddh_app:289] GUI: keypress 3
+[I 200112 20:21:32 ddh_app:323] PLT: ['T', 'P'](d) for ff-ff-ff-ff-ff-ff
+[E 200112 20:21:32 ddh_app:336] PLT: no T(d) for ff-ff-ff-ff-ff-ff
+[I 200112 20:21:32 ddh_app:323] PLT: ['DOS', 'DOT'](d) for ff-ff-ff-ff-ff-ff
+[D 200112 20:21:32 ddh_app:494] SYS: elapsed time 184 ms
+[I 200112 20:21:32 ddh_app:323] BLE: 0 loggers to query
+[D 200112 20:21:35 ddh_app:279] GUI: keypress 1
+[I 200112 20:21:35 ddh_app:323] PLT: ['T', 'P'](d) for 11-22-33-44-55-66
+[D 200112 20:21:35 ddh_app:494] SYS: elapsed time 181 ms
+[D 200112 20:21:39 ddh_app:289] GUI: keypress 3
+[I 200112 20:21:39 ddh_app:323] PLT: ['T', 'P'](w) for 11-22-33-44-55-66
+[I 200112 20:21:39 ddh_app:323] BLE: 0 loggers to query
+[D 200112 20:21:39 ddh_app:494] SYS: elapsed time 161 ms
+[I 200112 20:21:41 ddh_app:323] GPS: using NTP time
+[I 200112 20:21:41 ddh_app:457] SYS: we have internet access
+[I 200112 20:21:41 ddh_app:323] GPS: no receiver found
+[I 200112 20:21:41 ddh_app:447] GPS: no position update
+[D 200112 20:21:45 ddh_app:279] GUI: keypress 1
+[I 200112 20:21:45 ddh_app:323] PLT: ['T', 'P'](w) for 04-ee-03-6c-ef-49
+[E 200112 20:21:45 ddh_app:336] PLT: no T(w) for 04-ee-03-6c-ef-49
+[I 200112 20:21:45 ddh_app:323] PLT: ['DOS', 'DOT'](w) for 04-ee-03-6c-ef-49
+[E 200112 20:21:45 ddh_app:336] PLT: no DOS(w) for 04-ee-03-6c-ef-49
+[D 200112 20:21:45 ddh_app:494] SYS: elapsed time 6 ms
+[I 200112 20:21:46 ddh_app:323] BLE: 0 loggers to query
+[I 200112 20:21:53 ddh_app:323] BLE: 0 loggers to query
+[I 200112 20:22:00 ddh_app:323] BLE: 0 loggers to query
+[I 200112 20:22:07 ddh_app:323] BLE: 0 loggers to query
+[D 200112 20:22:08 ddh_app:177] GUI: clicked secret bye!
+[D 200112 20:22:08 ddh_app:171] SYS: closing GUI ...

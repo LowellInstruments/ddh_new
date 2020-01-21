@@ -16,3 +16,5 @@ git+https://github.com/LowellInstruments/lowell-mat.git@ble
 RPi.GPIO==0.6.5
 diskcache==4.0.0
 h5py==2.10.0
+pytz
+pandas
