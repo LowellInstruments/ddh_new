@@ -18,7 +18,7 @@ class TestDDHDBHis:
         assert (i == 1)
         assert (c == 1)
 
-    def test_update_record(self):
+    def test_update_record_existing(self):
         db = DBHis()
         db.delete_all_records()
         t = '2019-11-25T09:41:34.000'
@@ -58,4 +58,25 @@ class TestDDHDBHis:
         db = DBHis()
         r = db.get_recent_records()
         pass
+
+    def test_safe_update_existing(self):
+        db = DBHis()
+        db.delete_all_records()
+        t = '2019-11-25T09:41:34.000'
+        db.add_record('11:11:11:11:11:11', 'name_1', 'lat_1', 'lon_1', t)
+        db.safe_update('11:11:11:11:11:11', 'name_2', 'lat_2', 'lon_2', t)
+        r = db.get_record(1)
+        c = db.count_records()
+        assert (r[2] == 'name_2')
+        assert (c == 1)
+
+    def test_safe_update_non_existing(self):
+        db = DBHis()
+        db.delete_all_records()
+        t = '2019-11-25T09:41:34.000'
+        db.safe_update('11:11:11:11:11:11', 'name_2', 'lat_2', 'lon_2', t)
+        r = db.get_record(1)
+        c = db.count_records()
+        assert (r[2] == 'name_2')
+        assert (c == 1)
 

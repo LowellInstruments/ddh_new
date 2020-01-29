@@ -273,3 +273,14 @@ def plot_metric_to_column_name(metric):
 
     }
     return metric_dict[metric]
+
+def plot_metric_to_label_name(metric):
+    metric_dict = {
+        'T':    'Temperature (C)',
+        'P':    'Depth (m)',
+        'DOS':  'Dissolved Oxygen (mg/l)',
+        'DOP':  'Dissolved Oxygen (%)',
+        'DOT':  'DO Temperature (C)',
+
+    }
+    return metric_dict[metric]

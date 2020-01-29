@@ -216,7 +216,7 @@ class DeckDataHubBLE:
     @staticmethod
     def _pre_dl_ls(lc_ble, signals, pre_rm=False):
         # remove files, useful for debug, label ***
-        mac = lc_ble.u.peripheral.addr
+        mac = lc_ble.per.addr
         if pre_rm:
             _rm_folder(mac)
             signals.warning.emit('SYS: local rm {} files'.format(mac))
