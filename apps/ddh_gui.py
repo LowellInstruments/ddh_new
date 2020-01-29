@@ -11,16 +11,16 @@ class ButtonPressEvent:
 
 class DeckDataHubGUI:
 
-    # symbols = ('|', '/', '--', '\\', '|', '/', '--', '\\')
-    symbols = ('.', '..', '...', ' ')
+    # sym = ('|', '/', '--', '\\', '|', '/', '--', '\\')
+    sym = ('·', '··', '···', ' ')
     indicator = ''
-    index = 0
+    idx = 0
 
     @staticmethod
     def step_busy_indicator():
-        DeckDataHubGUI.index += 1
-        DeckDataHubGUI.index %= len(DeckDataHubGUI.symbols)
-        return DeckDataHubGUI.symbols[DeckDataHubGUI.index]
+        DeckDataHubGUI.idx += 1
+        DeckDataHubGUI.idx %= len(DeckDataHubGUI.sym)
+        return DeckDataHubGUI.sym[DeckDataHubGUI.idx]
 
     @staticmethod
     def gui_loop(signals):

@@ -54,6 +54,7 @@ if linux_detect_raspberry():
 DDH_BLE_MAC_FILTER = json_get_mac_filter()
 DDH_ERR_DISPLAY_TIMEOUT = 5
 DDH_PLT_DISPLAY_TIMEOUT = 120
+DDH_PLT_MSG_TIMEOUT = 5
 g_num_lg = ''
 
 
@@ -69,6 +70,7 @@ class DDHQtApp(QMainWindow):
         singleton.SingleInstance()
         assert sys.version_info >= (3, 5)
         assert json_check_config_file()
+        assert ensure_only_one_ddh()
 
         # data bases and logs
         if os.path.exists('ddh_plt.db'):
@@ -81,7 +83,8 @@ class DDHQtApp(QMainWindow):
         self.ui = Ui_tabs()
         self.ui.setupUi(self.tabs)
         self.setWindowTitle('Lowell Instruments\' Deck Data Hub')
-        self.ui.lbl_busy_plot.hide()
+        self.ui.lbl_plt_bsy.setVisible(False)
+        self.ui.lbl_plt_msg.setVisible(False)
         self.ui.img_time.setPixmap(QPixmap('gui/res/img_datetime.png'))
         self.ui.img_sync.setPixmap(QPixmap('gui/res/img_sync.png'))
         self.ui.img_boat.setPixmap(QPixmap('gui/res/img_boatname.png'))
@@ -106,13 +109,14 @@ class DDHQtApp(QMainWindow):
         self.ui.img_time.mousePressEvent = self.on_clock_click
         self.ui.img_ble.mousePressEvent = self.on_ble_click
         self.ui.lbl_dbg.setText('DDH operation ok')
-        self.his_populate()
+        self.his_tab_populate()
 
         # automatic flow stuff
         self.sys_seconds = 0
         self.bsy_indicator = ''
         self.plt_timeout_display = 0
-        self.err_timeout_display = 0
+        self.dbg_timeout_display = 0
+        self.plt_msg_timeout = 0
         self.plt_folders = update_dl_folder_list()
         self.plt_folders_idx = 0
         self.plt_dir = None
@@ -185,38 +189,41 @@ class DDHQtApp(QMainWindow):
         else:
             self.ui.img_ble.setPixmap(QPixmap('gui/res/img_blue.png'))
 
-    def on_his_update(self, his_ev):
-        # shift shown rows one below
-        self.ui.lbl_his_n_3.setText(self.ui.lbl_his_n_2.text())
-        self.ui.lbl_his_m_3.setText(self.ui.lbl_his_m_2.text())
-        self.ui.lbl_his_l_3.setText(self.ui.lbl_his_l_2.text())
-        self.ui.lbl_his_n_2.setText(self.ui.lbl_his_n_1.text())
-        self.ui.lbl_his_m_2.setText(self.ui.lbl_his_m_1.text())
-        self.ui.lbl_his_l_2.setText(self.ui.lbl_his_l_1.text())
 
-        # add new one on top
-        self.ui.lbl_his_n_1.setText(his_ev[0])
-        self.ui.lbl_his_m_1.setText(his_ev[1])
-        # ignore lat, lon, for now
-        self.ui.lbl_his_l_1.setText(his_ev[4])
+    def his_tab_populate(self):
+        # clear everything
+        self.ui.lbl_his_n_3.setText('-')
+        self.ui.lbl_his_m_3.setText('-')
+        self.ui.lbl_his_l_3.setText('-')
+        self.ui.lbl_his_n_2.setText('-')
+        self.ui.lbl_his_m_2.setText('-')
+        self.ui.lbl_his_l_2.setText('-')
+        self.ui.lbl_his_n_1.setText('-')
+        self.ui.lbl_his_m_1.setText('-')
+        self.ui.lbl_his_l_1.setText('-')
 
-    def his_populate(self):
+        # update with latest results
         db = DBHis()
-        r = db.get_recent_records()
 
+        # fake content
+        t = '2019-11-25 09:41:34.000'
+        db.safe_update('11:11:11:11:11:11', 'name_1', '-01.123456', '+02.222222', t)
+
+        r = db.get_recent_records()
         for i, h in enumerate(r):
+            s = '{}, {}\n{}'.format(h[3], h[4], h[5])
             if i == 0:
                 self.ui.lbl_his_n_1.setText(h[1])
                 self.ui.lbl_his_m_1.setText(h[2])
-                self.ui.lbl_his_l_1.setText(h[5])
+                self.ui.lbl_his_l_1.setText(s)
             elif i == 1:
                 self.ui.lbl_his_n_2.setText(h[1])
                 self.ui.lbl_his_m_2.setText(h[2])
-                self.ui.lbl_his_l_2.setText(h[5])
+                self.ui.lbl_his_l_2.setText(s)
             elif i == 2:
                 self.ui.lbl_his_n_3.setText(h[1])
                 self.ui.lbl_his_m_3.setText(h[2])
-                self.ui.lbl_his_l_3.setText(h[5])
+                self.ui.lbl_his_l_3.setText(s)
 
     def _ddh_threads_create(self):
         # threads: creation
@@ -255,6 +262,8 @@ class DDHQtApp(QMainWindow):
         self.th_plt.signals.error.connect(self.slot_error)
         self.th_plt.signals.error_gui.connect(self.slot_error_gui)
         self.th_plt.signals.plt_result.connect(self.slot_plt_result)
+        self.th_plt.signals.plt_start.connect(self.slot_plt_start)
+        self.th_plt.signals.plt_msg.connect(self.slot_plt_msg)
         self.th_plt.signals.clk_start.connect(self.slot_clk_start)
         self.th_plt.signals.clk_end.connect(self.slot_clk_end)
         self.thread_pool.start(self.th_plt)
@@ -338,7 +347,7 @@ class DDHQtApp(QMainWindow):
     @pyqtSlot(str, name='slot_error_gui')
     def slot_error_gui(self, e):
         self.ui.lbl_dbg.setText(e)
-        self.err_timeout_display = DDH_ERR_DISPLAY_TIMEOUT
+        self.dbg_timeout_display = DDH_ERR_DISPLAY_TIMEOUT
 
     @pyqtSlot(str, name='slot_output')
     def slot_output(self, desc):
@@ -403,7 +412,6 @@ class DDHQtApp(QMainWindow):
         self.ui.bar_dl.setValue(100)
         # plot what downloaded from last logger
         if val_1:
-            self.ui.lbl_out.setText('Plotting')
             self.plt_folders = update_dl_folder_list()
             self.plt_dir = 'dl_files/' + str(desc).replace(':', '-')
             print(self.plt_dir)
@@ -414,6 +422,11 @@ class DDHQtApp(QMainWindow):
     def slot_ble_dl_session_(self, desc):
         self.ui.lbl_out.setText(desc)
 
+    @pyqtSlot(name='slot_plt_start')
+    def slot_plt_start(self):
+        self.ui.lbl_out.setText('Plotting')
+        self.ui.lbl_plt_bsy.setVisible(True)
+
     # display any successfully built plot
     @pyqtSlot(object, name='slot_plt_result')
     def slot_plt_result(self, result):
@@ -423,8 +436,14 @@ class DDHQtApp(QMainWindow):
             self.plt_timeout_display = DDH_PLT_DISPLAY_TIMEOUT
         else:
             self.ui.lbl_out.setText('Plot not ok')
-            self.tabs.setCurrentIndex(0)
         self.plt_is_busy = False
+        self.ui.lbl_plt_bsy.setVisible(False)
+
+    @pyqtSlot(str, name='slot_plt_msg')
+    def slot_plt_msg(self, desc):
+        self.ui.lbl_plt_msg.setText(desc)
+        self.ui.lbl_plt_msg.setVisible(True)
+        self.plt_msg_timeout = DDH_PLT_MSG_TIMEOUT
 
     @pyqtSlot(str, str, str, str, name='slot_gps_result')
     def slot_gps_result(self, clk_source, gps_time, gps_lat, gps_lon):
@@ -440,11 +459,13 @@ class DDHQtApp(QMainWindow):
         if did_ok:
             self.ui.lbl_gps.setText(gps_lat + ' N\n' + gps_lon + ' W')
             t = 'GPS: updated pos lat, lon'.format(gps_lat, gps_lon)
+            console_log.info(t)
         else:
-            # ugly and piggybacked GPS error message
-            self.ui.lbl_gps.setText(gps_lat)
-            t = 'GPS: no position update'
-        console_log.info(t)
+            # piggybacked GPS error message in 'gps_lat'
+            e = gps_lat
+            self.ui.lbl_gps.setText(e)
+            console_log.info(e)
+
 
     @pyqtSlot(bool, str, name='slot_internet_result')
     def slot_internet_result(self, we_have, internet_source):
@@ -464,7 +485,7 @@ class DDHQtApp(QMainWindow):
         time_format = '%m / %d / %y\n%H : %M : %S'
         formatted_time = datetime.datetime.now().strftime(time_format)
         self.ui.lbl_clock_time.setText(formatted_time)
-        self.ui.lbl_busy_plot.setText(self.bsy_indicator)
+        self.ui.lbl_plt_bsy.setText(self.bsy_indicator)
 
         # timeout to display plot tab, compare to 1 only runs once
         if self.plt_timeout_display == 1:
@@ -473,11 +494,18 @@ class DDHQtApp(QMainWindow):
             self.plt_timeout_display -= 1
 
         # timeout to display error banner, compare to 1 only runs once
-        if self.err_timeout_display == 1:
+        if self.dbg_timeout_display == 1:
             self.ui.lbl_dbg.clear()
             self.ui.lbl_dbg.setText('DDH operation ok')
-        if self.err_timeout_display > 0:
-            self.err_timeout_display -= 1
+        if self.dbg_timeout_display > 0:
+            self.dbg_timeout_display -= 1
+
+        # timeout to display plot message
+        if self.plt_msg_timeout == 1:
+            self.ui.lbl_plt_msg.clear()
+            self.ui.lbl_plt_msg.setVisible(False)
+        if self.plt_msg_timeout > 0:
+            self.plt_msg_timeout -= 1
 
         # things updated less often
         if self.sys_seconds % 30 == 0:
@@ -496,11 +524,11 @@ class DDHQtApp(QMainWindow):
     @pyqtSlot(str, str, str, name='slot_his_update')
     def slot_his_update(self, mac, lat, lon):
         name = json_mac_dns(mac)
-        frm = '%m / %d / %y\n%H : %M : %S'
+        frm = '%m/%d/%y %H:%M:%S'
         frm_t = datetime.datetime.now().strftime(frm)
         db = DBHis()
         db.safe_update(mac, name, lat, lon, frm_t)
-        self.on_his_update((mac, name, lat, lon, frm_t))
+        self.his_tab_populate()
 
 
 def run_app():
@@ -526,3 +554,15 @@ def set_g_num_lg(t):
 def get_g_num_lg():
     global g_num_lg
     return g_num_lg
+
+
+def ensure_only_one_ddh():
+    import fcntl
+    pid_file = '/tmp/ddh.pid'
+    fp = open(pid_file, 'w')
+    try:
+        fcntl.lockf(fp, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except IOError:
+        print('Only 1 daemon_radar allowed to run')
+        sys.exit(0)
+    return True

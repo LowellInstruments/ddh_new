@@ -30,7 +30,9 @@ class SignalsGPS(QObject):
 class SignalsPLT(QObject):
     status = pyqtSignal(str)
     debug = pyqtSignal(str)
+    plt_start = pyqtSignal()
     plt_result = pyqtSignal(object)
+    plt_msg = pyqtSignal(str)
     error = pyqtSignal(str)
     clk_start = pyqtSignal()
     clk_end = pyqtSignal()

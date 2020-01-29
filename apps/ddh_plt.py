@@ -12,6 +12,7 @@ from .ddh_utils import (
     json_mac_dns,
     plot_metric_to_column_name,
     plot_line_color,
+    plot_metric_to_label_name
 )
 
 
@@ -56,6 +57,7 @@ class DeckDataHubPLT:
         f = folder.split('/')[-1]
         lg = json_mac_dns(mac_from_folder(folder))
         signals.clk_start.emit()
+        signals.plt_start.emit()
 
         # try to plot any metric of a logger
         for pair in pairs_of_metrics:
@@ -65,8 +67,9 @@ class DeckDataHubPLT:
                 return
             else:
                 a = (pair, ts, lg, f)
-                e = 'PLT: no {}({}) plots\nfor \n\'{}\'\n{}'.format(*a)
-                signals.error_gui.emit(e)
+                e = 'PLT: no {}({}) plots for \'{}\'({})'.format(*a)
+                signals.error.emit(e)
+                signals.plt_msg.emit(e)
 
         # we could not plot any pair of metrics
         signals.plt_result.emit(False)
@@ -79,6 +82,8 @@ class DeckDataHubPLT:
         f = folder.split('/')[-1]
         c0 = plot_metric_to_column_name(m_p[0])
         c1 = plot_metric_to_column_name(m_p[1])
+        a0 = plot_metric_to_label_name(m_p[0])
+        a1 = plot_metric_to_label_name(m_p[1])
         lg = json_mac_dns(mac_from_folder(folder))
         clr0 = plot_line_color(c0)
         clr1 = plot_line_color(c1)
@@ -90,6 +95,7 @@ class DeckDataHubPLT:
         except (AttributeError, Exception):
             e = 'PLT: no {}({}) for {}'.format(m_p[0], ts, f)
             signals.error.emit(e)
+            signals.plt_msg.emit(e)
             return False
 
         # query DB for 2nd metric in pair, not critical
@@ -99,41 +105,53 @@ class DeckDataHubPLT:
             e = 'PLT: no {}({}) for {}'.format(m_p[1], ts, f)
             y1 = None
             signals.error.emit(e)
+            signals.plt_msg.emit(e)
 
         # need at least two points to plot a 1st data line
         if np.count_nonzero(~np.isnan(y0)) < 2:
             e = 'PLT: few {}({}) data for {}'.format(m_p, ts, f)
             signals.error.emit(e)
+            signals.plt_msg.emit(e)
             return False
 
-        # prepare for plotting 1st data
+        # prepare for plotting 1st data y0
         cnv.figure.clf()
         cnv.figure.tight_layout()
         tit = plot_format_title(t, ts)
-        ax = cnv.figure.add_subplot(111)
+        ax1 = cnv.figure.add_subplot(111)
         sym = '{} '.format('\u2014')
-        ax.set_ylabel(sym + c0, fontsize='large', fontweight='bold', color=clr0)
-        ax.tick_params(axis='y', labelcolor=clr0)
-        ax.plot(t, y0, label=c0, color=clr0)
-        ax.set_xlabel('time', fontsize='large', fontweight='bold')
-        ax.set_title('Logger ' + lg + ', ' + tit , fontsize='x-large')
+        ax1.set_ylabel(sym + a0, fontsize='large', fontweight='bold', color=clr0)
+        ax1.tick_params(axis='y', labelcolor=clr0)
+
+        # hack for pressure / depth display
+        if a0 == 'Depth (m)':
+            ax1.invert_yaxis()
+
+        ax1.plot(t, y0, label=a0, color=clr0)
+        ax1.set_xlabel('time', fontsize='large', fontweight='bold')
+        ax1.set_title('Logger ' + lg + ', ' + tit, fontsize='x-large')
         lbs = plot_format_time_ticks(t, ts)
 
-        # prepare for plotting 2nd data, if any
+        # prepare for plotting 2nd data, y1, if any
         if y1:
             sym = '- -  '
-            ax2 = ax.twinx()
-            ax2.set_ylabel(sym + c1, fontsize='large', fontweight='bold', color=clr1)
+            ax2 = ax1.twinx()
+            ax2.set_ylabel(sym + a1, fontsize='large', fontweight='bold', color=clr1)
             ax2.tick_params(axis='y', labelcolor=clr1)
-            ax2.plot(t, y1, '--', label=c1, color=clr1)
+
+            # hack for pressure / depth display
+            if a1 == 'Depth (m)':
+                ax2.invert_yaxis()
+
+            ax2.plot(t, y1, '--', label=a1, color=clr1)
             ax2.set_xticks(lbs)
 
         # common labels MUST be formatted here, at the end
         # cnv.figure.legend(bbox_to_anchor=[0.9, 0.5], loc='center right')
-        ax.set_xticklabels(plot_format_time_labels(lbs, ts))
-        ax.set_xticks(lbs)
+        ax1.set_xticklabels(plot_format_time_labels(lbs, ts))
+        ax1.set_xticks(lbs)
         cnv.draw()
         return True
 
-ddh_p = DeckDataHubPLT
 
+ddh_p = DeckDataHubPLT

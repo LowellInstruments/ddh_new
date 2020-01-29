@@ -41,23 +41,23 @@ class DeckDataHubGPS:
 
         # no frame at all, piggyback USB status in error message
         if frame is None:
-            t = 'No GPS\nin USB port'
+            t = 'GPS: missing'
             if find_port():
-                t = 'Low GPS signal'
+                t = 'GPS: searching...'
             signals.gps_update.emit(False, t, None)
             return
 
         # frame, but an incomplete one
         if not frame.latitude or not frame.longitude:
             t = 'No lat, lon info in frame'
-            signals.gps_update.emit(False, t, None)
+            signals.error.emit(False, t, None)
             return
 
         # get coordinates to 6 decimals
         lat = '{:8.6f}'.format(float(frame.latitude))
         lon = '{:8.6f}'.format(float(frame.longitude))
         DeckDataHubGPS.gps_last = [lat, lon, datetime.datetime.now()]
-        signals.status.emit('GPS: obtained lat, lon')
+        signals.status.emit('GPS: got lat, lon')
         signals.gps_update.emit(True, lat, lon)
 
     @staticmethod
