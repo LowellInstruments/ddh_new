@@ -43,7 +43,7 @@ class DeckDataHubGPS:
         if frame is None:
             t = 'GPS: missing'
             if find_port():
-                t = 'GPS: searching...'
+                t = 'GPS: searching'
             signals.gps_update.emit(False, t, None)
             return
 

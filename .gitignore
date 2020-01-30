@@ -3,6 +3,4 @@ __pycache__/
 apps/__pycache__/
 ddh.lo*
 ddh*.db
-*.lid
-*.csv
 venv/

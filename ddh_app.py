@@ -70,7 +70,6 @@ class DDHQtApp(QMainWindow):
         singleton.SingleInstance()
         assert sys.version_info >= (3, 5)
         assert json_check_config_file()
-        assert ensure_only_one_ddh()
 
         # data bases and logs
         if os.path.exists('ddh_plt.db'):
@@ -554,15 +553,3 @@ def set_g_num_lg(t):
 def get_g_num_lg():
     global g_num_lg
     return g_num_lg
-
-
-def ensure_only_one_ddh():
-    import fcntl
-    pid_file = '/tmp/ddh.pid'
-    fp = open(pid_file, 'w')
-    try:
-        fcntl.lockf(fp, fcntl.LOCK_EX | fcntl.LOCK_NB)
-    except IOError:
-        print('Only 1 daemon_radar allowed to run')
-        sys.exit(0)
-    return True
