@@ -3,20 +3,16 @@ import subprocess
 import sys
 
 
-def ensure_only_one_process():
-    try:
-        rv = subprocess.check_output(["pgrep", "-f", "ddh_main.py"])
-        rv = rv.split()
-        if len(rv) > 1:
-            print('python --> some ddh_main.py already running')
-        sys.exit(1)
-    except subprocess.CalledProcessError:
-        # pgrep failed, so no process ddh_main.py detected
-        main()
-
-
 def main():
     run_app.run_app()
+
+
+def ensure_only_one_process():
+    rv = subprocess.run(['pgrep', '-f', 'ddh_main.py'])
+    if rv.returncode == 0:
+        print('python --> some ddh_main.py already running')
+        sys.exit(1)
+    main()
 
 
 if __name__ == "__main__":
