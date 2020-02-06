@@ -9,8 +9,8 @@ export DISPLAY=:0
 
 
 # ensure only 1 instance of this bash script
-ps aux | grep ddh_main | grep -v grep
-if [ $? -ne 0 ]; then
+pgrep -f ddh_main.py
+if [ $? -eq 0 ]; then
     echo "some DDH already running"
     echo
     exit 1

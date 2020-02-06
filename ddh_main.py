@@ -1,19 +1,14 @@
 import ddh_app as run_app
+import subprocess
+import sys
 
 
 def ensure_only_one_process():
-    from os import remove
-    from os.path import splitext
-    import fcntl
-    lock_filename = '{}.lock'.format(splitext(__file__)[0])
-    with open(lock_filename, 'w') as lock_file:
-        try:
-            fcntl.flock(lock_file, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        except IOError:
-            return
-        else:
-            main()
-    remove(lock_filename)
+    rv = subprocess.check_output(["pgrep", "-f", "ddh_main.py"])
+    rv = rv.split()
+    if len(rv) > 1:
+        print('one ddh_main already present')
+        sys.exit(1)
 
 
 def main():
