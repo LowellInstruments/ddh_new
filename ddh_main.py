@@ -4,11 +4,15 @@ import sys
 
 
 def ensure_only_one_process():
-    rv = subprocess.check_output(["pgrep", "-f", "ddh_main.py"])
-    rv = rv.split()
-    if len(rv) > 1:
-        print('one ddh_main already present')
+    try:
+        rv = subprocess.check_output(["pgrep", "-f", "ddh_main.py"])
+        rv = rv.split()
+        if len(rv) > 1:
+            print('python --> some ddh_main.py already running')
         sys.exit(1)
+    except subprocess.CalledProcessError:
+        # pgrep failed, so no process ddh_main.py detected
+        main()
 
 
 def main():

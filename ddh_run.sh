@@ -11,7 +11,7 @@ export DISPLAY=:0
 # ensure only 1 instance of this bash script
 pgrep -f ddh_main.py
 if [ $? -eq 0 ]; then
-    echo "some DDH already running"
+    echo "bash --> some DDH already running"
     echo
     exit 1
 fi
