@@ -54,7 +54,6 @@ class DeckDataHubPLT:
 
     @staticmethod
     def plt_plot(signals, folder, cnv, ts, pairs_of_metrics):
-        f = folder.split('/')[-1]
         lg = json_mac_dns(mac_from_folder(folder))
         signals.clk_start.emit()
         signals.plt_start.emit()
@@ -66,10 +65,11 @@ class DeckDataHubPLT:
                 signals.clk_end.emit()
                 return
             else:
-                a = (pair, ts, lg, f)
-                e = 'PLT: no {}({}) plots for \'{}\'({})'.format(*a)
-                signals.error.emit(e)
-                signals.plt_msg.emit(e)
+                a = (pair, ts, lg)
+                e1 = 'PLT: no {}({}) plots for \'{}\''.format(*a)
+                signals.error.emit(e1)
+                e2 = 'No {}{}({}) data for {}'.format(pair[0], pair[1], ts, lg)
+                signals.plt_msg.emit(e2)
 
         # we could not plot any pair of metrics
         signals.plt_result.emit(False)
@@ -93,25 +93,26 @@ class DeckDataHubPLT:
         try:
             t, y0 = DeckDataHubPLT._db_cache_maybe(signals, folder, ts, m_p[0])
         except (AttributeError, Exception):
-            e = 'PLT: no {}({}) for {}'.format(m_p[0], ts, f)
-            signals.error.emit(e)
-            signals.plt_msg.emit(e)
+            e1 = 'PLT: no {}({}) for {}'.format(m_p[0], ts, f)
+            signals.error.emit(e1)
+            e2 = 'No {}({}) data for {}'.format(m_p[0], ts, f)
+            signals.plt_msg.emit(e2)
             return False
 
         # query DB for 2nd metric in pair, not critical
         try:
             _, y1 = DeckDataHubPLT._db_cache_maybe(signals, folder, ts, m_p[1])
         except (AttributeError, Exception):
-            e = 'PLT: no {}({}) for {}'.format(m_p[1], ts, f)
+            e1 = 'PLT: no {}({}) for {}'.format(m_p[1], ts, f)
             y1 = None
-            signals.error.emit(e)
-            signals.plt_msg.emit(e)
+            signals.error.emit(e1)
 
         # need at least two points to plot a 1st data line
         if np.count_nonzero(~np.isnan(y0)) < 2:
-            e = 'PLT: few {}({}) data for {}'.format(m_p, ts, f)
-            signals.error.emit(e)
-            signals.plt_msg.emit(e)
+            e1 = 'PLT: few {}({}) data for {}'.format(m_p, ts, f)
+            signals.error.emit(e1)
+            e2 = 'Few {}{}() data to plot {}'.format(m_p[0], m_p[1], ts, f)
+            signals.plt_msg.emit(e2)
             return False
 
         # prepare for plotting 1st data y0

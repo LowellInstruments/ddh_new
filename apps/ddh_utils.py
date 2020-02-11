@@ -11,16 +11,7 @@ from logzero import logger as console_log
 from mat.data_converter import DataConverter, default_parameters
 import pandas as pd
 import numpy as np
-
-
-span_dict = {
-    # unit: slices,     mm / slice,     mm / unit,  format,     ticks skip
-    'h':    [12,        5,              60,         '%H:%M',    1],
-    'd':    [48,        30,             1440,       '%H',       2],
-    'w':    [14,        720,            10080,      '%m/%d',    2],
-    'm':    [31,        1440,           43800,      '%d',       1],
-    'y':    [12,        43800,          525600,     '%b %y',    1]
-}
+import json
 
 
 def linux_set_time_from_gps(when):
@@ -75,7 +66,6 @@ def update_dl_folder_list():
 
 
 def json_check_config_file():
-    import json
     try:
         with open('ddh.json') as f:
             cfg = json.load(f)
@@ -87,39 +77,41 @@ def json_check_config_file():
 
 
 def json_get_ship_name():
-    import json
     try:
         with open('ddh.json') as f:
-            ddh_cfg_string = json.load(f)
-            return ddh_cfg_string['ship_info']['name']
+            cfg = json.load(f)
+            return cfg['ship_info']['name']
     except TypeError:
         return 'Unnamed ship'
 
 
 def json_get_mac_filter():
-    import json
     try:
         with open('ddh.json') as f:
-            ddh_cfg_string = json.load(f)
-            return [x.lower() for x in ddh_cfg_string['db_logger_macs'].keys()]
+            cfg = json.load(f)
+            return [x.lower() for x in cfg['db_logger_macs'].keys()]
     except TypeError:
         return 'Unnamed ship'
 
 
 def json_get_metrics():
-    import json
     with open('ddh.json') as f:
-        ddh_cfg_string = json.load(f)
-        return ddh_cfg_string['metrics']
+        cfg = json.load(f)
+        return cfg['metrics']
+
+
+def json_get_span_dict():
+    with open('ddh.json') as f:
+        cfg = json.load(f)
+        return cfg['span_dict']
 
 
 def json_mac_dns(logger_mac):
-    import json
     name = 'unnamed_logger'
     try:
         with open('ddh.json') as f:
-            ddh_cfg_string = json.load(f)
-            name = ddh_cfg_string['db_logger_macs'][logger_mac]
+            cfg = json.load(f)
+            name = cfg['db_logger_macs'][logger_mac]
     except (FileNotFoundError, TypeError, KeyError):
         pass
     return name
@@ -180,6 +172,7 @@ def off_mm(t, mm):
 def rm_df_before(df, span, c):
     try:
         # get ending (e) time and adjusted (a) starting (s) time
+        span_dict = json_get_span_dict()
         e = df['ISO 8601 Time'].values[-1]
         s = off_mm(e, -1 * span_dict[span][2])
         a = df['ISO 8601 Time'].values[0]
@@ -197,6 +190,7 @@ def rm_df_before(df, span, c):
 
 # t is time series, d data series
 def slice_n_avg(t, d, span):
+    span_dict = json_get_span_dict()
     n_slices = span_dict[span][0]
     step_mm = span_dict[span][1]
     if t is None:
@@ -231,12 +225,14 @@ def slice_n_avg(t, d, span):
 def plot_format_time_labels(t, span):
     lb = []
     for each in t:
+        span_dict = json_get_span_dict()
         fmt_t = iso8601.parse_date(each).strftime(span_dict[span][3])
         lb.append(fmt_t)
     return lb
 
 
 def plot_format_time_ticks(t, span):
+    span_dict = json_get_span_dict()
     return t[::(span_dict[span][4])]
 
 
@@ -273,6 +269,7 @@ def plot_metric_to_column_name(metric):
 
     }
     return metric_dict[metric]
+
 
 def plot_metric_to_label_name(metric):
     metric_dict = {

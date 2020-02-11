@@ -1,9 +1,8 @@
 {
     "db_logger_macs": {
-    	"04:ee:03:6c:ef:49": "Red Wire",
-		"11:22:33:44:55:66": "TD-enabled",
-		"ff:ff:ff:ff:ff:ff": "Test Logger",
-		"04:ee:03:6c:ef:e0": "DO-enabled"
+		"ff:ff:ff:ff:ff:ff": "0xffffff",
+		"04:ee:03:6c:ef:e0": "0x6cefe0",
+		"11:22:33:44:55:66": "0x445566"
 	},
     "ship_info":
     {
@@ -12,5 +11,13 @@
 	"metrics": [
 		["T", "P"],
 		["DOS", "DOT"]
-	]
+	],
+	"comment": "unit: slices, mm / slice, mm / unit,  format, ticks skip",
+	"span_dict": {
+		"h":    [4,         15,             60,         "%H:%M",    1],
+		"d":    [48,        30,             1440,       "%H",       2],
+		"w":    [14,        720,            10080,      "%m/%d",    2],
+		"m":    [31,        1440,           43800,      "%d",       1],
+		"y":    [12,        43800,          525600,     "%b %y",    1]
+	}
 }
