@@ -512,12 +512,13 @@ class DDHQtApp(QMainWindow):
 
     @pyqtSlot(name='slot_clk_start')
     def slot_clk_start(self):
-        self.clk_start_time = time.clock()
+        self.clk_start_time = time.perf_counter()
 
     @pyqtSlot(name='slot_clk_end')
     def slot_clk_end(self):
-        elapsed_time = int((time.clock() - self.clk_start_time) * 1000)
-        t = 'SYS: elapsed time {} ms'.format(elapsed_time)
+        el = time.perf_counter() - self.clk_start_time
+        el = int(el * 1000)
+        t = 'SYS: elapsed time {} ms'.format(el)
         console_log.debug(t)
 
     @pyqtSlot(str, str, str, name='slot_his_update')

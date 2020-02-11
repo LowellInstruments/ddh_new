@@ -4,7 +4,6 @@ import os
 import datetime
 from mat.logger_controller import (
     STATUS_CMD,
-    STOP_CMD,
     RWS_CMD,
     SWS_CMD
 )
@@ -81,7 +80,7 @@ class DeckDataHubBLE:
         lc_ble = None
         dl_logger_ok = False
 
-        # prevent this from working on-demand
+        # allow this to work on-demand
         if not DeckDataHubBLE.dl_flag:
             return
 
@@ -136,6 +135,12 @@ class DeckDataHubBLE:
         num = 0
         name_n_size = {}
         total_size = 0
+
+        # list may return b'ERR' if running
+        if files == [b'ERR']:
+            e = 'ls() returned ERR'
+            raise ble.BTLEException(e)
+
         for each in files.items():
             name = each[0]
             size = each[1]
@@ -212,10 +217,9 @@ class DeckDataHubBLE:
         if not answer or b'ERR' in answer:
             raise ble.BTLEException(answer)
 
-    # files: list_lid_files() one logger
     @staticmethod
     def _pre_dl_ls(lc_ble, signals, pre_rm=False):
-        # remove files, useful for debug, label ***
+        # pre_rm = remove local files, useful for debug
         mac = lc_ble.per.addr
         if pre_rm:
             _rm_folder(mac)
