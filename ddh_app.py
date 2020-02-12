@@ -524,6 +524,8 @@ class DDHQtApp(QMainWindow):
         frm = '%m/%d/%y %H:%M:%S'
         frm_t = datetime.datetime.now().strftime(frm)
         db = DBHis()
+        if lat is None or lat == '':
+            lat, lon = 'N/A', 'N/A'
         db.safe_update(mac, name, lat, lon, frm_t)
         self.his_tab_populate()
 
