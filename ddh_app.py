@@ -136,7 +136,6 @@ class DDHQtApp(QMainWindow):
         self.thread_pool.start(self.th_ble)
         self.thread_pool.start(self.th_gps)
 
-
         # particular hardware stuff
         if linux_detect_raspberry():
             def button1_pressed_cb():
@@ -187,7 +186,6 @@ class DDHQtApp(QMainWindow):
             self.ui.img_ble.setPixmap(QPixmap('gui/res/img_blue_color.png'))
         else:
             self.ui.img_ble.setPixmap(QPixmap('gui/res/img_blue.png'))
-
 
     def his_tab_populate(self):
         # clear everything
@@ -465,15 +463,14 @@ class DDHQtApp(QMainWindow):
             self.ui.lbl_gps.setText(e)
             console_log.info(e)
 
-
     @pyqtSlot(bool, str, name='slot_internet_result')
     def slot_internet_result(self, we_have, internet_source):
         if we_have:
-            self.ui.lbl_internet.setText('Internet\nconnected')
-            t = 'SYS: we have internet access'
+            self.ui.lbl_internet.setText('Internet\nOK')
+            t = 'SYS: internet OK'
         else:
             self.ui.lbl_internet.setText('Internet\ndisconnected')
-            t = 'SYS: NO internet connection'
+            t = 'SYS: NO internet'
         console_log.info(t)
 
     @pyqtSlot(str, name='slot_gui_tick')

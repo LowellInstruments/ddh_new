@@ -139,8 +139,6 @@ class DeckDataHubGPS:
             # try to get a gps RMC frame for some time or return None
             return gps.get_gps_info(3)
         else:
-            status = 'GPS: no receiver found'
-            signals.status.emit(status)
             return None
 
 

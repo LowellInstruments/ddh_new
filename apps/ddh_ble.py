@@ -54,7 +54,7 @@ class DeckDataHubBLE:
                 DeckDataHubBLE.B_LIST.pop(key)
             else:
                 yet = value - time.time()
-                t = 'BLE: {} omit for {:.2f} s'
+                t = 'BLE: omit {} for {:.2f} s'
                 signals.status.emit(t.format(key, yet))
 
         # build list w/ detected known macs NOT too recent
@@ -70,7 +70,8 @@ class DeckDataHubBLE:
                     signals.status.emit(text)
 
         # show list of loggers to query
-        signals.status.emit('BLE: {} loggers to query'.format(len(loggers)))
+        s = 'BLE: {} loggers to query'
+        signals.status.emit(s.format(len(loggers)))
         DeckDataHubBLE.LOGGERS_TO_QUERY = loggers
         signals.ble_scan_result.emit(loggers)
         return loggers
@@ -98,17 +99,20 @@ class DeckDataHubBLE:
                     s = ''
                     if lat and lon:
                         s = '{}{}'.format(lat, lon)
-                    lc_ble.command(RWS_CMD, s)
-                    t = 'BLE: RWS {}{}'.format(lat, lon)
+                    rv = lc_ble.command(RWS_CMD, s)
+                    t = 'BLE: RWS {}{} = {}'.format(lat, lon, rv)
                     signals.status.emit(t)
+
+                    # update HISTORY tab
                     signals.ble_deployed.emit(mac, lat, lon)
 
             except ble.BTLEException as be:
                 # first Linux BLE interaction may fail
                 signals.error.emit('BLE: exception {}'.format(be.message))
-                t = 'Download error, retrying in {} s'.format(DeckDataHubBLE.IGNORE_S)
+                e = 'Download error, retrying in {} s'
+                e = e.format(DeckDataHubBLE.IGNORE_S)
                 signals.error_gui.emit(t)
-                signals.error.emit('BLE: ' + t)
+                signals.error.emit('BLE: ' + e)
                 DeckDataHubBLE._ble_ignore_for(mac, DeckDataHubBLE.IGNORE_S)
             else:
                 # everything ok
@@ -185,7 +189,7 @@ class DeckDataHubBLE:
 
         # how are you
         status = lc_ble.command(STATUS_CMD)
-        signals.status.emit('BLE: status = {}'.format(status))
+        signals.status.emit('BLE: STS = {}'.format(status))
         if not status:
             raise ble.BTLEException(status)
 
@@ -210,7 +214,7 @@ class DeckDataHubBLE:
         else:
             signals.status.emit('BLE: GTM valid time')
 
-        # RN4020 loggers: CMD_CONTROL parameters BLE, CC26x2 ones will ignore this
+        # RN4020 loggers: CC26x2 ones will ignore this
         control = 'BTC 00T,0006,0000,0064'
         answer = lc_ble.command(control)
         signals.status.emit('BLE: maybe RN4020 setup = {}'.format(answer))

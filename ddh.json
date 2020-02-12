@@ -2,17 +2,18 @@
     "db_logger_macs": {
 		"ff:ff:ff:ff:ff:ff": "0xffffff",
 		"04:ee:03:6c:ef:e0": "0x6cefe0",
+		"04:EE:03:73:87:A5": "SXT010",
 		"11:22:33:44:55:66": "0x445566"
 	},
     "ship_info":
     {
-	"name": "Maggie Sue"
+		"name": "Maggie Sue"
     },
+	"cmt_metrics": [["T", "P"], ["DOS", "DOT"]],
 	"metrics": [
-		["T", "P"],
 		["DOS", "DOT"]
 	],
-	"comment": "unit: slices, mm / slice, mm / unit,  format, ticks skip",
+	"cmt_span_dict": "unit: slices, mm / slice, mm / unit,  format, ticks skip",
 	"span_dict": {
 		"h":    [4,         15,             60,         "%H:%M",    1],
 		"d":    [48,        30,             1440,       "%H",       2],
