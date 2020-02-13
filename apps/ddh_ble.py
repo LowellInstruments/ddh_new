@@ -112,7 +112,7 @@ class DeckDataHubBLE:
                 signals.error.emit('BLE: exception {}'.format(be.message))
                 e = 'Download error, retrying in {} s'
                 e = e.format(ddh_ble.IGNORE_S)
-                signals.error_gui.emit(t)
+                signals.error_gui.emit(e)
                 signals.error.emit('BLE: ' + e)
                 ddh_ble._ble_ignore_for(mac, ddh_ble.IGNORE_S)
             else:
@@ -151,6 +151,7 @@ class DeckDataHubBLE:
         # what time do you have
         logger_time = lc_ble.get_time()
         if not logger_time:
+            print(logger_time)
             raise ble.BTLEException(logger_time)
         difference = datetime.datetime.now() - logger_time
         if abs(difference.total_seconds()) > 60:
