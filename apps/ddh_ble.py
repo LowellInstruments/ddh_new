@@ -11,31 +11,32 @@ from mat.logger_controller_ble import (
     LoggerControllerBLE as LoggerControllerBLE
 )
 from apps.ddh_gps import DeckDataHubGPS
+from apps.ddh_utils import json_get_forget_time_secs
 
 
 class DeckDataHubBLE:
 
     WANTED_FILE_TYPES = '.lid'
-    B_LIST = {}
-    FORGET_S = 600
+    BLK_LIST = {}
+    FORGET_S = json_get_forget_time_secs()
     IGNORE_S = 30
     LOGGERS_TO_QUERY = []
     dl_flag = False
 
     @staticmethod
     def ble_toggle_dl():
-        DeckDataHubBLE.dl_flag = not DeckDataHubBLE.dl_flag
-        return DeckDataHubBLE.dl_flag
+        ddh_ble.dl_flag = not ddh_ble.dl_flag
+        return ddh_ble.dl_flag
 
     @staticmethod
     def _ble_ignore_for(mac, seconds):
-        DeckDataHubBLE.B_LIST[mac] = time.time() + seconds
+        ddh_ble.BLK_LIST[mac] = time.time() + seconds
 
     @staticmethod
     def ble_loop(signals, ble_mac_filter):
         while 1:
-            if DeckDataHubBLE._ble_scan_loggers(signals, ble_mac_filter):
-                DeckDataHubBLE._ble_dl_loggers(signals)
+            if ddh_ble._ble_scan_loggers(signals, ble_mac_filter):
+                ddh_ble._ble_dl_loggers(signals)
             time.sleep(2)
 
     @staticmethod
@@ -49,9 +50,9 @@ class DeckDataHubBLE:
             return []
 
         # purge outdated connections, _ble_dl_files() refreshes this
-        for key, value in list(DeckDataHubBLE.B_LIST.items()):
+        for key, value in list(ddh_ble.BLK_LIST.items()):
             if time.time() > value:
-                DeckDataHubBLE.B_LIST.pop(key)
+                ddh_ble.BLK_LIST.pop(key)
             else:
                 yet = value - time.time()
                 t = 'BLE: omit {} for {:.2f} s'
@@ -61,7 +62,7 @@ class DeckDataHubBLE:
         loggers = []
         for dev in list_all_ble:
             d = dev.addr
-            if d in ble_mac_filter and d not in DeckDataHubBLE.B_LIST:
+            if d in ble_mac_filter and d not in ddh_ble.BLK_LIST:
                 r = int(dev.rssi)
                 if r > -90:
                     loggers.append(dev.addr)
@@ -72,7 +73,7 @@ class DeckDataHubBLE:
         # show list of loggers to query
         s = 'BLE: {} loggers to query'
         signals.status.emit(s.format(len(loggers)))
-        DeckDataHubBLE.LOGGERS_TO_QUERY = loggers
+        ddh_ble.LOGGERS_TO_QUERY = loggers
         signals.ble_scan_result.emit(loggers)
         return loggers
 
@@ -82,25 +83,25 @@ class DeckDataHubBLE:
         dl_logger_ok = False
 
         # allow this to work on-demand
-        if not DeckDataHubBLE.dl_flag:
+        if not ddh_ble.dl_flag:
             return
 
         # query every logger
-        for counter, mac in enumerate(DeckDataHubBLE.LOGGERS_TO_QUERY):
+        for counter, mac in enumerate(ddh_ble.LOGGERS_TO_QUERY):
             try:
                 signals.status.emit('BLE: connecting {}'.format(mac))
                 signals.ble_dl_session.emit(
-                    mac, counter + 1, len(DeckDataHubBLE.LOGGERS_TO_QUERY))
+                    mac, counter + 1, len(ddh_ble.LOGGERS_TO_QUERY))
 
                 # download + restart logger
                 with LoggerControllerBLE(mac) as lc_ble:
-                    DeckDataHubBLE._ble_dl_files(lc_ble, signals, pre_rm=False)
-                    lat, lon = DeckDataHubGPS.gps_get_last()
-                    s = ''
+                    ddh_ble._ble_dl_files(lc_ble, signals, pre_rm=False)
+                    lat, lon = DeckDataHubGPS.gps_get_last(signals)
+                    s = 'N/A'
                     if lat and lon:
                         s = '{}{}'.format(lat, lon)
                     rv = lc_ble.command(RWS_CMD, s)
-                    t = 'BLE: RWS {}{} = {}'.format(lat, lon, rv)
+                    t = 'BLE: RWS {} = {}'.format(s, rv)
                     signals.status.emit(t)
 
                     # update HISTORY tab
@@ -110,13 +111,13 @@ class DeckDataHubBLE:
                 # first Linux BLE interaction may fail
                 signals.error.emit('BLE: exception {}'.format(be.message))
                 e = 'Download error, retrying in {} s'
-                e = e.format(DeckDataHubBLE.IGNORE_S)
+                e = e.format(ddh_ble.IGNORE_S)
                 signals.error_gui.emit(t)
                 signals.error.emit('BLE: ' + e)
-                DeckDataHubBLE._ble_ignore_for(mac, DeckDataHubBLE.IGNORE_S)
+                ddh_ble._ble_ignore_for(mac, ddh_ble.IGNORE_S)
             else:
-                # everything ok
-                DeckDataHubBLE._ble_ignore_for(mac, DeckDataHubBLE.FORGET_S)
+                # everything ok, don't query again in long time
+                ddh_ble._ble_ignore_for(mac, ddh_ble.FORGET_S)
                 dl_logger_ok = True
             finally:
                 signals.status.emit('BLE: disconnecting {}'.format(mac))
@@ -127,24 +128,76 @@ class DeckDataHubBLE:
         signals.ble_dl_session_.emit('All loggers\ndone')
         return dl_logger_ok
 
+    @staticmethod
+    def _pre_dl_configuration(lc_ble, signals):
+        signals.ble_dl_logger.emit()
+
+        # how are you
+        status = lc_ble.command(STATUS_CMD)
+        signals.status.emit('BLE: STS = {}'.format(status))
+        if not status:
+            raise ble.BTLEException(status)
+
+        # stop you, with string
+        lat, lon = DeckDataHubGPS.gps_get_last(signals)
+        s = 'N/A'
+        if lat and lon:
+            s = '{}{}'.format(lat, lon)
+        ans = lc_ble.command(SWS_CMD, s)
+        signals.status.emit('BLE: SWS {} = {}'.format(s, ans))
+        if not ans:
+            raise ble.BTLEException(status)
+
+        # what time do you have
+        logger_time = lc_ble.get_time()
+        if not logger_time:
+            raise ble.BTLEException(logger_time)
+        difference = datetime.datetime.now() - logger_time
+        if abs(difference.total_seconds()) > 60:
+            lc_ble.sync_time()
+            signals.status.emit('BLE: GTM sync {}'.format(lc_ble.get_time()))
+        else:
+            signals.status.emit('BLE: GTM valid time')
+
+        # RN4020 loggers: CC26x2 ones will ignore this
+        control = 'BTC 00T,0006,0000,0064'
+        ans = lc_ble.command(control)
+        signals.status.emit('BLE: maybe RN4020 setup = {}'.format(ans))
+        if not ans or b'ERR' in ans:
+            raise ble.BTLEException(ans)
+
+    @staticmethod
+    def _pre_dl_ls(lc_ble, signals, pre_rm=False):
+        # pre_rm = remove local files, useful for debug
+        mac = lc_ble.per.addr
+        if pre_rm:
+            _rm_folder(mac)
+            signals.warning.emit('SYS: local rm {} files'.format(mac))
+        folder = _create_folder(mac)
+        lid_files = lc_ble.ls_ext(b'lid')
+        gps_files = lc_ble.ls_ext(b'gps')
+        if lid_files == [b'ERR'] or gps_files == [b'ERR']:
+            e = 'ls() returned ERR'
+            raise ble.BTLEException(e)
+        files = lid_files
+        files.update(gps_files)
+        signals.status.emit('BLE: ls = {}'.format(files))
+        return folder, files
+
     # download files from this logger
     @staticmethod
     def _ble_dl_files(lc_ble, signals, pre_rm=False):
         # setup logger
-        DeckDataHubBLE._pre_dl_configuration(lc_ble, signals)
+        ddh_ble._pre_dl_configuration(lc_ble, signals)
         mac = lc_ble.address
 
         # list files
-        folder, files = DeckDataHubBLE._pre_dl_ls(lc_ble, signals, pre_rm)
+        folder, files = ddh_ble._pre_dl_ls(lc_ble, signals, pre_rm)
         num = 0
         name_n_size = {}
         total_size = 0
 
-        # list may return b'ERR' if running
-        if files == [b'ERR']:
-            e = 'ls() returned ERR'
-            raise ble.BTLEException(e)
-
+        # compare to local files to skip downloading existing ones
         for each in files.items():
             name = each[0]
             size = each[1]
@@ -183,56 +236,6 @@ class DeckDataHubBLE:
         # all files from this logger downloaded ok
         signals.ble_dl_logger_.emit(lc_ble.address, counter)
 
-    @staticmethod
-    def _pre_dl_configuration(lc_ble, signals):
-        signals.ble_dl_logger.emit()
-
-        # how are you
-        status = lc_ble.command(STATUS_CMD)
-        signals.status.emit('BLE: STS = {}'.format(status))
-        if not status:
-            raise ble.BTLEException(status)
-
-        # stop you, with string
-        lat, lon = DeckDataHubGPS.gps_get_last()
-        s = ''
-        if lat and lon:
-            s = '{}{}'.format(lat, lon)
-        answer = lc_ble.command(SWS_CMD, s)
-        signals.status.emit('BLE: SWS {}{} = {}'.format(lat, lon, answer))
-        if not answer:
-            raise ble.BTLEException(status)
-
-        # what time do you have
-        logger_time = lc_ble.get_time()
-        if not logger_time:
-            raise ble.BTLEException(logger_time)
-        difference = datetime.datetime.now() - logger_time
-        if abs(difference.total_seconds()) > 60:
-            lc_ble.sync_time()
-            signals.status.emit('BLE: GTM sync {}'.format(lc_ble.get_time()))
-        else:
-            signals.status.emit('BLE: GTM valid time')
-
-        # RN4020 loggers: CC26x2 ones will ignore this
-        control = 'BTC 00T,0006,0000,0064'
-        answer = lc_ble.command(control)
-        signals.status.emit('BLE: maybe RN4020 setup = {}'.format(answer))
-        if not answer or b'ERR' in answer:
-            raise ble.BTLEException(answer)
-
-    @staticmethod
-    def _pre_dl_ls(lc_ble, signals, pre_rm=False):
-        # pre_rm = remove local files, useful for debug
-        mac = lc_ble.per.addr
-        if pre_rm:
-            _rm_folder(mac)
-            signals.warning.emit('SYS: local rm {} files'.format(mac))
-        folder = _create_folder(mac)
-        files = lc_ble.ls_lid()
-        signals.status.emit('BLE: ls = {}'.format(files))
-        return folder, files
-
 
 def _create_folder(folder_name):
     folder_name = 'dl_files/' + folder_name.replace(':', '-').lower() + '/'
@@ -252,3 +255,7 @@ def _rm_folder(mac):
     import shutil
     folder_name = 'dl_files/' + mac.replace(':', '-').lower() + '/'
     shutil.rmtree(folder_name, ignore_errors=True)
+
+
+# shorten name
+ddh_ble = DeckDataHubBLE

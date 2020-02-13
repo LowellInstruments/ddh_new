@@ -85,6 +85,15 @@ def json_get_ship_name():
         return 'Unnamed ship'
 
 
+def json_get_forget_time_secs():
+    try:
+        with open('ddh.json') as f:
+            cfg = json.load(f)
+            return int(cfg['forget_time'])
+    except TypeError:
+        return 'Unnamed ship'
+
+
 def json_get_mac_filter():
     try:
         with open('ddh.json') as f:

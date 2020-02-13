@@ -18,13 +18,17 @@ class DeckDataHubGUI:
 
     @staticmethod
     def step_busy_indicator():
-        DeckDataHubGUI.idx += 1
-        DeckDataHubGUI.idx %= len(DeckDataHubGUI.sym)
-        return DeckDataHubGUI.sym[DeckDataHubGUI.idx]
+        ddh_gui.idx += 1
+        ddh_gui.idx %= len(ddh_gui.sym)
+        return ddh_gui.sym[ddh_gui.idx]
 
     @staticmethod
     def gui_loop(signals):
         while 1:
-            DeckDataHubGUI.indicator = DeckDataHubGUI.step_busy_indicator()
-            signals.gui_tick.emit(DeckDataHubGUI.indicator)
+            ddh_gui.indicator = ddh_gui.step_busy_indicator()
+            signals.gui_tick.emit(ddh_gui.indicator)
             time.sleep(1)
+
+
+# shorten name
+ddh_gui = DeckDataHubGUI

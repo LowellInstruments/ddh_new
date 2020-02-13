@@ -14,14 +14,15 @@ from serial.tools.list_ports import grep
 
 class DeckDataHubGPS:
 
-    DDH_GPS_PERIOD = 30
+    GPS_PERIOD = 30
+    GPS_FRESH_HOLD = 30
     gps_last = [None, None, None]
 
     @staticmethod
     def gps_loop(signals, ddh_gps_period):
         # force sync upon program / thread starts
-        DeckDataHubGPS._gps_get_lan_n_lon(signals)
-        DeckDataHubGPS._sync_sys_clock_gps_or_internet(signals)
+        ddh_gps._gps_get_lat_n_lon(signals)
+        ddh_gps._sync_sys_clock_gps_or_internet(signals)
         gps_timeout = ddh_gps_period
 
         while 1:
@@ -30,14 +31,29 @@ class DeckDataHubGPS:
             else:
                 gps_timeout = ddh_gps_period
             if gps_timeout == 0:
-                DeckDataHubGPS._sync_sys_clock_gps_or_internet(signals)
-                DeckDataHubGPS._gps_get_lan_n_lon(signals)
+                ddh_gps._sync_sys_clock_gps_or_internet(signals)
+                ddh_gps._gps_get_lat_n_lon(signals)
             time.sleep(1)
 
+    # try getting GPRMC frame among all (GGA, GSA...)
     @staticmethod
-    def _gps_get_lan_n_lon(signals):
-        DeckDataHubGPS.gps_last = [None, None, None]
-        frame = DeckDataHubGPS._get_gps_frame(signals)
+    def _get_gps_frame(signals):
+        usb_port = find_port()
+        if usb_port:
+            status = 'GPS: USB device at {}'.format(usb_port)
+            signals.status.emit(status)
+            if sys.platform == 'linux':
+                usb_port = '/dev/' + usb_port
+            gps = GPS(usb_port)
+            # MAT library gets a gps RMC frame w/ timeout or return None
+            return gps.get_gps_info(3)
+        else:
+            return None
+
+    @staticmethod
+    def _gps_get_lat_n_lon(signals):
+        ddh_gps.gps_last = [None, None, None]
+        frame = ddh_gps._get_gps_frame(signals)
 
         # no frame at all, piggyback USB status in error message
         if frame is None:
@@ -56,7 +72,7 @@ class DeckDataHubGPS:
         # get coordinates to 6 decimals
         lat = '{:8.6f}'.format(float(frame.latitude))
         lon = '{:8.6f}'.format(float(frame.longitude))
-        DeckDataHubGPS.gps_last = [lat, lon, datetime.datetime.now()]
+        ddh_gps.gps_last = [lat, lon, datetime.datetime.now()]
         signals.status.emit('GPS: got lat, lon')
         signals.gps_update.emit(True, lat, lon)
 
@@ -65,17 +81,18 @@ class DeckDataHubGPS:
         if not t:
             return False
         n = datetime.datetime.now()
-        if (n - t).seconds < DeckDataHubGPS.DDH_GPS_PERIOD:
+        if (n - t).seconds < ddh_gps.GPS_FRESH_HOLD:
             return True
         return False
 
     @staticmethod
-    def gps_get_last():
-        g = DeckDataHubGPS.gps_last
+    def gps_get_last(signals):
+        # gps_last updated in _gps_get_lat_n_lon
+        g = ddh_gps.gps_last
         t = g[2]
         lat, lon = None, None
-        if DeckDataHubGPS._gps_is_fresh(t):
-            print('gps_fresh {}'.format(t))
+        if ddh_gps._gps_is_fresh(t):
+            signals.status.emit('GPS: is fresh {}'.format(t))
             lat, lon = g[0], g[1]
         return lat, lon
 
@@ -92,7 +109,7 @@ class DeckDataHubGPS:
             status = 'GPS: no NTP, waiting for sat frame'
             signals.status.emit(status)
             # GPS receiver on USB but may receive frame in time, OR not
-            DeckDataHubGPS._set_time_from_gps(signals)
+            ddh_gps._set_time_from_gps(signals)
             # what is sure is we don't have internet access
             signals.internet_result.emit(False, None)
 
@@ -100,7 +117,7 @@ class DeckDataHubGPS:
     @staticmethod
     def _set_time_from_gps(signals):
         # try to get GPS frame
-        frame = DeckDataHubGPS._get_gps_frame(signals)
+        frame = ddh_gps._get_gps_frame(signals)
         if frame is None:
             signals.status.emit('GPS: no frame to sync time')
             signals.gps_result.emit('Local', None, None, None)
@@ -126,21 +143,6 @@ class DeckDataHubGPS:
         linux_set_time_from_gps(time_tuple)
         return True
 
-    # try getting GPRMC frame among all (GGA, GSA...)
-    @staticmethod
-    def _get_gps_frame(signals):
-        usb_port = find_port()
-        if usb_port:
-            status = 'GPS: USB device at {}'.format(usb_port)
-            signals.status.emit(status)
-            if sys.platform == 'linux':
-                usb_port = '/dev/' + usb_port
-            gps = GPS(usb_port)
-            # try to get a gps RMC frame for some time or return None
-            return gps.get_gps_info(3)
-        else:
-            return None
-
 
 # this guarantees either a valid USB port to operate on or an Exception
 def find_port():
@@ -158,3 +160,7 @@ def find_port():
         raise RuntimeError('SYS: unsupported OS ' + sys.platform)
     return_value = re.search(pattern, field).group(1)
     return return_value
+
+
+# shorten name
+ddh_gps = DeckDataHubGPS

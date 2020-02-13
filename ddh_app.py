@@ -243,7 +243,7 @@ class DDHQtApp(QMainWindow):
         self.th_ble.signals.warning.connect(self.slot_warning)
         self.th_ble.signals.ble_deployed.connect(self.slot_his_update)
         fxn = DeckDataHubGPS.gps_loop
-        self.th_gps = DDHThread(fxn, SignalsGPS, DeckDataHubGPS.DDH_GPS_PERIOD)
+        self.th_gps = DDHThread(fxn, SignalsGPS, DeckDataHubGPS.GPS_PERIOD)
         self.th_gps.signals.status.connect(self.slot_status)
         self.th_gps.signals.error.connect(self.slot_error)
         self.th_gps.signals.gps_result.connect(self.slot_gps_result)
