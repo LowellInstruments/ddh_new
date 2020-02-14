@@ -104,7 +104,7 @@ class DBHis:
     def get_recent_records(self):
         db = sqlite3.connect(self.dbfilename)
         c = db.cursor()
-        c.execute('SELECT * from records ORDER BY sws_time')
+        c.execute('SELECT * from records ORDER BY sws_time DESC')
         records = c.fetchall()
         c.close()
         return records

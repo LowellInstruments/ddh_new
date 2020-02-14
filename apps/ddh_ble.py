@@ -21,7 +21,9 @@ class DeckDataHubBLE:
     FORGET_S = json_get_forget_time_secs()
     IGNORE_S = 30
     LOGGERS_TO_QUERY = []
-    dl_flag = False
+
+    # starts GUI with BLE downloading (en)disabled
+    dl_flag = True
 
     @staticmethod
     def ble_toggle_dl():

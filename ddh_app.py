@@ -84,15 +84,10 @@ class DDHQtApp(QMainWindow):
         self.setWindowTitle('Lowell Instruments\' Deck Data Hub')
         self.ui.lbl_plt_bsy.setVisible(False)
         self.ui.lbl_plt_msg.setVisible(False)
-        self.ui.img_time.setPixmap(QPixmap('gui/res/img_datetime.png'))
-        self.ui.img_sync.setPixmap(QPixmap('gui/res/img_sync.png'))
-        self.ui.img_boat.setPixmap(QPixmap('gui/res/img_boatname.png'))
-        self.ui.img_ble.setPixmap(QPixmap('gui/res/img_blue.png'))
-        self.ui.img_latnlon.setPixmap(QPixmap('gui/res/img_latnlon.png'))
         self.ui.img_time.setPixmap(QPixmap('gui/res/img_datetime_color.png'))
         self.ui.img_sync.setPixmap(QPixmap('gui/res/img_sync_color.png'))
         self.ui.img_boat.setPixmap(QPixmap('gui/res/img_boatname_color.png'))
-        self.ui.img_ble.setPixmap(QPixmap('gui/res/img_blue.png'))
+        self.ui.img_ble.setPixmap(QPixmap('gui/res/img_blue_color.png'))
         self.ui.img_latnlon.setPixmap(QPixmap('gui/res/img_latnlon_color.png'))
         self.ui.img_output.setPixmap(QPixmap('gui/res/img_wait_black.png'))
         self.tabs.setTabIcon(0, QIcon('gui/res/icon_info.png'))
@@ -201,11 +196,6 @@ class DDHQtApp(QMainWindow):
 
         # update with latest results
         db = DBHis()
-
-        # fake content
-        t = '2019-11-25 09:41:34.000'
-        db.safe_update('11:11:11:11:11:11', 'name_1', '-01.123456', '+02.222222', t)
-
         r = db.get_recent_records()
         for i, h in enumerate(r):
             s = '{}, {}\n{}'.format(h[3], h[4], h[5])
