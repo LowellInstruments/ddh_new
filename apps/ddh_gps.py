@@ -128,7 +128,7 @@ class DeckDataHubGPS:
         # dt_utc_zoned = dt_utc.astimezone(pytz.timezone('US/Eastern'))
         # dt_est = str(dt_utc_zoned + dt_utc_zoned.utcoffset())[:19]
 
-        # UTC time adjusted to timezone offset
+        # UTC time adjusted to our timezone offset
         off = -time.timezone
         dt_est = str(frame.timestamp + datetime.timedelta(seconds=off))
 
