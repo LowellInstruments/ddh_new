@@ -124,9 +124,15 @@ class DeckDataHubGPS:
             return False
 
         # set timezone in received datetime object and apply offset
-        dt_utc = frame.timestamp
-        dt_utc_zoned = dt_utc.astimezone(pytz.timezone('US/Eastern'))
-        dt_est = str(dt_utc_zoned + dt_utc_zoned.utcoffset())[:19]
+        # dt_utc = frame.timestamp
+        # dt_utc_zoned = dt_utc.astimezone(pytz.timezone('US/Eastern'))
+        # dt_est = str(dt_utc_zoned + dt_utc_zoned.utcoffset())[:19]
+
+        # UTC time adjusted to timezone offset
+        off = -time.timezone
+        dt_est = str(frame.timestamp + datetime.timedelta(seconds=off))
+
+        # display results
         lat, lon = str(frame.latitude), str(frame.longitude)
         signals.gps_result.emit('GPS', dt_est, lat, lon)
 
