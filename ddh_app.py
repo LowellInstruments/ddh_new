@@ -101,7 +101,7 @@ class DDHQtApp(QMainWindow):
         self.plot_canvas = FigureCanvasQTAgg(Figure(figsize=(5, 3)))
         self.ui.vl_3.addWidget(self.plot_canvas)
         self.ui.img_time.mousePressEvent = self.on_clock_click
-        self.ui.img_ble.mousePressEvent = self.on_ble_click
+        # self.ui.img_ble.mousePressEvent = self.on_ble_click
         self.ui.lbl_dbg.setText('DDH operation ok')
         self.his_tab_populate()
 
