@@ -230,6 +230,7 @@ class DeckDataHubBLE:
 
             # -------------------------
             # todo: somewhere here DEL File
+            # todo: also it is not auto plotting
             # ----------------------------
 
             if _exists_file(name, size, folder):
