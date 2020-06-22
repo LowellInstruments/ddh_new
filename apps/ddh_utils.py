@@ -149,11 +149,13 @@ def lid_to_csv(folder):
             DataConverter(bn + '.lid', parameters).convert()
 
             # generate files with timestamp
-            t = time.perf_counter()
+            t = time.time()
             t_s = time.strftime("%Y%b%d_%H%M%S", time.localtime(t))
             cp_org = '{}.csv'.format(bn)
-            cp_dst = '{}_{}.csv_'.format(bn, t_s)
-            copyfile(cp_org, cp_dst)
+            cp_dst = '_{}_{}.csv'.format(bn, t_s)
+            cp_ok = copyfile(cp_org, cp_dst)
+            if cp_ok:
+                os.remove(cp_org)
 
 
 def _metric_to_csv_suffix(metric):

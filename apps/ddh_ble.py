@@ -106,7 +106,6 @@ class DeckDataHubBLE:
             a = lc.command(STATUS_CMD)
             signals.status.emit('BLE: STS = {}'.format(a))
             if a == [b'STS', b'0201']:
-                print('{}() ok'.format(__name__))
                 break
 
             if a == [b'BSY']:
@@ -169,10 +168,9 @@ class DeckDataHubBLE:
         mac = mac.replace(':', '-')
         try:
             path = os.path.join('dl_files', mac, 'MAT.cfg')
-            print('removing logger\'s  local MAT.cfg')
             os.remove(path)
-        except OSError:
-            print('this logger has no MAT.cfg')
+        except OSError as os_e:
+            # print('logger has no previous MAT.cfg')
             pass
 
     @staticmethod
@@ -217,21 +215,22 @@ class DeckDataHubBLE:
 
             # x-modem file download, exceptions propagated to _ble_dl_loggers()
             start_time = time.time()
+            cp_bak = None
             if lc.get_file(name, folder, size):
                 signals.status.emit('BLE: got {}'.format(name))
 
                 # generate files with timestamp
-                t = time.perf_counter()
-                t_s = time.strftime("%Y%b%d_%H%M%S", time.localtime(t))
-                cp_org = '{}/{}'.format(folder, name)
-                cp_dst = '{}/{}_{}_'.format(folder, t_s, name)
-                copyfile(cp_org, cp_dst)
-            else:
-                signals.status.emit('BLE: can\'t get {}'.format(name))
-                ok = False
+                if not name.endswith('MAT.cfg'):
+                    t = time.time()
+                    t_s = time.strftime("%Y%b%d_%H%M%S", time.localtime(t))
+                    cp_org = '{}/{}'.format(folder, name)
+                    cp_bak = cp_org
+                    cp_dst = '{}/_{}_{}'.format(folder, t_s, name)
+                    copyfile(cp_org, cp_dst)
 
-            # check received file ok
             if _exists_file(name, size, folder):
+                if cp_bak and not name.endswith('MAT.cfg'):
+                    os.remove(cp_bak)
                 counter += 1
                 percent_x_size = (size / total_size) * 100
                 speed = size / (time.time() - start_time)
@@ -263,7 +262,6 @@ class DeckDataHubBLE:
             a = lc.command(STATUS_CMD)
             sig.status.emit('BLE: STS = {}'.format(a))
             if a == [b'STS', b'0200']:
-                print('{}() ok'.format(__name__))
                 break
 
         # update history tab
