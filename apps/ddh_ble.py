@@ -228,6 +228,10 @@ class DeckDataHubBLE:
                     cp_dst = '{}/_{}_{}'.format(folder, t_s, name)
                     copyfile(cp_org, cp_dst)
 
+            # -------------------------
+            # todo: somewhere here DEL File
+            # ----------------------------
+
             if _exists_file(name, size, folder):
                 if cp_bak and not name.endswith('MAT.cfg'):
                     os.remove(cp_bak)
