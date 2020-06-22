@@ -1,3 +1,5 @@
+import json
+from shutil import copyfile
 import bluepy.btle as ble
 import time
 import os
@@ -33,13 +35,6 @@ class DeckDataHubBLE:
     @staticmethod
     def _ble_ignore_for(mac, seconds):
         ddh_ble.BLK_LIST[mac] = time.time() + seconds
-
-    @staticmethod
-    def ble_loop(signals, ble_mac_filter):
-        while 1:
-            if ddh_ble._ble_scan_loggers(signals, ble_mac_filter):
-                ddh_ble._ble_dl_loggers(signals)
-            time.sleep(2)
 
     @staticmethod
     def _ble_scan_loggers(signals, ble_mac_filter):
@@ -80,98 +75,71 @@ class DeckDataHubBLE:
         return loggers
 
     @staticmethod
-    def _ble_dl_loggers(signals):
-        lc_ble = None
-        dl_logger_ok = False
-
-        # allow this to work on-demand
-        if not ddh_ble.dl_flag:
+    def _ensure_stop_w_string(lc, signals):
+        # first status, maybe already stopped
+        # -----------------------------------
+        a = lc.command(STATUS_CMD)
+        signals.status.emit('BLE: STS = {}'.format(a))
+        if a == [b'STS', b'0201']:
             return
 
-        # query every logger
-        for counter, mac in enumerate(ddh_ble.LOGGERS_TO_QUERY):
-            try:
-                signals.status.emit('BLE: connecting {}'.format(mac))
-                signals.ble_dl_session.emit(
-                    mac, counter + 1, len(ddh_ble.LOGGERS_TO_QUERY))
-
-                # download + restart logger
-                with LoggerControllerBLE(mac) as lc_ble:
-                    ddh_ble._ble_dl_files(lc_ble, signals, pre_rm=False)
-                    lat, lon = DeckDataHubGPS.gps_get_last(signals)
-                    s = 'N/A'
-                    if lat and lon:
-                        s = '{}{}'.format(lat, lon)
-                    rv = lc_ble.command(RWS_CMD, s)
-                    t = 'BLE: RWS {} = {}'.format(s, rv)
-                    signals.status.emit(t)
-
-                    # update HISTORY tab
-                    signals.ble_deployed.emit(mac, lat, lon)
-
-            except ble.BTLEException as be:
-                # first Linux BLE interaction may fail
-                signals.error.emit('BLE: exception {}'.format(be.message))
-                e = 'Download error, retrying in {} s'
-                e = e.format(ddh_ble.IGNORE_S)
-                signals.error_gui.emit(e)
-                signals.error.emit('BLE: ' + e)
-                ddh_ble._ble_ignore_for(mac, ddh_ble.IGNORE_S)
-            else:
-                # everything ok, don't query again in long time
-                ddh_ble._ble_ignore_for(mac, ddh_ble.FORGET_S)
-                dl_logger_ok = True
-            finally:
-                signals.status.emit('BLE: disconnecting {}'.format(mac))
-                if lc_ble:
-                    lc_ble.close()
-
-        signals.status.emit('BLE: all loggers done')
-        signals.ble_dl_session_.emit('All loggers\ndone')
-        return dl_logger_ok
-
-    @staticmethod
-    def _pre_dl_configuration(lc_ble, signals):
-        signals.ble_dl_logger.emit()
-
-        # how are you
-        status = lc_ble.command(STATUS_CMD)
-        signals.status.emit('BLE: STS = {}'.format(status))
-        if not status:
-            raise ble.BTLEException(status)
-
-        # stop you, with string
+        # get GPS coordinates
+        # -------------------
         lat, lon = DeckDataHubGPS.gps_get_last(signals)
         s = 'N/A'
         if lat and lon:
             s = '{}{}'.format(lat, lon)
-        ans = lc_ble.command(SWS_CMD, s)
-        signals.status.emit('BLE: SWS {} = {}'.format(s, ans))
-        if not ans:
-            raise ble.BTLEException(status)
 
-        # what time do you have
-        logger_time = lc_ble.get_time()
-        if not logger_time:
-            print(logger_time)
-            raise ble.BTLEException(logger_time)
-        difference = datetime.datetime.now() - logger_time
-        if abs(difference.total_seconds()) > 60:
-            lc_ble.sync_time()
-            signals.status.emit('BLE: GTM sync {}'.format(lc_ble.get_time()))
-        else:
-            signals.status.emit('BLE: GTM valid time')
+        # stop you, with string
+        # ---------------------
+        a = lc.command(SWS_CMD, s)
+        signals.status.emit('BLE: SWS {} = {}'.format(s, a))
 
-        # RN4020 loggers: CC26x2 ones will ignore this
-        control = 'BTC 00T,0006,0000,0064'
-        ans = lc_ble.command(control)
-        signals.status.emit('BLE: maybe RN4020 setup = {}'.format(ans))
-        if not ans or b'ERR' in ans:
-            raise ble.BTLEException(ans)
+        # status, should be stopped
+        # -------------------------
+        till = time.perf_counter() + 10
+        while 1:
+            if time.perf_counter() > till:
+                e = 'exc SWS {}'.format(__name__)
+                raise ble.BTLEException(e)
+
+            a = lc.command(STATUS_CMD)
+            signals.status.emit('BLE: STS = {}'.format(a))
+            if a == [b'STS', b'0201']:
+                print('{}() ok'.format(__name__))
+                break
+
+            if a == [b'BSY']:
+                # try again
+                a = lc.command(SWS_CMD, s)
+                signals.status.emit('BLE: SWS {} = {}'.format(s, a))
+
+    @staticmethod
+    def _logger_time_check(lc, sig=None):
+        # command: GTM
+        # ------------
+        t = lc.get_time()
+        sig.status.emit('BLE: GTM {}'.format(t))
+        if t is None:
+            e = 'exc GTM {}'.format(__name__)
+            raise ble.BTLEException(e)
+
+        # command: STM only if needed
+        # ---------------------------
+        d = datetime.datetime.now() - t
+        s = 'time sync not needed'
+        if abs(d.total_seconds()) > 60:
+            a = lc.sync_time()
+            if a != [b'STM', b'00']:
+                e = 'exc STM {}'.format(__name__)
+                raise ble.BTLEException(e)
+            s = 'time synced {}'.format(lc.get_time())
+        sig.status.emit('BLE: STM {}'.format(s))
 
     @staticmethod
     def _pre_dl_ls(lc_ble, signals, pre_rm=False):
-        # pre_rm = remove local files, useful for debug
+        # listing logger files
+        # --------------------
         mac = lc_ble.per.addr
         if pre_rm:
             _rm_folder(mac)
@@ -179,43 +147,68 @@ class DeckDataHubBLE:
         folder = _create_folder(mac)
         lid_files = lc_ble.ls_ext(b'lid')
         gps_files = lc_ble.ls_ext(b'gps')
-        if lid_files == [b'ERR'] or gps_files == [b'ERR']:
-            e = 'ls() returned ERR'
+        cfg_files = lc_ble.ls_ext(b'cfg')
+        if lid_files == [b'ERR']:
+            e = 'exc DIR_LID {}'.format(__name__)
+            raise ble.BTLEException(e)
+        if gps_files == [b'ERR']:
+            e = 'exc DIR_GPS {}'.format(__name__)
+            raise ble.BTLEException(e)
+        if cfg_files == [b'ERR']:
+            e = 'exc DIR_CFG {}'.format(__name__)
             raise ble.BTLEException(e)
         files = lid_files
         files.update(gps_files)
+        files.update(cfg_files)
         signals.status.emit('BLE: ls = {}'.format(files))
         return folder, files
 
-    # download files from this logger
     @staticmethod
-    def _ble_dl_files(lc_ble, signals, pre_rm=False):
-        # setup logger
-        ddh_ble._pre_dl_configuration(lc_ble, signals)
-        mac = lc_ble.address
+    def _rm_mat_cfg(lc):
+        mac = lc.per.addr
+        mac = mac.replace(':', '-')
+        try:
+            path = os.path.join('dl_files', mac, 'MAT.cfg')
+            print('removing logger\'s  local MAT.cfg')
+            os.remove(path)
+        except OSError:
+            print('this logger has no MAT.cfg')
+            pass
+
+    @staticmethod
+    def _ble_dl_files(lc, signals, pre_rm=False):
+        signals.ble_dl_logger.emit()
+        ddh_ble._rm_mat_cfg(lc)
+        ddh_ble._ensure_stop_w_string(lc, signals)
+        ddh_ble._logger_time_check(lc, signals)
+        mac = lc.per.addr
 
         # list files
-        folder, files = ddh_ble._pre_dl_ls(lc_ble, signals, pre_rm)
+        # ----------
+        folder, files = ddh_ble._pre_dl_ls(lc, signals, pre_rm)
         num = 0
         name_n_size = {}
         total_size = 0
-
-        # compare to local files to skip downloading existing ones
         for each in files.items():
             name = each[0]
             size = each[1]
-            if not _exists_file(name, size, folder):
-                name_n_size[name] = size
-                num += 1
-                total_size += size
+            if size == 0:
+                continue
+            if _exists_file(name, size, folder):
+                continue
+            name_n_size[name] = size
+            num += 1
+            total_size += size
 
-        # download files one by one
+        # download logger files
+        # ---------------------
         attempts = 0
         counter = 0
         total_left = total_size
         signals.status.emit('BLE: {} has {} files'.format(mac, num))
+        ok = True
         for name, size in name_n_size.items():
-            # statistics
+            # stats
             attempts += 1
             duration_logger = ((total_left // 5000) // 60) + 1
             total_left -= size
@@ -224,10 +217,18 @@ class DeckDataHubBLE:
 
             # x-modem file download, exceptions propagated to _ble_dl_loggers()
             start_time = time.time()
-            if lc_ble.get_file(name, folder, size):
+            if lc.get_file(name, folder, size):
                 signals.status.emit('BLE: got {}'.format(name))
+
+                # generate files with timestamp
+                t = time.perf_counter()
+                t_s = time.strftime("%Y%b%d_%H%M%S", time.localtime(t))
+                cp_org = '{}/{}'.format(folder, name)
+                cp_dst = '{}/{}_{}_'.format(folder, t_s, name)
+                copyfile(cp_org, cp_dst)
             else:
                 signals.status.emit('BLE: can\'t get {}'.format(name))
+                ok = False
 
             # check received file ok
             if _exists_file(name, size, folder):
@@ -237,7 +238,128 @@ class DeckDataHubBLE:
                 signals.ble_dl_file_.emit(percent_x_size, speed)
 
         # all files from this logger downloaded ok
-        signals.ble_dl_logger_.emit(lc_ble.address, counter)
+        signals.ble_dl_logger_.emit(lc.address, counter)
+        return ok
+
+    @staticmethod
+    def _ensure_run_w_string(lc, sig):
+        # run you, with string
+        # ---------------------
+        lat, lon = DeckDataHubGPS.gps_get_last(sig)
+        s = 'N/A'
+        if lat and lon:
+            s = '{}{}'.format(lat, lon)
+        a = lc.command(RWS_CMD, s)
+        sig.status.emit('BLE: RWS {} = {}'.format(s, a))
+
+        # status, should be running
+        # -------------------------
+        till = time.perf_counter() + 10
+        while 1:
+            if time.perf_counter() > till:
+                e = 'exc RWS {}'.format(__name__)
+                raise ble.BTLEException(e)
+
+            a = lc.command(STATUS_CMD)
+            sig.status.emit('BLE: STS = {}'.format(a))
+            if a == [b'STS', b'0200']:
+                print('{}() ok'.format(__name__))
+                break
+
+        # update history tab
+        # ------------------
+        ddh_ble._update_history_tab(lc, sig, lat, lon)
+
+    @staticmethod
+    def _logger_re_setup(lc, sig):
+        # checking we have this logger MAT.cfg
+        # -------------------------------------
+        mac = lc.per.addr
+        mac = mac.replace(':', '-')
+        try:
+            path = os.path.join('dl_files', mac, 'MAT.cfg')
+            with open(path) as f:
+                cfg_dict = json.load(f)
+        except FileNotFoundError:
+            e = 'exc no MAT.cfg to restore? {}'.format(__name__)
+            raise ble.BTLEException(e)
+
+        if not cfg_dict:
+            e = 'exc {}'.format(__name__)
+            raise ble.BTLEException(e)
+
+        # formatting, if we here, everything ok
+        # -------------------------------------
+        a = lc.command('FRM')
+        if a != [b'FRM', b'00']:
+            e = 'exc {} FRM'.format(__name__)
+            raise ble.BTLEException(e)
+        sig.status.emit('BLE: FRM = {}'.format(a))
+
+        # reconfiguring logger
+        # --------------------
+        a = lc.send_cfg(cfg_dict)
+        if a != [b'CFG', b'00']:
+            e = 'exc {} CFG'.format(__name__)
+            raise ble.BTLEException(e)
+        sig.status.emit('BLE: CFG = {}'.format(a))
+
+    # super function
+    # ===============
+    @staticmethod
+    def _ble_dl_loggers(sig):
+        lc = None
+        dl_logger_ok = False
+
+        # allow this to work on-demand
+        if not ddh_ble.dl_flag:
+            return
+
+        # query every logger
+        for counter, mac in enumerate(ddh_ble.LOGGERS_TO_QUERY):
+            try:
+                sig.status.emit('BLE: connecting {}'.format(mac))
+                sig.ble_dl_session.emit(
+                    mac, counter + 1, len(ddh_ble.LOGGERS_TO_QUERY))
+
+                # download + restart logger
+                with LoggerControllerBLE(mac) as lc:
+                    ok = ddh_ble._ble_dl_files(lc, sig, pre_rm=False)
+                    if ok:
+                        ddh_ble._logger_re_setup(lc, sig)
+                        ddh_ble._ensure_run_w_string(lc, sig)
+            except ble.BTLEException as be:
+                # first Linux BLE interaction may fail
+                sig.error.emit('BLE: exception {}'.format(be.message))
+                e = 'Download error, retrying in {} s'
+                e = e.format(ddh_ble.IGNORE_S)
+                sig.error_gui.emit(e)
+                sig.error.emit('BLE: ' + e)
+                ddh_ble._ble_ignore_for(mac, ddh_ble.IGNORE_S)
+            else:
+                # everything ok, don't query again in long time
+                ddh_ble._ble_ignore_for(mac, ddh_ble.FORGET_S)
+                dl_logger_ok = True
+            finally:
+                sig.status.emit('BLE: disconnecting {}'.format(mac))
+                if lc:
+                    lc.close()
+
+        sig.status.emit('BLE: all loggers done')
+        sig.ble_dl_session_.emit('All loggers\ndone')
+        return dl_logger_ok
+
+    @staticmethod
+    def _update_history_tab(lc, sig, lat, lon):
+        mac = lc.per.addr
+        sig.ble_deployed.emit(mac, lat, lon)
+
+    @staticmethod
+    def ble_loop(signals, ble_mac_filter):
+        while 1:
+            if ddh_ble._ble_scan_loggers(signals, ble_mac_filter):
+                ddh_ble._ble_dl_loggers(signals)
+            time.sleep(2)
 
 
 def _create_folder(folder_name):

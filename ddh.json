@@ -1,9 +1,6 @@
 {
     "db_logger_macs": {
-		"ff:ff:ff:ff:ff:ff": "0xffffff",
-		"04:ee:03:6c:ef:e0": "0x6cefe0",
-		"04:ee:03:73:87:43": "sxt037",
-		"11:22:33:44:55:66": "0x445566"
+		"04:ee:03:73:87:24": "sxt048"
 	},
     "ship_info":
     {

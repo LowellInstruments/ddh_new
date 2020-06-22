@@ -4,3 +4,5 @@ apps/__pycache__/
 ddh.lo*
 ddh*.db
 venv/
+/MAT.cfg
+dl_files/
