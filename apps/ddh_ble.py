@@ -245,19 +245,14 @@ class DeckDataHubBLE:
     @staticmethod
     def _ensure_run_w_string(lc, sig):
         mac = lc.address
-
-        # run you, with string
-        # ---------------------
         lat, lon = DeckDataHubGPS.gps_get_last(sig)
         s = 'N/A'
         if lat and lon:
             s = '{}{}'.format(lat, lon)
-        a = lc.command(RWS_CMD, s)
-        sig.status.emit('BLE: RWS {} = {}'.format(s, a))
 
         # status, should be running
         # -------------------------
-        till = time.perf_counter() + 10
+        till = time.perf_counter() + 20
         while 1:
             if time.perf_counter() > till:
                 e = 'exc RWS {}'.format(__name__)
@@ -267,6 +262,13 @@ class DeckDataHubBLE:
             sig.status.emit('BLE: STS = {}'.format(a))
             if a == [b'STS', b'0200']:
                 break
+            if a == [b'STS', b'0203']:
+                break
+            if a == [b'BSY']:
+                continue
+
+            a = lc.command(RWS_CMD, s)
+            sig.status.emit('BLE: RWS {} = {}'.format(s, a))
 
         # update history tab
         # ------------------
