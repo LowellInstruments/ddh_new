@@ -266,6 +266,8 @@ class DeckDataHubBLE:
                 break
             if a == [b'BSY']:
                 continue
+            if a is None:
+                continue
 
             a = lc.command(RWS_CMD, s)
             sig.status.emit('BLE: RWS {} = {}'.format(s, a))
