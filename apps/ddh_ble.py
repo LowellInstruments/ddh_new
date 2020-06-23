@@ -230,7 +230,6 @@ class DeckDataHubBLE:
 
             # -------------------------
             # todo: somewhere here DEL File
-            # todo: also it is not auto plotting
             # ----------------------------
 
             if _exists_file(name, size, folder):
@@ -243,11 +242,12 @@ class DeckDataHubBLE:
 
         # all files from this logger downloaded ok
         signals.ble_dl_logger_.emit(lc.address, counter)
-        print('--- {}'.format(lc.address))
         return ok
 
     @staticmethod
     def _ensure_run_w_string(lc, sig):
+        mac = lc.address
+
         # run you, with string
         # ---------------------
         lat, lon = DeckDataHubGPS.gps_get_last(sig)
@@ -272,7 +272,7 @@ class DeckDataHubBLE:
 
         # update history tab
         # ------------------
-        ddh_ble._update_history_tab(lc, sig, lat, lon)
+        ddh_ble._update_history_tab(mac, sig, lat, lon)
 
     @staticmethod
     def _logger_re_setup(lc, sig):
@@ -355,9 +355,7 @@ class DeckDataHubBLE:
         return dl_logger_ok
 
     @staticmethod
-    def _update_history_tab(lc, sig, lat, lon):
-        mac = lc.per.addr
-        # todo; OSError cannot allocate memory
+    def _update_history_tab(mac, sig, lat, lon):
         sig.ble_deployed.emit(mac, lat, lon)
 
     @staticmethod
