@@ -76,19 +76,19 @@ class DeckDataHubBLE:
 
     @staticmethod
     def _ensure_stop_w_string(lc, signals):
-        # first status, maybe already stopped
-        # -----------------------------------
-        a = lc.command(STATUS_CMD)
-        signals.status.emit('BLE: STS = {}'.format(a))
-        if a == [b'STS', b'0201']:
-            return
-
         # get GPS coordinates
         # -------------------
         lat, lon = DeckDataHubGPS.gps_get_last(signals)
         s = 'N/A'
         if lat and lon:
             s = '{}{}'.format(lat, lon)
+
+        # first status, maybe already stopped
+        # -----------------------------------
+        a = lc.command(STATUS_CMD)
+        signals.status.emit('BLE: STS = {}'.format(a))
+        if a == [b'STS', b'0201']:
+            return
 
         # stop you, with string
         # ---------------------
@@ -243,6 +243,7 @@ class DeckDataHubBLE:
 
         # all files from this logger downloaded ok
         signals.ble_dl_logger_.emit(lc.address, counter)
+        print('--- {}'.format(lc.address))
         return ok
 
     @staticmethod
@@ -328,9 +329,10 @@ class DeckDataHubBLE:
                 # download + restart logger
                 with LoggerControllerBLE(mac) as lc:
                     ok = ddh_ble._ble_dl_files(lc, sig, pre_rm=False)
-                    if ok:
-                        ddh_ble._logger_re_setup(lc, sig)
-                        ddh_ble._ensure_run_w_string(lc, sig)
+                    # todo: reenaBLE THIS
+                    #if ok:
+                     #   ddh_ble._logger_re_setup(lc, sig)
+                      #  ddh_ble._ensure_run_w_string(lc, sig)
             except ble.BTLEException as be:
                 # first Linux BLE interaction may fail
                 sig.error.emit('BLE: exception {}'.format(be.message))
@@ -355,6 +357,7 @@ class DeckDataHubBLE:
     @staticmethod
     def _update_history_tab(lc, sig, lat, lon):
         mac = lc.per.addr
+        # todo; OSError cannot allocate memory
         sig.ble_deployed.emit(mac, lat, lon)
 
     @staticmethod

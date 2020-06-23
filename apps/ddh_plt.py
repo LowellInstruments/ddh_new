@@ -92,7 +92,8 @@ class DeckDataHubPLT:
         # query database for 1st metric in pair, important one
         try:
             t, y0 = DeckDataHubPLT._db_cache_maybe(signals, folder, ts, m_p[0])
-        except (AttributeError, Exception):
+        except (AttributeError, Exception) as ae:
+            print(ae)
             e1 = 'PLT: no {}({}) for {}'.format(m_p[0], ts, f)
             signals.error.emit(e1)
             e2 = 'No {}({}) data for {}'.format(m_p[0], ts, f)

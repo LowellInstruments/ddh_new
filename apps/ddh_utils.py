@@ -148,15 +148,6 @@ def lid_to_csv(folder):
             # converting takes about 1.5 seconds per file
             DataConverter(bn + '.lid', parameters).convert()
 
-            # generate files with timestamp
-            t = time.time()
-            t_s = time.strftime("%Y%b%d_%H%M%S", time.localtime(t))
-            cp_org = '{}.csv'.format(bn)
-            cp_dst = '_{}_{}.csv'.format(bn, t_s)
-            cp_ok = copyfile(cp_org, cp_dst)
-            if cp_ok:
-                os.remove(cp_org)
-
 
 def _metric_to_csv_suffix(metric):
     metric_dict = {
@@ -177,7 +168,7 @@ def csv_to_df(folder, metric):
         all_csv_rows = [pd.read_csv(f) for f in glob.glob(mask)]
         df = pd.concat(all_csv_rows, ignore_index=True)
         return df.sort_values(by=['ISO 8601 Time'])
-    except (IOError, Exception):
+    except (IOError, Exception) as e:
         # e.g. nothing to concatenate
         return None
 
