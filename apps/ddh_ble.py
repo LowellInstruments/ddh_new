@@ -7,7 +7,7 @@ import datetime
 from mat.logger_controller import (
     STATUS_CMD,
     RWS_CMD,
-    SWS_CMD
+    SWS_CMD, DEL_FILE_CMD
 )
 from mat.logger_controller_ble import (
     LoggerControllerBLE as LoggerControllerBLE
@@ -83,19 +83,7 @@ class DeckDataHubBLE:
         if lat and lon:
             s = '{}{}'.format(lat, lon)
 
-        # first status, maybe already stopped
-        # -----------------------------------
-        a = lc.command(STATUS_CMD)
-        signals.status.emit('BLE: STS = {}'.format(a))
-        if a == [b'STS', b'0201']:
-            return
-
-        # stop you, with string
-        # ---------------------
-        a = lc.command(SWS_CMD, s)
-        signals.status.emit('BLE: SWS {} = {}'.format(s, a))
-
-        # status, should be stopped
+        # try to stop with string
         # -------------------------
         till = time.perf_counter() + 10
         while 1:
@@ -106,12 +94,13 @@ class DeckDataHubBLE:
             a = lc.command(STATUS_CMD)
             signals.status.emit('BLE: STS = {}'.format(a))
             if a == [b'STS', b'0201']:
-                break
+                return
 
             if a == [b'BSY']:
-                # try again
-                a = lc.command(SWS_CMD, s)
-                signals.status.emit('BLE: SWS {} = {}'.format(s, a))
+                continue
+
+            a = lc.command(SWS_CMD, s)
+            signals.status.emit('BLE: SWS {} = {}'.format(s, a))
 
     @staticmethod
     def _logger_time_check(lc, sig=None):
@@ -163,7 +152,7 @@ class DeckDataHubBLE:
         return folder, files
 
     @staticmethod
-    def _rm_mat_cfg(lc):
+    def _rm_local_mat_cfg(lc):
         mac = lc.per.addr
         mac = mac.replace(':', '-')
         try:
@@ -174,9 +163,17 @@ class DeckDataHubBLE:
             pass
 
     @staticmethod
+    def _rm_logger_file(lc, sig, name):
+        a = lc.command(DEL_FILE_CMD, name)
+        if a != [b'DEL', b'00']:
+            e = 'exc DIR_LID {}'.format(__name__)
+            raise ble.BTLEException(e)
+        sig.status.emit('BLE: DEL = {}'.format(a))
+
+    @staticmethod
     def _ble_dl_files(lc, signals, pre_rm=False):
         signals.ble_dl_logger.emit()
-        ddh_ble._rm_mat_cfg(lc)
+        ddh_ble._rm_local_mat_cfg(lc)
         ddh_ble._ensure_stop_w_string(lc, signals)
         ddh_ble._logger_time_check(lc, signals)
         mac = lc.per.addr
@@ -219,6 +216,9 @@ class DeckDataHubBLE:
             if lc.get_file(name, folder, size):
                 signals.status.emit('BLE: got {}'.format(name))
 
+                # delete file from logger
+                ddh_ble._rm_logger_file(lc, signals, name)
+
                 # generate files with timestamp
                 if not name.endswith('MAT.cfg'):
                     t = time.time()
@@ -227,10 +227,6 @@ class DeckDataHubBLE:
                     cp_bak = cp_org
                     cp_dst = '{}/_{}_{}'.format(folder, t_s, name)
                     copyfile(cp_org, cp_dst)
-
-            # -------------------------
-            # todo: somewhere here DEL File
-            # ----------------------------
 
             if _exists_file(name, size, folder):
                 if cp_bak and not name.endswith('MAT.cfg'):
@@ -329,10 +325,9 @@ class DeckDataHubBLE:
                 # download + restart logger
                 with LoggerControllerBLE(mac) as lc:
                     ok = ddh_ble._ble_dl_files(lc, sig, pre_rm=False)
-                    # todo: reenaBLE THIS
-                    #if ok:
-                     #   ddh_ble._logger_re_setup(lc, sig)
-                      #  ddh_ble._ensure_run_w_string(lc, sig)
+                    if ok:
+                        ddh_ble._logger_re_setup(lc, sig)
+                        ddh_ble._ensure_run_w_string(lc, sig)
             except ble.BTLEException as be:
                 # first Linux BLE interaction may fail
                 sig.error.emit('BLE: exception {}'.format(be.message))

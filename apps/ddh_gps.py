@@ -41,7 +41,7 @@ class DeckDataHubGPS:
         usb_port = find_port()
         if usb_port:
             status = 'GPS: USB device at {}'.format(usb_port)
-            #~ signals.status.emit(status)
+            signals.status.emit(status)
             if sys.platform == 'linux':
                 usb_port = '/dev/' + usb_port
             gps = GPS(usb_port)
@@ -119,8 +119,8 @@ class DeckDataHubGPS:
         # try to get GPS frame
         frame = ddh_gps._get_gps_frame(signals)
         if frame is None:
-            #~signals.status.emit('GPS: no frame to sync time')
-            #~signals.gps_result.emit('Local', None, None, None)
+            signals.status.emit('GPS: no frame to sync time')
+            signals.gps_result.emit('Local', None, None, None)
             return False
 
         # GPS datetime object, UTC, no timezone info
@@ -137,11 +137,9 @@ class DeckDataHubGPS:
         my_time = str(my_dt)[:-6]
         dt_est = my_time
 
-        # todo: search for #~
-
         # display results
         lat, lon = str(frame.latitude), str(frame.longitude)
-        #~signals.gps_result.emit('GPS', dt_est, lat, lon)
+        signals.gps_result.emit('GPS', dt_est, lat, lon)
 
         # build tuple for linux commands (Y,M,D,H,M,S,ms) and set local time
         time_tuple = (int(dt_est[0:4]),
