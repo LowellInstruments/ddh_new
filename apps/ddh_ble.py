@@ -165,8 +165,10 @@ class DeckDataHubBLE:
     @staticmethod
     def _rm_logger_file(lc, sig, name):
         a = lc.command(DEL_FILE_CMD, name)
+        if name == 'MAT.cfg':
+            return
         if a != [b'DEL', b'00']:
-            e = 'exc DIR_LID {}'.format(__name__)
+            e = 'exc RM_LID {}'.format(__name__)
             raise ble.BTLEException(e)
         sig.status.emit('BLE: DEL = {}'.format(a))
 

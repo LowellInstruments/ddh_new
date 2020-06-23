@@ -16,7 +16,7 @@ from PyQt5.QtWidgets import (
     QMainWindow,
     QApplication,
     QTabWidget,
-    QDesktopWidget,
+    QDesktopWidget, QTableWidgetItem, QHeaderView,
 )
 from apps.ddh_threads import DDHThread
 from apps.ddh_ble import DeckDataHubBLE
@@ -183,34 +183,23 @@ class DDHQtApp(QMainWindow):
             self.ui.img_ble.setPixmap(QPixmap('gui/res/img_blue.png'))
 
     def his_tab_populate(self):
-        # clear everything
-        self.ui.lbl_his_n_3.setText('-')
-        self.ui.lbl_his_m_3.setText('-')
-        self.ui.lbl_his_l_3.setText('-')
-        self.ui.lbl_his_n_2.setText('-')
-        self.ui.lbl_his_m_2.setText('-')
-        self.ui.lbl_his_l_2.setText('-')
-        self.ui.lbl_his_n_1.setText('-')
-        self.ui.lbl_his_m_1.setText('-')
-        self.ui.lbl_his_l_1.setText('-')
+        self.ui.tbl_his.clear()
 
         # update with latest results
         db = DBHis()
         r = db.get_recent_records()
         for i, h in enumerate(r):
-            s = '{}, {}\n{}'.format(h[3], h[4], h[5])
-            if i == 0:
-                self.ui.lbl_his_n_1.setText(h[1])
-                self.ui.lbl_his_m_1.setText(h[2])
-                self.ui.lbl_his_l_1.setText(s)
-            elif i == 1:
-                self.ui.lbl_his_n_2.setText(h[1])
-                self.ui.lbl_his_m_2.setText(h[2])
-                self.ui.lbl_his_l_2.setText(s)
-            elif i == 2:
-                self.ui.lbl_his_n_3.setText(h[1])
-                self.ui.lbl_his_m_3.setText(h[2])
-                self.ui.lbl_his_l_3.setText(s)
+            mac, sn = h[1], h[2]
+            lat, lon, ts = h[3], h[4], h[5]
+            it = QTableWidgetItem(sn)
+            it.setToolTip(mac)
+            self.ui.tbl_his.setItem(i, 0, it)
+            s = '{},{}'.format(lat, lon)
+            self.ui.tbl_his.setItem(i, 1, QTableWidgetItem(s))
+            self.ui.tbl_his.setItem(i, 2, QTableWidgetItem(ts[:14]))
+        self.ui.tbl_his.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
+        labels = ['serial num', 'last position', 'last time']
+        self.ui.tbl_his.setHorizontalHeaderLabels(labels)
 
     def _ddh_threads_create(self):
         # threads: creation
