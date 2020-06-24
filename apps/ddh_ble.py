@@ -46,7 +46,7 @@ class DeckDataHubBLE:
             signals.error.emit('BLE: error scanning')
             return []
 
-        # purge outdated connections, _ble_dl_files() refreshes this
+        # purge outdated connections
         for key, value in list(ddh_ble.BLK_LIST.items()):
             if time.time() > value:
                 ddh_ble.BLK_LIST.pop(key)
@@ -61,7 +61,7 @@ class DeckDataHubBLE:
             d = dev.addr
             if d in ble_mac_filter and d not in ddh_ble.BLK_LIST:
                 r = int(dev.rssi)
-                if r > -90:
+                if r >= -93:
                     loggers.append(dev.addr)
                 else:
                     text = 'BLE: {}, low signal {}'.format(dev.addr, r)
@@ -164,11 +164,11 @@ class DeckDataHubBLE:
 
     @staticmethod
     def _rm_logger_file(lc, sig, name):
-        a = lc.command(DEL_FILE_CMD, name)
         if name == 'MAT.cfg':
             return
+        a = lc.command(DEL_FILE_CMD, name)
         if a != [b'DEL', b'00']:
-            e = 'exc RM_LID {}'.format(__name__)
+            e = 'exc RM {}'.format(__name__)
             raise ble.BTLEException(e)
         sig.status.emit('BLE: DEL = {}'.format(a))
 

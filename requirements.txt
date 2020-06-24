@@ -6,13 +6,10 @@ xmodem==0.4.5
 iso8601==0.1.12
 logzero==1.5.0
 https://www.piwheels.org/simple/matplotlib/matplotlib-3.1.1-cp37-cp37m-linux_armv7l.whl
-sortedcontainers==2.1.0
 gpiozero==1.5.0
 tendo==0.2.12
 crc16==0.1.1
 git+https://github.com/LowellInstruments/lowell-mat.git
-RPi.GPIO==0.6.5
-diskcache==4.0.0
 h5py==2.10.0
 pytz==2018.9
 pandas==0.25.3

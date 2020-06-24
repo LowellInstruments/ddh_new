@@ -105,6 +105,9 @@ class DDHQtApp(QMainWindow):
         self.ui.lbl_dbg.setText('DDH operation ok')
         self.his_tab_populate()
 
+        # version
+        self.ui.lbl_ver.setText('v1.1.0')
+
         # automatic flow stuff
         self.sys_seconds = 0
         self.bsy_indicator = ''
