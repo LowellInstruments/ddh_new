@@ -105,7 +105,7 @@ class DDHQtApp(QMainWindow):
         self.ui.lbl_dbg.setText('DDH operation ok')
         self.his_tab_populate()
 
-        # version
+        # version, see versions.txt document
         self.ui.lbl_ver.setText('v1.1.0')
 
         # automatic flow stuff

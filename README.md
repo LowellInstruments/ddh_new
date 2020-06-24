@@ -1,9 +1,6 @@
 # Deck Data Hub
 BLE-enabled GUI software interfacing to MAT loggers.
 
-## Getting Started
-These instructions will get you up and running.
-
 ## Prerequisites
 - Python v3.5 or higher
 - Linux bluez Bluetooth Stack
@@ -22,10 +19,12 @@ Next, run ddh_tools/ddh_update.py, which takes care of requirements.txt file.
 This application is expected to be Docker contained in the next future.
 
 ## Running ddh_main.py
-This application should start automatically after being installed.
-
-## Versioning
-This application is expected to use [SemVer](http://semver.org/). 
+Cron daemon should start automatically after being installed. Give it 2 minutes.
+Otherwise:
+```
+cd /home/pi/li/ddh
+sudo python3 ddh_main.py
+```
 
 ## License
 This project is licensed under GPL License - see the [LICENSE.md](LICENSE.md) file for details
