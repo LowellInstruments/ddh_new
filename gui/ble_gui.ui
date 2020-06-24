@@ -757,7 +757,7 @@
            <string notr="true">font: 19pt &quot;Ubuntu&quot;;</string>
           </property>
           <property name="selectionMode">
-           <enum>QAbstractItemView::SingleSelection</enum>
+           <enum>QAbstractItemView::NoSelection</enum>
           </property>
           <property name="selectionBehavior">
            <enum>QAbstractItemView::SelectRows</enum>
@@ -772,7 +772,7 @@
            <number>3</number>
           </property>
           <attribute name="horizontalHeaderDefaultSectionSize">
-           <number>230</number>
+           <number>210</number>
           </attribute>
           <attribute name="horizontalHeaderHighlightSections">
            <bool>false</bool>
