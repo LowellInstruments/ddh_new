@@ -218,11 +218,12 @@ class DeckDataHubBLE:
                     raise ble.BTLEException(e)
 
                 if lc.get_file(name, fol, size):
-                    continue
+                    break
 
-                sig.status.emit('BLE: did not get {}'.format(name))
-                time.sleep(5)
                 retries -= 1
+                e = 'BLE: did not get {}, retries {}'.format(name, retries)
+                sig.error.emit(e)
+                time.sleep(5)
 
             # got file OK, update GUI
             sig.status.emit('BLE: got {}'.format(name))
