@@ -237,6 +237,13 @@ class DDHQtApp(QMainWindow):
         self.th_gps.signals.gps_update.connect(self.slot_gps_update)
 
     def _ddh_thread_throw_plt(self):
+        if self.plt_is_busy:
+            e = 'busy with previous plot'
+            self.ui.lbl_dbg.setText(e)
+            console_log.debug('GUI: busy to plot')
+            return
+        self.plt_is_busy = True
+
         fxn = DeckDataHubPLT.plt_plot
         a = [self.plt_dir, self.plot_canvas, self.plt_ts, self.plt_metrics]
         self.th_plt = DDHThread(fxn, SignalsPLT, *a)
@@ -303,12 +310,7 @@ class DDHQtApp(QMainWindow):
             self.ui.lbl_dbg.setText(e)
             return
 
-        # ... if not busy plotting a previous one
-        if not self.plt_is_busy:
-            self.plt_is_busy = True
-            self._ddh_thread_throw_plt()
-        else:
-            console_log.debug('GUI: busy to plot')
+        self._ddh_thread_throw_plt()
 
     @pyqtSlot(str, name='slot_status')
     def slot_status(self, t):
