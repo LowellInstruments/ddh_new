@@ -211,9 +211,18 @@ class DeckDataHubBLE:
 
             # x-modem file download, exceptions propagated to _ble_dl_loggers()
             start_time = time.time()
-            if not lc.get_file(name, fol, size):
+            retries = 3
+            while 1:
+                if retries == 0:
+                    e = 'exc GET {}'.format(__name__)
+                    raise ble.BTLEException(e)
+
+                if lc.get_file(name, fol, size):
+                    continue
+
                 sig.status.emit('BLE: did not get {}'.format(name))
-                continue
+                time.sleep(5)
+                retries -= 1
 
             # got file OK, update GUI
             sig.status.emit('BLE: got {}'.format(name))
