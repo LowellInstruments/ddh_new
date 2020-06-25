@@ -43,7 +43,7 @@ def linux_have_internet_connection():
         conn.request('HEAD', '/')
         conn.close()
         return True
-    except (http.client.CannotSendRequest, socket.gaierror, ConnectionError):
+    except (OSError, Exception):
         conn.close()
         return False
 
