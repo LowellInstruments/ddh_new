@@ -209,7 +209,7 @@ class DeckDataHubBLE:
             sig.status.emit('BLE: get {}, {} B'.format(name, size))
             sig.ble_dl_file.emit(name, i, num, duration_logger)
 
-            # x-modem file download, exceptions propagated to _ble_dl_loggers()
+            # x-modem file download
             start_time = time.time()
             retries = 3
             while 1:
@@ -241,12 +241,13 @@ class DeckDataHubBLE:
                 continue
 
             # generate .lid, .gps files w/ timestamp
+            # careful w/ names w/ parentheses, add extra \'
             cp_org = os.path.join(os.getcwd(), fol, name)
             t = time.time()
             t_s = time.strftime("%Y%b%d_%H%M%S", time.localtime(t))
             cp_dst = '_{}_{}'.format(t_s, name)
             cp_dst = os.path.join(os.getcwd(), fol, cp_dst)
-            _cmd = 'cp {} {}'.format(cp_org, cp_dst)
+            _cmd = 'cp \'{}\' \'{}\''.format(cp_org, cp_dst)
             rv = sp.run(_cmd, shell=True, stdout=sp.PIPE, stderr=sp.PIPE)
             if rv.returncode != 0:
                 sig.error.emit('BLE: error cp {}'.format(rv.stderr))
