@@ -1,5 +1,4 @@
 import json
-from shutil import copyfile
 import bluepy.btle as ble
 import time
 import os
@@ -14,6 +13,7 @@ from mat.logger_controller_ble import (
 )
 from apps.ddh_gps import DeckDataHubGPS
 from apps.ddh_utils import json_get_forget_time_secs
+import subprocess as sp
 
 
 class DeckDataHubBLE:
@@ -173,25 +173,22 @@ class DeckDataHubBLE:
         sig.status.emit('BLE: DEL = {}'.format(a))
 
     @staticmethod
-    def _ble_dl_files(lc, signals, pre_rm=False):
-        signals.ble_dl_logger.emit()
+    def _ble_dl_files(lc, sig, pre_rm=False):
+        sig.ble_dl_logger.emit()
         ddh_ble._rm_local_mat_cfg(lc)
-        ddh_ble._ensure_stop_w_string(lc, signals)
-        ddh_ble._logger_time_check(lc, signals)
+        ddh_ble._ensure_stop_w_string(lc, sig)
+        ddh_ble._logger_time_check(lc, sig)
         mac = lc.per.addr
 
         # list files
         # ----------
-        folder, files = ddh_ble._pre_dl_ls(lc, signals, pre_rm)
+        fol, files = ddh_ble._pre_dl_ls(lc, sig, pre_rm)
         num = 0
         name_n_size = {}
         total_size = 0
         for each in files.items():
-            name = each[0]
-            size = each[1]
+            name, size = each[0], each[1]
             if size == 0:
-                continue
-            if _exists_file(name, size, folder):
                 continue
             name_n_size[name] = size
             num += 1
@@ -199,47 +196,55 @@ class DeckDataHubBLE:
 
         # download logger files
         # ---------------------
-        attempts = 0
-        counter = 0
+        i = 0
+        i_ok = 0
         total_left = total_size
-        signals.status.emit('BLE: {} has {} files'.format(mac, num))
+        sig.status.emit('BLE: {} has {} files'.format(mac, num))
         ok = True
         for name, size in name_n_size.items():
             # stats
-            attempts += 1
+            i += 1
             duration_logger = ((total_left // 5000) // 60) + 1
             total_left -= size
-            signals.status.emit('BLE: get {}, {} B'.format(name, size))
-            signals.ble_dl_file.emit(name, attempts, num, duration_logger)
+            sig.status.emit('BLE: get {}, {} B'.format(name, size))
+            sig.ble_dl_file.emit(name, i, num, duration_logger)
 
             # x-modem file download, exceptions propagated to _ble_dl_loggers()
             start_time = time.time()
-            cp_bak = None
-            if lc.get_file(name, folder, size):
-                signals.status.emit('BLE: got {}'.format(name))
+            if not lc.get_file(name, fol, size):
+                sig.status.emit('BLE: did not get {}'.format(name))
+                continue
 
-                # delete file from logger
-                ddh_ble._rm_logger_file(lc, signals, name)
-
-                # generate files with timestamp
-                if not name.endswith('MAT.cfg'):
-                    t = time.time()
-                    t_s = time.strftime("%Y%b%d_%H%M%S", time.localtime(t))
-                    cp_org = '{}/{}'.format(folder, name)
-                    cp_bak = cp_org
-                    cp_dst = '{}/_{}_{}'.format(folder, t_s, name)
-                    copyfile(cp_org, cp_dst)
-
-            if _exists_file(name, size, folder):
-                if cp_bak and not name.endswith('MAT.cfg'):
-                    os.remove(cp_bak)
-                counter += 1
+            # got file OK, update GUI
+            sig.status.emit('BLE: got {}'.format(name))
+            if _exists_file(name, size, fol):
+                i_ok += 1
                 percent_x_size = (size / total_size) * 100
                 speed = size / (time.time() - start_time)
-                signals.ble_dl_file_.emit(percent_x_size, speed)
+                sig.ble_dl_file_.emit(percent_x_size, speed)
+
+            # remotely delete the file we got
+            ddh_ble._rm_logger_file(lc, sig, name)
+
+            # MAT.cfg left as it is
+            if name.endswith('MAT.cfg'):
+                continue
+
+            # generate .lid, .gps files w/ timestamp
+            cp_org = os.path.join(os.getcwd(), fol, name)
+            t = time.time()
+            t_s = time.strftime("%Y%b%d_%H%M%S", time.localtime(t))
+            cp_dst = '_{}_{}'.format(t_s, name)
+            cp_dst = os.path.join(os.getcwd(), fol, cp_dst)
+            _cmd = 'cp {} {}'.format(cp_org, cp_dst)
+            rv = sp.run(_cmd, shell=True, stdout=sp.PIPE, stderr=sp.PIPE)
+            if rv.returncode != 0:
+                sig.error.emit('BLE: error cp {}'.format(rv.stderr))
+            else:
+                os.remove(cp_org)
 
         # all files from this logger downloaded ok
-        signals.ble_dl_logger_.emit(lc.address, counter)
+        sig.ble_dl_logger_.emit(lc.address, i_ok)
         return ok
 
     @staticmethod
@@ -374,9 +379,9 @@ def _create_folder(folder_name):
 
 
 def _exists_file(file_name, size, folder_name):
-    file_path = os.path.join(folder_name, file_name)
-    if os.path.isfile(file_path):
-        if os.path.getsize(file_path) == size:
+    p = os.path.join(os.getcwd(), folder_name, file_name)
+    if os.path.isfile(p):
+        if os.path.getsize(p) == size:
             return True
     return False
 

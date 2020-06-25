@@ -397,7 +397,6 @@ class DDHQtApp(QMainWindow):
         if val_1:
             self.plt_folders = update_dl_folder_list()
             self.plt_dir = 'dl_files/' + str(desc).replace(':', '-')
-            print(self.plt_dir)
             self._ddh_thread_throw_plt()
 
     # function post dl_session, note trailing '_'
