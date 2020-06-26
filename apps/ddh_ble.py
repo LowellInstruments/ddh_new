@@ -125,17 +125,17 @@ class DeckDataHubBLE:
         sig.status.emit('BLE: STM {}'.format(s))
 
     @staticmethod
-    def _pre_dl_ls(lc_ble, signals, pre_rm=False):
+    def _pre_dl_ls(lc, signals, pre_rm=False):
         # listing logger files
         # --------------------
-        mac = lc_ble.per.addr
+        mac = _get_mac_from_lc(lc)
         if pre_rm:
             _rm_folder(mac)
             signals.warning.emit('SYS: local rm {} files'.format(mac))
         folder = _create_folder(mac)
-        lid_files = lc_ble.ls_ext(b'lid')
-        gps_files = lc_ble.ls_ext(b'gps')
-        cfg_files = lc_ble.ls_ext(b'cfg')
+        lid_files = lc.ls_ext(b'lid')
+        gps_files = lc.ls_ext(b'gps')
+        cfg_files = lc.ls_ext(b'cfg')
         if lid_files == [b'ERR']:
             e = 'exc DIR_LID {}'.format(__name__)
             raise ble.BTLEException(e)
@@ -153,7 +153,7 @@ class DeckDataHubBLE:
 
     @staticmethod
     def _rm_local_mat_cfg(lc):
-        mac = lc.per.addr
+        mac = _get_mac_from_lc(lc)
         mac = mac.replace(':', '-')
         try:
             path = os.path.join('dl_files', mac, 'MAT.cfg')
@@ -178,7 +178,7 @@ class DeckDataHubBLE:
         ddh_ble._rm_local_mat_cfg(lc)
         ddh_ble._ensure_stop_w_string(lc, sig)
         ddh_ble._logger_time_check(lc, sig)
-        mac = lc.per.addr
+        mac = _get_mac_from_lc(lc)
 
         # list files
         # ----------
@@ -296,7 +296,7 @@ class DeckDataHubBLE:
     def _logger_re_setup(lc, sig):
         # checking we have this logger MAT.cfg
         # -------------------------------------
-        mac = lc.per.addr
+        mac = _get_mac_from_lc(lc)
         mac = mac.replace(':', '-')
         try:
             path = os.path.join('dl_files', mac, 'MAT.cfg')
@@ -395,6 +395,14 @@ def _exists_file(file_name, size, folder_name):
         if os.path.getsize(p) == size:
             return True
     return False
+
+
+def _get_mac_from_lc(lc):
+    try:
+        return lc.per.addr
+    except (AttributeError, Exception):
+        e = 'exc mac {}'.format(__name__)
+        raise ble.BTLEException(e)
 
 
 def _rm_folder(mac):
