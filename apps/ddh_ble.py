@@ -61,7 +61,7 @@ class DeckDataHubBLE:
             d = dev.addr
             if d in ble_mac_filter and d not in ddh_ble.BLK_LIST:
                 r = int(dev.rssi)
-                if r >= -93:
+                if r >= -96:
                     loggers.append(dev.addr)
                 else:
                     text = 'BLE: {}, low signal {}'.format(dev.addr, r)
