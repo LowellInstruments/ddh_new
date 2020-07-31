@@ -240,19 +240,23 @@ class DeckDataHubBLE:
             if name.endswith('MAT.cfg'):
                 continue
 
-            # generate .lid, .gps files w/ timestamp
-            # careful w/ names w/ parentheses, add extra \'
-            cp_org = os.path.join(os.getcwd(), fol, name)
-            t = time.time()
-            t_s = time.strftime("%Y%b%d_%H%M%S", time.localtime(t))
-            cp_dst = '_{}_{}'.format(t_s, name)
-            cp_dst = os.path.join(os.getcwd(), fol, cp_dst)
-            _cmd = 'cp \'{}\' \'{}\''.format(cp_org, cp_dst)
-            rv = sp.run(_cmd, shell=True, stdout=sp.PIPE, stderr=sp.PIPE)
-            if rv.returncode != 0:
-                sig.error.emit('BLE: error cp {}'.format(rv.stderr))
-            else:
-                os.remove(cp_org)
+            # 2nd patch, get timestamp from .lid, .gps is the same
+            generate_files_with_ts(fol, name, sig)
+
+            # 1st patch, generate .lid, .gps files w/ timestamp
+            # cp_org = os.path.join(os.getcwd(), fol, name)
+            # t = time.time()
+            # t_s = time.strftime("%Y%b%d_%H%M%S", time.localtime(t))
+            # cp_dst = '_{}_{}'.format(t_s, name)
+            # cp_dst = os.path.join(os.getcwd(), fol, cp_dst)
+            #
+            # # careful w/ names w/ parentheses, add extra \'
+            # _cmd = 'cp \'{}\' \'{}\''.format(cp_org, cp_dst)
+            # rv = sp.run(_cmd, shell=True, stdout=sp.PIPE, stderr=sp.PIPE)
+            # if rv.returncode != 0:
+            #     sig.error.emit('BLE: error cp {}'.format(rv.stderr))
+            # else:
+            #     os.remove(cp_org)
 
         # all files from this logger downloaded ok
         sig.ble_dl_logger_.emit(lc.address, i_ok)
@@ -409,6 +413,51 @@ def _rm_folder(mac):
     import shutil
     folder_name = 'dl_files/' + mac.replace(':', '-').lower() + '/'
     shutil.rmtree(folder_name, ignore_errors=True)
+
+
+def _put_lid_ts_to_tmp(dst):
+    t = time.time()
+    t_s = time.strftime("%Y%b%d_%H%M%S", time.localtime(t))
+    with open(dst, 'w+') as f:
+        f.write(t_s)
+    return t_s
+
+
+def _get_ts_from_tmp(org):
+    if not os.path.isfile(org):
+        t = time.time()
+        t_s = time.strftime("XX_%Y%b%d_%H%M%S", time.localtime(t))
+        return t_s
+
+    with open(org, 'r') as f:
+        t_s = f.readline(16)
+        return t_s
+
+
+def generate_files_with_ts(fol, name, sig):
+    # org: /fol/my_name_(3).lid, .gps
+    org = os.path.join(os.getcwd(), fol, name)
+    dst = None
+    # tmp: /fol/my_name_(3).tmp
+    tmp = '.{}.tmp'.format(name.split('.')[0])
+    tmp = os.path.join(os.getcwd(), fol, tmp)
+
+    # .lid, write t_s to tmp, .gps, read t_s from tmp
+    if name.endswith('lid'):
+        t_s = _put_lid_ts_to_tmp(tmp)
+        dst = '{}-{}.lid'.format(name.split('.')[0], t_s)
+    if name.endswith('gps'):
+        t_s = _get_ts_from_tmp(tmp)
+        dst = '{}-{}.gps'.format(name.split('.')[0], t_s)
+
+    # dst: /fol/my_name_(3)_timestamp.lid, .gps
+    dst = os.path.join(os.getcwd(), fol, dst)
+    _cmd = 'cp \'{}\' \'{}\''.format(org, dst)
+    rv = sp.run(_cmd, shell=True, stdout=sp.PIPE, stderr=sp.PIPE)
+    if rv.returncode != 0:
+        sig.error.emit('BLE: error cp {}'.format(rv.stderr))
+    else:
+        os.remove(org)
 
 
 # shorten name
