@@ -438,7 +438,7 @@ def generate_files_with_ts(fol, name, sig):
     # org: /fol/my_name_(3).lid, .gps
     org = os.path.join(os.getcwd(), fol, name)
     dst = None
-    # tmp: /fol/my_name_(3).tmp
+    # tmp: /fol/.my_name_(3).tmp, mind hidden file dot
     tmp = '.{}.tmp'.format(name.split('.')[0])
     tmp = os.path.join(os.getcwd(), fol, tmp)
 
