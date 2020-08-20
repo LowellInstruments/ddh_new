@@ -1,0 +1,250 @@
+import http.client
+import pathlib
+import subprocess as sp
+import shlex
+import os
+import glob
+from logzero import logger as console_log
+from context import ctx
+from mat.data_converter import DataConverter, default_parameters
+import json
+from socket import AF_INET, SOCK_DGRAM
+import socket
+import struct
+
+
+def rpi_set_brightness(v):
+    v *= 127
+    v = 50 if v < 50 else v
+    v = 255 if v > 250 else v
+    b = '/sys/class/backlight/rpi_backlight/brightness"'
+    s = 'sudo bash -c "echo {} > {}'.format(str(v), b)
+    o = sp.DEVNULL
+    sp.run(shlex.split(s), stdout=o, stderr=o)
+
+
+def linux_set_datetime(t_str):
+    # e.g. $ date -s "19 APR 2012 11:14:00"
+    s = 'sudo date -s "{}"'.format(t_str)
+    o = sp.DEVNULL
+    rv = sp.run(shlex.split(s), stdout=o, stderr=o)
+    return rv.returncode == 0
+
+
+def linux_rpi():
+    return os.uname().nodename in ('raspberrypi', 'rpi')
+
+
+def get_ntp_time(host="pool.ntp.org"):
+    for _ in range(3):
+        try:
+            # credit: Matt Crampton
+            port = 123
+            buf = 1024
+            address = (host, port)
+            msg = '\x1b' + 47 * '\0'
+            sk = socket.socket(AF_INET, SOCK_DGRAM)
+            sk.settimeout(.1)
+            sk.sendto(msg.encode(), address)
+            msg, address = sk.recvfrom(buf)
+            t = struct.unpack("!12I", msg)[10]
+            # ntp takes care of timezones, no HH adjust
+            time_1970 = 2208988800
+            t -= time_1970
+            return t
+        except (OSError, Exception):
+            pass
+
+    e = 'CLK: {} timeout'.format(__name__)
+    console_log.error(e)
+    return None
+
+
+# only 'systemd'-like systems like RPi can do this
+def linux_set_ntp():
+    console_log.debug('SYS: try shell timedatectl')
+    s = 'sudo timedatectl set-ntp true'
+    rv = sp.run(shlex.split(s))
+    if rv.returncode == 0:
+        return True
+    return False
+
+
+def linux_is_net_ok():
+    conn = http.client.HTTPConnection('www.google.com', timeout=3)
+    try:
+        conn.request('HEAD', '/')
+        conn.close()
+        return True
+    except (OSError, Exception):
+        conn.close()
+        return False
+
+
+# recursively collect all logger files w/ indicated extension
+def linux_ls_by_ext(fol, extension):
+    if not fol:
+        return []
+    if os.path.isdir(fol):
+        wildcard = fol + '/**/*.' + extension
+        return glob.glob(wildcard, recursive=True)
+
+
+# be sure we up-to-date w/ downloaded logger folders
+def update_dl_folder_list(d):
+    if os.path.isdir(d):
+        f_l = [f.path for f in os.scandir(d) if f.is_dir()]
+        return f_l
+    else:
+        os.makedirs(d, exist_ok=True)
+
+
+def json_check_metrics(j):
+    try:
+        with open(j) as f:
+            cfg = json.load(f)
+            assert len(cfg['metrics']) <= 2
+    except (FileNotFoundError, TypeError, json.decoder.JSONDecodeError):
+        console_log.error('SYS: error reading ddh.json config file')
+        return False
+    return True
+
+
+def json_get_ship_name(j):
+    try:
+        with open(j) as f:
+            cfg = json.load(f)
+            return cfg['ship_name']
+    except TypeError:
+        return 'Unnamed ship'
+
+
+def json_get_forget_time_secs(j):
+    with open(j) as f:
+        cfg = json.load(f)
+        t = int(cfg['forget_time'])
+        assert t > 300
+        return t
+
+
+def json_get_macs(j):
+    try:
+        with open(j) as f:
+            cfg = json.load(f)
+            known = cfg['db_logger_macs'].keys()
+            return [x.lower() for x in known]
+    except TypeError:
+        return 'error json_get_macs()'
+
+
+def json_get_pairs(j):
+    try:
+        with open(j) as f:
+            cfg = json.load(f)
+            # macs not lowered()
+            return cfg['db_logger_macs']
+    except TypeError:
+        return 'error json_get_macs()'
+
+
+def json_get_metrics(j):
+    with open(j) as f:
+        cfg = json.load(f)
+        assert 0 < len(cfg['metrics']) <= 2
+        return cfg['metrics']
+
+
+def json_get_span_dict(j):
+    with open(j) as f:
+        cfg = json.load(f)
+        assert cfg['span_dict']
+        return cfg['span_dict']
+
+
+def json_get_hci_if(j):
+    with open(j) as f:
+        cfg = json.load(f)
+        assert 0 <= cfg['hci_if'] <= 1
+        return cfg['hci_if']
+
+
+def _mac_dns_no_case(j, mac):
+    try:
+        with open(j) as f:
+            cfg = json.load(f)
+            return cfg['db_logger_macs'][mac]
+    except (FileNotFoundError, TypeError, KeyError):
+        return None
+
+
+def json_mac_dns(j, mac):
+    name = _mac_dns_no_case(j, mac.lower())
+    if not name:
+        name = _mac_dns_no_case(j, mac.upper())
+    return name
+
+
+def test_json_mac_dns():
+    r = pathlib.Path.cwd()
+    j = r / 'settings/ddh.json'
+    rv = json_mac_dns(j, '60:77:71:22:c8:07')
+    print(rv)
+
+
+def mac_from_folder(fol):
+    try:
+        return fol.split('/')[-1].replace('-', ':')
+    except (ValueError, Exception):
+        return None
+
+
+def lid_to_csv(fol) -> bool:
+    if not os.path.exists(fol):
+        return False
+
+    parameters = default_parameters()
+    for f in linux_ls_by_ext(fol, 'lid'):
+        bn = f.split('.')[0]
+
+        # check if csv file exists
+        if glob.glob(bn + '*.csv'):
+            continue
+
+        # converting takes about 1.5 s per file
+        try:
+            DataConverter(bn + '.lid', parameters).convert()
+        except ValueError:
+            print('could not convert {}'.format(f))
+            return False
+    return True
+
+
+def create_folder(mac, fol):
+    fol = fol / '{}/'.format(mac.replace(':', '-').lower())
+    os.makedirs(fol, exist_ok=True)
+    return fol
+
+
+def exists_file(file_name, size, fol):
+    path = os.path.join(fol, file_name)
+    if os.path.isfile(path):
+        if os.path.getsize(path) == size:
+            return True
+    return False
+
+
+def rm_folder(mac):
+    import shutil
+    fol = ctx.dl_files_folder
+    fol = fol / '{}/'.format(mac.replace(':', '-').lower())
+    shutil.rmtree(fol, ignore_errors=True)
+
+
+# removes db_plt, setups logs
+def setup_db_n_logs():
+    import logzero
+    p = ctx.db_plt
+    if os.path.exists(p):
+        os.remove(p)
+    log = str(ctx.app_root_folder / 'ddh.log')
+    logzero.logfile(log, maxBytes=int(1e6), backupCount=3, mode='a')
