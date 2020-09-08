@@ -1,2 +1,0 @@
-None: alpha version
-v1.1.0: re-arranged download sequence, fixed GPS bug overlap hours, history tab table

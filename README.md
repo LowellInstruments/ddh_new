@@ -14,9 +14,8 @@ develop with pycharm.sh, for example, add to sudoers:
 ```
 sudo apt-get install libatlas3-base libglib2.0-dev python3-pyqt5 libhdf5-dev
 ```
-Next, run ddh_tools/ddh_update.py, which takes care of requirements.txt file.
-
-This application is expected to be Docker contained in the next future.
+Clone DDH repository, may be private. Install it with pip.
+Clone MAT lib repository, proper branch, may be private. Move it to /home/pi/li/ddh. 
 
 ## Running ddh_main.py
 Cron daemon should start automatically after being installed. Give it 2 minutes.
