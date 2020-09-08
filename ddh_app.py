@@ -106,8 +106,11 @@ class DDHQtApp(QMainWindow):
         self.ui.lbl_dbg.setText('DDH operation ok')
         self.his_tab_populate()
 
-        # version, see versions.txt document
-        self.ui.lbl_ver.setText('v1.1.0')
+        # all versions based on static methods, 6 icons, old status textbox
+        # v0.5.00   bad loop, N LID/GPS files in loggers, few retries bit unstable
+        # v1.1.00  good loop, 1 file pair in logger, 1st patch naming, different timestamps
+        # v1.2.00  good loop, 1 file pair in logger, 2nd patch naming, same timestamps
+        self.ui.lbl_ver.setText('v1.2.00')
 
         # automatic flow stuff
         self.sys_seconds = 0
