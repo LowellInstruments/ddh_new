@@ -5,7 +5,7 @@ from threads.utils_ftp import ftp_sync, emit_status, emit_conn
 
 
 class ThFTP:
-    PERIOD_FTP = 30
+    PERIOD_FTP = 300
     assert (PERIOD_FTP >= 30)
 
     def __init__(self, sig):
