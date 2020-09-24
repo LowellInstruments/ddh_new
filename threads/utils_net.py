@@ -1,0 +1,153 @@
+import ipaddress
+import socket
+import subprocess as sp
+import time
+from threads.utils_wifi import worth_trying_sw_wifi
+
+
+SW_RELOAD = 10
+# set to 1 to not disturb boot
+countdown_sw_to_wifi = 1
+
+
+def emit_net_status(sig, s):
+    if sig:
+        sig.net_status.emit(s)
+    else:
+        print(s)
+
+
+def emit_net_update(sig, i):
+    if sig:
+        sig.net_update.emit(i)
+
+
+def ensure_resolv_conf():
+    # file resolv.conf may get written, restore it w/ good one
+    s = 'sudo bash -c \'echo '
+    s += '"nameserver 8.8.8.8" > /etc/resolv.conf\''
+    _shell(s)
+
+
+def _shell(s):
+    rv = sp.run(s, shell=True, stdout=sp.DEVNULL)
+    return rv.returncode
+
+
+def _switch_net_to_cell():
+    _shell('sudo ifmetric ppp0 0')
+
+
+def _switch_net_to_wifi():
+    _shell('sudo ifmetric ppp0 400')
+
+
+def _switch_net(sig, org=None):
+    global countdown_sw_to_wifi
+    ensure_resolv_conf()
+
+    assert org in ('none', 'cell')
+    if org == 'none':
+        # no network at all, so try cell w/ full counter
+        countdown_sw_to_wifi = SW_RELOAD
+        emit_net_status(sig, 'no network, trying none -> cell')
+        _switch_net_to_cell()
+        return
+
+    # we are cell
+    i = countdown_sw_to_wifi * SW_RELOAD
+    s = 'countdown_to_switch_to_wifi is {}s'.format(i)
+    emit_net_status(sig, s.format(countdown_sw_to_wifi))
+    if countdown_sw_to_wifi == 0:
+        if worth_trying_sw_wifi('wlan0'):
+            emit_net_status(sig, 'trying cell -> wifi')
+            _switch_net_to_wifi()
+        else:
+            s = 'NET: unworthy trying cell -> wifi'
+            emit_net_status(sig, s)
+    if countdown_sw_to_wifi >= 1:
+        countdown_sw_to_wifi -= 1
+
+
+def _get_ip():
+    try:
+        sk = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    except (OSError, Exception) as ex:
+        print('SYS: ' + str(ex))
+        return
+
+    address = ('8.8.8.8', 80)
+    try:
+        sk.connect(address)
+        # zeroconf (169.), wi-fi (192. / 10.), cell (25.x)
+        rv = sk.getsockname()[0]
+    except OSError as oe:
+        print('OSerror {}'.format(oe))
+        rv = None
+
+    if sk.connect_ex(address):
+        sk.shutdown(socket.SHUT_RDWR)
+        sk.close()
+
+    return rv
+
+
+def _get_net_type() -> str:
+    ip_s = _get_ip()
+
+    # when zero-conf address, ensure interface is up
+    if ip_s and ip_s.startswith('169.'):
+        _shell('sudo ifconfig wlan0 down')
+        _shell('sudo ifconfig wlan0 up')
+        time.sleep(5)
+
+    # no internet, or zero-conf address
+    if not ip_s:
+        return 'none'
+    if ip_s.startswith('0.0.0.0'):
+        return 'none'
+    if ip_s.startswith('169.'):
+        return 'none'
+
+    # some internet connection
+    my_ip = ipaddress.ip_address(ip_s)
+    if my_ip.is_private:
+        # wi-fi, so re-set to cell w/ full counter
+        global countdown_sw_to_wifi
+        countdown_sw_to_wifi = SW_RELOAD
+        return 'wifi'
+    return 'cell'
+
+
+def _get_ssid() -> str:
+    c = 'iwgetid -r'
+    s = sp.run(c, shell=True, stdout=sp.PIPE)
+    return s.stdout.decode().rstrip('\n')
+
+
+def check_net_best(sig=None):
+    """
+    preferred: wi-fi > cell > no net
+    check: RFKill on wi-fi
+    """
+    nt = _get_net_type()
+    if nt == 'wifi':
+        ssid = _get_ssid()
+        t = '{}'.format(ssid)
+        emit_net_update(sig, t)
+        t = 'NET: wi-fi {}'.format(ssid)
+        emit_net_status(sig, t)
+        return
+
+    _switch_net(sig, org=nt)
+    t = '{}'.format(nt)
+    emit_net_update(sig, t)
+    t = 'NET: {}'.format(nt)
+    emit_net_update(sig, t)
+
+
+if __name__ == '__main__':
+    ensure_resolv_conf()
+    while 1:
+        check_net_best()
+        time.sleep(5)
