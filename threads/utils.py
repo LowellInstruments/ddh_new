@@ -198,25 +198,52 @@ def mac_from_folder(fol):
         return None
 
 
+# def lid_to_csv(fol) -> bool:
+#     if not os.path.exists(fol):
+#         return False
+#
+#     parameters = default_parameters()
+#     for f in linux_ls_by_ext(fol, 'lid'):
+#         bn = f.split('.')[0]
+#
+#         # check if csv file exists
+#         if glob.glob(bn + '*.csv'):
+#             continue
+#
+#         # converting takes about 1.5 s per file
+#         try:
+#             DataConverter(bn + '.lid', parameters).convert()
+#         except ValueError:
+#             print('could not convert {}'.format(f))
+#             return False
+#     return True
+
+
 def lid_to_csv(fol) -> bool:
     if not os.path.exists(fol):
         return False
 
     parameters = default_parameters()
-    for f in linux_ls_by_ext(fol, 'lid'):
-        bn = f.split('.')[0]
+    lid_files = linux_ls_by_ext(fol, 'lid')
+    rv = True
 
-        # check if csv file exists
-        if glob.glob(bn + '*.csv'):
+    for f in lid_files:
+        # build file name .csv
+        _ = '{}_DissolvedOxygen.csv'.format(f.split('.')[0])
+        if os.path.exists(_):
             continue
 
-        # converting takes about 1.5 s per file
         try:
-            DataConverter(bn + '.lid', parameters).convert()
-        except ValueError:
-            print('could not convert {}'.format(f))
-            return False
-    return True
+            # converting takes about 1.5 seconds per file
+            DataConverter(f, parameters).convert()
+            s = 'file {} conversion OK'.format(f)
+            print(s)
+        except (ValueError, Exception) as ve:
+            e = 'file {} ERROR conversion -> {}'.format(f, ve)
+            print(e)
+            rv = False
+
+    return rv
 
 
 def create_folder(mac, fol):
