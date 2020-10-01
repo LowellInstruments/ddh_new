@@ -241,7 +241,7 @@ class DeckDataHubBLE:
                 continue
 
             # 2nd patch, get timestamp from .lid, .gps is the same
-            generate_files_with_ts(fol, name, sig)
+            attach_ts_to_file_names(fol, name, sig)
 
             # 1st patch, generate .lid, .gps files w/ timestamp
             # cp_org = os.path.join(os.getcwd(), fol, name)
@@ -424,33 +424,39 @@ def _put_lid_ts_to_tmp(dst):
 
 
 def _get_ts_from_tmp(org):
+    # in case no .tmp file to extract ts, create it
     if not os.path.isfile(org):
         t = time.time()
         t_s = time.strftime("XX_%Y%b%d_%H%M%S", time.localtime(t))
         return t_s
 
+    # such .tmp file exists, 16 == len(%Y%b%d_%H%M%S)
     with open(org, 'r') as f:
         t_s = f.readline(16)
         return t_s
 
 
-def generate_files_with_ts(fol, name, sig):
-    # org: /fol/my_name_(3).lid, .gps
+def attach_ts_to_file_names(fol, name, sig):
+    # org -> fol/<name>.lid, fol/<name>.gps
     org = os.path.join(os.getcwd(), fol, name)
+
+    # dst -> fol/<name>_ts.lid, fol/<name>_ts.gps
     dst = None
-    # tmp: /fol/.my_name_(3).tmp, mind hidden file dot
+
+    # tmp -> /fol/.<name>.tmp, note heading dot
     tmp = '.{}.tmp'.format(name.split('.')[0])
     tmp = os.path.join(os.getcwd(), fol, tmp)
 
-    # .lid, write t_s to tmp, .gps, read t_s from tmp
+    # .lid: write t_s to tmp, .gps: read t_s from tmp
     if name.endswith('lid'):
         t_s = _put_lid_ts_to_tmp(tmp)
         dst = '{}-{}.lid'.format(name.split('.')[0], t_s)
     if name.endswith('gps'):
         t_s = _get_ts_from_tmp(tmp)
+        # dst -> fol/<name>_ts.gps, XX if no .tmp
         dst = '{}-{}.gps'.format(name.split('.')[0], t_s)
 
-    # dst: /fol/my_name_(3)_timestamp.lid, .gps
+    # dst -> fol/<name>_ts.lid, fol/<name>_ts.gps
     dst = os.path.join(os.getcwd(), fol, dst)
     _cmd = 'cp \'{}\' \'{}\''.format(org, dst)
     rv = sp.run(_cmd, shell=True, stdout=sp.PIPE, stderr=sp.PIPE)
