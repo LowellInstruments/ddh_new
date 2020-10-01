@@ -8,19 +8,27 @@ Coding in some distributions may require root or the following (beware security)
 sudo setcap 'cap_net_raw,cap_net_admin+eip' `which hciconfig`
 ```
 
-## Installing in RPi
+## Installing on Rpi
 ```
 sudo apt-get install libatlas3-base libglib2.0-dev python3-pyqt5 libhdf5-dev python3-dev libgdal-dev
 ```
-Next, run ddh_tools/ddh_update.py, which takes care of requirements.txt file.
+Just run scripts/ddh_update.py.
 
 
-## Running
+## Installing: generic
+You may need also some similar apt-get as RPi case.
+git clone https://github.com/LowellInstruments/bluepy.git
+git clone -b v2100 https://github.com/LowellInstruments/lowell-mat.git
+
+
+## Running on RPi
 Cron starts DDH automatically, otherwise:
 ```
-sudo python3 ddh_main.py
+$ cd /home/pi/li/ddh
+$ ./ddh_run.sh
 ```
-This application is expected to be Docker contained soon.
+Do not sudo ddh_run.sh.
+Newer versions are docker contained or virtualenv contained.
 
 
 ## License
