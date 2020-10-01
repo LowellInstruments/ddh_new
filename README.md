@@ -2,6 +2,10 @@
 On-deck BLE-enabled Graphical User Interface for Lowell Instruments' loggers.
 
 
+## Version
+This is v2100. MLA.
+
+
 ## Developing
 Coding in some distributions may require root or the following (beware security):
 ```
