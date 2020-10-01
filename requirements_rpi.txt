@@ -31,9 +31,9 @@ https://www.piwheels.org/simple/matplotlib/matplotlib-3.1.1-cp37-cp37m-linux_arm
 https://www.piwheels.org/simple/numpy/numpy-1.17.0rc1-cp37-cp37m-linux_armv7l.whl
 
 
-# dependencies in github, if DDH dev branch, install other @dev branches
+# dependencies in github
 git+https://github.com/LowellInstruments/bluepy.git
-git+https://github.com/LowellInstruments/lowell-mat.git@dev
+git+https://github.com/LowellInstruments/lowell-mat.git
 
 
 # you may need to install cartopy separately

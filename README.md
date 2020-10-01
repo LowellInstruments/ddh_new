@@ -5,21 +5,29 @@ Intended to be used on fishing and research vessels.
 ![alt text](gui/res/ddh_capture.png)
 
 
-## Installing
+## Installing on RPi
 Depending on platform, some pip packages such PyQt5 may be unavailable, so ensure them with:
 ```
 sudo apt-get install libatlas3-base libglib2.0-dev python3-pyqt5 libhdf5-dev python3-dev libgdal-dev
 ```
 
-Next, create a python virtual environment and install python dependencies.
+Next, create a python virtual environment inheriting them and install python dependencies.
 ```
-cd /home/pi/li
+cd /home/pi/li/ddh
 python3 -m venv --system-site-packages venv
 source venv/bin/activate
-pip install -r ddh/requirements.txt
+pip install -r ddh/requirements_rpi.txt
 ```
 
-Upon problems, if any read requirements.txt file, it is very short.
+
+## Installing on x64
+Create virtualenv, no need to inherit system packages.
+```
+cd ddh
+python3 -m venv venv
+source venv/bin/activate
+pip install -r ddh/requirements_x64.txt
+```
 
 
 ## Running

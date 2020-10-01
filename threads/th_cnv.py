@@ -38,7 +38,10 @@ class ThCNV:
                 time.sleep(5)
                 continue
 
-            lid_to_csv(fol)
+            # add all the ones you want
+            lid_to_csv(fol, 'DissolvedOxygen')
+            # lid_to_csv(fol, 'Temperature')
+            # lid_to_csv(fol, 'Pressure')
             time.sleep(self.PERIOD_CNV)
 
 
