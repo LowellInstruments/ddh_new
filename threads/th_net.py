@@ -16,8 +16,9 @@ class ThNET:
 
         while 1:
             if not linux_is_rpi():
+                show at least wi-fi here even if not rpi
                 emit_net_status(sig, 'NET: not a RPi system')
-                time.sleep(3600)
+                time.sleep(60)
                 continue
 
             if not ctx.boot_time:
