@@ -2,27 +2,33 @@ import shelve
 import os
 import datetime
 
+from threads.utils_ble import emit_debug
+
 
 class BlackMacList:
-    def __init__(self, name):
+    def __init__(self, name, sig):
         self.db_name = name
+        self.sig = sig
 
     def black_macs_prune(self):
         """ remove keys with expired timestamp """
         db = shelve.open(self.db_name)
-        _to_rm = []
+        _expired_ones = []
         _till = datetime.datetime.now().timestamp()
         for k, v in db.items():
             if _till > v:
-                _to_rm.append(k)
-        for each in _to_rm:
-            print('del {} from blacklist'.format(each))
+                _expired_ones.append(k)
+        for each in _expired_ones:
+            _s = 'SYS: mac {} un-blacked'.format(each)
+            emit_debug(self.sig, _s)
             del db[each]
         db.close()
 
     def black_macs_add_or_update(self, _mac, _inc):
         _till = datetime.datetime.now().timestamp() + _inc
         with shelve.open(self.db_name) as sh:
+            _s = 'SYS: mac {} blacked, inc {}'.format(_mac, _inc)
+            emit_debug(self.sig, _s)
             sh[_mac] = _till
 
     def black_macs_len(self):
@@ -50,9 +56,10 @@ def whitelist_filter(wl, scan_results) -> list:
     return [i for i in scan_results if i.addr in wl]
 
 
-def black_macs_delete_all(name):
+def black_macs_delete_all(name, sig):
     try:
         os.remove(name)
+        emit_debug(sig, 'black_macs db erased')
     except FileNotFoundError as fnf:
         # print(fnf)
         pass

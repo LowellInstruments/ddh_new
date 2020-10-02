@@ -28,16 +28,14 @@ class ThGPS:
         try_time_sync_boot_before_ble(sig)
 
         # wait for first attempt of boot time
-        while 1:
+        while ctx.boot_time:
             if ctx.boot_time:
                 break
 
         while 1:
-            if ctx.ble_ongoing:
-                # emit_status(sig, 'GPS: wait BLE to finish')
-                time.sleep(5)
-                continue
-
+            # do not interrupt BLE
+            ctx.sem_ble.acquire()
+            ctx.sem_ble.release()
             sync_pos(sig)
             sync_time(sig)
             time.sleep(self.PERIOD_GPS)

@@ -3,13 +3,14 @@ import time
 import sys
 from mat.logger_controller_ble import ble_scan
 from settings import ctx
-from threads.utils_black_macs import whitelist_filter, BlackMacList, black_macs_delete_all, black_macs_dump
+from threads.utils import json_mac_dns
+from threads.utils_macs_black import whitelist_filter, BlackMacList, black_macs_delete_all, black_macs_dump
 from threads.utils_ble import (
     logger_download,
     emit_scan_pre,
     emit_status,
     emit_error,
-    emit_logger_pre, emit_session_pre, emit_logger_post, emit_debug, emit_scan_post)
+    emit_logger_pre, emit_session_pre, emit_logger_post, emit_debug, emit_scan_post, emit_dl_warning)
 
 
 def fxn(sig, args):
@@ -60,7 +61,7 @@ class ThBLE:
                 continue
 
             # to manage black-listed macs
-            bm = BlackMacList(ctx.db_blk)
+            bm = BlackMacList(ctx.db_blk, sig)
 
             # un-ignore loggers, if so
             bm.black_macs_prune()
@@ -85,7 +86,7 @@ class ThBLE:
             emit_scan_post(sig, n)
 
             # protect critical zone
-            ctx.ble_ongoing = True
+            ctx.sem_ble.acquire()
 
             # downloading stage
             for i, each in enumerate(li):
@@ -102,15 +103,13 @@ class ThBLE:
                     # logger_download() emits all signals
                     done = logger_download(mac, fol, hci_if, sig)
                     _t = self.FORGET_S if done else self.IGNORE_S
-                    # todo: emit if not t
                     bm.black_macs_add_or_update(mac, _t)
 
                 # not ours, but python BLE lib exception
                 except ble.BTLEException as ex:
                     bm.black_macs_add_or_update(mac, self.IGNORE_S)
-                    # todo: emit if not t
+                    emit_dl_warning(sig, mac)
                     ex = str(ex.message)
-                    print(ex)
                     e = 'BLE: exception {}'.format(ex)
                     emit_error(sig, e)
                     e = 'DL error, retrying in {} s'
@@ -120,7 +119,7 @@ class ThBLE:
                     emit_logger_post(sig, False, e, mac)
 
             # unprotect critical zone
-            ctx.ble_ongoing = False
+            ctx.sem_ble.release()
 
             # gives time to display messages
             time.sleep(3)

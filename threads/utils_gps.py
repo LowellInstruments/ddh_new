@@ -59,8 +59,8 @@ def _gps_pos_trim(f):
     return lat, lon
 
 
-def sync_pos(sig):
-    f, p = gps_get_raw()
+def sync_pos(sig, timeout=10):
+    f, p = gps_get_raw(timeout)
     lat, lon = _gps_pos_trim(f)
 
     # do we have port and frame
@@ -118,7 +118,7 @@ def _gps_sync_time(sig):
 
 
 # returns tuple(gps_tuple, usb_port)
-def gps_get_raw(timeout=3) -> tuple:
+def gps_get_raw(timeout=5) -> tuple:
     p = _find_usb_gps()
     if p and sys.platform == 'linux':
         # MAT library's gps w/ timeout

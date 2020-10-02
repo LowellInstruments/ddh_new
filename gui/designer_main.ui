@@ -250,17 +250,44 @@
                </widget>
               </item>
               <item>
-               <widget class="QLabel" name="lbl_plot">
-                <property name="text">
-                 <string/>
+               <layout class="QVBoxLayout" name="verticalLayout_5" stretch="6,4">
+                <property name="topMargin">
+                 <number>12</number>
                 </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
+                <property name="bottomMargin">
+                 <number>12</number>
                 </property>
-                <property name="wordWrap">
-                 <bool>true</bool>
-                </property>
-               </widget>
+                <item>
+                 <widget class="QLabel" name="lbl_plot">
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                  <property name="wordWrap">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="lbl_warning">
+                  <property name="styleSheet">
+                   <string notr="true">color: rgb(255, 7, 52); 
+font: 18pt &quot;Ubuntu&quot;;</string>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                  <property name="wordWrap">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </item>
              </layout>
             </item>

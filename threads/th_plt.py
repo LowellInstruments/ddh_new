@@ -9,11 +9,8 @@ from threads.utils_plt import (
 
 
 def fxn(sig, args):
-    if ctx.plt_ongoing:
-        s = 'not plotting, conversion in progress'
-        emit_msg(sig, s)
-        return
-
+    ctx.sem_plt.acquire()
+    ctx.sem_plt.release()
     ThPLT(sig, *args)
 
 

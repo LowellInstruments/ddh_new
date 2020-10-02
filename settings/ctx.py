@@ -3,6 +3,8 @@ import socket
 
 
 # constants
+import threading
+
 PLT_SHOW_TIMEOUT = 120
 PLT_MSG_TIMEOUT = 5
 
@@ -24,21 +26,27 @@ lg_dl_size = 0
 lg_dl_bar_pc = 0
 
 
+# semaphores
+sem_ftp = threading.Semaphore()
+sem_ble = threading.Semaphore()
+sem_plt = threading.Semaphore()
+
+
 # FTP: current and start states + switch capability
-ftp_ongoing = False
+# ftp_ongoing = False
 ftp_en = True
 sw_ftp_en = True
 
 
 # BLE: current and start states + switch capability
-ble_ongoing = False
+# ble_ongoing = False
 ble_en = False
 sw_ble_en = True
 black_macs_persistent = True
 
 
 # PLT: current state
-plt_ongoing = False
+# plt_ongoing = False
 
 
 # GPS: good time at boot

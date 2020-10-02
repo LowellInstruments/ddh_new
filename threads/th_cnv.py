@@ -28,15 +28,11 @@ class ThCNV:
         emit_cnv_status(sig, s)
 
         while 1:
-            if ctx.ble_ongoing:
-                emit_cnv_status(sig, 'CNV: wait BLE to finish')
-                time.sleep(5)
-                continue
-
-            if ctx.plt_ongoing:
-                emit_cnv_status(sig, 'CNV: wait PLT to finish')
-                time.sleep(5)
-                continue
+            # do not interrupt BLE or plotting
+            ctx.sem_ble.acquire()
+            ctx.sem_ble.release()
+            ctx.sem_plt.acquire()
+            ctx.sem_plt.release()
 
             # add all the ones you want
             lid_to_csv(fol, 'DissolvedOxygen')

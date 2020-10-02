@@ -3,7 +3,7 @@ import json
 import pathlib
 import time
 from mat.logger_controller_ble import LoggerControllerBLE
-from threads.utils import rm_folder, create_folder, exists_file
+from threads.utils import rm_folder, create_folder, exists_file, json_mac_dns
 from mat.logger_controller import (
     RWS_CMD,
     SWS_CMD, STATUS_CMD
@@ -75,6 +75,16 @@ def emit_deployed(sig, mac, lat, lon):
 def emit_session_pre(sig, mac, c, n):
     if sig:
         sig.ble_session_pre.emit(mac, c, n)
+
+
+def emit_dl_warning(sig, w):
+    if not sig:
+        return
+    if w:
+        j = ctx.json_file
+        w = json_mac_dns(j, w)
+        w = '{} not deployed'.format(w)
+    sig.ble_dl_warning.emit(w)
 
 
 def emit_session_post(sig, s):
@@ -249,7 +259,7 @@ def _logger_rws(lc, sig, g):
 
 
 def _ddh_get_gps():
-    return sync_pos(sig=None)
+    return sync_pos(sig=None, timeout=10)
 
 
 def _logger_plot(mac, sig):
@@ -319,10 +329,12 @@ def logger_download(mac, fol, hci_if, sig=None):
                 s = 'logger done'
                 emit_logger_post(sig, True, s, mac)
                 _logger_plot(mac, sig)
+                emit_dl_warning(sig, '')
                 blacklist_as_done = True
             else:
                 e = 'logger {} not done yet'.format(mac)
                 emit_logger_post(sig, False, e, mac)
+                emit_dl_warning(sig, mac)
                 emit_error(sig, e)
                 blacklist_as_done = False
             _time_to_display(2)
@@ -330,14 +342,16 @@ def logger_download(mac, fol, hci_if, sig=None):
 
     # my exception, such as no MAT.cfg file
     except AppBLEException as ex:
-        e = 'error with: {}, will retry'.format(ex)
+        e = 'error at {}, will retry'.format(ex)
         emit_logger_post(sig, False, e, mac)
         emit_error(sig, e)
+        emit_dl_warning(sig, mac)
         return False
 
     # such as None.command()
     except AttributeError as ae:
         emit_error(sig, 'error: {}'.format(ae))
+        emit_dl_warning(sig, mac)
         return False
 
 

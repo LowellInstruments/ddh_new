@@ -1,6 +1,7 @@
 import time
 import matplotlib
 from mat.linux import linux_is_rpi
+from threads.utils_macs_black import black_macs_dump, black_macs_delete_all
 from threads.utils_ftp import ftp_assert_credentials
 matplotlib.use('Qt5Agg')
 import datetime
@@ -184,7 +185,6 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
 
     @pyqtSlot(name='slot_plt_start')
     def slot_plt_start(self):
-        ctx.plt_ongoing = True
         self.slot_gui_update_plt('Plotting...')
         self.lbl_plt_bsy.setVisible(True)
 
@@ -198,7 +198,6 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         else:
             self.slot_gui_update_plt(s)
             self.slot_plt_msg(s)
-        ctx.plt_ongoing = False
         self.lbl_plt_bsy.setVisible(False)
 
     @pyqtSlot(str, name='slot_plt_msg')
@@ -283,7 +282,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     def slot_ble_logger_plot_req(self, mac):
         if not mac:
             s = 'no plot from last logger'
-            self.lbl_plot.setText(s)
+            self.slot_gui_update_plt(s)
             return
         d = ctx.dl_files_folder
         self.plt_folders = update_dl_folder_list(d)
@@ -302,6 +301,10 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         pc = 100 * (128 / ctx.lg_dl_size)
         ctx.lg_dl_bar_pc += pc
         self.bar_dl.setValue(ctx.lg_dl_bar_pc)
+
+    @pyqtSlot(str, name='slot_ble_dl_warning')
+    def slot_ble_dl_warning(self, w):
+        self.lbl_warning.setText(w)
 
     @pyqtSlot(str, str, str, name='slot_his_update')
     def slot_his_update(self, mac, lat, lon):
@@ -486,8 +489,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         if _confirm_by_user(s):
             db = DBHis(ctx.db_his)
             db.delete_all_records()
-            db = DBHis(ctx.db_blk)
-            db.delete_all_records()
+            black_macs_delete_all(ctx.db_blk)
         self._populate_history_tab()
 
     def _click_btn_load_current(self):
@@ -529,6 +531,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.th_ble.signals().ble_session_post.connect(self.slot_ble_session_post)
         self.th_ble.signals().ble_deployed.connect(self.slot_his_update)
         self.th_ble.signals().ble_dl_step.connect(self.slot_ble_dl_step)
+        self.th_ble.signals().ble_dl_warning.connect(self.slot_ble_dl_warning)
         self.th_ble.signals().ble_logger_plot_req.connect(self.slot_ble_logger_plot_req)
 
         # ftp
@@ -620,10 +623,9 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
             return
 
         # plot unless busy doing a previous one
-        if not ctx.plt_ongoing:
-            self._throw_th_plt()
-        else:
-            c_log.debug('GUI: busy to plot')
+        ctx.sem_plt.acquire()
+        self._throw_th_plt()
+        ctx.sem_plt.release()
 
     def _populate_history_tab(self):
         utils_gui.setup_his_tab(self)

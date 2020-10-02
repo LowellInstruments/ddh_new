@@ -26,17 +26,11 @@ class ThNET:
                 time.sleep(10)
                 continue
 
-            if ctx.ftp_ongoing:
-                emit_net_status(sig, 'NET: wait FTP to finish')
-                time.sleep(10)
-                continue
-
-            if ctx.ble_ongoing:
-                emit_net_status(sig, 'NET: wait BLE to finish')
-                time.sleep(10)
-                continue
-
+            ctx.sem_ble.acquire()
+            ctx.sem_ble.release()
+            ctx.sem_ftp.acquire()
             check_net_best(sig)
+            ctx.sem_ftp.release()
             time.sleep(TH_NET_PERIOD)
 
 

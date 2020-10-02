@@ -1,7 +1,7 @@
 import datetime
 import pytest
 import sys
-from threads.utils_black_macs import BlackMacList, black_macs_delete_all
+from threads.utils_macs_black import BlackMacList, black_macs_delete_all
 
 db_name = 'test.db'
 
@@ -9,7 +9,7 @@ db_name = 'test.db'
 @pytest.mark.skipif(sys.platform == "win32", reason="does not run on windows")
 class TestBlackMacs:
     def test_black_destroy_and_one(self):
-        bm = BlackMacList(db_name)
+        bm = BlackMacList(db_name, None)
         black_macs_delete_all(db_name)
         _mac = '11:11:11:11:11:11'
         _till = 100
@@ -18,7 +18,7 @@ class TestBlackMacs:
         assert n == 1
 
     def test_black_macs_prune(self):
-        bm = BlackMacList(db_name)
+        bm = BlackMacList(db_name, None)
         black_macs_delete_all(db_name)
         _mac = '11:11:11:11:11:11'
         _till = -100
@@ -31,7 +31,7 @@ class TestBlackMacs:
         assert n == 1
 
     def test_black_macs_how_many_pending(self):
-        bm = BlackMacList(db_name)
+        bm = BlackMacList(db_name, None)
         black_macs_delete_all(db_name)
         _mac = '11:11:11:11:11:11'
         _till = -100

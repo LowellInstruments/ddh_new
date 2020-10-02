@@ -13,19 +13,19 @@ class ThFTP:
         emit_ftp_status(sig, 'FTP: thread boot')
 
         while 1:
+
             if not ctx.ftp_en:
                 emit_ftp_update(sig, 'FTP: disabled')
-                time.sleep(5)
+                time.sleep(120)
                 continue
 
-            if ctx.ble_ongoing:
-                emit_ftp_status(sig, 'FTP: wait BLE to finish')
-                time.sleep(5)
-                continue
+            # do not interrupt BLE
+            ctx.sem_ble.acquire()
+            ctx.sem_ble.release()
 
-            ctx.ftp_ongoing = True
+            ctx.sem_ftp.acquire()
             ftp_sync(sig, ctx.dl_files_folder, ctx.app_conf_folder)
-            ctx.ftp_ongoing = False
+            ctx.sem_ftp.release()
             p = self.PERIOD_FTP
             time.sleep(p)
 
