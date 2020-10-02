@@ -18,7 +18,7 @@ from PyQt5.QtGui import (
     QIcon)
 from PyQt5.QtWidgets import (
     QMainWindow,
-    QFileDialog)
+    QFileDialog, QApplication)
 
 from gui import utils_gui
 from gui.utils_gui import (
@@ -105,6 +105,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         # timer used to quit this app
         self.tim_q = QTimer()
         self.tim_q.timeout.connect(self._timer_bye)
+
 
     def _timer_bye(self):
         self.tim_q.stop()

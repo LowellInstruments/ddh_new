@@ -1,9 +1,9 @@
 import bluepy.btle as ble
 import time
 import sys
-from db.db_blk import DBBlk
 from mat.logger_controller_ble import ble_scan
 from settings import ctx
+from threads.utils_black_macs import whitelist_filter, BlackMacList, black_macs_delete_all, black_macs_dump
 from threads.utils_ble import (
     logger_download,
     emit_scan_pre,
@@ -16,7 +16,6 @@ def fxn(sig, args):
     while not ctx.boot_time:
         emit_status(sig, 'BLE: wait GPS boot time')
         time.sleep(5)
-        continue
 
     ThBLE(sig, *args)
 
@@ -25,9 +24,7 @@ class ThBLE:
     def __init__(self, sig, forget_s, ignore_s, known_macs, hci_if):
         self.sig = sig
         self.hci_if = hci_if
-        self.blacklist_dict = dict()
-        if ctx.ble_blacklist_persistent:
-            self.blacklist_dict = self._blacklist_from_db()
+        self.black_macs = None
         self.FORGET_S = forget_s
         self.IGNORE_S = ignore_s
         self.KNOWN_MACS = [i.lower() for i in known_macs]
@@ -46,14 +43,27 @@ class ThBLE:
     def _loop(self, sig, hci_if):
         emit_status(sig, 'BLE: thread boot')
 
+        # black list new or load one
+        if not ctx.black_macs_persistent:
+            _d = 'SYS: no persistent blacklist'
+            black_macs_delete_all(ctx.db_blk)
+        else:
+            _d = 'SYS: loaded persistent blacklist -> '
+            _d += black_macs_dump(ctx.db_blk)
+        emit_debug(sig, _d)
+
+        # BLE loop
         while 1:
             if not ctx.ble_en:
                 emit_scan_pre(sig, 'not scanning')
                 time.sleep(3)
                 continue
 
+            # to manage black-listed macs
+            bm = BlackMacList(ctx.db_blk)
+
             # un-ignore loggers, if so
-            self._blacklist_prune()
+            bm.black_macs_prune()
 
             # BLE scan: all BLE devices around, no filter
             my_if = 'built-in' if hci_if == 0 else 'external'
@@ -62,10 +72,10 @@ class ThBLE:
             near = ble_scan(hci_if)
 
             # filter by known MAC addresses
-            li = self._whitelist_filter(near)
+            li = whitelist_filter(self.KNOWN_MACS, near)
 
             # filter by too recent ones
-            n = self._loggers_left_to_do(li)
+            n = bm.black_macs_how_many_pending(li)
 
             # we detect absolutely no logger to do
             if n == 0:
@@ -80,7 +90,7 @@ class ThBLE:
             # downloading stage
             for i, each in enumerate(li):
                 mac = each.addr
-                if self._blacklist_present(mac):
+                if bm.black_macs_is_present(mac):
                     continue
 
                 try:
@@ -91,11 +101,14 @@ class ThBLE:
 
                     # logger_download() emits all signals
                     done = logger_download(mac, fol, hci_if, sig)
-                    self._blacklist_add(mac, done)
+                    _t = self.FORGET_S if done else self.IGNORE_S
+                    # todo: emit if not t
+                    bm.black_macs_add_or_update(mac, _t)
 
                 # not ours, but python BLE lib exception
                 except ble.BTLEException as ex:
-                    self._blacklist_add(mac, False)
+                    bm.black_macs_add_or_update(mac, self.IGNORE_S)
+                    # todo: emit if not t
                     ex = str(ex.message)
                     print(ex)
                     e = 'BLE: exception {}'.format(ex)
@@ -111,71 +124,3 @@ class ThBLE:
 
             # gives time to display messages
             time.sleep(3)
-
-    def _blacklist_from_db(self):
-        # called in ThBLE constructor
-        bl = dict()
-        db = DBBlk(ctx.db_blk)
-        r = db.list_all_records()
-        for each in r:
-            _ = {each[1]: each[2]}
-            bl.update(_)
-            s = 'BLE: bl <- db entry {}'
-            emit_debug(self.sig, s.format(bl))
-        return bl
-
-    def _blacklist_to_db(self):
-        db = DBBlk(ctx.db_blk)
-        db.delete_all_records()
-        for _ in self.blacklist_dict.items():
-            db.add_record(_[0], _[1])
-            s = 'BLE: bl entry -> db {}'
-            emit_debug(self.sig, s.format(_))
-
-    def _blacklist_prune(self):
-        some_blacklist_update = False
-        for key, value in list(self.blacklist_dict.items()):
-            if time.time() > float(value):
-                some_blacklist_update = True
-                self.blacklist_dict.pop(key)
-            # useful when debugging
-            # else:
-            #     yet = value - time.time()
-            #     t = 'BLE: omit {} for {:.2f} s'.format(key, yet)
-            #     emit_status(self.sig, t)
-
-        if some_blacklist_update and ctx.ble_blacklist_persistent:
-            self._blacklist_to_db()
-
-    def _blacklist_present(self, a):
-        return a in self.blacklist_dict
-
-    def _blacklist_add(self, mac, went_ok):
-        t = self.FORGET_S if went_ok else self.IGNORE_S
-        s = 'BLE: will omit {} for {} s'.format(mac, t)
-        emit_status(self.sig, s)
-        d = {mac: time.time() + t}
-        self.blacklist_dict.update(d)
-        if ctx.ble_blacklist_persistent:
-            self._blacklist_to_db()
-
-    def _blacklist_show(self):
-        for i, t in self.blacklist_dict.items():
-            print('{}, {}s'.format(i, t))
-
-    def _whitelist_filter(self, sr):
-        whitelist = self.KNOWN_MACS
-        return [i for i in sr if i.addr in whitelist]
-
-    def _loggers_left_to_do(self, lgs):
-        """ counts new loggers and blacklisted about to expire """
-        to_do = 0
-        for i in lgs:
-            try:
-                t = float(self.blacklist_dict[i.addr])
-                if t <= self.IGNORE_S:
-                    to_do += 1
-            except KeyError:
-                to_do += 1
-                pass
-        return to_do

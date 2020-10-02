@@ -1,6 +1,6 @@
 import time
 from mat.linux import linux_is_rpi
-from threads.utils_net import check_net_best, emit_net_status, ensure_resolv_conf
+from threads.utils_net import check_net_best, emit_net_status, ensure_resolv_conf, get_ssid, emit_net_update
 from settings import ctx
 
 
@@ -16,8 +16,8 @@ class ThNET:
 
         while 1:
             if not linux_is_rpi():
-                show at least wi-fi here even if not rpi
-                emit_net_status(sig, 'NET: not a RPi system')
+                _ = '{}'.format(get_ssid())
+                emit_net_update(sig, _)
                 time.sleep(60)
                 continue
 

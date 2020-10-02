@@ -34,7 +34,7 @@ sw_ftp_en = True
 ble_ongoing = False
 ble_en = False
 sw_ble_en = True
-ble_blacklist_persistent = False
+black_macs_persistent = True
 
 
 # PLT: current state

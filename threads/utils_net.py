@@ -125,6 +125,10 @@ def _get_ssid() -> str:
     return s.stdout.decode().rstrip('\n')
 
 
+def get_ssid():
+    return _get_ssid()
+
+
 def check_net_best(sig=None):
     """
     preferred: wi-fi > cell > no net
