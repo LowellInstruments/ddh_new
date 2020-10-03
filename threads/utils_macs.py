@@ -23,7 +23,6 @@ class ColoredMacList:
     def macs_dump(self) -> str:
         _s = ''
         with shelve.open(self.db_name) as sh:
-            print(self.db_name, self.color)
             for k, v in sh.items():
                 _s += '{}: {}, '.format(k, v)
         return _s

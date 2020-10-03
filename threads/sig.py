@@ -16,7 +16,7 @@ class SignalsBLE(QObject):
     ble_status = pyqtSignal(str)
     ble_debug = pyqtSignal(str)
     ble_error = pyqtSignal(str)
-    ble_dl_warning = pyqtSignal(str)
+    ble_dl_warning = pyqtSignal(list)
     ble_dl_step = pyqtSignal()
 
 

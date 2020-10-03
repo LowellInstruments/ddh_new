@@ -24,8 +24,8 @@ class ThBLE:
     def __init__(self, sig, forget_s, ignore_s, known_macs, hci_if):
         self.sig = sig
         self.hci_if = hci_if
-        self.black_macs = BlackMacList(sig, '.b_m.db')
-        self.orange_macs = OrangeMacList(sig, '.o_m.db')
+        self.black_macs = BlackMacList('.b_m.db', sig)
+        self.orange_macs = OrangeMacList('.o_m.db', sig)
         self.FORGET_S = forget_s
         self.IGNORE_S = ignore_s
         self.KNOWN_MACS = [i.lower() for i in known_macs]
@@ -52,9 +52,9 @@ class ThBLE:
             _d = 'SYS: loaded persistent black list -> '
             _d += self.black_macs.ls.macs_dump()
             emit_debug(self.sig, _d)
-            _d = 'SYS: loaded persistent orange list -> '
-            _d += self.orange_macs.ls.macs_dump()
-            emit_debug(self.sig, _d)
+            # _d = 'SYS: loaded persistent orange list -> '
+            # _d += self.orange_macs.ls.macs_dump()
+            # emit_debug(self.sig, _d)
 
     def _black_mac(self, mac):
         _fxn = self.black_macs.ls.macs_add_or_update
@@ -88,7 +88,7 @@ class ThBLE:
 
             # update them and don't query already done ones
             self.black_macs.macs_prune()
-            li = self.black_macs.ls.filter_black_macs(li)
+            li = self.black_macs.filter_black_macs(li)
             _n = len(li)
 
             # see how many had errors in past

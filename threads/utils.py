@@ -216,24 +216,26 @@ def lid_to_csv(fol, suffix) -> bool:
     if not os.path.exists(fol):
         return False
 
+    # prepare conversion
     parameters = default_parameters()
     lid_files = linux_ls_by_ext(fol, 'lid')
     rv = True
 
     for f in lid_files:
-        # build file name .csv, suffix e.g. DissolvedOxygen
-        _ = '{}_{}.csv'.format(f.split('.')[0], suffix)
+        # suffix: '_DissolvedOxygen', mind the _
+        _ = '{}{}.csv'.format(f.split('.')[0], suffix)
         if os.path.exists(_):
+            print('file {} already exists'.format(_))
             continue
 
         try:
             # converting takes about 1.5 seconds per file
             DataConverter(f, parameters).convert()
-            s = 'file {} conversion OK'.format(f)
-            print(s)
+            s = 'file {} conversion to {} OK'
+            print(s.format(f, suffix))
         except (ValueError, Exception) as ve:
-            e = 'file {} ERROR conversion -> {}'.format(f, ve)
-            print(e)
+            e = 'file {} ERROR conversion -> {}'
+            print(e.format(f, ve))
             rv = False
 
     return rv

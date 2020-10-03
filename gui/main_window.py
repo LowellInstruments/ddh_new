@@ -301,7 +301,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         ctx.lg_dl_bar_pc += pc
         self.bar_dl.setValue(ctx.lg_dl_bar_pc)
 
-    @pyqtSlot(str, name='slot_ble_dl_warning')
+    @pyqtSlot(list, name='slot_ble_dl_warning')
     def slot_ble_dl_warning(self, w):
         if not w:
             return
