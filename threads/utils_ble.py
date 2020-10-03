@@ -329,12 +329,10 @@ def logger_download(mac, fol, hci_if, sig=None):
                 s = 'logger done'
                 emit_logger_post(sig, True, s, mac)
                 _logger_plot(mac, sig)
-                emit_dl_warning(sig, '')
                 blacklist_as_done = True
             else:
                 e = 'logger {} not done yet'.format(mac)
                 emit_logger_post(sig, False, e, mac)
-                emit_dl_warning(sig, mac)
                 emit_error(sig, e)
                 blacklist_as_done = False
             _time_to_display(2)
@@ -345,13 +343,11 @@ def logger_download(mac, fol, hci_if, sig=None):
         e = 'error at {}, will retry'.format(ex)
         emit_logger_post(sig, False, e, mac)
         emit_error(sig, e)
-        emit_dl_warning(sig, mac)
         return False
 
     # such as None.command()
     except AttributeError as ae:
         emit_error(sig, 'error: {}'.format(ae))
-        emit_dl_warning(sig, mac)
         return False
 
 

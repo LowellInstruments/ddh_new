@@ -1,8 +1,9 @@
 import time
 import matplotlib
 from mat.linux import linux_is_rpi
-from threads.utils_macs_black import black_macs_dump, black_macs_delete_all
 from threads.utils_ftp import ftp_assert_credentials
+from threads.utils_macs import black_macs_delete_all
+
 matplotlib.use('Qt5Agg')
 import datetime
 import pathlib
@@ -51,8 +52,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
 
     def __init__(self, *args, **kwargs):
         # checks
-        if ctx.ftp_en:
-            ftp_assert_credentials()
+        _ftp_credentials_check()
 
         # gui: view
         super(DDHQtApp, self).__init__(*args, **kwargs)
@@ -106,7 +106,6 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         # timer used to quit this app
         self.tim_q = QTimer()
         self.tim_q.timeout.connect(self._timer_bye)
-
 
     def _timer_bye(self):
         self.tim_q.stop()
@@ -304,7 +303,9 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
 
     @pyqtSlot(str, name='slot_ble_dl_warning')
     def slot_ble_dl_warning(self, w):
-        self.lbl_warning.setText(w)
+        if not w:
+            return
+        self.lbl_warning.setText(w[0])
 
     @pyqtSlot(str, str, str, name='slot_his_update')
     def slot_his_update(self, mac, lat, lon):
@@ -634,6 +635,11 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
 def on_ctrl_c(signal_num, _):
     c_log.debug('SYS: captured signal {}'.format(signal_num))
     os._exit(signal_num)
+
+
+def _ftp_credentials_check():
+    if ctx.ftp_en:
+        ftp_assert_credentials()
 
 
 class MplCanvas(FigureCanvasQTAgg):
