@@ -115,7 +115,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         # update GUI widgets
         self.sys_secs += 1
         self.bsy_dots = dots
-        fmt = '%B %d,  %H:%M:%S'
+        fmt = '%b %d %H:%M:%S'
         t = datetime.datetime.now().strftime(fmt)
         _ = self.lbl_time_n_pos.text().split('\n')
         s = '{}\n{}\n{}\n{}'.format(_[0], t, _[2], _[3])

@@ -5,6 +5,7 @@ import socket
 # constants
 import threading
 
+
 PLT_SHOW_TIMEOUT = 120
 PLT_MSG_TIMEOUT = 5
 
@@ -18,6 +19,7 @@ span_dict = None
 db_plt = None
 db_his = None
 db_blk = None
+db_ong = None
 
 
 # current logger context
@@ -33,20 +35,14 @@ sem_plt = threading.Semaphore()
 
 
 # FTP: current and start states + switch capability
-# ftp_ongoing = False
 ftp_en = True
 sw_ftp_en = True
 
 
 # BLE: current and start states + switch capability
-# ble_ongoing = False
 ble_en = False
 sw_ble_en = True
 black_macs_persistent = True
-
-
-# PLT: current state
-# plt_ongoing = False
 
 
 # GPS: good time at boot

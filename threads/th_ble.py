@@ -25,8 +25,8 @@ class ThBLE:
     def __init__(self, sig, forget_s, ignore_s, known_macs, hci_if):
         self.sig = sig
         self.hci_if = hci_if
-        self.macs_black = BlackMacList('.b_m.db', sig)
-        self.macs_orange = OrangeMacList('.o_m.db', sig)
+        self.macs_black = BlackMacList(ctx.db_blk, sig)
+        self.macs_orange = OrangeMacList(ctx.db_ong, sig)
         self.FORGET_S = forget_s
         self.IGNORE_S = ignore_s
         self.KNOWN_MACS = [i.lower() for i in known_macs]

@@ -11,7 +11,7 @@ class ButtonPressEvent:
         return self.code
 
 
-class ThLife:
+class ThTime:
 
     sym = ('·', '··', '···', ' ')
     idx = 0
@@ -28,5 +28,5 @@ class ThLife:
 
 
 def fxn(sig):
-    ThLife(sig)
+    ThTime(sig)
 

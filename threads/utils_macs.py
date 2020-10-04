@@ -24,13 +24,13 @@ class ColoredMacList:
         _s = ''
         with shelve.open(self.db_name) as sh:
             for k, v in sh.items():
-                _s += '{}: {}, '.format(k, v)
+                _s += '{}: {}, '.format(k, int(v))
         return _s
 
     def macs_add_or_update(self, _mac, _inc):
         _t = datetime.datetime.now().timestamp() + _inc
         with shelve.open(self.db_name) as sh:
-            _s = 'SYS: mac {} oranged'
+            _s = 'SYS: mac {} {}'
             _s = _s.format(_mac, self.color)
             emit_debug(self.sig, _s)
             sh[_mac] = _t
@@ -54,7 +54,7 @@ class ColoredMacList:
 class OrangeMacList:
     """ MACs that had error on download """
     def __init__(self, name, sig):
-        self.ls = ColoredMacList(name, sig, 'orange\'')
+        self.ls = ColoredMacList(name, sig, 'orange')
 
     def macs_orange_pick(self):
         """ return keys w/ expired timestamp """
@@ -77,15 +77,13 @@ class OrangeMacList:
         return _ls
 
     def macs_prune(self):
-        _c = self.ls.color
-        _e = '{} not supposed to be pruned'
-        print(_e.format(_c))
+        print('orange not supposed to prune')
 
 
 class BlackMacList:
     """ MACs that went well on download """
     def __init__(self, name, sig):
-        self.ls = ColoredMacList(name, sig, 'black\'')
+        self.ls = ColoredMacList(name, sig, 'black')
 
     def _macs_prune(self):
         """ remove keys with expired timestamp """

@@ -27,17 +27,23 @@ class ThGPS:
         emit_gps_status(sig, 'GPS: thread boot')
         try_time_sync_boot_before_ble(sig)
 
-        # wait for first attempt of boot time
+        # wait until first attempt of boot time
         while ctx.boot_time:
             if ctx.boot_time:
                 break
 
+        # decouple both time & pos syncs
+        steps = 0
         while 1:
             # do not interrupt BLE
             ctx.sem_ble.acquire()
             ctx.sem_ble.release()
+
+            # position more often
             sync_pos(sig)
-            sync_time(sig)
+            if (steps % 10) == 0:
+                sync_time(sig)
+                steps += 1
             time.sleep(self.PERIOD_GPS)
 
 

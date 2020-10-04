@@ -20,7 +20,8 @@ if __name__ == "__main__":
     ctx.json_file = r / 'settings/ddh.json'
     ctx.db_his = str(r / 'db/db_his.db')
     ctx.db_plt = str(r / 'db/db_plt.db')
-    ctx.db_blk = str(r / 'db/db_blk.db')
+    ctx.db_blk = str(r / 'db/.black_macs')
+    ctx.db_ong = str(r / 'db/.orange_macs')
 
     # catch control + c
     signal.signal(signal.SIGINT, on_ctrl_c)
