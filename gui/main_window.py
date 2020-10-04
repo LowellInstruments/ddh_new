@@ -1,10 +1,7 @@
 import time
-import matplotlib
 from mat.linux import linux_is_rpi
 from threads.utils_ftp import ftp_assert_credentials
 from threads.utils_macs import black_macs_delete_all
-
-matplotlib.use('Qt5Agg')
 import datetime
 import pathlib
 import shutil
@@ -20,7 +17,7 @@ from PyQt5.QtGui import (
     QIcon)
 from PyQt5.QtWidgets import (
     QMainWindow,
-    QFileDialog, QApplication)
+    QFileDialog)
 
 from gui import utils_gui
 from gui.utils_gui import (
@@ -29,8 +26,6 @@ from gui.utils_gui import (
 from threads import th_time, th_gps, th_ble, th_plt, th_ftp, th_net, th_cnv
 from settings.utils_settings import yaml_load_pairs, json_gen_ddh
 from threads.th import DDHThread
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
-from matplotlib.figure import Figure
 from db.db_his import DBHis
 from threads.utils import (
     update_dl_folder_list,
@@ -38,7 +33,7 @@ from threads.utils import (
     json_get_metrics,
     json_get_macs,
     json_mac_dns,
-    json_get_forget_time_secs, json_get_span_dict, rpi_set_brightness, json_get_hci_if, setup_db_n_logs, json_get_pairs)
+    json_get_forget_time_secs, rpi_set_brightness, json_get_hci_if, setup_db_n_logs, json_get_pairs)
 from logzero import logger as c_log
 from threads.sig import (
     SignalsBLE,
@@ -46,6 +41,10 @@ from threads.sig import (
     SignalsTime, SignalsGPS, SignalsFTP, SignalsNET, SignalsCNV)
 import os
 import gui.designer_main as d_m
+import matplotlib
+matplotlib.use('Qt5Agg')
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from matplotlib.figure import Figure
 
 
 class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
@@ -305,7 +304,8 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     def slot_ble_dl_warning(self, w):
         if not w:
             return
-        self.lbl_warning.setText(w[0])
+        _s = '{} not deployed!'.format(w[0])
+        self.lbl_warning.setText(_s)
 
     @pyqtSlot(str, str, str, name='slot_his_update')
     def slot_his_update(self, mac, lat, lon):

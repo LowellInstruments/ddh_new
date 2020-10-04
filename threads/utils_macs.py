@@ -56,16 +56,30 @@ class OrangeMacList:
     def __init__(self, name, sig):
         self.ls = ColoredMacList(name, sig, 'orange\'')
 
-    def macs_refresh(self):
-        """ return (not remove) keys w/ expired timestamp """
+    def macs_orange_pick(self):
+        """ return keys w/ expired timestamp """
         db = shelve.open(self.ls.db_name)
-        _expired = []
+        _pick = []
         _now = datetime.datetime.now().timestamp()
         for k, v in db.items():
             if _now > v:
-                _expired.append(k)
+                _pick.append(k)
         db.close()
-        return _expired
+        return _pick
+
+    def filter_orange_macs(self, in_mac_list):
+        """ in_mac_list & orange """
+        _o = self.macs_orange_pick()
+        _ls = []
+        for m in in_mac_list:
+            if m in _o:
+                _ls.append(m)
+        return _ls
+
+    def macs_prune(self):
+        _c = self.ls.color
+        _e = '{} not supposed to be pruned'
+        print(_e.format(_c))
 
 
 class BlackMacList:
@@ -73,7 +87,7 @@ class BlackMacList:
     def __init__(self, name, sig):
         self.ls = ColoredMacList(name, sig, 'black\'')
 
-    def macs_prune(self):
+    def _macs_prune(self):
         """ remove keys with expired timestamp """
         db = shelve.open(self.ls.db_name)
         _expired = []
@@ -87,22 +101,22 @@ class BlackMacList:
             del db[each]
         db.close()
 
-    def filter_black_macs(self, s_r):
-        """ s_r: bluepy scan results """
-        _m = self.ls.get_all_macs()
+    def filter_black_macs(self, in_macs):
+        self._macs_prune()
+        _bm = self.ls.get_all_macs()
         # return the ones not present in black list
-        return [i for i in s_r if i.addr not in _m]
+        return [i for i in in_macs if i in _bm]
 
 
-def filter_white_macs(wl, scan_results) -> list:
-    return [i for i in scan_results if i.addr in wl]
-
-
-def scan_results_to_macs(sr) -> list:
-    return [_.addr for _ in sr]
+def filter_white_macs(wl, in_macs) -> list:
+    return [i for i in in_macs if i in wl]
 
 
 # for purge() buttons
 def black_macs_delete_all(name):
     bm = BlackMacList(name, None)
     bm.ls.delete_all()
+
+
+def bluepy_scan_results_to_strings(sr):
+    return [i.addr for i in sr]

@@ -3,7 +3,7 @@ import time
 import sys
 from mat.logger_controller_ble import ble_scan
 from settings import ctx
-from threads.utils_macs import filter_white_macs, BlackMacList, OrangeMacList
+from threads.utils_macs import filter_white_macs, BlackMacList, OrangeMacList, bluepy_scan_results_to_strings
 from threads.utils_ble import (
     logger_download,
     emit_scan_pre,
@@ -17,6 +17,7 @@ def fxn(sig, args):
         emit_status(sig, 'BLE: wait GPS boot time')
         time.sleep(5)
 
+    # really boot BLE thread
     ThBLE(sig, *args)
 
 
@@ -24,17 +25,18 @@ class ThBLE:
     def __init__(self, sig, forget_s, ignore_s, known_macs, hci_if):
         self.sig = sig
         self.hci_if = hci_if
-        self.black_macs = BlackMacList('.b_m.db', sig)
-        self.orange_macs = OrangeMacList('.o_m.db', sig)
+        self.macs_black = BlackMacList('.b_m.db', sig)
+        self.macs_orange = OrangeMacList('.o_m.db', sig)
         self.FORGET_S = forget_s
         self.IGNORE_S = ignore_s
         self.KNOWN_MACS = [i.lower() for i in known_macs]
 
-        # main BLE behavior: scan and download
+        # main BLE loop: scan and download
         while 1:
             try:
                 self._loop(self.sig, self.hci_if)
             except ble.BTLEManagementError as ex:
+                # leave this app, big SYS BLE error
                 e = 'BLE: big error, wrong HCI or permissions?'
                 emit_error(sig, e)
                 print(ex)
@@ -42,28 +44,28 @@ class ThBLE:
                 sys.exit(1)
 
     def _show_colored_mac_lists(self):
-        # black list new or load one
         if not ctx.black_macs_persistent:
+            # not persistent? remove old lists
             _d = 'SYS: no persistent mac color lists'
-            self.black_macs.ls.delete_all(self.sig)
-            self.orange_macs.ls.delete_all(self.sig)
+            self.macs_black.ls.delete_all(self.sig)
+            self.macs_orange.ls.delete_all(self.sig)
             emit_debug(self.sig, _d)
         else:
             _d = 'SYS: loaded persistent black list -> '
-            _d += self.black_macs.ls.macs_dump()
+            _d += self.macs_black.ls.macs_dump()
             emit_debug(self.sig, _d)
-            # _d = 'SYS: loaded persistent orange list -> '
-            # _d += self.orange_macs.ls.macs_dump()
-            # emit_debug(self.sig, _d)
+            _d = 'SYS: loaded persistent orange list -> '
+            _d += self.macs_orange.ls.macs_dump()
+            emit_debug(self.sig, _d)
 
-    def _black_mac(self, mac):
-        _fxn = self.black_macs.ls.macs_add_or_update
+    def _to_black(self, mac):
+        _fxn = self.macs_black.ls.macs_add_or_update
         _fxn(mac, self.FORGET_S)
-        # also remove from _orange, if so!
-        self.orange_macs.ls.macs_del_one(mac)
+        # could be a previously orange one, or not
+        self.macs_orange.ls.macs_del_one(mac)
 
-    def _orange_mac(self, mac):
-        _fxn = self.orange_macs.ls.macs_add_or_update
+    def _to_orange(self, mac):
+        _fxn = self.macs_orange.ls.macs_add_or_update
         _fxn(mac, self.IGNORE_S)
 
     def _loop(self, sig, hci_if):
@@ -77,30 +79,37 @@ class ThBLE:
                 time.sleep(3)
                 continue
 
-            # BLE scan: all BLE devices around, no filter
-            my_if = 'built-in' if hci_if == 0 else 'external'
+            # wireless scan: all BLE devices around, no filter
+            _iface = 'external' if hci_if else 'internal'
             s = 'scanning'
             emit_scan_pre(sig, s)
             near = ble_scan(hci_if)
 
-            # filter by known MAC addresses
-            li = filter_white_macs(self.KNOWN_MACS, near)
+            # scan results format -> [strings]
+            li = bluepy_scan_results_to_strings(near)
 
-            # update them and don't query already done ones
-            self.black_macs.macs_prune()
-            li = self.black_macs.filter_black_macs(li)
-            _n = len(li)
+            # any BLE mac -> DDH known macs
+            li = filter_white_macs(self.KNOWN_MACS, li)
 
-            # see how many had errors in past
-            _n_o = self.orange_macs.ls.len_macs_list()
-            _o = self.orange_macs.ls.get_all_macs()
+            # DDH macs -> w/o recently well done ones
+            li = self.macs_black.filter_black_macs(li)
 
-            # we detect absolutely no logger to do
-            if _n + _n_o == 0:
+            # DDH macs -> w/o too recent bad ones
+            li = self.macs_orange.filter_orange_macs(li)
+
+            # how many loggers we have to do now
+            n = len(li)
+
+            # none to download, great
+            if n == 0:
+                emit_dl_warning(sig, None)
                 continue
-            s = 'BLE: {} fresh loggers'.format(_n)
+            s = 'BLE: {} fresh loggers'.format(n)
             emit_status(sig, s)
-            emit_scan_post(sig, _n)
+            emit_scan_post(sig, n)
+
+            # remind we may not be done with some
+            _o = self.macs_orange.macs_orange_pick()
             emit_dl_warning(sig, _o)
 
             # protect critical zone
@@ -111,25 +120,26 @@ class ThBLE:
                 mac = each.addr
 
                 try:
-                    emit_session_pre(sig, mac, i + 1, _n)
+                    emit_session_pre(sig, mac, i + 1, n)
                     emit_status(sig, 'BLE: connecting {}'.format(mac))
                     emit_logger_pre(sig)
                     fol = ctx.dl_files_folder
 
                     # logger_download() emits all signals
                     done = logger_download(mac, fol, hci_if, sig)
-                    self._black_mac(mac) if done else self._orange_mac(mac)
+                    self._to_black(mac) if done else self._to_orange(mac)
 
                 # not ours, but bluepy exception
                 except ble.BTLEException as ex:
-                    self._orange_mac(mac)
+                    # add to orange ones
+                    self._to_orange(mac)
                     ex = str(ex.message)
                     e = 'BLE: exception {}'.format(ex)
                     emit_error(sig, e)
                     e = 'DL error, retrying in {} s'
                     e = e.format(self.IGNORE_S)
                     emit_error(sig, e)
-                    e = 'some error\nretrying in 1 minute'
+                    e = 'some error\nretrying in 1 min'
                     emit_logger_post(sig, False, e, mac)
 
             # unprotect critical zone
