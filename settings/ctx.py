@@ -42,7 +42,7 @@ sw_ftp_en = True
 # BLE: current and start states + switch capability
 ble_en = False
 sw_ble_en = True
-black_macs_persistent = True
+macs_lists_persistent = True
 
 
 # GPS: good time at boot

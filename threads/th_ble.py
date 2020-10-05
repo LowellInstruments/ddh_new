@@ -44,7 +44,7 @@ class ThBLE:
                 sys.exit(1)
 
     def _show_colored_mac_lists(self):
-        if not ctx.black_macs_persistent:
+        if not ctx.macs_lists_persistent:
             # not persistent? remove old lists
             _d = 'SYS: no persistent mac color lists'
             self.macs_black.ls.delete_all(self.sig)
