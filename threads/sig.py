@@ -54,5 +54,5 @@ class SignalsNET(QObject):
 class SignalsCNV(QObject):
     cnv_status = pyqtSignal(str)
     cnv_error = pyqtSignal(str)
-    cnv_update = pyqtSignal(str)
+    cnv_update = pyqtSignal(list)
 

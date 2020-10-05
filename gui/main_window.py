@@ -33,7 +33,8 @@ from threads.utils import (
     json_get_metrics,
     json_get_macs,
     json_mac_dns,
-    json_get_forget_time_secs, rpi_set_brightness, json_get_hci_if, setup_db_n_logs, json_get_pairs)
+    json_get_forget_time_secs, rpi_set_brightness, json_get_hci_if, rm_plot_db, json_get_pairs, setup_app_log,
+    update_cnv_log_err_file)
 from logzero import logger as c_log
 from threads.sig import (
     SignalsBLE,
@@ -58,20 +59,20 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.plt_cnv = MplCanvas(self, width=5, height=3, dpi=100)
         setup_view(self, ctx.json_file)
         setup_buttons_gui(self)
-        setup_db_n_logs()
         setup_his_tab(self)
+        setup_app_log(str(ctx.app_logs_folder / 'ddh.log'))
+        rm_plot_db()
 
         # uncommenting this can be useful when dev
         setup_window_center(self)
         setup_buttons_rpi(self, c_log)
 
         # gui: controller
-        d = ctx.dl_files_folder
         self.sys_secs = 0
         self.bsy_dots = ''
         self.plt_timeout_dis = 0
         self.plt_timeout_msg = 0
-        self.plt_folders = update_dl_folder_list(d)
+        self.plt_folders = update_dl_folder_list(ctx.dl_files_folder)
         self.plt_folders_idx = 0
         self.plt_dir = None
         self.plt_time_spans = ('h', 'd', 'w', 'm', 'y')
@@ -147,7 +148,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         _ = self.lbl_time_n_pos.text().split('\n')
         s = '{}\n{}\n{}\n{}'.format(_[0], _[1], lat, lon)
         self.lbl_time_n_pos.setText(s)
-        ok = lat not in ['missing', 'searching']
+        ok = lon not in ['missing', 'searching', 'malfunction']
         update_gps_icon(self, ok, lat, lon)
 
     @pyqtSlot(str, name='slot_gui_update_gps_time_via')
@@ -169,8 +170,11 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         s = '{}\n{}'.format(_[0], c)
         self.lbl_net_n_ftp.setText(s)
 
-    @pyqtSlot(str, name='slot_gui_update_cnv')
-    def slot_gui_update_cnv(self, s):
+    @pyqtSlot(list, name='slot_gui_update_cnv')
+    def slot_gui_update_cnv(self, _e):
+        path = str(ctx.app_logs_folder / 'ddh_err_cnv.log')
+        update_cnv_log_err_file(path, _e)
+        s = 'some bad conversion' if _e else 'conversion OK'
         _ = self.lbl_plot.text().split('\n')
         s = '{}\n{}'.format(_[0], s)
         self.lbl_plot.setText(s)

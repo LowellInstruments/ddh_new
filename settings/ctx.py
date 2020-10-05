@@ -14,6 +14,7 @@ PLT_MSG_TIMEOUT = 5
 app_root_folder = None
 dl_files_folder = None
 app_conf_folder = None
+app_logs_folder = None
 json_file = None
 span_dict = None
 db_plt = None

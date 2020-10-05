@@ -6,12 +6,6 @@ def emit_cnv_status(sig, s):
         sig.cnv_status.emit(s)
 
 
-def emit_cnv_error(sig, e):
-    if sig:
-        sig.cnv_error.emit(e)
-
-
 def emit_cnv_update(sig, u):
-    todo: remove all cnv signals
     if sig:
         sig.cnv_update.emit(u)

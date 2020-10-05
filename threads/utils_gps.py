@@ -1,3 +1,4 @@
+import time
 from datetime import datetime, timezone
 from mat.gps import GPS
 import re
@@ -59,20 +60,42 @@ def _gps_pos_trim(f):
     return lat, lon
 
 
+def check_gps_hw(sig):
+    p = _find_usb_gps()
+    rv = False
+    if p and sys.platform == 'linux':
+        p = '/dev/{}'.format(p)
+        gps = GPS(p)
+        _till = time.perf_counter() + 5
+        f = str('')
+        try:
+            while time.perf_counter() < _till:
+                f += gps.port.readline().strip()
+        except TypeError:
+            # exception when type bytes instead of str
+            rv = False
+
+    if not rv:
+        lat, lon = 'GPS hardware', 'malfunction'
+        e = '{} {}'.format(lat, lon)
+        emit_gps_error(sig, e)
+        emit_gps_update_pos(sig, lat, lon)
+    return rv
+
+
 def sync_pos(sig, timeout=10):
     f, p = gps_get_raw(timeout)
     lat, lon = _gps_pos_trim(f)
 
-    # do we have port and frame
+    # we have no port and no frame
     if not p:
-        lat = 'missing'
-        lon = 'missing'
+        lat, lon = 'missing', 'missing'
         emit_gps_update_pos(sig, lat, lon)
         return
     else:
+        # we have port but no frame
         if not f:
-            lat = 'searching'
-            lon = 'searching'
+            lat, lon = 'searching', 'searching'
             emit_gps_update_pos(sig, lat, lon)
             return
 

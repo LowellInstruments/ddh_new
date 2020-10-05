@@ -3,7 +3,7 @@ from settings import ctx
 from threads import utils_cnv
 from threads.utils import lid_to_csv, _pre_rm_csv
 from threads.utils_cnv import (
-    emit_cnv_status)
+    emit_cnv_status, emit_cnv_update)
 
 
 def fxn(sig):
@@ -35,7 +35,8 @@ class ThCNV:
             ctx.sem_plt.release()
 
             # add all the ones you want
-            # lid_to_csv(fol, 'DissolvedOxygen')
+            _, e = lid_to_csv(fol, 'DissolvedOxygen')
+            emit_cnv_update(sig, e)
             # lid_to_csv(fol, 'Temperature')
             # lid_to_csv(fol, 'Pressure')
             time.sleep(self.PERIOD_CNV)

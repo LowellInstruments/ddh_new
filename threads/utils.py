@@ -1,3 +1,6 @@
+import datetime
+import logzero
+from logzero import logger
 import http.client
 import pathlib
 import subprocess as sp
@@ -13,7 +16,6 @@ import json
 from socket import AF_INET, SOCK_DGRAM
 import socket
 import struct
-from threads.utils_cnv import emit_cnv_status, emit_cnv_error, emit_cnv_update
 
 
 def rpi_set_brightness(v):
@@ -212,13 +214,14 @@ def mac_from_folder(fol):
         return None
 
 
-def lid_to_csv(fol, suffix) -> bool:
+def lid_to_csv(fol, suffix) -> (bool, list):
     if not os.path.exists(fol):
         return False
 
     # prepare conversion
     parameters = default_parameters()
     lid_files = linux_ls_by_ext(fol, 'lid')
+    err_files = []
     rv = True
 
     for f in lid_files:
@@ -234,11 +237,13 @@ def lid_to_csv(fol, suffix) -> bool:
             s = 'file {} conversion to {} OK'
             print(s.format(f, suffix))
         except (ValueError, Exception) as ve:
-            e = 'file {} ERROR conversion -> {}'
-            print(e.format(f, ve))
             rv = False
+            e = 'file {} ERROR conversion -> {}'
+            e = e.format(f, ve)
+            print(e)
+            err_files.append(e)
 
-    return rv
+    return rv, err_files
 
 
 def create_folder(mac, fol):
@@ -263,13 +268,33 @@ def rm_folder(mac):
 
 
 # removes db_plt, setups logs
-def setup_db_n_logs():
-    import logzero
+def rm_plot_db():
     p = ctx.db_plt
     if os.path.exists(p):
         os.remove(p)
-    log = str(ctx.app_root_folder / 'ddh.log')
+
+
+def setup_app_log(path_to_log_file: str):
+    log = path_to_log_file
     logzero.logfile(log, maxBytes=int(1e6), backupCount=3, mode='a')
+    fmt = '%b %d %H:%M:%S'
+    _t = datetime.datetime.now().strftime(fmt)
+    s = '\n\n\n'
+    logger.debug(s)
+    s = '==== DDH booted on {} ===='.format(_t)
+    logger.debug(s)
+
+
+def update_cnv_log_err_file(path_to_log_file, _err_reasons):
+    if not _err_reasons:
+        return
+
+    with open(path_to_log_file, 'w') as f:
+        for _ in _err_reasons:
+            fmt = '%b %d %H:%M:%S'
+            _t = datetime.datetime.now().strftime(fmt)
+            s = '{}  {}'.format(_t, _)
+            f.write(str(s))
 
 
 # test robustness
