@@ -30,7 +30,7 @@ class ColoredMacList:
     def macs_add_or_update(self, _mac, _inc):
         _t = datetime.datetime.now().timestamp() + _inc
         with shelve.open(self.db_name) as sh:
-            _s = 'SYS: mac {} {}'
+            _s = 'SYS: {} to mac_{}_list'
             _s = _s.format(_mac, self.color)
             emit_debug(self.sig, _s)
             sh[_mac] = _t
@@ -67,13 +67,10 @@ class OrangeMacList:
         db.close()
         return _pick
 
-    def filter_orange_macs(self, in_mac_list):
-        """ in_mac_list & orange """
+    def filter_orange_macs(self, in_macs):
+        """ in_mac_list & !orange """
         _o = self.macs_orange_pick()
-        _ls = []
-        for m in in_mac_list:
-            if m in _o:
-                _ls.append(m)
+        _ls = [m for m in in_macs if m not in _o]
         return _ls
 
     def macs_prune(self):
@@ -103,7 +100,7 @@ class BlackMacList:
         self._macs_prune()
         _bm = self.ls.get_all_macs()
         # return the ones not present in black list
-        return [i for i in in_macs if i in _bm]
+        return [i for i in in_macs if i not in _bm]
 
 
 def filter_white_macs(wl, in_macs) -> list:

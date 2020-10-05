@@ -102,7 +102,7 @@ class ThBLE:
 
             # none to download, great
             if n == 0:
-                emit_dl_warning(sig, None)
+                emit_dl_warning(sig, [])
                 continue
             s = 'BLE: {} fresh loggers'.format(n)
             emit_status(sig, s)
@@ -116,9 +116,7 @@ class ThBLE:
             ctx.sem_ble.acquire()
 
             # downloading stage
-            for i, each in enumerate(li):
-                mac = each.addr
-
+            for i, mac in enumerate(li):
                 try:
                     emit_session_pre(sig, mac, i + 1, n)
                     emit_status(sig, 'BLE: connecting {}'.format(mac))
