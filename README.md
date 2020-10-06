@@ -11,12 +11,17 @@ Depending on platform, some pip packages such PyQt5 may be unavailable, so ensur
 sudo apt-get install libatlas3-base libglib2.0-dev python3-pyqt5 libhdf5-dev python3-dev libgdal-dev
 ```
 
-Next, create a python virtual environment inheriting them and install python dependencies.
+Next:
 ```
 cd /home/pi/li/ddh
+# create python virtual environment inheriting 
+# some difficult packages such as pyqt5 for Rpi
 python3 -m venv --system-site-packages venv
 source venv/bin/activate
+# install RPi dependencies
 pip install -r ddh/requirements_rpi.txt
+# you may need to install cartopy separately
+pip install Cartopy==0.18.0
 ```
 
 
@@ -30,9 +35,9 @@ pip install -r ddh/requirements_x64.txt
 ```
 
 
-## Running
+## Running on RPi
 Double click or run file ddh_run.sh.
-This already takes care of virtual environments.
+Adjust if using x64, but usually x64 is used only for development.
 
 
 ## License

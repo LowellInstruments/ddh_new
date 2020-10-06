@@ -34,7 +34,3 @@ https://www.piwheels.org/simple/numpy/numpy-1.17.0rc1-cp37-cp37m-linux_armv7l.wh
 # dependencies in github
 git+https://github.com/LowellInstruments/bluepy.git
 git+https://github.com/LowellInstruments/lowell-mat.git
-
-
-# you may need to install cartopy separately
-# pip install Cartopy==0.18.0
