@@ -23,7 +23,7 @@ def setup_view(my_win, j):
     a.tabs.setTabIcon(2, QIcon('gui/res/icon_history.ico'))
     a.tabs.setTabIcon(3, QIcon('gui/res/icon_setup.png'))
     a.setWindowIcon(QIcon('gui/res/icon_lowell.ico'))
-    a.img_ble.setPixmap(QPixmap('gui/res/img_black.png'))
+    a.img_ble.setPixmap(QPixmap('gui/res/img_blue.png'))
     a.img_gps.setPixmap(QPixmap('gui/res/img_gps_dis.png'))
     a.img_plt.setPixmap(QPixmap('gui/res/img_plot_color.png'))
     a.img_net.setPixmap(QPixmap('gui/res/img_sync_color.png'))
@@ -38,8 +38,8 @@ def setup_view(my_win, j):
     a.lbl_time_n_pos.setText(fmt.format('', '', '', ''))
     fmt = '{}\n{}'
     a.lbl_net_n_ftp.setText(fmt.format('', ''))
-    fmt = '{}\n{}'
-    a.lbl_plot.setText(fmt.format('', ''))
+    fmt = '{}\n{}\n{}'
+    a.lbl_plot.setText(fmt.format('', '', ''))
     return a
 
 
@@ -84,7 +84,6 @@ def setup_buttons_gui(my_app):
     # labels' event connections
     a.img_boat.mousePressEvent = a._click_icon_boat
     a.img_ble.mousePressEvent = a._click_icon_ble
-    a.img_ble.mouseReleaseEvent = a._release_icon_ble
     a.img_gps.mousePressEvent = a._click_icon_gps
     a.img_net.mousePressEvent = a._click_icon_net
     a.img_plt.mousePressEvent = a._click_icon_plot

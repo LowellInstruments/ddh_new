@@ -1,5 +1,9 @@
 import time
 from datetime import datetime, timezone
+
+import serial
+from serial import SerialException
+
 from mat.gps import GPS
 import re
 import sys
@@ -60,27 +64,25 @@ def _gps_pos_trim(f):
     return lat, lon
 
 
-def check_gps_hw(sig):
+def _check_gps_hw_bu_353_s4(sig):
     p = _find_usb_gps()
-    rv = False
+
     if p and sys.platform == 'linux':
         p = '/dev/{}'.format(p)
-        gps = GPS(p)
-        _till = time.perf_counter() + 5
-        f = str('')
-        try:
-            while time.perf_counter() < _till:
-                f += gps.port.readline().strip()
-        except TypeError:
-            # exception when type bytes instead of str
-            rv = False
+        with serial.Serial(p, 4800, timeout=10) as ser:
+            if '$G'.encode() in ser.read(64):
+                return True
 
-    if not rv:
-        lat, lon = 'GPS hardware', 'malfunction'
-        e = '{} {}'.format(lat, lon)
-        emit_gps_error(sig, e)
-        emit_gps_update_pos(sig, lat, lon)
-    return rv
+    lat, lon = 'GPS hardware', 'malfunction'
+    e = '{} {}'.format(lat, lon)
+    emit_gps_error(sig, e)
+    emit_gps_update_pos(sig, lat, lon)
+    return False
+
+
+def check_gps_hw(sig):
+    # allows selecting different gps types
+    return _check_gps_hw_bu_353_s4(sig)
 
 
 def sync_pos(sig, timeout=10):

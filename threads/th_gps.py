@@ -46,7 +46,7 @@ class ThGPS:
 
             # don't do the rest of stuff if no hardware
             if not gps_hw_ok:
-                time.sleep(10)
+                time.sleep(100)
                 continue
 
             # sync time, less often

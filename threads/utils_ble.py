@@ -77,13 +77,9 @@ def emit_session_pre(sig, mac, c, n):
         sig.ble_session_pre.emit(mac, c, n)
 
 
-def emit_dl_warning(sig, w):
+def emit_dl_warning(sig, w: list):
     if not sig:
         return
-    if w:
-        j = ctx.json_file
-        w = json_mac_dns(j, w)
-        w = '{} not deployed'.format(w)
     sig.ble_dl_warning.emit(w)
 
 

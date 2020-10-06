@@ -176,14 +176,30 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         update_cnv_log_err_file(path, _e)
         s = 'some bad conversion' if _e else 'conversion OK'
         _ = self.lbl_plot.text().split('\n')
-        s = '{}\n{}'.format(_[0], s)
+        s = '{}\n{}\n{}'.format(_[0], s, _[2])
         self.lbl_plot.setText(s)
 
     @pyqtSlot(str, name='slot_gui_update_plt')
     def slot_gui_update_plt(self, s):
         _ = self.lbl_plot.text().split('\n')
-        s = '{}\n{}'.format(s, _[1])
+        s = '{}\n{}\n{}'.format(s, _[1], _[2])
         self.lbl_plot.setText(s)
+
+    @pyqtSlot(list, name='slot_ble_dl_warning')
+    def slot_ble_dl_warning(self, w):
+        lbl = self.lbl_plot
+        _ = lbl.text().split('\n')
+        style = 'color: {}; font: 18pt'
+        if not w:
+            s = '{}\n{}\n{}'.format(_[0], _[1], '')
+            lbl.setStyleSheet(style.format('orange'))
+            lbl.setText(s)
+            return
+        _arp = json_mac_dns(ctx.json_file, w[0])
+        _e = '{} not deployed'.format(_arp)
+        s = '{}\n{}\n{}'.format(_[0], _[1], _e)
+        lbl.setStyleSheet(style.format('black'))
+        lbl.setText(s)
 
     @pyqtSlot(name='slot_plt_start')
     def slot_plt_start(self):
@@ -226,19 +242,17 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
 
     @pyqtSlot(str, name='slot_ble_scan_pre')
     def slot_ble_scan_pre(self, s):
-        if ctx.ble_en:
-            i = 'gui/res/img_blue_color.png'
-        else:
-            i = 'gui/res/img_blue.png'
-        self.img_ble.setPixmap(QPixmap(i))
         self.bar_dl.setValue(0)
         self.lbl_ble.setText(s)
+        r = ctx.app_res_folder
+        p = '{}/img_blue_color.png'.format(r)
+        if not ctx.ble_en:
+            p = '{}/img_blue.png'.format(r)
+        self.img_ble.setPixmap(QPixmap(p))
 
     @pyqtSlot(int, name='slot_ble_scan_post')
     def slot_ble_scan_post(self, n):
-        if n:
-            i = 'gui/res/img_blue_left.png'
-            self.img_ble.setPixmap(QPixmap(i))
+        pass
 
     # a download session consists of 1 to n loggers
     @pyqtSlot(str, int, int, name='slot_ble_session_pre')
@@ -303,13 +317,6 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         pc = 100 * (128 / ctx.lg_dl_size)
         ctx.lg_dl_bar_pc += pc
         self.bar_dl.setValue(ctx.lg_dl_bar_pc)
-
-    @pyqtSlot(list, name='slot_ble_dl_warning')
-    def slot_ble_dl_warning(self, w):
-        if not w:
-            return
-        _s = '{} not deployed!'.format(w[0])
-        self.lbl_warning.setText(_s)
 
     @pyqtSlot(str, str, str, name='slot_his_update')
     def slot_his_update(self, mac, lat, lon):
@@ -409,27 +416,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
             return
         self.showMinimized()
 
-    def _release_icon_ble(self, _):
-        t = self.last_time_icon_ble_press
-        now = time.perf_counter()
-        if now - t < 5:
-            return
-
-        ctx.ble_en = not ctx.ble_en
-        b = int(ctx.ble_en)
-        if b:
-            p = 'gui/res/img_blue_color.png'
-        else:
-            p = 'gui/res/img_blue.png'
-        self.img_ble.setPixmap(QPixmap(p))
-        s = 'GUI: secret BLE hold {}'.format(b)
-        c_log.debug(s)
-
     def _click_icon_ble(self, _):
-        # statistics
-        t = time.perf_counter()
-        self.last_time_icon_ble_press = t
-
         # allow to click or not
         if not ctx.sw_ble_en:
             return
@@ -439,11 +426,11 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
             return
 
         ctx.ble_en = not ctx.ble_en
+        r = ctx.app_res_folder
         b = int(ctx.ble_en)
-        if b:
-            p = 'gui/res/img_blue_color.png'
-        else:
-            p = 'gui/res/img_blue.png'
+        p = '{}/img_blue_color.png'.format(r)
+        if not b:
+            p = '{}/img_blue.png'.format(r)
         self.img_ble.setPixmap(QPixmap(p))
         s = 'GUI: secret BLE tap {}'.format(b)
         c_log.debug(s)

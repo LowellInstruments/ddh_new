@@ -97,19 +97,22 @@ class ThBLE:
             # DDH macs -> w/o too recent bad ones
             li = self.macs_orange.filter_orange_macs(li)
 
-            # how many loggers we have to do now
+            # know how many pending because previous errors
+            o_p = self.macs_orange.ls.get_all_macs()
+            emit_dl_warning(sig, o_p)
+
+            # know how many loggers we have to do now
             n = len(li)
 
             # none to download, great
             if n == 0:
-                emit_dl_warning(sig, [])
                 continue
             s = 'BLE: {} fresh loggers'.format(n)
             emit_status(sig, s)
             emit_scan_post(sig, n)
 
-            # remind we may not be done with some
-            _o = self.macs_orange.macs_orange_pick()
+            # show any pending mac
+            _o = self.macs_orange.ls.get_all_macs()
             emit_dl_warning(sig, _o)
 
             # protect critical zone
@@ -131,10 +134,10 @@ class ThBLE:
                 except ble.BTLEException as ex:
                     # add to orange ones
                     self._to_orange(mac)
-                    ex = str(ex.message)
-                    e = 'BLE: exception {}'.format(ex)
+                    e = str(ex.message)
+                    # ex: BLE: GET() exception Device Disconnected
                     emit_error(sig, e)
-                    e = 'DL error, retrying in {} s'
+                    e = 'BLE: DL error, retrying in {} s'
                     e = e.format(self.IGNORE_S)
                     emit_error(sig, e)
                     e = 'some error\nretrying in 1 min'

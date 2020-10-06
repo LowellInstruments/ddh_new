@@ -30,7 +30,7 @@ class ColoredMacList:
     def macs_add_or_update(self, _mac, _inc):
         _t = datetime.datetime.now().timestamp() + _inc
         with shelve.open(self.db_name) as sh:
-            _s = 'SYS: {} to mac_{}_list'
+            _s = 'SYS: {} to mac_{} list'
             _s = _s.format(_mac, self.color)
             emit_debug(self.sig, _s)
             sh[_mac] = _t
@@ -56,25 +56,27 @@ class OrangeMacList:
     def __init__(self, name, sig):
         self.ls = ColoredMacList(name, sig, 'orange')
 
-    def macs_orange_pick(self):
-        """ return keys w/ expired timestamp """
+    def _macs_not_expired(self):
+        """ return keys w/ timestamp NOT expired """
         db = shelve.open(self.ls.db_name)
-        _pick = []
+        _bad = []
         _now = datetime.datetime.now().timestamp()
         for k, v in db.items():
-            if _now > v:
-                _pick.append(k)
+            if _now < v:
+                _bad.append(k)
         db.close()
-        return _pick
+        return _bad
 
     def filter_orange_macs(self, in_macs):
-        """ in_mac_list & !orange """
-        _o = self.macs_orange_pick()
-        _ls = [m for m in in_macs if m not in _o]
-        return _ls
-
-    def macs_prune(self):
-        print('orange not supposed to prune')
+        _o = self._macs_not_expired()
+        # remove any not expired ones
+        _idx_to_rm = []
+        for _ in _o:
+            try:
+                in_macs.remove(_)
+            except ValueError:
+                pass
+        return in_macs
 
 
 class BlackMacList:

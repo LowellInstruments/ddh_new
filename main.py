@@ -18,6 +18,7 @@ if __name__ == "__main__":
     ctx.dl_files_folder = r / 'dl_files/'
     ctx.app_conf_folder = r / 'settings/'
     ctx.app_logs_folder = r / 'logs/'
+    ctx.app_res_folder = r / 'gui/res/'
     ctx.json_file = r / 'settings/ddh.json'
     ctx.db_his = str(r / 'db/db_his.db')
     ctx.db_plt = str(r / 'db/db_plt.db')
