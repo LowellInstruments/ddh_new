@@ -192,13 +192,13 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         style = 'color: {}; font: 18pt'
         if not w:
             s = '{}\n{}\n{}'.format(_[0], _[1], '')
-            lbl.setStyleSheet(style.format('orange'))
+            lbl.setStyleSheet(style.format('black'))
             lbl.setText(s)
             return
         _arp = json_mac_dns(ctx.json_file, w[0])
         _e = '{} not deployed'.format(_arp)
         s = '{}\n{}\n{}'.format(_[0], _[1], _e)
-        lbl.setStyleSheet(style.format('black'))
+        lbl.setStyleSheet(style.format('orange'))
         lbl.setText(s)
 
     @pyqtSlot(name='slot_plt_start')

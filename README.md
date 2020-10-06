@@ -8,6 +8,7 @@ Intended to be used on fishing and research vessels.
 ## Installing on RPi
 Depending on platform, some pip packages such PyQt5 may be unavailable, so ensure them with:
 ```
+sudo apt-get update
 sudo apt-get install libatlas3-base libglib2.0-dev python3-pyqt5 libhdf5-dev python3-dev libgdal-dev
 ```
 
@@ -19,7 +20,7 @@ cd /home/pi/li/ddh
 python3 -m venv --system-site-packages venv
 source venv/bin/activate
 # install RPi dependencies
-pip install -r ddh/requirements_rpi.txt
+pip install -r ./requirements_rpi.txt
 # you may need to install cartopy separately
 pip install Cartopy==0.18.0
 ```
