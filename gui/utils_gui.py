@@ -23,7 +23,7 @@ def setup_view(my_win, j):
     a.tabs.setTabIcon(2, QIcon('gui/res/icon_history.ico'))
     a.tabs.setTabIcon(3, QIcon('gui/res/icon_setup.png'))
     a.setWindowIcon(QIcon('gui/res/icon_lowell.ico'))
-    a.img_ble.setPixmap(QPixmap('gui/res/img_blue.png'))
+    a.img_ble.setPixmap(QPixmap('gui/res/img_blue_color.png'))
     a.img_gps.setPixmap(QPixmap('gui/res/img_gps_dis.png'))
     a.img_plt.setPixmap(QPixmap('gui/res/img_plot_color.png'))
     a.img_net.setPixmap(QPixmap('gui/res/img_sync_color.png'))
