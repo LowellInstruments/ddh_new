@@ -1,4 +1,6 @@
 import json
+from json import JSONDecodeError
+
 import bluepy.btle as ble
 import time
 import os
@@ -133,8 +135,11 @@ class DeckDataHubBLE:
             _rm_folder(mac)
             signals.warning.emit('SYS: local rm {} files'.format(mac))
         folder = _create_folder(mac)
+        time.sleep(1)
         lid_files = lc.ls_ext(b'lid')
+        time.sleep(1)
         gps_files = lc.ls_ext(b'gps')
+        time.sleep(1)
         cfg_files = lc.ls_ext(b'cfg')
         if lid_files == [b'ERR']:
             e = 'exc DIR_LID {}'.format(__name__)
@@ -175,7 +180,7 @@ class DeckDataHubBLE:
     @staticmethod
     def _ble_dl_files(lc, sig, pre_rm=False):
         sig.ble_dl_logger.emit()
-        ddh_ble._rm_local_mat_cfg(lc)
+        # ddh_ble._rm_local_mat_cfg(lc)
         ddh_ble._ensure_stop_w_string(lc, sig)
         ddh_ble._logger_time_check(lc, sig)
         mac = _get_mac_from_lc(lc)
@@ -306,13 +311,22 @@ class DeckDataHubBLE:
             path = os.path.join('dl_files', mac, 'MAT.cfg')
             with open(path) as f:
                 cfg_dict = json.load(f)
-        except FileNotFoundError:
-            e = 'exc no MAT.cfg to restore? {}'.format(__name__)
-            raise ble.BTLEException(e)
+        except (JSONDecodeError, FileNotFoundError):
+            cfg_dict = None
+            _ = 'no particular MAT.cfg for {}'.format(mac)
+            sig.status.emit('BLE: {}'.format(_))
 
+        # no MAT.cfg for this logger, or error, try backup one
         if not cfg_dict:
-            e = 'exc {}'.format(__name__)
-            raise ble.BTLEException(e)
+            src = os.path.join('settings', 'MAT_def_DO.cfg')
+            dst = os.path.join('dl_files', mac, 'MAT.cfg')
+            _ = 'cp {} {}'.format(src, dst)
+            rv = sp.run(_, shell=True, stdout=sp.PIPE)
+            if rv.returncode != 0:
+                e = 'no default MAT.cfg for {}'.format(mac)
+                raise ble.BTLEException(e)
+            _ = 'using default MAT.cfg for {}'.format(mac)
+            sig.status.emit('BLE: {}'.format(_))
 
         # formatting, if we here, everything ok
         # -------------------------------------
