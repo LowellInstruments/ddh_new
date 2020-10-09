@@ -335,11 +335,13 @@ class DeckDataHubBLE:
             e = 'exc {} FRM'.format(__name__)
             raise ble.BTLEException(e)
         sig.status.emit('BLE: FRM = {}'.format(a))
+        time.sleep(2)
 
         # reconfiguring logger
         # --------------------
         a = lc.send_cfg(cfg_dict)
         if a != [b'CFG', b'00']:
+            sig.status.emit('BLE: CFG = {}'.format(a))
             e = 'exc {} CFG'.format(__name__)
             raise ble.BTLEException(e)
         sig.status.emit('BLE: CFG = {}'.format(a))
