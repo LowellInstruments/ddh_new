@@ -1,6 +1,6 @@
 import json
 from json import JSONDecodeError
-
+import settings.ctx as ctx
 import bluepy.btle as ble
 import time
 import os
@@ -398,8 +398,10 @@ class DeckDataHubBLE:
     @staticmethod
     def ble_loop(signals, ble_mac_filter):
         while 1:
+            ctx.ongoing_ble = True
             if ddh_ble._ble_scan_loggers(signals, ble_mac_filter):
                 ddh_ble._ble_dl_loggers(signals)
+            ctx.ongoing_ble = True
             time.sleep(2)
 
 

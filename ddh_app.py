@@ -169,6 +169,9 @@ class DDHQtApp(QMainWindow):
         else:
             console_log.debug('SYS: this is NOT a raspberry system')
 
+        # boot banner
+        console_log.debug('\n\nSYS: DDH boot')
+
     def closeEvent(self, event):
         linux_set_time_to_use_ntp()
         event.accept()

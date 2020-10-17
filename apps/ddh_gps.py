@@ -1,4 +1,5 @@
 from mat.gps import GPS
+import settings.ctx as ctx
 import datetime
 import time
 import re
@@ -18,6 +19,23 @@ class DeckDataHubGPS:
     GPS_FRESH_HOLD = 30
     gps_last = [None, None, None]
 
+    # @staticmethod
+    # def gps_loop(signals, ddh_gps_period):
+    #     # force sync upon program / thread starts
+    #     ddh_gps._gps_get_lat_n_lon(signals)
+    #     ddh_gps._sync_sys_clock_gps_or_internet(signals)
+    #     gps_timeout = ddh_gps_period
+    #
+    #     while 1:
+    #         if gps_timeout > 0:
+    #             gps_timeout -= 1
+    #         else:
+    #             gps_timeout = ddh_gps_period
+    #         if gps_timeout == 0:
+    #             ddh_gps._sync_sys_clock_gps_or_internet(signals)
+    #             ddh_gps._gps_get_lat_n_lon(signals)
+    #         time.sleep(1)
+
     @staticmethod
     def gps_loop(signals, ddh_gps_period):
         # force sync upon program / thread starts
@@ -28,12 +46,16 @@ class DeckDataHubGPS:
         while 1:
             if gps_timeout > 0:
                 gps_timeout -= 1
-            else:
-                gps_timeout = ddh_gps_period
-            if gps_timeout == 0:
-                ddh_gps._sync_sys_clock_gps_or_internet(signals)
-                ddh_gps._gps_get_lat_n_lon(signals)
-            time.sleep(1)
+                time.sleep(1)
+                continue
+
+            while ctx.ongoing_ble:
+                signals.status.emit('GPS: waiting BLE to finish')
+                time.sleep(5)
+
+            gps_timeout = ddh_gps_period
+            ddh_gps._sync_sys_clock_gps_or_internet(signals)
+            ddh_gps._gps_get_lat_n_lon(signals)
 
     # try getting GPRMC frame among all (GGA, GSA...)
     @staticmethod
