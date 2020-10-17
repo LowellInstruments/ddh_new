@@ -8,9 +8,9 @@ BLE-enabled GUI software interfacing to MAT loggers.
 ## Installing in RPi
 ```
 sudo apt-get install libatlas3-base libglib2.0-dev python3-pyqt5 libhdf5-dev
+git clone -b v1200dev https://github.com/LowellInstruments/ddh.git
+git clone -b v1200 https://github.com/LowellInstruments/lowell-mat.git
 ```
-git clone -b v1200 https://github.com/LowellInstruments/ddh.git
-git clone -b v1200 https://github.com/LowellInstruments/lowell-mat.git 
 
 ## Running ddh_main.py
 Cron daemon does it for you. Give it 2 minutes and otherwise:
