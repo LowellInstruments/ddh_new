@@ -21,9 +21,10 @@ Just run scripts/ddh_update.py.
 
 ## Installing: generic
 You may need also some similar apt-get as RPi case.
+```
 git clone https://github.com/LowellInstruments/bluepy.git
 git clone -b v2100 https://github.com/LowellInstruments/lowell-mat.git
-
+```
 
 ## Running on RPi
 Cron starts DDH automatically, otherwise:
