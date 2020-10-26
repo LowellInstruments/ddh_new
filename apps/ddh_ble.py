@@ -311,9 +311,11 @@ class DeckDataHubBLE:
             path = os.path.join('dl_files', mac, 'MAT.cfg')
             with open(path) as f:
                 cfg_dict = json.load(f)
+            _ = 'using own MAT.cfg for {}'.format(mac)
+            sig.status.emit('BLE: {}'.format(_))
         except (JSONDecodeError, FileNotFoundError):
             cfg_dict = None
-            _ = 'no particular MAT.cfg for {}'.format(mac)
+            _ = 'no own MAT.cfg for {}'.format(mac)
             sig.status.emit('BLE: {}'.format(_))
 
         # no MAT.cfg for this logger, or error, try backup one
