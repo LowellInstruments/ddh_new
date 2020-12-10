@@ -31,9 +31,9 @@ lg_dl_bar_pc = 0
 
 
 # semaphores
-sem_ftp = threading.Semaphore()
-sem_ble = threading.Semaphore()
-sem_plt = threading.Semaphore()
+sem_ftp = threading.Lock()
+sem_ble = threading.Lock()
+sem_plt = threading.Lock()
 
 
 # FTP: current and start states + switch capability

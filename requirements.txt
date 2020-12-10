@@ -1,8 +1,3 @@
-# requirements file for raspberry
-# for development in x64, packages should be similar
-
-
-# dependencies in pypi
 attrs==19.3.0
 click==7.1.2
 click-plugins==1.1.1
@@ -28,13 +23,10 @@ tendo==0.2.12
 tzlocal==2.1
 wifi==0.3.8
 Fiona==1.8.13.post1
-
-
-# dependencies as binaries
+matplotlib
+# cartopy may need apt-get install libgeos++-dev libproj-dev
+cartopy
 https://www.piwheels.org/simple/matplotlib/matplotlib-3.1.1-cp37-cp37m-linux_armv7l.whl
 https://www.piwheels.org/simple/numpy/numpy-1.17.0rc1-cp37-cp37m-linux_armv7l.whl
-
-
-# dependencies in github
 git+https://github.com/LowellInstruments/bluepy.git
 git+https://github.com/LowellInstruments/lowell-mat.git
