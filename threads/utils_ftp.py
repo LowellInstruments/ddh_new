@@ -92,6 +92,11 @@ def ftp_get_credentials():
     _h = os.environ.get('DDH_FTP_H')
     _u = os.environ.get('DDH_FTP_U')
     _p = os.environ.get('DDH_FTP_P')
+
+    # or, simulate it
+    _h = '_h'
+    _u = '_u'
+    _p = '_p'
     assert (_h and _u and _p)
     return _h, _u, _p
 

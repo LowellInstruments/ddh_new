@@ -21,10 +21,9 @@ class SignalsBLE(QObject):
 
 
 class SignalsGPS(QObject):
-    gps_status = pyqtSignal(str)
-    gps_error = pyqtSignal(str)
-    gps_update_time_via = pyqtSignal(str)
-    gps_update_pos = pyqtSignal(str, str)
+    status = pyqtSignal(str)
+    error = pyqtSignal(str)
+    update = pyqtSignal(tuple)
 
 
 class SignalsFTP(QObject):
@@ -42,8 +41,7 @@ class SignalsPLT(QObject):
 
 
 class SignalsTime(QObject):
-    time_update = pyqtSignal(str)
-    time_status = pyqtSignal(str)
+    update = pyqtSignal(str)
 
 
 class SignalsNET(QObject):

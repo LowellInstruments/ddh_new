@@ -1,5 +1,8 @@
-import time
+import queue
+import threading
+from mat.agent_gps import AgentGPS
 from mat.linux import linux_is_rpi
+from threads.th_gps import get_gps_data
 from threads.utils_ftp import ftp_assert_credentials
 from threads.utils_macs import black_macs_delete_all
 import datetime
@@ -9,7 +12,6 @@ import sys
 from settings import ctx
 from PyQt5.QtCore import (
     Qt,
-    QThreadPool,
     pyqtSlot,
     QTimer)
 from PyQt5.QtGui import (
@@ -18,7 +20,6 @@ from PyQt5.QtGui import (
 from PyQt5.QtWidgets import (
     QMainWindow,
     QFileDialog)
-
 from gui import utils_gui
 from gui.utils_gui import (
     setup_view, setup_his_tab, setup_buttons_gui, setup_window_center, hide_edit_tab,
@@ -50,24 +51,22 @@ from matplotlib.figure import Figure
 
 class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         # checks
         _ftp_credentials_check()
 
         # gui: view
-        super(DDHQtApp, self).__init__(*args, **kwargs)
+        super(DDHQtApp, self).__init__()
         self.plt_cnv = MplCanvas(self, width=5, height=3, dpi=100)
         setup_view(self, ctx.json_file)
         setup_buttons_gui(self)
         setup_his_tab(self)
         setup_app_log(str(ctx.app_logs_folder / 'ddh.log'))
-        rm_plot_db()
-
-        # uncommenting this can be useful when dev
         setup_window_center(self)
         setup_buttons_rpi(self, c_log)
 
         # gui: controller
+        self.gps_last_ts = None
         self.sys_secs = 0
         self.bsy_dots = ''
         self.plt_timeout_dis = 0
@@ -87,21 +86,81 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.last_time_icon_ble_press = 0
         hide_edit_tab(self)
         self._populate_history_tab()
+        rm_plot_db()
 
-        # threads
-        self.th_time = None
-        self.th_ble = None
-        self.th_plt = None
-        self.th_net = None
-        self.thread_pool = QThreadPool()
-        self.thread_pool.setMaxThreadCount(7)
-        self._create_threads()
-        self.thread_pool.start(self.th_time)
-        self.thread_pool.start(self.th_gps)
-        self.thread_pool.start(self.th_net)
-        self.thread_pool.start(self.th_ftp)
-        self.thread_pool.start(self.th_cnv)
-        self.thread_pool.start(self.th_ble)
+        # signals and slots
+        # # ble
+        # k = json_get_macs(ctx.json_file)
+        # ft_s = json_get_forget_time_secs(ctx.json_file)
+        # h = json_get_hci_if(ctx.json_file)
+        # arg = [ft_s, 60, k, h]
+        # self.th_ble = DDHThread(th_ble.fxn, SignalsBLE, arg)
+        # self.th_ble.signals().ble_status.connect(self.slot_status)
+        # self.th_ble.signals().ble_debug.connect(self.slot_debug)
+        # self.th_ble.signals().ble_error.connect(self.slot_error)
+        # self.th_ble.signals().ble_scan_pre.connect(self.slot_ble_scan_pre)
+        # self.th_ble.signals().ble_scan_post.connect(self.slot_ble_scan_post)
+        # self.th_ble.signals().ble_session_pre.connect(self.slot_ble_session_pre)
+        # self.th_ble.signals().ble_logger_pre.connect(self.slot_ble_logger_pre)
+        # self.th_ble.signals().ble_file_pre.connect(self.slot_ble_file_pre)
+        # self.th_ble.signals().ble_file_post.connect(self.slot_ble_file_post)
+        # self.th_ble.signals().ble_logger_post.connect(self.slot_ble_logger_post)
+        # self.th_ble.signals().ble_session_post.connect(self.slot_ble_session_post)
+        # self.th_ble.signals().ble_deployed.connect(self.slot_his_update)
+        # self.th_ble.signals().ble_dl_step.connect(self.slot_ble_dl_step)
+        # self.th_ble.signals().ble_dl_warning.connect(self.slot_ble_dl_warning)
+        # self.th_ble.signals().ble_logger_plot_req.connect(self.slot_ble_logger_plot_req)
+        #
+        # # ftp
+        # self.th_ftp = DDHThread(th_ftp.fxn, SignalsFTP)
+        # self.th_ftp.signals().ftp_update.connect(self.slot_gui_update_ftp)
+        # self.th_ftp.signals().ftp_error.connect(self.slot_error)
+        # self.th_ftp.signals().ftp_status.connect(self.slot_status)
+        #
+        # # network
+        # self.th_net = DDHThread(th_net.fxn, SignalsNET)
+        # self.th_net.signals().net_status.connect(self.slot_status)
+        # self.th_net.signals().net_update.connect(self.slot_gui_update_net_via)
+        #
+        # # conversion
+        # self.th_cnv = DDHThread(th_cnv.fxn, SignalsCNV)
+        # self.th_cnv.signals().cnv_update.connect(self.slot_gui_update_cnv)
+        # self.th_cnv.signals().cnv_status.connect(self.slot_status)
+        # self.th_cnv.signals().cnv_error.connect(self.slot_error)
+
+        # signals and slots
+        self.sig_gps = SignalsGPS()
+        self.sig_tim = SignalsTime()
+        self.sig_gps.status.connect(self.slot_status)
+        self.sig_gps.error.connect(self.slot_error)
+        self.sig_gps.update.connect(self.slot_gui_update_gps)
+        self.sig_tim.update.connect(self.slot_gui_update_time)
+
+        # queues so app can query agents
+        self.qgi = queue.Queue()
+        self.qgo = queue.Queue()
+
+        # agent threads
+        self.ag_gps = None
+        self.ag_gps = AgentGPS(self.qgi, self.qgo)
+        self.ag_gps.start()
+
+        # self.th_ble = None
+        # self.th_plt = None
+        # self.th_net = None
+        # self.thread_pool.start(self.th_net)
+        # self.thread_pool.start(self.th_ftp)
+        # self.thread_pool.start(self.th_cnv)
+        # self.thread_pool.start(self.th_ble)
+
+        # first thing this app does is try to time sync
+        get_gps_data(self)
+
+        # app threads
+        self.th_gps = threading.Thread(target=th_gps.loop, args=(self, ))
+        self.th_time = threading.Thread(target=th_time.loop, args=(self, ))
+        self.th_gps.start()
+        self.th_time.start()
 
         # timer used to quit this app
         self.tim_q = QTimer()
@@ -109,19 +168,19 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
 
     def _timer_bye(self):
         self.tim_q.stop()
-        sys.exit(0)
+        os._exit(0)
 
     @pyqtSlot(str, name='slot_gui_update_time')
     def slot_gui_update_time(self, dots):
-        # update GUI widgets
         self.sys_secs += 1
         self.bsy_dots = dots
         fmt = '%b %d %H:%M:%S'
         t = datetime.datetime.now().strftime(fmt)
         _ = self.lbl_time_n_pos.text().split('\n')
-        s = '{}\n{}\n{}\n{}'.format(_[0], t, _[2], _[3])
+        s = '{}\n{}\n{}\n{}'.format(_[0], _[1], _[2], t)
         self.lbl_time_n_pos.setText(s)
         self.lbl_plt_bsy.setText(self.bsy_dots)
+        print(t)
 
         # timeout to display plot tab, compare to 1 only runs once
         if self.plt_timeout_dis == 1:
@@ -143,19 +202,15 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
             s_n = json_get_ship_name(j)
             self.lbl_boatname.setText(s_n)
 
-    @pyqtSlot(str, str, name='slot_gui_update_gps_pos')
-    def slot_gui_update_gps_pos(self, lat, lon):
+    @pyqtSlot(tuple, name='slot_gui_update_gps')
+    def slot_gui_update_gps(self, u):
+        """ updates GUI GPS lat, lon, timestamp """
+        lat, lon, self.gps_last_ts = u
         _ = self.lbl_time_n_pos.text().split('\n')
-        s = '{}\n{}\n{}\n{}'.format(_[0], _[1], lat, lon)
+        s = '{}\n{}\n{}\n{}'.format('GPS', lat, lon, _[3])
         self.lbl_time_n_pos.setText(s)
         ok = lon not in ['missing', 'searching', 'malfunction']
         update_gps_icon(self, ok, lat, lon)
-
-    @pyqtSlot(str, name='slot_gui_update_gps_time_via')
-    def slot_gui_update_gps_time_via(self, via):
-        _ = self.lbl_time_n_pos.text().split('\n')
-        s = '{}\n{}\n{}\n{}'.format(via, _[1], _[2], _[3])
-        self.lbl_time_n_pos.setText(s)
 
     @pyqtSlot(str, name='slot_gui_update_net')
     def slot_gui_update_net_via(self, via):
@@ -491,58 +546,6 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.lne_vessel.setText(ves)
         self.lne_forget.setText(str(f_t))
 
-    def _create_threads(self):
-        # time
-        self.th_time = DDHThread(th_time.fxn, SignalsTime)
-        self.th_time.signals().time_update.connect(self.slot_gui_update_time)
-        self.th_time.signals().time_status.connect(self.slot_status)
-
-        # gps
-        self.th_gps = DDHThread(th_gps.fxn, SignalsGPS)
-        self.th_gps.signals().gps_status.connect(self.slot_status)
-        self.th_gps.signals().gps_update_time_via.connect(self.slot_gui_update_gps_time_via)
-        self.th_gps.signals().gps_update_pos.connect(self.slot_gui_update_gps_pos)
-        self.th_gps.signals().gps_error.connect(self.slot_error)
-
-        # ble
-        k = json_get_macs(ctx.json_file)
-        ft_s = json_get_forget_time_secs(ctx.json_file)
-        h = json_get_hci_if(ctx.json_file)
-        arg = [ft_s, 60, k, h]
-        self.th_ble = DDHThread(th_ble.fxn, SignalsBLE, arg)
-        self.th_ble.signals().ble_status.connect(self.slot_status)
-        self.th_ble.signals().ble_debug.connect(self.slot_debug)
-        self.th_ble.signals().ble_error.connect(self.slot_error)
-        self.th_ble.signals().ble_scan_pre.connect(self.slot_ble_scan_pre)
-        self.th_ble.signals().ble_scan_post.connect(self.slot_ble_scan_post)
-        self.th_ble.signals().ble_session_pre.connect(self.slot_ble_session_pre)
-        self.th_ble.signals().ble_logger_pre.connect(self.slot_ble_logger_pre)
-        self.th_ble.signals().ble_file_pre.connect(self.slot_ble_file_pre)
-        self.th_ble.signals().ble_file_post.connect(self.slot_ble_file_post)
-        self.th_ble.signals().ble_logger_post.connect(self.slot_ble_logger_post)
-        self.th_ble.signals().ble_session_post.connect(self.slot_ble_session_post)
-        self.th_ble.signals().ble_deployed.connect(self.slot_his_update)
-        self.th_ble.signals().ble_dl_step.connect(self.slot_ble_dl_step)
-        self.th_ble.signals().ble_dl_warning.connect(self.slot_ble_dl_warning)
-        self.th_ble.signals().ble_logger_plot_req.connect(self.slot_ble_logger_plot_req)
-
-        # ftp
-        self.th_ftp = DDHThread(th_ftp.fxn, SignalsFTP)
-        self.th_ftp.signals().ftp_update.connect(self.slot_gui_update_ftp)
-        self.th_ftp.signals().ftp_error.connect(self.slot_error)
-        self.th_ftp.signals().ftp_status.connect(self.slot_status)
-
-        # network
-        self.th_net = DDHThread(th_net.fxn, SignalsNET)
-        self.th_net.signals().net_status.connect(self.slot_status)
-        self.th_net.signals().net_update.connect(self.slot_gui_update_net_via)
-
-        # conversion
-        self.th_cnv = DDHThread(th_cnv.fxn, SignalsCNV)
-        self.th_cnv.signals().cnv_update.connect(self.slot_gui_update_cnv)
-        self.th_cnv.signals().cnv_status.connect(self.slot_status)
-        self.th_cnv.signals().cnv_error.connect(self.slot_error)
-
     def _throw_th_plt(self):
         ax = self.plt_cnv.axes
         arg = [self.plt_dir, ax, self.plt_ts, self.plt_metrics]
@@ -558,7 +561,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         event.accept()
         c_log.debug('SYS: closing GUI ...')
         sys.stderr.close()
-        sys.exit(0)
+        os._exit(0)
 
     def keyReleaseEvent(self, e):
         if e.key() == Qt.Key_Shift:
