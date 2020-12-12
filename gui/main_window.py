@@ -117,40 +117,39 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         # self.th_ftp.signals().ftp_error.connect(self.slot_error)
         # self.th_ftp.signals().ftp_status.connect(self.slot_status)
         #
-        # # network
-        # self.th_net = DDHThread(th_net.fxn, SignalsNET)
-        # self.th_net.signals().net_status.connect(self.slot_status)
-        # self.th_net.signals().net_update.connect(self.slot_gui_update_net_via)
-        #
-        # # conversion
-        # self.th_cnv = DDHThread(th_cnv.fxn, SignalsCNV)
-        # self.th_cnv.signals().cnv_update.connect(self.slot_gui_update_cnv)
-        # self.th_cnv.signals().cnv_status.connect(self.slot_status)
-        # self.th_cnv.signals().cnv_error.connect(self.slot_error)
 
         # signals and slots
         self.sig_gps = SignalsGPS()
+        self.sig_cnv = SignalsCNV()
         self.sig_tim = SignalsTime()
+        self.sig_net = SignalsNET()
+        self.sig_plt = SignalsPLT()
         self.sig_gps.status.connect(self.slot_status)
+        self.sig_cnv.status.connect(self.slot_status)
+        self.sig_net.status.connect(self.slot_status)
+        self.sig_plt.status.connect(self.slot_status)
         self.sig_gps.error.connect(self.slot_error)
+        self.sig_cnv.error.connect(self.slot_error)
+        self.sig_plt.error.connect(self.slot_error)
+        self.sig_cnv.update.connect(self.slot_gui_update_cnv)
         self.sig_gps.update.connect(self.slot_gui_update_gps)
         self.sig_tim.update.connect(self.slot_gui_update_time)
+        self.sig_net.update.connect(self.slot_gui_update_net)
+        self.sig_plt.update.connect(self.slot_gui_update_plt)
+        self.sig_plt.start.connect(self.slot_plt_start)
+        self.sig_plt.msg.connect(self.slot_plt_msg)
+        self.sig_plt.end.connect(self.slot_plt_end)
 
         # queues so app can query agents
-        self.qgi = queue.Queue()
-        self.qgo = queue.Queue()
+        self.qgi, self.qgo = queue.Queue(), queue.Queue()
+        self.qpi, self.qpo = queue.Queue(), queue.Queue()
 
         # agent threads
         self.ag_gps = None
         self.ag_gps = AgentGPS(self.qgi, self.qgo)
         self.ag_gps.start()
 
-        # self.th_ble = None
-        # self.th_plt = None
-        # self.th_net = None
-        # self.thread_pool.start(self.th_net)
         # self.thread_pool.start(self.th_ftp)
-        # self.thread_pool.start(self.th_cnv)
         # self.thread_pool.start(self.th_ble)
 
         # first thing this app does is try to time sync
@@ -159,8 +158,14 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         # app threads
         self.th_gps = threading.Thread(target=th_gps.loop, args=(self, ))
         self.th_time = threading.Thread(target=th_time.loop, args=(self, ))
+        self.th_cnv = threading.Thread(target=th_cnv.loop, args=(self, ))
+        self.th_net = threading.Thread(target=th_net.loop, args=(self, ))
+        self.th_plt = threading.Thread(target=th_plt.loop, args=(self, ))
         self.th_gps.start()
         self.th_time.start()
+        self.th_cnv.start()
+        self.th_net.start()
+        self.th_plt.start()
 
         # timer used to quit this app
         self.tim_q = QTimer()
@@ -213,7 +218,8 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         update_gps_icon(self, ok, lat, lon)
 
     @pyqtSlot(str, name='slot_gui_update_net')
-    def slot_gui_update_net_via(self, via):
+    def slot_gui_update_net(self, via):
+        # SSID_or_CELL / FTP
         via = via.replace('\n', '')
         _ = self.lbl_net_n_ftp.text().split('\n')
         s = '{}\n{}'.format(via, _[1])
@@ -261,8 +267,8 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.slot_gui_update_plt('Plotting...')
         self.lbl_plt_bsy.setVisible(True)
 
-    @pyqtSlot(object, str, name='slot_plt_result')
-    def slot_plt_result(self, result, s):
+    @pyqtSlot(object, str, name='slot_plt_end')
+    def slot_plt_end(self, result, s):
         if result:
             self.slot_gui_update_plt('plot ok')
             self.tabs.setCurrentIndex(1)

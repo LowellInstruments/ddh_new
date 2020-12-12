@@ -7,32 +7,20 @@ from settings import ctx
 TH_NET_PERIOD = 60
 
 
-class ThNET:
+def loop(w):
     assert TH_NET_PERIOD >= 30
 
-    def __init__(self, sig):
-        emit_net_status(sig, 'NET: thread boot')
+    while 1:
+        if not linux_is_rpi():
+            s = '{}'.format(get_ssid())
+            w.sig_net.update.emit(s)
+            time.sleep(60)
+            continue
+
+        ctx.sem_ble.acquire()
+        ctx.sem_ble.release()
+        ctx.sem_ftp.acquire()
         ensure_resolv_conf()
-
-        while 1:
-            if not linux_is_rpi():
-                _ = '{}'.format(get_ssid())
-                emit_net_update(sig, _)
-                time.sleep(60)
-                continue
-
-            if not ctx.boot_time:
-                emit_net_status(sig, 'NET: wait GPS boot time')
-                time.sleep(10)
-                continue
-
-            ctx.sem_ble.acquire()
-            ctx.sem_ble.release()
-            ctx.sem_ftp.acquire()
-            check_net_best(sig)
-            ctx.sem_ftp.release()
-            time.sleep(TH_NET_PERIOD)
-
-
-def fxn(sig):
-    ThNET(sig)
+        check_net_best(w.sig_net)
+        ctx.sem_ftp.release()
+        time.sleep(TH_NET_PERIOD)

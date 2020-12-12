@@ -33,11 +33,12 @@ class SignalsFTP(QObject):
 
 
 class SignalsPLT(QObject):
-    plt_status = pyqtSignal(str)
-    plt_start = pyqtSignal()
-    plt_result = pyqtSignal(object, str)
-    plt_msg = pyqtSignal(str)
-    plt_error = pyqtSignal(str)
+    status = pyqtSignal(str)
+    error = pyqtSignal(str)
+    update = pyqtSignal(str)
+    start = pyqtSignal()
+    end = pyqtSignal(object, str)
+    msg = pyqtSignal(str)
 
 
 class SignalsTime(QObject):
@@ -45,12 +46,12 @@ class SignalsTime(QObject):
 
 
 class SignalsNET(QObject):
-    net_status = pyqtSignal(str)
-    net_update = pyqtSignal(str)
+    status = pyqtSignal(str)
+    update = pyqtSignal(str)
 
 
 class SignalsCNV(QObject):
-    cnv_status = pyqtSignal(str)
-    cnv_error = pyqtSignal(str)
-    cnv_update = pyqtSignal(list)
+    status = pyqtSignal(str)
+    error = pyqtSignal(str)
+    update = pyqtSignal(list)
 

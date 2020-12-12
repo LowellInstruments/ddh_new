@@ -88,7 +88,7 @@ def linux_is_net_ok():
     return False
 
 
-def _pre_rm_csv(fol, pre_rm=False):
+def pre_rm_csv(fol, pre_rm=False):
     if not pre_rm:
         return
     ff = linux_ls_by_ext(fol, 'csv')
@@ -222,7 +222,7 @@ def lid_to_csv(fol, suffix) -> (bool, list):
     parameters = default_parameters()
     lid_files = linux_ls_by_ext(fol, 'lid')
     err_files = []
-    rv = True
+    all_ok = True
 
     for f in lid_files:
         # suffix: '_DissolvedOxygen', mind the _
@@ -237,13 +237,13 @@ def lid_to_csv(fol, suffix) -> (bool, list):
             s = 'file {} conversion to {} OK'
             print(s.format(f, suffix))
         except (ValueError, Exception) as ve:
-            rv = False
+            all_ok = False
             e = 'file {} ERROR conversion -> {}'
             e = e.format(f, ve)
             print(e)
             err_files.append(e)
 
-    return rv, err_files
+    return all_ok, err_files
 
 
 def create_folder(mac, fol):

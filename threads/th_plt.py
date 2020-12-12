@@ -1,39 +1,39 @@
+import threading
 from settings import ctx
 from threads.utils import json_mac_dns, mac_from_folder, json_get_span_dict
-from threads.utils_plt import (
-    plot,
-    emit_error,
-    emit_status,
-    emit_start,
-    emit_result, emit_msg)
+from threads.utils_plt import plot
 
 
-def fxn(sig, args):
-    ctx.sem_plt.acquire()
-    ctx.sem_plt.release()
-    ThPLT(sig, *args)
+def _plot_data(w):
 
-
-class ThPLT:
-    def __init__(self, sig, fol, ax, ts, metric_pair):
+    def _plot():
+        # w: Qt5 windowed app, wait for it to ask a plot
+        plt_args = w.qpo.get()
+        ctx.sem_plt.acquire()
+        ctx.sem_plt.release()
+        fol, ax, ts, metric_pair = plt_args
         j = ctx.json_file
         lg = json_mac_dns(j, mac_from_folder(fol))
         sd = json_get_span_dict(j)
-        emit_status(sig, 'PLT: thread launched')
 
-        # try to plot any metric of a logger
-        emit_start(sig)
+        # plot
         for pair in metric_pair:
-            if plot(sig, fol, ax, ts, pair, sd, lg):
-                emit_result(sig, True, None)
+            if plot(w.sig_plt, fol, ax, ts, pair, sd, lg):
+                w.sig_plt.result.emit(True, None)
                 return
 
-            # plot went wrong
-            a = (pair, ts, lg)
-            e = 'PLT: no {}({}) plots for \'{}\''
-            e = e.format(*a)
-            emit_error(sig, e)
-            e = 'cannot plot 1{} for \'{}\''
-            e = e.format(ts, lg)
-            emit_msg(sig, e)
-            emit_result(sig, False, e)
+            # oops, went wrong
+            e = 'PLT: no {}({}) plots for \'{}\''.format(pair, ts, lg)
+            w.sig_plt.error.emit(e)
+            e = 'cannot plot 1{} for \'{}\''.format(ts, lg)
+            w.sig_plt.msg.emit(e)
+            w.sig_plt.result.emit(e)
+
+    th = threading.Thread(target=_plot)
+    th.start()
+    th.join()
+
+
+def loop(w):
+    while 1:
+        _plot_data(w)
