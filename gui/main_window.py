@@ -88,8 +88,6 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self._populate_history_tab()
         rm_plot_db()
 
-        # signals and slots
-        # # ble
         # k = json_get_macs(ctx.json_file)
         # ft_s = json_get_forget_time_secs(ctx.json_file)
         # h = json_get_hci_if(ctx.json_file)
@@ -124,6 +122,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.sig_tim = SignalsTime()
         self.sig_net = SignalsNET()
         self.sig_plt = SignalsPLT()
+        self.sig_ble = SignalsBLE()
         self.sig_gps.status.connect(self.slot_status)
         self.sig_cnv.status.connect(self.slot_status)
         self.sig_net.status.connect(self.slot_status)
@@ -161,11 +160,14 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.th_cnv = threading.Thread(target=th_cnv.loop, args=(self, ))
         self.th_net = threading.Thread(target=th_net.loop, args=(self, ))
         self.th_plt = threading.Thread(target=th_plt.loop, args=(self, ))
+        self.th_ble = threading.Thread(target=th_ble.loop, args=(self, ))
         self.th_gps.start()
         self.th_time.start()
         self.th_cnv.start()
         self.th_net.start()
         self.th_plt.start()
+        self.th_ble.start()
+
 
         # timer used to quit this app
         self.tim_q = QTimer()
