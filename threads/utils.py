@@ -262,7 +262,7 @@ def exists_file(file_name, size, fol):
 
 def rm_folder(mac):
     import shutil
-    fol = ctx.dl_files_folder
+    fol = ctx.dl_folder
     fol = fol / '{}/'.format(mac.replace(':', '-').lower())
     shutil.rmtree(fol, ignore_errors=True)
 

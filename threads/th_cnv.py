@@ -7,11 +7,11 @@ PERIOD_CNV = 60
 
 
 def loop(w, pre_rm=False):
-    assert ctx.dl_files_folder
+    assert ctx.dl_folder
     assert PERIOD_CNV >= 30
-
-    fol = str(ctx.dl_files_folder)
+    fol = str(ctx.dl_folder)
     pre_rm_csv(fol, pre_rm)
+    w.sig_cnv.status.emit('SYS: CNV thread started')
 
     while 1:
         # do not interrupt BLE or plotting
@@ -21,7 +21,6 @@ def loop(w, pre_rm=False):
         ctx.sem_plt.release()
 
         # convert
-        w.sig_cnv.status.emit('cnv thread')
         time.sleep(PERIOD_CNV)
         _, e = lid_to_csv(fol, 'DissolvedOxygen')
         # _, e = lid_to_csv(fol, 'Temperature')

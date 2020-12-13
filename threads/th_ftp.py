@@ -14,7 +14,7 @@ class ThFTP:
 
         while 1:
 
-            if not ctx.ftp_en:
+            if not ctx.aws_en:
                 emit_ftp_update(sig, 'FTP: disabled')
                 time.sleep(120)
                 continue
@@ -23,9 +23,9 @@ class ThFTP:
             ctx.sem_ble.acquire()
             ctx.sem_ble.release()
 
-            ctx.sem_ftp.acquire()
-            ftp_sync(sig, ctx.dl_files_folder, ctx.app_conf_folder)
-            ctx.sem_ftp.release()
+            ctx.sem_aws.acquire()
+            ftp_sync(sig, ctx.dl_folder, ctx.app_conf_folder)
+            ctx.sem_aws.release()
             p = self.PERIOD_FTP
             time.sleep(p)
 

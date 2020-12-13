@@ -287,7 +287,7 @@ def _logger_re_setup(lc, sig):
         _die('no MAT.cfg size')
     s = 'BLE: getting MAT.cfg'
     emit_status(sig, s)
-    dff = ctx.dl_files_folder
+    dff = ctx.dl_folder
     rv = lc.get_file('MAT.cfg', dff, size, None)
     if not rv:
         _die('error downloading MAT.cfg')
@@ -315,35 +315,38 @@ def logger_download(mac, fol, hci_if, sig=None):
     try:
         with LoggerControllerBLE(mac, hci_if) as lc:
             g = _ddh_get_gps()
-            _logger_sws(lc, sig, g)
-            _logger_time_check(lc, sig)
-            fol, ls = _logger_ls(lc, fol, sig, pre_rm=False)
-            got_all = _logger_get_files(lc, sig, fol, ls)
-            if got_all:
-                _logger_re_setup(lc, sig)
-                _logger_rws(lc, sig, g)
-                s = 'logger done'
-                emit_logger_post(sig, True, s, mac)
-                _logger_plot(mac, sig)
-                blacklist_as_done = True
-            else:
-                e = 'logger {} not done yet'.format(mac)
-                emit_logger_post(sig, False, e, mac)
-                emit_error(sig, e)
-                blacklist_as_done = False
-            _time_to_display(2)
-            return blacklist_as_done
+            # _logger_sws(lc, sig, g)
+            # _logger_time_check(lc, sig)
+            # fol, ls = _logger_ls(lc, fol, sig, pre_rm=False)
+            # got_all = _logger_get_files(lc, sig, fol, ls)
+            # if got_all:
+            #     _logger_re_setup(lc, sig)
+            #     _logger_rws(lc, sig, g)
+            #     s = 'logger done'
+            #     emit_logger_post(sig, True, s, mac)
+            #     _logger_plot(mac, sig)
+            #     blacklist_as_done = True
+            # else:
+            #     e = 'logger {} not done yet'.format(mac)
+            #     emit_logger_post(sig, False, e, mac)
+            #     emit_error(sig, e)
+            #     blacklist_as_done = False
+            # _time_to_display(2)
+            # return blacklist_as_done
+
+            # todo: remove this
+            return True
 
     # my exception, such as no MAT.cfg file
     except AppBLEException as ex:
         e = 'error at {}, will retry'.format(ex)
-        emit_logger_post(sig, False, e, mac)
-        emit_error(sig, e)
+        sig.logger_post.emit(False, e, mac)
+        sig.error.emit('error: {}'.format(e))
         return False
 
     # such as None.command()
     except AttributeError as ae:
-        emit_error(sig, 'error: {}'.format(ae))
+        sig.error.emit('error: {}'.format(ae))
         return False
 
 

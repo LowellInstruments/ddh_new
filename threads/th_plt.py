@@ -5,7 +5,6 @@ from threads.utils_plt import plot
 
 
 def _plot_data(w):
-
     def _plot():
         # w: Qt5 windowed app, wait for it to ask a plot
         plt_args = w.qpo.get()
@@ -35,5 +34,6 @@ def _plot_data(w):
 
 
 def loop(w):
+    w.sig_plt.status.emit('SYS: PLT thread started')
     while 1:
         _plot_data(w)

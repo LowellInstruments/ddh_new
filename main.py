@@ -15,7 +15,7 @@ if __name__ == "__main__":
     # common application context
     r = pathlib.Path.cwd()
     ctx.app_root_folder = r
-    ctx.dl_files_folder = r / 'dl_files/'
+    ctx.dl_folder = r / 'dl_files/'
     ctx.app_conf_folder = r / 'settings/'
     ctx.app_logs_folder = r / 'logs/'
     ctx.app_res_folder = r / 'gui/res/'

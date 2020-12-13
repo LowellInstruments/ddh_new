@@ -32,7 +32,6 @@ class ColoredMacList:
         with shelve.open(self.db_name) as sh:
             _s = 'SYS: {} to mac_{} list'
             _s = _s.format(_mac, self.color)
-            emit_debug(self.sig, _s)
             sh[_mac] = _t
 
     def macs_del_one(self, _mac):

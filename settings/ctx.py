@@ -13,7 +13,7 @@ PLT_MSG_TIMEOUT = 5
 # set at main.py, shared stuff
 app_root_folder = None
 app_res_folder = None
-dl_files_folder = None
+dl_folder = None
 app_conf_folder = None
 app_logs_folder = None
 json_file = None
@@ -31,13 +31,13 @@ lg_dl_bar_pc = 0
 
 
 # semaphores
-sem_ftp = threading.Lock()
+sem_aws = threading.Lock()
 sem_ble = threading.Lock()
 sem_plt = threading.Lock()
 
 
 # FTP: current and start states + switch capability
-ftp_en = True
+aws_en = True
 sw_ftp_en = True
 
 

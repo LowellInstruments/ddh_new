@@ -59,18 +59,15 @@ def _scan_loggers(w, h, whitelist, mb, mo):
     o_p = mo.ls.get_all_macs()
     w.sig_ble.dl_warning.emit(o_p)
 
-    # know how many loggers we have to do now
-    n = len(li)
-
     # banner warning left as pending
     _o = mo.ls.get_all_macs()
     w.sig_ble.dl_warning.emit(_o)
 
     # banner number of loggers to be done
-    s = 'BLE: {} fresh loggers'.format(n)
+    s = 'BLE: {} fresh loggers'.format(len(li))
     w.sig_ble.status.emit(s)
     w.sig_ble.scan_post.emit(s)
-    return n
+    return li
 
 
 def _download_loggers(w, h, macs, mb, mo, ft_s):
@@ -85,7 +82,7 @@ def _download_loggers(w, h, macs, mb, mo, ft_s):
             w.sig_ble.session_pre.emit(mac, i + 1, len(li))
             w.sig_ble.status.emit('BLE: connecting {}'.format(mac))
             w.sig_ble.logger_pre.emit()
-            fol = ctx.dl_files_folder
+            fol = ctx.dl_folder
             done = logger_download(mac, fol, h, w.sig_ble)
             _to_black(mb, mo, mac, ft_s) if done else _to_orange(mo, mac)
 
@@ -101,13 +98,14 @@ def _download_loggers(w, h, macs, mb, mo, ft_s):
 
 
 def loop(w):
+    w.sig_ble.status.emit('SYS: BLE thread started')
     whitelist = json_get_macs(ctx.json_file)
     h = json_get_hci_if(ctx.json_file)
     mb = BlackMacList(ctx.db_blk, w.sig_ble)
     mo = OrangeMacList(ctx.db_ong, w.sig_ble)
     ft_s = json_get_forget_time_secs(ctx.json_file)
     assert ft_s >= 3600
-    _show_colored_mac_lists(w, mb,mo)
+    _show_colored_mac_lists(w, mb, mo)
 
     while 1:
         if not ctx.ble_en:

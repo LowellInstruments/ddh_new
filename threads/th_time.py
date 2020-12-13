@@ -12,6 +12,8 @@ class ButtonPressEvent:
 def loop(w):
     symbols = ('·', '··', '···', ' ')
     idx = 0
+    w.sig_tim.status.emit('SYS: TIM thread started')
+
     while 1:
         idx = (idx + 1) % len(symbols)
         w.sig_tim.update.emit(symbols[idx])

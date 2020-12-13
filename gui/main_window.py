@@ -24,9 +24,8 @@ from gui import utils_gui
 from gui.utils_gui import (
     setup_view, setup_his_tab, setup_buttons_gui, setup_window_center, hide_edit_tab,
     dict_from_list_view, setup_buttons_rpi, _confirm_by_user, update_gps_icon)
-from threads import th_time, th_gps, th_ble, th_plt, th_ftp, th_net, th_cnv
+from threads import th_time, th_gps, th_ble, th_plt, th_ftp, th_net, th_cnv, th_aws
 from settings.utils_settings import yaml_load_pairs, json_gen_ddh
-from threads.th import DDHThread
 from db.db_his import DBHis
 from threads.utils import (
     update_dl_folder_list,
@@ -40,7 +39,7 @@ from logzero import logger as c_log
 from threads.sig import (
     SignalsBLE,
     SignalsPLT,
-    SignalsTime, SignalsGPS, SignalsFTP, SignalsNET, SignalsCNV)
+    SignalsTime, SignalsGPS, SignalsFTP, SignalsNET, SignalsCNV, SignalsAWS)
 import os
 import gui.designer_main as d_m
 import matplotlib
@@ -52,7 +51,6 @@ from matplotlib.figure import Figure
 class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
 
     def __init__(self):
-        # checks
         _ftp_credentials_check()
 
         # gui: view
@@ -71,7 +69,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.bsy_dots = ''
         self.plt_timeout_dis = 0
         self.plt_timeout_msg = 0
-        self.plt_folders = update_dl_folder_list(ctx.dl_files_folder)
+        self.plt_folders = update_dl_folder_list(ctx.dl_folder)
         self.plt_folders_idx = 0
         self.plt_dir = None
         self.plt_time_spans = ('h', 'd', 'w', 'm', 'y')
@@ -88,14 +86,6 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self._populate_history_tab()
         rm_plot_db()
 
-        #
-        # # ftp
-        # self.th_ftp = DDHThread(th_ftp.fxn, SignalsFTP)
-        # self.th_ftp.signals().ftp_update.connect(self.slot_gui_update_ftp)
-        # self.th_ftp.signals().ftp_error.connect(self.slot_error)
-        # self.th_ftp.signals().ftp_status.connect(self.slot_status)
-        #
-
         # signals and slots
         self.sig_gps = SignalsGPS()
         self.sig_cnv = SignalsCNV()
@@ -103,20 +93,25 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.sig_net = SignalsNET()
         self.sig_plt = SignalsPLT()
         self.sig_ble = SignalsBLE()
+        self.sig_aws = SignalsAWS()
         self.sig_ble.status.connect(self.slot_status)
         self.sig_gps.status.connect(self.slot_status)
         self.sig_cnv.status.connect(self.slot_status)
         self.sig_net.status.connect(self.slot_status)
         self.sig_plt.status.connect(self.slot_status)
+        self.sig_aws.status.connect(self.slot_status)
+        self.sig_tim.status.connect(self.slot_status)
         self.sig_gps.error.connect(self.slot_error)
         self.sig_cnv.error.connect(self.slot_error)
         self.sig_plt.error.connect(self.slot_error)
         self.sig_ble.error.connect(self.slot_error)
+        self.sig_aws.error.connect(self.slot_error)
         self.sig_cnv.update.connect(self.slot_gui_update_cnv)
         self.sig_gps.update.connect(self.slot_gui_update_gps)
         self.sig_tim.update.connect(self.slot_gui_update_time)
         self.sig_net.update.connect(self.slot_gui_update_net)
         self.sig_plt.update.connect(self.slot_gui_update_plt)
+        self.sig_aws.update.connect(self.slot_gui_update_plt)
         self.sig_plt.start.connect(self.slot_plt_start)
         self.sig_plt.msg.connect(self.slot_plt_msg)
         self.sig_plt.end.connect(self.slot_plt_end)
@@ -143,9 +138,6 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.ag_gps = AgentGPS(self.qgi, self.qgo)
         self.ag_gps.start()
 
-        # self.thread_pool.start(self.th_ftp)
-        # self.thread_pool.start(self.th_ble)
-
         # first thing this app does is try to time sync
         get_gps_data(self)
 
@@ -156,13 +148,14 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.th_net = threading.Thread(target=th_net.loop, args=(self, ))
         self.th_plt = threading.Thread(target=th_plt.loop, args=(self, ))
         self.th_ble = threading.Thread(target=th_ble.loop, args=(self, ))
+        self.th_aws = threading.Thread(target=th_aws.loop, args=(self, ))
         self.th_gps.start()
         self.th_time.start()
         self.th_cnv.start()
         self.th_net.start()
         self.th_plt.start()
         self.th_ble.start()
-
+        self.th_aws.start()
 
         # timer used to quit this app
         self.tim_q = QTimer()
@@ -182,7 +175,6 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         s = '{}\n{}\n{}\n{}'.format(_[0], _[1], _[2], t)
         self.lbl_time_n_pos.setText(s)
         self.lbl_plt_bsy.setText(self.bsy_dots)
-        print(t)
 
         # timeout to display plot tab, compare to 1 only runs once
         if self.plt_timeout_dis == 1:
@@ -358,9 +350,9 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
             s = 'no plot from last logger'
             self.slot_gui_update_plt(s)
             return
-        d = ctx.dl_files_folder
+        d = ctx.dl_folder
         self.plt_folders = update_dl_folder_list(d)
-        d = pathlib.Path(ctx.dl_files_folder)
+        d = pathlib.Path(ctx.dl_folder)
         d = d / str(mac).replace(':', '-')
         self.plt_dir = str(d)
         self._throw_th_plt()
@@ -522,7 +514,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     def _click_btn_dl_purge(self):
         s = 'sure to empty dl_files folder?'
         if _confirm_by_user(s):
-            d = pathlib.Path(ctx.dl_files_folder)
+            d = pathlib.Path(ctx.dl_folder)
             try:
                 # safety check
                 if 'dl_files' not in str(d):
@@ -548,17 +540,6 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         f_t = json_get_forget_time_secs(j)
         self.lne_vessel.setText(ves)
         self.lne_forget.setText(str(f_t))
-
-    def _throw_th_plt(self):
-        ax = self.plt_cnv.axes
-        arg = [self.plt_dir, ax, self.plt_ts, self.plt_metrics]
-        self.th_plt = DDHThread(th_plt.fxn, SignalsPLT, arg)
-        self.th_plt.signals().plt_status.connect(self.slot_status)
-        self.th_plt.signals().plt_error.connect(self.slot_error)
-        self.th_plt.signals().plt_result.connect(self.slot_plt_result)
-        self.th_plt.signals().plt_start.connect(self.slot_plt_start)
-        self.th_plt.signals().plt_msg.connect(self.slot_plt_msg)
-        self.thread_pool.start(self.th_plt)
 
     def closeEvent(self, event):
         event.accept()
@@ -635,7 +616,7 @@ def on_ctrl_c(signal_num, _):
 
 
 def _ftp_credentials_check():
-    if ctx.ftp_en:
+    if ctx.aws_en:
         ftp_assert_credentials()
 
 

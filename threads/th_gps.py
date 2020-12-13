@@ -55,7 +55,6 @@ def get_gps_data(w):
         qgo = w.qgo
         qgi.put(None)
         _o = qgo.get()
-        w.sig_gps.status.emit(str(_o))
         w.sig_gps.update.emit(_o)
 
     th = threading.Thread(target=_ask_agent_for_gps_data)

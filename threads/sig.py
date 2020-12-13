@@ -27,9 +27,15 @@ class SignalsGPS(QObject):
 
 
 class SignalsFTP(QObject):
-    ftp_update = pyqtSignal(str)
-    ftp_status = pyqtSignal(str)
-    ftp_error = pyqtSignal(str)
+    update = pyqtSignal(str)
+    status = pyqtSignal(str)
+    error = pyqtSignal(str)
+
+
+class SignalsAWS(QObject):
+    update = pyqtSignal(str)
+    status = pyqtSignal(str)
+    error = pyqtSignal(str)
 
 
 class SignalsPLT(QObject):
@@ -42,6 +48,7 @@ class SignalsPLT(QObject):
 
 
 class SignalsTime(QObject):
+    status = pyqtSignal(str)
     update = pyqtSignal(str)
 
 
