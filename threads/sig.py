@@ -3,21 +3,21 @@ from PyQt5.QtCore import QObject
 
 
 class SignalsBLE(QObject):
-    ble_scan_pre = pyqtSignal(str)
-    ble_scan_post = pyqtSignal(int)
-    ble_session_pre = pyqtSignal(str, int, int)
-    ble_session_post = pyqtSignal(str)
-    ble_logger_pre = pyqtSignal()
-    ble_logger_post = pyqtSignal(bool, str, str)
-    ble_logger_plot_req = pyqtSignal(str)
-    ble_file_pre = pyqtSignal(str, int, int, int, int)
-    ble_file_post = pyqtSignal(int)
-    ble_deployed = pyqtSignal(str, str, str)
-    ble_status = pyqtSignal(str)
-    ble_debug = pyqtSignal(str)
-    ble_error = pyqtSignal(str)
-    ble_dl_warning = pyqtSignal(list)
-    ble_dl_step = pyqtSignal()
+    scan_pre = pyqtSignal(str)
+    scan_post = pyqtSignal(int)
+    session_pre = pyqtSignal(str, int, int)
+    session_post = pyqtSignal(str)
+    logger_pre = pyqtSignal()
+    logger_post = pyqtSignal(bool, str, str)
+    logger_plot_req = pyqtSignal(str)
+    file_pre = pyqtSignal(str, int, int, int, int)
+    file_post = pyqtSignal(int)
+    deployed = pyqtSignal(str, str, str)
+    status = pyqtSignal(str)
+    debug = pyqtSignal(str)
+    error = pyqtSignal(str)
+    dl_warning = pyqtSignal(list)
+    dl_step = pyqtSignal()
 
 
 class SignalsGPS(QObject):

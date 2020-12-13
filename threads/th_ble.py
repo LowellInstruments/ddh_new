@@ -1,147 +1,127 @@
+import os
 import bluepy.btle as ble
 import time
-import sys
 from mat.logger_controller_ble import ble_scan
 from settings import ctx
+from threads.utils import json_get_macs, json_get_forget_time_secs, json_get_hci_if
+from threads.utils_ble import logger_download
 from threads.utils_macs import filter_white_macs, BlackMacList, OrangeMacList, bluepy_scan_results_to_strings
-from threads.utils_ble import (
-    logger_download,
-    emit_scan_pre,
-    emit_status,
-    emit_error,
-    emit_logger_pre, emit_session_pre, emit_logger_post, emit_debug, emit_scan_post, emit_dl_warning)
 
 
-# class ThBLE:
-#     def __init__(self, sig, forget_s, ignore_s, known_macs, hci_if):
-#         self.sig = sig
-#         self.hci_if = hci_if
-#         self.macs_black = BlackMacList(ctx.db_blk, sig)
-#         self.macs_orange = OrangeMacList(ctx.db_ong, sig)
-#         self.FORGET_S = forget_s
-#         self.IGNORE_S = ignore_s
-#         self.KNOWN_MACS = [i.lower() for i in known_macs]
-#
-#         # main BLE loop: scan and download
-#         while 1:
-#             try:
-#                 self._loop(self.sig, self.hci_if)
-#             except ble.BTLEManagementError as ex:
-#                 # leave this app, big SYS BLE error
-#                 e = 'BLE: big error, wrong HCI or permissions?'
-#                 emit_error(sig, e)
-#                 print(ex)
-#                 time.sleep(1)
-#                 sys.exit(1)
-#
-#     def _show_colored_mac_lists(self):
-#         if not ctx.macs_lists_persistent:
-#             # not persistent? remove old lists
-#             _d = 'SYS: no persistent mac color lists'
-#             self.macs_black.ls.delete_all(self.sig)
-#             self.macs_orange.ls.delete_all(self.sig)
-#             emit_debug(self.sig, _d)
-#         else:
-#             _d = 'SYS: loaded persistent black list -> '
-#             _d += self.macs_black.ls.macs_dump()
-#             emit_debug(self.sig, _d)
-#             _d = 'SYS: loaded persistent orange list -> '
-#             _d += self.macs_orange.ls.macs_dump()
-#             emit_debug(self.sig, _d)
-#
-#     def _to_black(self, mac):
-#         _fxn = self.macs_black.ls.macs_add_or_update
-#         _fxn(mac, self.FORGET_S)
-#         # could be a previously orange one, or not
-#         self.macs_orange.ls.macs_del_one(mac)
-#
-#     def _to_orange(self, mac):
-#         _fxn = self.macs_orange.ls.macs_add_or_update
-#         _fxn(mac, self.IGNORE_S)
-#
-#     def _loop(self, sig, hci_if):
-#         emit_status(sig, 'BLE: thread boot')
-#         self._show_colored_mac_lists()
-#
-#         # BLE loop
-#         while 1:
-#             if not ctx.ble_en:
-#                 emit_scan_pre(sig, 'not scanning')
-#                 time.sleep(3)
-#                 continue
-#
-#             # wireless scan: all BLE devices around, no filter
-#             _iface = 'external' if hci_if else 'internal'
-#             s = 'scanning'
-#             emit_scan_pre(sig, s)
-#             near = ble_scan(hci_if)
-#
-#             # scan results format -> [strings]
-#             li = bluepy_scan_results_to_strings(near)
-#
-#             # any BLE mac -> DDH known macs
-#             li = filter_white_macs(self.KNOWN_MACS, li)
-#
-#             # DDH macs -> w/o recently well done ones
-#             li = self.macs_black.filter_black_macs(li)
-#
-#             # DDH macs -> w/o too recent bad ones
-#             li = self.macs_orange.filter_orange_macs(li)
-#
-#             # know how many pending because previous errors
-#             o_p = self.macs_orange.ls.get_all_macs()
-#             emit_dl_warning(sig, o_p)
-#
-#             # know how many loggers we have to do now
-#             n = len(li)
-#
-#             # none to download, great
-#             if n == 0:
-#                 continue
-#             s = 'BLE: {} fresh loggers'.format(n)
-#             emit_status(sig, s)
-#             emit_scan_post(sig, n)
-#
-#             # show any pending mac
-#             _o = self.macs_orange.ls.get_all_macs()
-#             emit_dl_warning(sig, _o)
-#
-#             # protect critical zone
-#             ctx.sem_ble.acquire()
-#
-#             # downloading stage
-#             for i, mac in enumerate(li):
-#                 try:
-#                     emit_session_pre(sig, mac, i + 1, n)
-#                     emit_status(sig, 'BLE: connecting {}'.format(mac))
-#                     emit_logger_pre(sig)
-#                     fol = ctx.dl_files_folder
-#
-#                     # logger_download() emits all signals
-#                     done = logger_download(mac, fol, hci_if, sig)
-#                     self._to_black(mac) if done else self._to_orange(mac)
-#
-#                 # not ours, but bluepy exception
-#                 except ble.BTLEException as ex:
-#                     # add to orange ones
-#                     self._to_orange(mac)
-#                     e = str(ex.message)
-#                     # ex: BLE: GET() exception Device Disconnected
-#                     emit_error(sig, e)
-#                     e = 'BLE: DL error, retrying in {} s'
-#                     e = e.format(self.IGNORE_S)
-#                     emit_error(sig, e)
-#                     e = 'some error\nretrying in 1 min'
-#                     emit_logger_post(sig, False, e, mac)
-#
-#             # unprotect critical zone
-#             ctx.sem_ble.release()
-#
-#             # gives time to display messages
-#             time.sleep(3)
+IGNORE_TIME_S = 60
 
+
+def _to_black(mb, mo, mac, t):
+    mb.ls.macs_add_or_update(mac, t)
+    # could be a previously orange one, or not
+    mo.ls.macs_del_one(mac)
+
+
+def _to_orange(mo, mac):
+    mo.ls.macs_add_or_update(mac, IGNORE_TIME_S)
+
+
+def _show_colored_mac_lists(w, mb, mo):
+    if not ctx.macs_lists_persistent:
+        # not persistent? remove old lists
+        _d = 'SYS: no persistent mac color lists'
+        mb.ls.delete_all()
+        mo.ls.delete_all()
+        w.sig_ble.debug.emit(_d)
+    else:
+        _d = 'SYS: loaded persistent black list -> '
+        _d += mb.ls.macs_dump()
+        w.sig_ble.debug.emit(_d)
+        _d = 'SYS: loaded persistent orange list -> '
+        _d += mo.ls.macs_dump()
+        w.sig_ble.debug.emit(_d)
+
+
+def _scan_loggers(w, h, whitelist, mb, mo):
+    # scan all BLE devices around
+    hci_if = 'external' if h else 'internal'
+    w.sig_ble.scan_pre.emit('scanning {}'.format(hci_if))
+    near = ble_scan(h)
+
+    # scan results format -> [strings]
+    li = bluepy_scan_results_to_strings(near)
+
+    # any BLE mac -> DDH known macs
+    li = filter_white_macs(whitelist, li)
+
+    # DDH macs -> w/o recently well done ones
+    li = mb.filter_black_macs(li)
+
+    # DDH macs -> w/o too recent bad ones
+    li = mo.filter_orange_macs(li)
+
+    # know how many pending because previous errors
+    o_p = mo.ls.get_all_macs()
+    w.sig_ble.dl_warning.emit(o_p)
+
+    # know how many loggers we have to do now
+    n = len(li)
+
+    # banner warning left as pending
+    _o = mo.ls.get_all_macs()
+    w.sig_ble.dl_warning.emit(_o)
+
+    # banner number of loggers to be done
+    s = 'BLE: {} fresh loggers'.format(n)
+    w.sig_ble.status.emit(s)
+    w.sig_ble.scan_post.emit(s)
+    return n
+
+
+def _download_loggers(w, h, macs, mb, mo, ft_s):
+    li = [i.lower() for i in macs]
+
+    # protect critical zone
+    ctx.sem_ble.acquire()
+
+    # downloading stage
+    for i, mac in enumerate(li):
+        try:
+            w.sig_ble.session_pre.emit(mac, i + 1, len(li))
+            w.sig_ble.status.emit('BLE: connecting {}'.format(mac))
+            w.sig_ble.logger_pre.emit()
+            fol = ctx.dl_files_folder
+            done = logger_download(mac, fol, h, w.sig_ble)
+            _to_black(mb, mo, mac, ft_s) if done else _to_orange(mo, mac)
+
+        except ble.BTLEException as ex:
+            # not ours, but bluepy exception
+            _to_orange(mo, mac)
+            w.sig_ble.error.emit('BLE: disconnect exc {}'.format(ex))
+            w.sig_ble.logger_post.emit('BLE: retrying in {} seconds'.format(IGNORE_TIME_S))
+
+    # unprotect critical zone, give time to show messages
+    ctx.sem_ble.release()
+    time.sleep(3)
 
 
 def loop(w):
+    whitelist = json_get_macs(ctx.json_file)
+    h = json_get_hci_if(ctx.json_file)
+    mb = BlackMacList(ctx.db_blk, w.sig_ble)
+    mo = OrangeMacList(ctx.db_ong, w.sig_ble)
+    ft_s = json_get_forget_time_secs(ctx.json_file)
+    assert ft_s >= 3600
+    _show_colored_mac_lists(w, mb,mo)
+
     while 1:
-        download_loggers(w)
+        if not ctx.ble_en:
+            w.sig_ble.ble_scan_pre('BLE: not scanning')
+            time.sleep(3)
+            continue
+
+        try:
+            macs = _scan_loggers(w, h, whitelist, mb, mo)
+            if not macs:
+                continue
+            _download_loggers(w, h, macs, mb, mo, ft_s)
+        except ble.BTLEManagementError as ex:
+            e = 'BLE: big error, wrong HCI or permissions? {}'
+            w.sig_ble.error.emit(e.format(ex))
+            time.sleep(1)
+            os._exit(1)
