@@ -7,8 +7,8 @@ PERIOD_CNV = 60
 
 
 def loop(w, pre_rm=False):
-    assert ctx.dl_folder
     assert PERIOD_CNV >= 30
+    assert ctx.dl_folder
     fol = str(ctx.dl_folder)
     pre_rm_csv(fol, pre_rm)
     w.sig_cnv.status.emit('SYS: CNV thread started')

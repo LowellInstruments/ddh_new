@@ -225,10 +225,10 @@ def lid_to_csv(fol, suffix) -> (bool, list):
     all_ok = True
 
     for f in lid_files:
-        # suffix: '_DissolvedOxygen', mind the _
+        # ex: suffix '_DissolvedOxygen'
         _ = '{}{}.csv'.format(f.split('.')[0], suffix)
         if os.path.exists(_):
-            print('file {} already exists'.format(_))
+            # print('file {} already exists'.format(_))
             continue
 
         try:
@@ -236,10 +236,8 @@ def lid_to_csv(fol, suffix) -> (bool, list):
             # print('{} -> {} OK'.format(f, suffix))
         except (ValueError, Exception) as ve:
             all_ok = False
-            e = 'file {} ERROR conversion -> {}'
-            e = e.format(f, ve)
-            print(e)
-            err_files.append(e)
+            err_files.append(f)
+            print('error converting {} -> {}'.format(e, ve))
 
     return all_ok, err_files
 

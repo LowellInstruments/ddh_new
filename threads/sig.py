@@ -50,6 +50,7 @@ class SignalsPLT(QObject):
 class SignalsTime(QObject):
     status = pyqtSignal(str)
     update = pyqtSignal(str)
+    via = pyqtSignal(str)
 
 
 class SignalsNET(QObject):

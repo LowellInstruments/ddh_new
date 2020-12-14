@@ -47,10 +47,6 @@ sw_ble_en = True
 macs_lists_persistent = True
 
 
-# GPS: good time at boot
-boot_time = 0
-
-
 def only_one_instance(name):
     # hold a ref or garbage collector makes all this not work
     ooi = only_one_instance

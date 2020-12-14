@@ -1,9 +1,9 @@
 import queue
 import threading
-from mat.agent_gps import AgentGPS
 from mat.linux import linux_is_rpi
-from threads.th_gps import get_gps_data
+from threads.th_time import time_via
 from threads.utils_ftp import ftp_assert_credentials
+from threads.utils_gps_internal import get_gps_lat_lon_more
 from threads.utils_macs import black_macs_delete_all
 import datetime
 import pathlib
@@ -20,10 +20,9 @@ from PyQt5.QtGui import (
 from PyQt5.QtWidgets import (
     QMainWindow,
     QFileDialog)
-from gui import utils_gui
 from gui.utils_gui import (
     setup_view, setup_his_tab, setup_buttons_gui, setup_window_center, hide_edit_tab,
-    dict_from_list_view, setup_buttons_rpi, _confirm_by_user, update_gps_icon)
+    dict_from_list_view, setup_buttons_rpi, _confirm_by_user, update_gps_icon, populate_history_tab)
 from threads import th_time, th_gps, th_ble, th_plt, th_net, th_cnv, th_aws
 from settings.utils_settings import yaml_load_pairs, json_gen_ddh
 from db.db_his import DBHis
@@ -82,7 +81,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.key_shift = None
         self.last_time_icon_ble_press = 0
         hide_edit_tab(self)
-        self._populate_history_tab()
+        populate_history_tab(self)
         rm_plot_db()
 
         # signals and slots
@@ -106,7 +105,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.sig_ble.error.connect(self.slot_error)
         self.sig_aws.error.connect(self.slot_error)
         self.sig_cnv.update.connect(self.slot_gui_update_cnv)
-        self.sig_gps.update.connect(self.slot_gui_update_gps)
+        self.sig_gps.update.connect(self.slot_gui_update_gps_pos)
         self.sig_tim.update.connect(self.slot_gui_update_time)
         self.sig_net.update.connect(self.slot_gui_update_net)
         self.sig_plt.update.connect(self.slot_gui_update_plt)
@@ -127,20 +126,13 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.sig_ble.dl_step.connect(self.slot_ble_dl_step)
         self.sig_ble.dl_warning.connect(self.slot_ble_dl_warning)
         self.sig_ble.logger_plot_req.connect(self.slot_ble_logger_plot_req)
-
-        # queues for app to query agents
-        self.qgi, self.qgo = queue.Queue(), queue.Queue()
-        self.qpi, self.qpo = queue.Queue(), queue.Queue()
-
-        # agent threads
-        self.ag_gps = None
-        self.ag_gps = AgentGPS(self.qgi, self.qgo)
-        self.ag_gps.start()
+        self.sig_tim.via.connect(self.slot_gui_time_via)
 
         # first thing this app does is try to time sync
-        get_gps_data(self)
+        time_via(self)
 
-        # app threads
+        # app threads and queues
+        self.qpi, self.qpo = queue.Queue(), queue.Queue()
         self.th_gps = threading.Thread(target=th_gps.loop, args=(self, ))
         self.th_time = threading.Thread(target=th_time.loop, args=(self, ))
         self.th_cnv = threading.Thread(target=th_cnv.loop, args=(self, ))
@@ -195,12 +187,18 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
             s_n = json_get_ship_name(j)
             self.lbl_boatname.setText(s_n)
 
-    @pyqtSlot(tuple, name='slot_gui_update_gps')
-    def slot_gui_update_gps(self, u):
-        """ updates GUI GPS lat, lon, timestamp """
+    @pyqtSlot(str, name='slot_gui_time_via')
+    def slot_gui_time_via(self, s):
+        _ = self.lbl_time_n_pos.text().split('\n')
+        s = '{}\n{}\n{}\n{}'.format(s, _[1], _[2], _[3])
+        self.lbl_time_n_pos.setText(s)
+
+    @pyqtSlot(tuple, name='slot_gui_update_gps_pos')
+    def slot_gui_update_gps_pos(self, u):
+        # u: lat, lon, timestamp
         lat, lon, self.gps_last_ts = u
         _ = self.lbl_time_n_pos.text().split('\n')
-        s = '{}\n{}\n{}\n{}'.format('GPS', lat, lon, _[3])
+        s = '{}\n{}\n{}\n{}'.format(_[0], lat, lon, _[3])
         self.lbl_time_n_pos.setText(s)
         ok = lon not in ['missing', 'searching', 'malfunction']
         update_gps_icon(self, ok, lat, lon)
@@ -611,9 +609,6 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         ctx.sem_plt.acquire()
         self._throw_th_plt()
         ctx.sem_plt.release()
-
-    def _populate_history_tab(self):
-        utils_gui.setup_his_tab(self)
 
 
 def on_ctrl_c(signal_num, _):

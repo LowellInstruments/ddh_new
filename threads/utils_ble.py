@@ -2,8 +2,6 @@ import datetime
 import json
 import pathlib
 import time
-
-from mat.gps_quectel import get_gps_lat_n_lon
 from mat.logger_controller_ble import LoggerControllerBLE
 from threads.utils import rm_folder, create_folder, exists_file, json_mac_dns
 from mat.logger_controller import (
@@ -11,7 +9,6 @@ from mat.logger_controller import (
     SWS_CMD, STATUS_CMD
 )
 from settings import ctx
-from threads.utils_gps import sync_pos
 
 
 def _time_to_display(t):
@@ -190,20 +187,17 @@ def _logger_rws(lc, sig, g):
     lat = g[0] if g else 'N/A'
     lon = g[1] if g else 'N/A'
     g = '{}{}\n'.format(lat, lon)
+    sig.status.emit('BLE: RWS {}'.format(g))
     rv = lc.command(RWS_CMD, g)
     _ok_or_die([b'RWS', b'00'], rv, sig)
     sig.deployed.emit(lc.per.addr, lat, lon)
-
-
-def _ddh_get_gps():
-    return sync_pos(sig=None, timeout=10)
 
 
 def _logger_plot(mac, sig):
     sig.logger_plot_req.emit(mac)
 
 
-def _get_cfg_file(lc, sig):
+def _dir_cfg(lc, sig):
     for _ in range(3):
         rv = lc.ls_ext(b'.cfg')
         s = 'BLE: DIR cfg {}'.format(rv)
@@ -215,7 +209,7 @@ def _get_cfg_file(lc, sig):
 
 
 def _logger_re_setup(lc, sig):
-    rv = _get_cfg_file(lc, sig)
+    rv = _dir_cfg(lc, sig)
     size = 0
     try:
         size = rv['MAT.cfg']

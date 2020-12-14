@@ -9,7 +9,7 @@ from mat.linux import linux_is_docker_on_rpi, linux_is_rpi
 from settings.version import VER_SW
 from threads.th_time import ButtonPressEvent
 from threads.utils import json_get_ship_name
-from threads.utils_gps import gps_in_land
+from threads.utils_gps_external import gps_in_land
 
 
 def setup_view(my_win, j):
@@ -62,6 +62,10 @@ def setup_his_tab(my_app):
     a.tbl_his.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
     labels = ['serial num', 'last position', 'last time']
     a.tbl_his.setHorizontalHeaderLabels(labels)
+
+
+def populate_history_tab(self):
+    setup_his_tab(self)
 
 
 def setup_window_center(my_app):

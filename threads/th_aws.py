@@ -6,7 +6,7 @@ PERIOD_AWS = 300
 
 
 def sync_files(w, dl_folder):
-    w.sig_aws.status.emit('AWS: sync')
+    w.sig_aws.status.emit('AWS: syncing {}'.format(dl_folder))
 
 
 def loop(w):
