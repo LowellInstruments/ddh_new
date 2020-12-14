@@ -14,27 +14,27 @@ import numpy as np
 
 def emit_error(sig, e):
     if sig:
-        sig.plt_error.emit(e)
+        sig.error.emit(e)
 
 
 def emit_status(sig, s):
     if sig:
-        sig.plt_status.emit(s)
+        sig.status.emit(s)
 
 
 def emit_start(sig):
     if sig:
-        sig.plt_start.emit()
+        sig.start.emit()
 
 
 def emit_result(sig, rv, s):
     if sig:
-        sig.plt_result.emit(rv, s)
+        sig.result.emit(rv, s)
 
 
 def emit_msg(sig, m):
     if sig:
-        sig.plt_msg.emit(m)
+        sig.msg.emit(m)
 
 
 def _metric_to_csv_suffix(metric):
@@ -109,7 +109,10 @@ def _slice_n_avg(t, d, ts, sig):
             i_s = bisect.bisect_left(i, s)
             i_e = bisect.bisect_left(i, e)
             sl = d.values[i_s:i_e]
-            v = np.nanmean(sl)
+            try:
+                v = np.nanmean(sl)
+            except RuntimeWarning:
+                sig.debug.emit('PLT: mean of empty slice')
             if sl.any():
                 # good mean for this slice
                 y.append(v)

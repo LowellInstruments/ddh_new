@@ -22,7 +22,6 @@ def loop(w, pre_rm=False):
 
         # convert
         time.sleep(PERIOD_CNV)
+        # todo: we may not need to specify DissolvedOxygen, check
         _, e = lid_to_csv(fol, 'DissolvedOxygen')
-        # _, e = lid_to_csv(fol, 'Temperature')
-        # _, e = lid_to_csv(fol, 'Pressure')
         w.sig_cnv.update.emit(e)

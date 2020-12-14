@@ -2,8 +2,6 @@ import shelve
 import os
 import datetime
 
-from threads.utils_ble import emit_debug
-
 
 class ColoredMacList:
     def __init__(self, name, sig, color):
@@ -14,8 +12,7 @@ class ColoredMacList:
     def delete_all(self):
         try:
             os.remove(self.db_name)
-            _s = '{}_macs DB erased'.format(self.color)
-            emit_debug(self.sig, _s)
+            print('{}_macs DB erased'.format(self.color))
         except FileNotFoundError as _:
             _e = 'asked to del file {} but not found'
             print(_e)
@@ -92,8 +89,7 @@ class BlackMacList:
             if _now > v:
                 _expired.append(k)
         for each in _expired:
-            _s = 'SYS: mac {} un-blacked'.format(each)
-            emit_debug(self.ls.sig, _s)
+            print('SYS: mac {} un-blacked'.format(each))
             del db[each]
         db.close()
 

@@ -232,10 +232,8 @@ def lid_to_csv(fol, suffix) -> (bool, list):
             continue
 
         try:
-            # converting takes about 1.5 seconds per file
             DataConverter(f, parameters).convert()
-            s = 'file {} conversion to {} OK'
-            print(s.format(f, suffix))
+            # print('{} -> {} OK'.format(f, suffix))
         except (ValueError, Exception) as ve:
             all_ok = False
             e = 'file {} ERROR conversion -> {}'

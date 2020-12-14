@@ -19,22 +19,22 @@ from tzlocal import get_localzone
 
 def emit_gps_update_pos(sig, lat, lon):
     if sig:
-        sig.gps_update_pos.emit(lat, lon)
+        sig.update_pos.emit(lat, lon)
 
 
 def emit_gps_update_time_via(sig, via):
     if sig:
-        sig.gps_update_time_via.emit(via)
+        sig.update_time_via.emit(via)
 
 
 def emit_gps_status(sig, s):
     if sig:
-        sig.gps_status.emit(s)
+        sig.status.emit(s)
 
 
 def emit_gps_error(sig, e):
     if sig:
-        sig.gps_error.emit(e)
+        sig.error.emit(e)
 
 
 # returns valid USB port or Exception

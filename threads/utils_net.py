@@ -12,14 +12,14 @@ countdown_sw_to_wifi = 1
 
 def emit_net_status(sig, s):
     if sig:
-        sig.net_status.emit(s)
+        sig.status.emit(s)
     else:
         print(s)
 
 
 def emit_net_update(sig, i):
     if sig:
-        sig.net_update.emit(i)
+        sig.update.emit(i)
 
 
 def ensure_resolv_conf():

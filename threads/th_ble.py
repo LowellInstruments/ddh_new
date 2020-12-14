@@ -35,12 +35,15 @@ def _show_colored_mac_lists(w, mb, mo):
         _d = 'SYS: loaded persistent orange list -> '
         _d += mo.ls.macs_dump()
         w.sig_ble.debug.emit(_d)
+        _d = 'SYS: deleting all orange entries'
+        w.sig_ble.debug.emit(_d)
+        mo.ls.delete_all()
 
 
 def _scan_loggers(w, h, whitelist, mb, mo):
-    # scan all BLE devices around
-    hci_if = 'external' if h else 'internal'
-    w.sig_ble.scan_pre.emit('scanning {}'.format(hci_if))
+    # scan all BLE devices around, '!' when USB dongle
+    hci_if = '!' if h else ''
+    w.sig_ble.scan_pre.emit('scanning{}'.format(hci_if))
     near = ble_scan(h)
 
     # scan results format -> [strings]
@@ -76,13 +79,15 @@ def _download_loggers(w, h, macs, mb, mo, ft_s):
     # protect critical zone
     ctx.sem_ble.acquire()
 
-    # downloading stage
+    # downloading files
     for i, mac in enumerate(li):
         try:
             w.sig_ble.session_pre.emit(mac, i + 1, len(li))
             w.sig_ble.status.emit('BLE: connecting {}'.format(mac))
             w.sig_ble.logger_pre.emit()
             fol = ctx.dl_folder
+
+            # get files from logger
             done = logger_download(mac, fol, h, w.sig_ble)
             _to_black(mb, mo, mac, ft_s) if done else _to_orange(mo, mac)
 
@@ -90,7 +95,6 @@ def _download_loggers(w, h, macs, mb, mo, ft_s):
             # not ours, but bluepy exception
             _to_orange(mo, mac)
             w.sig_ble.error.emit('BLE: disconnect exc {}'.format(ex))
-            w.sig_ble.logger_post.emit('BLE: retrying in {} seconds'.format(IGNORE_TIME_S))
 
     # unprotect critical zone, give time to show messages
     ctx.sem_ble.release()
@@ -114,9 +118,12 @@ def loop(w):
             continue
 
         try:
+            # scan stage
             macs = _scan_loggers(w, h, whitelist, mb, mo)
             if not macs:
                 continue
+
+            # download stage
             _download_loggers(w, h, macs, mb, mo, ft_s)
         except ble.BTLEManagementError as ex:
             e = 'BLE: big error, wrong HCI or permissions? {}'

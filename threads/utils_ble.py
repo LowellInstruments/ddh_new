@@ -2,6 +2,8 @@ import datetime
 import json
 import pathlib
 import time
+
+from mat.gps_quectel import get_gps_lat_n_lon
 from mat.logger_controller_ble import LoggerControllerBLE
 from threads.utils import rm_folder, create_folder, exists_file, json_mac_dns
 from mat.logger_controller import (
@@ -17,89 +19,28 @@ def _time_to_display(t):
     time.sleep(t)
 
 
-def emit_scan_pre(sig, s):
-    if sig:
-        sig.ble_scan_pre.emit(s)
-
-
-def emit_scan_post(sig, n):
-    if sig:
-        sig.ble_scan_post.emit(n)
-
-
-def emit_status(sig, s):
-    if sig:
-        sig.ble_status.emit(s)
-
-
-def emit_debug(sig, s):
-    if sig:
-        sig.ble_debug.emit(s)
-
-
-def emit_error(sig, e):
-    if sig:
-        sig.ble_error.emit(e)
-
-
-def emit_logger_pre(sig):
-    if sig:
-        sig.ble_logger_pre.emit()
-
-
-def emit_logger_post(sig, ok, s, mac):
-    if sig:
-        sig.ble_logger_post.emit(ok, s, mac)
-
-
-def emit_logger_plot_req(sig, mac):
-    if sig:
-        sig.ble_logger_plot_req.emit(mac)
-
-
-def emit_file_pre(sig, name, size, num, total, mm):
-    if sig:
-        sig.ble_file_pre.emit(name, size, num, total, mm)
-
-
-def emit_file_post(sig, speed):
-    if sig:
-        sig.ble_file_post.emit(speed)
-
-
-def emit_deployed(sig, mac, lat, lon):
-    if sig:
-        sig.ble_deployed.emit(mac, lat, lon)
-
-
-def emit_session_pre(sig, mac, c, n):
-    if sig:
-        sig.ble_session_pre.emit(mac, c, n)
-
-
-def emit_dl_warning(sig, w: list):
-    if not sig:
-        return
-    sig.ble_dl_warning.emit(w)
-
-
-def emit_session_post(sig, s):
-    if sig:
-        sig.ble_session_post.emit(s)
-
-
 def _die(d):
     raise AppBLEException(d)
 
 
+def emit_status(sig, s):
+    if sig:
+        sig.status.emit(s)
+
+
+def emit_error(sig, e):
+    if sig:
+        sig.status.emit(e)
+
+
 def _show(rv, sig):
     txt = 'BLE: {}'.format(rv)
-    emit_status(sig, txt)
+    sig.status.emit(txt)
 
 
 def _error(rv, sig):
     txt = 'DIE: {}'.format(rv)
-    emit_error(sig, txt)
+    sig.error.emit(txt)
 
 
 def _ok_or_die(w, rv, sig):
@@ -158,7 +99,8 @@ def _logger_time_check(lc, sig=None):
 
 
 def _logger_ls(lc, fol, sig=None, pre_rm=False):
-    # fol modified to not contain ':'
+    # create folder when not exists
+    assert ':' not in str(fol)
     mac = lc.per.addr
     if pre_rm:
         rm_folder(mac)
@@ -212,17 +154,16 @@ def _logger_get_files(lc, sig, folder, files):
         b_left -= size
         s = 'BLE: get {}, {} B'.format(name, size)
         emit_status(sig, s)
-        emit_file_pre(sig, name, b_total, num, num_to_get, mm)
+        sig.file_pre.emit(name, b_total, num, num_to_get, mm)
         num += 1
 
         # x-modem download
         s_t = time.time()
-        if lc.get_file(name, folder, size, sig.ble_dl_step):
-            s = 'BLE: got {}'.format(name)
-            emit_status(sig, s)
+        if lc.get_file(name, folder, size, sig.dl_step):
+            emit_status(sig, 'BLE: got {}'.format(name))
         else:
-            s = 'BLE: can\'t get {}, size {}'.format(name, size)
-            emit_error(sig, s)
+            e = 'BLE: can\'t get {}, size {}'.format(name, size)
+            emit_error(sig, e)
             # continue
             return False
 
@@ -230,7 +171,7 @@ def _logger_get_files(lc, sig, folder, files):
         if exists_file(name, size, folder):
             got += 1
             speed = size / (time.time() - s_t)
-            emit_file_post(sig, speed)
+            sig.file_post.emit(speed)
 
     # logger was downloaded ok
     _ = 'almost done, '
@@ -239,9 +180,9 @@ def _logger_get_files(lc, sig, folder, files):
     elif got == 0:
         s = 'no files to get'
     else:
-        s = 'we already had all files'
+        s = 'already had all files'
     s = '{}\n{}'.format(_, s)
-    emit_logger_post(sig, True, s, mac)
+    sig.logger_post.emit(True, s, mac)
     return num_to_get == got
 
 
@@ -251,7 +192,7 @@ def _logger_rws(lc, sig, g):
     g = '{}{}\n'.format(lat, lon)
     rv = lc.command(RWS_CMD, g)
     _ok_or_die([b'RWS', b'00'], rv, sig)
-    emit_deployed(sig, lc.per.addr, lat, lon)
+    sig.deployed.emit(lc.per.addr, lat, lon)
 
 
 def _ddh_get_gps():
@@ -259,7 +200,7 @@ def _ddh_get_gps():
 
 
 def _logger_plot(mac, sig):
-    emit_logger_plot_req(sig, mac)
+    sig.logger_plot_req.emit(mac)
 
 
 def _get_cfg_file(lc, sig):
@@ -279,7 +220,7 @@ def _logger_re_setup(lc, sig):
     try:
         size = rv['MAT.cfg']
     except (KeyError, TypeError):
-        # when logger has no MAT.cfg
+        # no MAT.cfg within logger, that is an error
         _die('no MAT.cfg to download')
 
     # download MAT.cfg
@@ -310,34 +251,36 @@ def _logger_re_setup(lc, sig):
     _ok_or_die([b'CFG', b'00'], rv, sig)
 
 
-# super function called from BLE thread
 def logger_download(mac, fol, hci_if, sig=None):
     try:
         with LoggerControllerBLE(mac, hci_if) as lc:
-            g = _ddh_get_gps()
-            # _logger_sws(lc, sig, g)
-            # _logger_time_check(lc, sig)
-            # fol, ls = _logger_ls(lc, fol, sig, pre_rm=False)
-            # got_all = _logger_get_files(lc, sig, fol, ls)
-            # if got_all:
-            #     _logger_re_setup(lc, sig)
-            #     _logger_rws(lc, sig, g)
-            #     s = 'logger done'
-            #     emit_logger_post(sig, True, s, mac)
-            #     _logger_plot(mac, sig)
-            #     blacklist_as_done = True
-            # else:
-            #     e = 'logger {} not done yet'.format(mac)
-            #     emit_logger_post(sig, False, e, mac)
-            #     emit_error(sig, e)
-            #     blacklist_as_done = False
-            # _time_to_display(2)
-            # return blacklist_as_done
+            # get GPS coordinates, send Run w/ string
+            g = get_gps_lat_n_lon()
+            _logger_sws(lc, sig, g)
+            _logger_time_check(lc, sig)
 
-            # todo: remove this
-            return True
+            # DIR logger files and get them
+            fol, ls = _logger_ls(lc, fol, sig, pre_rm=False)
+            got_all = _logger_get_files(lc, sig, fol, ls)
 
-    # my exception, such as no MAT.cfg file
+            # got all files, everything went perfect
+            if got_all:
+                _logger_re_setup(lc, sig)
+                _logger_rws(lc, sig, g)
+                sig.logger_post.emit(True, 'logger done', mac)
+
+                # plot it
+                _logger_plot(mac, sig)
+                _time_to_display(2)
+                return True
+
+            # mmm, we did NOT get all files
+            e = 'logger {} not done yet'
+            sig.logger_post.emit(e.format(False, e, mac))
+            sig.error.emit(e.format(mac))
+            return False
+
+    # my exception, ex: no MAT.cfg file
     except AppBLEException as ex:
         e = 'error at {}, will retry'.format(ex)
         sig.logger_post.emit(False, e, mac)

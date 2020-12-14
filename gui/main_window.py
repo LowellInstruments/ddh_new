@@ -24,22 +24,21 @@ from gui import utils_gui
 from gui.utils_gui import (
     setup_view, setup_his_tab, setup_buttons_gui, setup_window_center, hide_edit_tab,
     dict_from_list_view, setup_buttons_rpi, _confirm_by_user, update_gps_icon)
-from threads import th_time, th_gps, th_ble, th_plt, th_ftp, th_net, th_cnv, th_aws
+from threads import th_time, th_gps, th_ble, th_plt, th_net, th_cnv, th_aws
 from settings.utils_settings import yaml_load_pairs, json_gen_ddh
 from db.db_his import DBHis
 from threads.utils import (
     update_dl_folder_list,
     json_get_ship_name,
     json_get_metrics,
-    json_get_macs,
     json_mac_dns,
-    json_get_forget_time_secs, rpi_set_brightness, json_get_hci_if, rm_plot_db, json_get_pairs, setup_app_log,
+    json_get_forget_time_secs, rpi_set_brightness, rm_plot_db, json_get_pairs, setup_app_log,
     update_cnv_log_err_file)
 from logzero import logger as c_log
 from threads.sig import (
     SignalsBLE,
     SignalsPLT,
-    SignalsTime, SignalsGPS, SignalsFTP, SignalsNET, SignalsCNV, SignalsAWS)
+    SignalsTime, SignalsGPS, SignalsNET, SignalsCNV, SignalsAWS)
 import os
 import gui.designer_main as d_m
 import matplotlib
@@ -355,7 +354,14 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         d = pathlib.Path(ctx.dl_folder)
         d = d / str(mac).replace(':', '-')
         self.plt_dir = str(d)
-        self._throw_th_plt()
+
+        # build args needed by th_plot
+        ax = self.plt_cnv.axes
+        ts = self.plt_ts
+        met = self.plt_metrics
+        d = self.plt_dir
+        plt_args = (d, ax, ts, met)
+        self.qpo.put(plt_args, timeout=1)
 
     @pyqtSlot(str, name='slot_ble_session_post')
     def slot_ble_session_post(self, desc):
