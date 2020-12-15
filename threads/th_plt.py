@@ -1,6 +1,6 @@
 import threading
 from settings import ctx
-from threads.utils import json_mac_dns, mac_from_folder, json_get_span_dict
+from threads.utils import json_mac_dns, mac_from_folder, json_get_span_dict, wait_boot_signal
 from threads.utils_plt import plot
 
 
@@ -29,11 +29,12 @@ def _plot_data(w, plt_args):
     th.join()
 
 
-def loop(w):
-    w.sig_plt.status.emit('SYS: PLT thread started')
+def loop(w, ev_can_i_boot):
+    wait_boot_signal(w, ev_can_i_boot, 'PLT')
+
     while 1:
-        # w: Qt5 windowed app, wait for it to ask a plot
         plt_args = w.qpo.get()
         ctx.sem_plt.acquire()
-        ctx.sem_plt.release()
         _plot_data(w, plt_args)
+        ctx.sem_plt.release()
+

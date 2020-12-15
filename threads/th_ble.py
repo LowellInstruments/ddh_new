@@ -3,7 +3,7 @@ import bluepy.btle as ble
 import time
 from mat.logger_controller_ble import ble_scan
 from settings import ctx
-from threads.utils import json_get_macs, json_get_forget_time_secs, json_get_hci_if
+from threads.utils import json_get_macs, json_get_forget_time_secs, json_get_hci_if, wait_boot_signal
 from threads.utils_ble import logger_download
 from threads.utils_macs import filter_white_macs, BlackMacList, OrangeMacList, bluepy_scan_results_to_strings
 
@@ -38,6 +38,10 @@ def _show_colored_mac_lists(w, mb, mo):
         _d = 'SYS: deleting all orange entries'
         w.sig_ble.debug.emit(_d)
         mo.ls.delete_all()
+        # todo: remove this
+        _d = 'SYS: --- warning --- deleting all black entries'
+        w.sig_ble.debug.emit(_d)
+        mb.ls.delete_all()
 
 
 def _scan_loggers(w, h, whitelist, mb, mo):
@@ -69,7 +73,6 @@ def _scan_loggers(w, h, whitelist, mb, mo):
     # banner number of loggers to be done
     s = 'BLE: {} fresh loggers'.format(len(li))
     w.sig_ble.status.emit(s)
-    w.sig_ble.scan_post.emit(s)
     return li
 
 
@@ -101,8 +104,9 @@ def _download_loggers(w, h, macs, mb, mo, ft_s):
     time.sleep(3)
 
 
-def loop(w):
-    w.sig_ble.status.emit('SYS: BLE thread started')
+def loop(w, ev_can_i_boot):
+    wait_boot_signal(w, ev_can_i_boot, 'BLE')
+
     whitelist = json_get_macs(ctx.json_file)
     h = json_get_hci_if(ctx.json_file)
     mb = BlackMacList(ctx.db_blk, w.sig_ble)

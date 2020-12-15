@@ -4,7 +4,6 @@ from PyQt5.QtCore import QObject
 
 class SignalsBLE(QObject):
     scan_pre = pyqtSignal(str)
-    scan_post = pyqtSignal(int)
     session_pre = pyqtSignal(str, int, int)
     session_post = pyqtSignal(str)
     logger_pre = pyqtSignal()
@@ -36,6 +35,10 @@ class SignalsAWS(QObject):
     update = pyqtSignal(str)
     status = pyqtSignal(str)
     error = pyqtSignal(str)
+
+
+class SignalsBoot(QObject):
+    status = pyqtSignal(str)
 
 
 class SignalsPLT(QObject):

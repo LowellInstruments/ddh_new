@@ -1,27 +1,26 @@
 import time
 from settings import ctx
-from threads.utils import lid_to_csv, pre_rm_csv
-
+from threads.utils import lid_to_csv, pre_rm_csv, wait_boot_signal
 
 PERIOD_CNV = 60
 
 
-def loop(w, pre_rm=False):
+def loop(w, ev_can_i_boot, pre_rm=False):
     assert PERIOD_CNV >= 30
     assert ctx.dl_folder
+    wait_boot_signal(w, ev_can_i_boot, 'CNV')
+
     fol = str(ctx.dl_folder)
     pre_rm_csv(fol, pre_rm)
-    w.sig_cnv.status.emit('SYS: CNV thread started')
 
     while 1:
-        # do not interrupt BLE or plotting
         ctx.sem_ble.acquire()
-        ctx.sem_ble.release()
         ctx.sem_plt.acquire()
-        ctx.sem_plt.release()
 
-        # convert
-        time.sleep(PERIOD_CNV)
         # todo: we may not need to specify DissolvedOxygen, check
         _, e = lid_to_csv(fol, 'DissolvedOxygen')
         w.sig_cnv.update.emit(e)
+        ctx.sem_plt.release()
+        ctx.sem_ble.release()
+        time.sleep(PERIOD_CNV)
+

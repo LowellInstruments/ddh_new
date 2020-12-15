@@ -1,6 +1,7 @@
 import time
 from settings import ctx
-from threads.utils_time import time_sync_net, time_sync_gps
+from threads.utils import wait_boot_signal
+from threads.utils_time import time_via
 
 
 class ButtonPressEvent:
@@ -14,21 +15,12 @@ class ButtonPressEvent:
 TIME_SYNC_PERIOD_S = 300
 
 
-def time_via(w):
-    via = 'local'
-    if time_sync_gps():
-        via = 'GPS'
-    elif time_sync_net():
-        via = 'NTP'
-    w.sig_tim.status.emit('TIM: sync {}'.format(via))
-    w.sig_tim.via.emit(via)
-
-
-def loop(w):
+def loop(w, ev_can_i_boot):
     assert TIME_SYNC_PERIOD_S > 120
+    wait_boot_signal(w, ev_can_i_boot, 'TIM')
+
     symbols = ('·', '··', '···', ' ')
     idx = 0
-    w.sig_tim.status.emit('SYS: TIM thread started')
     steps = 0
 
     while 1:
@@ -39,8 +31,8 @@ def loop(w):
 
 
         # things to do often but not always
-        ctx.sem_ble.acquire()
-        ctx.sem_ble.release()
-        if steps == TIME_SYNC_PERIOD_S:
-            steps = 0
-            time_via(w)
+        if ctx.sem_ble.acquire(blocking=False):
+            if steps >= TIME_SYNC_PERIOD_S:
+                steps = 0
+                time_via(w)
+            ctx.sem_ble.release()

@@ -1,7 +1,6 @@
 import queue
 import threading
 from mat.linux import linux_is_rpi
-from threads.th_time import time_via
 from threads.utils_ftp import ftp_assert_credentials
 from threads.utils_gps_internal import get_gps_lat_lon_more
 from threads.utils_macs import black_macs_delete_all
@@ -23,7 +22,7 @@ from PyQt5.QtWidgets import (
 from gui.utils_gui import (
     setup_view, setup_his_tab, setup_buttons_gui, setup_window_center, hide_edit_tab,
     dict_from_list_view, setup_buttons_rpi, _confirm_by_user, update_gps_icon, populate_history_tab)
-from threads import th_time, th_gps, th_ble, th_plt, th_net, th_cnv, th_aws
+from threads import th_time, th_gps, th_ble, th_plt, th_net, th_cnv, th_aws, th_boot
 from settings.utils_settings import yaml_load_pairs, json_gen_ddh
 from db.db_his import DBHis
 from threads.utils import (
@@ -37,10 +36,13 @@ from logzero import logger as c_log
 from threads.sig import (
     SignalsBLE,
     SignalsPLT,
-    SignalsTime, SignalsGPS, SignalsNET, SignalsCNV, SignalsAWS)
+    SignalsTime, SignalsGPS, SignalsNET, SignalsCNV, SignalsAWS, SignalsBoot)
 import os
 import gui.designer_main as d_m
 import matplotlib
+
+from threads.utils_time import time_sync_gps, time_sync_net, time_via
+
 matplotlib.use('Qt5Agg')
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
@@ -92,6 +94,8 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.sig_plt = SignalsPLT()
         self.sig_ble = SignalsBLE()
         self.sig_aws = SignalsAWS()
+        self.sig_boot = SignalsBoot()
+        self.sig_boot.status.connect(self.slot_status)
         self.sig_ble.status.connect(self.slot_status)
         self.sig_gps.status.connect(self.slot_status)
         self.sig_cnv.status.connect(self.slot_status)
@@ -115,7 +119,6 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.sig_plt.end.connect(self.slot_plt_end)
         self.sig_ble.debug.connect(self.slot_debug)
         self.sig_ble.scan_pre.connect(self.slot_ble_scan_pre)
-        self.sig_ble.scan_post.connect(self.slot_ble_scan_post)
         self.sig_ble.session_pre.connect(self.slot_ble_session_pre)
         self.sig_ble.logger_pre.connect(self.slot_ble_logger_pre)
         self.sig_ble.file_pre.connect(self.slot_ble_file_pre)
@@ -128,18 +131,18 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.sig_ble.logger_plot_req.connect(self.slot_ble_logger_plot_req)
         self.sig_tim.via.connect(self.slot_gui_time_via)
 
-        # first thing this app does is try to time sync
-        time_via(self)
-
         # app threads and queues
+        evb = threading.Event()
         self.qpi, self.qpo = queue.Queue(), queue.Queue()
-        self.th_gps = threading.Thread(target=th_gps.loop, args=(self, ))
-        self.th_time = threading.Thread(target=th_time.loop, args=(self, ))
-        self.th_cnv = threading.Thread(target=th_cnv.loop, args=(self, ))
-        self.th_net = threading.Thread(target=th_net.loop, args=(self, ))
-        self.th_plt = threading.Thread(target=th_plt.loop, args=(self, ))
-        self.th_ble = threading.Thread(target=th_ble.loop, args=(self, ))
-        self.th_aws = threading.Thread(target=th_aws.loop, args=(self, ))
+        self.th_boot = threading.Thread(target=th_boot.boot, args=(self, evb))
+        self.th_time = threading.Thread(target=th_time.loop, args=(self, evb))
+        self.th_gps = threading.Thread(target=th_gps.loop, args=(self, evb))
+        self.th_cnv = threading.Thread(target=th_cnv.loop, args=(self, evb))
+        self.th_net = threading.Thread(target=th_net.loop, args=(self, evb))
+        self.th_plt = threading.Thread(target=th_plt.loop, args=(self, evb))
+        self.th_ble = threading.Thread(target=th_ble.loop, args=(self, evb))
+        self.th_aws = threading.Thread(target=th_aws.loop, args=(self, evb))
+        self.th_boot.start()
         self.th_gps.start()
         self.th_time.start()
         self.th_cnv.start()
@@ -151,6 +154,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         # timer used to quit this app
         self.tim_q = QTimer()
         self.tim_q.timeout.connect(self._timer_bye)
+
 
     def _timer_bye(self):
         self.tim_q.stop()
@@ -297,10 +301,6 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
             p = '{}/img_blue.png'.format(r)
         self.img_ble.setPixmap(QPixmap(p))
 
-    @pyqtSlot(int, name='slot_ble_scan_post')
-    def slot_ble_scan_post(self, n):
-        pass
-
     # a download session consists of 1 to n loggers
     @pyqtSlot(str, int, int, name='slot_ble_session_pre')
     def slot_ble_session_pre(self, mac, val_1, val_2):
@@ -382,7 +382,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         if lat is None or lat == '':
             lat, lon = 'N/A', 'N/A'
         db.safe_update(mac, name, lat, lon, frm_t)
-        self._populate_history_tab()
+        populate_history_tab(self)
 
     def _click_btn_known_clear(self):
         self.lst_mac_org.clear()
@@ -605,10 +605,13 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
             c_log.error('GUI: no plot to set span')
             return
 
-        # plot unless busy doing a previous one
-        ctx.sem_plt.acquire()
-        self._throw_th_plt()
-        ctx.sem_plt.release()
+        # build args needed by th_plot
+        ax = self.plt_cnv.axes
+        ts = self.plt_ts
+        met = self.plt_metrics
+        d = self.plt_dir
+        plt_args = (d, ax, ts, met)
+        self.qpo.put(plt_args, timeout=1)
 
 
 def on_ctrl_c(signal_num, _):

@@ -9,6 +9,7 @@ from mat.logger_controller import (
     SWS_CMD, STATUS_CMD
 )
 from settings import ctx
+from threads.utils_gps_internal import get_gps_lat_lon_more
 
 
 def _time_to_display(t):
@@ -104,7 +105,7 @@ def _logger_ls(lc, fol, sig=None, pre_rm=False):
     fol = create_folder(mac, fol)
 
     # merge 2 DIR listings in a dictionary
-    lid_f = lc.ls_ext(b'lid')
+    lid_f = lc.ls_lid()
     s = 'BLE: DIR lid {}'.format(lid_f)
     emit_status(sig, s)
     gps_f = lc.ls_ext(b'gps')
@@ -184,10 +185,12 @@ def _logger_get_files(lc, sig, folder, files):
 
 
 def _logger_rws(lc, sig, g):
+    # todo: do better RWS command format in firmware
     lat = g[0] if g else 'N/A'
     lon = g[1] if g else 'N/A'
+    sig.status.emit('BLE: RWS coordinates {}, {}'.format(lat, lon))
+    # don't rearrange the RWS command format
     g = '{}{}\n'.format(lat, lon)
-    sig.status.emit('BLE: RWS {}'.format(g))
     rv = lc.command(RWS_CMD, g)
     _ok_or_die([b'RWS', b'00'], rv, sig)
     sig.deployed.emit(lc.per.addr, lat, lon)
@@ -249,7 +252,7 @@ def logger_download(mac, fol, hci_if, sig=None):
     try:
         with LoggerControllerBLE(mac, hci_if) as lc:
             # get GPS coordinates, send Run w/ string
-            g = get_gps_lat_n_lon()
+            g = get_gps_lat_lon_more()
             _logger_sws(lc, sig, g)
             _logger_time_check(lc, sig)
 

@@ -237,7 +237,7 @@ def lid_to_csv(fol, suffix) -> (bool, list):
         except (ValueError, Exception) as ve:
             all_ok = False
             err_files.append(f)
-            print('error converting {} -> {}'.format(e, ve))
+            print('error converting {} -> {}'.format(f, ve))
 
     return all_ok, err_files
 
@@ -291,6 +291,14 @@ def update_cnv_log_err_file(path_to_log_file, _err_reasons):
             _t = datetime.datetime.now().strftime(fmt)
             s = '{}  {}'.format(_t, _)
             f.write(str(s))
+
+
+def wait_boot_signal(w, ev, s):
+    ev.wait()
+    t =  random() * 1
+    time.sleep(1 + t)
+    _ = 'SYS: {} thread started'.format(s)
+    w.sig_aws.status.emit(_)
 
 
 # test robustness

@@ -12,7 +12,7 @@ class ColoredMacList:
     def delete_all(self):
         try:
             os.remove(self.db_name)
-            print('{}_macs DB erased'.format(self.color))
+            # print('{}_macs DB erased'.format(self.color))
         except FileNotFoundError as _:
             _e = 'asked to del file {} but not found'
             print(_e)

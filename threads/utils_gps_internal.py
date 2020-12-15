@@ -3,6 +3,8 @@ from datetime import datetime, timezone
 import serial
 import re
 import sys
+
+from mat.gps_quectel import gps_parse_rmc_frame, PORT_DATA, enable_gps_output
 from threads.utils import (
     linux_set_datetime, linux_is_net_ok, get_ntp_time)
 from serial.tools.list_ports import grep
@@ -33,10 +35,20 @@ def emit_gps_error(sig, e):
         sig.error.emit(e)
 
 
-def get_gps_lat_lon_more():
-    # must return lat, lon, more, searching * 2, missing * 2 or corrupted on exception
-    ts = time.perf_counter()
-    return '12.34', '-55.23', ts
+def get_gps_lat_lon_more(timeout=3):
+    _till = time.perf_counter() + timeout
+    enable_gps_output()
+    print('GPS Quectel receiving...')
+    sp = serial.Serial(PORT_DATA, baudrate=115200, timeout=0.5)
+
+    while True:
+        if time.perf_counter() > _till:
+            break
+        data = sp.readline()
+        if '$GPRMC' in data:
+            if gps_parse_rmc_frame(data):
+                return g
+    return None
 
 
 def gps_in_land(lat, lon):
