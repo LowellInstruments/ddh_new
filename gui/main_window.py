@@ -2,7 +2,7 @@ import queue
 import threading
 from mat.linux import linux_is_rpi
 from threads.utils_ftp import ftp_assert_credentials
-from threads.utils_gps_internal import get_gps_lat_lon_more
+from threads.utils_gps_internal import get_gps_data
 from threads.utils_macs import black_macs_delete_all
 import datetime
 import pathlib

@@ -1,7 +1,7 @@
 import datetime
 from tzlocal import get_localzone
 from threads.utils import linux_is_net_ok, get_ntp_time, linux_set_datetime
-from threads.utils_gps_internal import get_gps_lat_lon_more
+from threads.utils_gps_internal import get_gps_data
 
 
 def emit_time_status(sig, s):
@@ -14,18 +14,18 @@ def emit_time_gui_update(sig, b):
         sig.update.emit(b)
 
 
-def time_via(w, emit=True):
+def time_via(w):
     via = 'local'
-    if time_sync_gps():
+    if _time_sync_gps():
         via = 'GPS'
-    elif time_sync_net():
+    elif _time_sync_net():
         via = 'NTP'
     w.sig_tim.status.emit('TIM: sync {}'.format(via))
     w.sig_tim.via.emit(via)
     return via
 
 
-def time_sync_net():
+def _time_sync_net():
     if linux_is_net_ok():
         secs = get_ntp_time()
         # 1598537165 = 20/08/27 10:06:05 GMT-04:00
@@ -36,17 +36,17 @@ def time_sync_net():
                 return True
 
 # todo: test this, seems complete
-def time_sync_gps():
-    # data -> (lat, lon, dt object)
-    # data = get_gps_lat_lon_more()
+def _time_sync_gps():
+    # we don't care about lat, lon, here
+    # _, _, gps_time = get_gps_data()
 
     # todo: remove after testing
-    data = (77.28940666666666, 11.516666666666667, datetime.datetime(1994, 3, 23, 12, 35, 19))
+    _, _, gps_time = (None, None, datetime.datetime(1994, 3, 23, 12, 35, 19))
 
     # this is my timezone, apply it to UTC-based datetime from GPS frame
     tz_utc = datetime.timezone.utc
     tz_me = get_localzone()
-    my_dt = data[2].replace(tzinfo=tz_utc).astimezone(tz=tz_me)
+    my_dt = gps_time.replace(tzinfo=tz_utc).astimezone(tz=tz_me)
     print(my_dt)
 
     # apply time to the box
@@ -57,4 +57,4 @@ def time_sync_gps():
 
 
 if __name__ == '__main__':
-    time_sync_gps()
+    _time_sync_gps()

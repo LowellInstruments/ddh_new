@@ -1,18 +1,11 @@
 import time
-from datetime import datetime, timezone
+from datetime import datetime,
 import serial
-import re
-import sys
-
-from mat.gps_quectel import gps_parse_rmc_frame, PORT_DATA, enable_gps_output
-from threads.utils import (
-    linux_set_datetime, linux_is_net_ok, get_ntp_time)
-from serial.tools.list_ports import grep
+from mat.gps_quectel import gps_parse_rmc_frame, PORT_DATA, enable_gps_quectel_output
 import fiona
 import cartopy.io.shapereader as shpreader
 import shapely.geometry as sgeom
 from shapely.prepared import prep
-from tzlocal import get_localzone
 
 
 def emit_gps_update_pos(sig, lat, lon):
@@ -35,9 +28,17 @@ def emit_gps_error(sig, e):
         sig.error.emit(e)
 
 
-def get_gps_lat_lon_more(timeout=3):
+def get_gps_data(timeout=3):
+    # todo: remove when GPS attached
+    time.sleep(timeout / 3)
+    dt = datetime(1994, 3, 23, 12, 35, 19)
+    lat = '{:.6f}'.format(77.28940666666666)
+    lon = '{:.6f}'.format(11.516666666666667)
+    return (lat, lon, dt)
+
+
     _till = time.perf_counter() + timeout
-    enable_gps_output()
+    enable_gps_quectel_output()
     print('GPS Quectel receiving...')
     sp = serial.Serial(PORT_DATA, baudrate=115200, timeout=0.5)
 
@@ -46,11 +47,13 @@ def get_gps_lat_lon_more(timeout=3):
             break
         data = sp.readline()
         if '$GPRMC' in data:
-            if gps_parse_rmc_frame(data):
-                return g
+            rv = gps_parse_rmc_frame(data)
+            if rv:
+                return rv
     return None
 
 
+# todo: use this
 def gps_in_land(lat, lon):
     geoms = fiona.open(
         shpreader.natural_earth(resolution='50m',
