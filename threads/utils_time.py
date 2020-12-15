@@ -1,7 +1,7 @@
 import datetime
 from tzlocal import get_localzone
 from threads.utils import linux_is_net_ok, get_ntp_time, linux_set_datetime
-from threads.utils_gps_internal import get_gps_data
+from threads.utils_gps_internal import gps_get_one_lat_lon_dt
 
 
 def emit_time_status(sig, s):
@@ -37,8 +37,8 @@ def _time_sync_net():
 
 # todo: test this, seems complete
 def _time_sync_gps():
-    # we don't care about lat, lon, here
-    # _, _, gps_time = get_gps_data()
+    # update only GPS time, don't care lat, lon
+    # _, _, gps_time = get_one_lat_lon_dt)
 
     # todo: remove after testing
     _, _, gps_time = (None, None, datetime.datetime(1994, 3, 23, 12, 35, 19))

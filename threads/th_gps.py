@@ -1,10 +1,10 @@
 import time
 from settings import ctx
 from threads.utils import wait_boot_signal
-from threads.utils_gps_internal import get_gps_data
+from threads.utils_gps_internal import gps_get_one_lat_lon_dt
 
 
-PERIOD_GPS = 5
+PERIOD_GPS = 10
 
 
 def loop(w, ev_can_i_boot):
@@ -15,7 +15,9 @@ def loop(w, ev_can_i_boot):
 
     while 1:
         ctx.sem_ble.acquire()
-        _o = get_gps_data()
+        _o = gps_get_one_lat_lon_dt()
+
+        # update only position since time could be NTP-based
         w.sig_gps.update.emit(_o)
         ctx.sem_ble.release()
         time.sleep(PERIOD_GPS)

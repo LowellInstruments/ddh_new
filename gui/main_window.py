@@ -2,7 +2,7 @@ import queue
 import threading
 from mat.linux import linux_is_rpi
 from threads.utils_ftp import ftp_assert_credentials
-from threads.utils_gps_internal import get_gps_data
+from threads.utils_gps_internal import gps_get_one_lat_lon_dt
 from threads.utils_macs import black_macs_delete_all
 import datetime
 import pathlib
@@ -40,9 +40,6 @@ from threads.sig import (
 import os
 import gui.designer_main as d_m
 import matplotlib
-
-from threads.utils_time import time_sync_gps, time_sync_net, time_via
-
 matplotlib.use('Qt5Agg')
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
@@ -113,7 +110,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.sig_tim.update.connect(self.slot_gui_update_time)
         self.sig_net.update.connect(self.slot_gui_update_net)
         self.sig_plt.update.connect(self.slot_gui_update_plt)
-        self.sig_aws.update.connect(self.slot_gui_update_plt)
+        self.sig_aws.update.connect(self.slot_gui_update_aws)
         self.sig_plt.start.connect(self.slot_plt_start)
         self.sig_plt.msg.connect(self.slot_plt_msg)
         self.sig_plt.end.connect(self.slot_plt_end)
@@ -215,8 +212,8 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         s = '{}\n{}'.format(via, _[1])
         self.lbl_net_n_ftp.setText(s)
 
-    @pyqtSlot(str, name='slot_gui_update_ftp')
-    def slot_gui_update_ftp(self, c):
+    @pyqtSlot(str, name='slot_gui_update_aws')
+    def slot_gui_update_aws(self, c):
         _ = self.lbl_net_n_ftp.text().split('\n')
         s = '{}\n{}'.format(_[0], c)
         self.lbl_net_n_ftp.setText(s)

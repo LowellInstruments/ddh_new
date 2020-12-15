@@ -1,5 +1,5 @@
 import time
-from threads.utils_gps_internal import get_gps_data
+from threads.utils_gps_internal import gps_get_one_lat_lon_dt
 from threads.utils_time import time_via
 
 
@@ -8,7 +8,7 @@ def sync_boot_time(w):
 
 
 def sync_boot_position(w):
-    _o = get_gps_data()
+    _o = gps_get_one_lat_lon_dt()
     w.sig_gps.update.emit(_o)
 
 

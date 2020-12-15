@@ -9,7 +9,7 @@ from mat.linux import linux_is_docker_on_rpi, linux_is_rpi
 from settings.version import VER_SW
 from threads.th_time import ButtonPressEvent
 from threads.utils import json_get_ship_name
-from threads.utils_gps_external import gps_in_land
+from threads.utils_gps_internal import gps_in_land
 
 
 def setup_view(my_win, j):

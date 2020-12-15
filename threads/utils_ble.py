@@ -9,7 +9,7 @@ from mat.logger_controller import (
     SWS_CMD, STATUS_CMD
 )
 from settings import ctx
-from threads.utils_gps_internal import get_gps_data
+from threads.utils_gps_internal import gps_get_one_lat_lon_dt
 
 
 def _time_to_display(t):
@@ -252,7 +252,7 @@ def logger_download(mac, fol, hci_if, sig=None):
     try:
         with LoggerControllerBLE(mac, hci_if) as lc:
             # get GPS coordinates, send Run w/ string
-            g = get_gps_data()
+            g = gps_get_one_lat_lon_dt()
             _logger_sws(lc, sig, g)
             _logger_time_check(lc, sig)
 
