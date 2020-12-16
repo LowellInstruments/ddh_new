@@ -2,7 +2,7 @@ import datetime
 import json
 import pathlib
 import time
-from mat.logger_controller_ble import LoggerControllerBLE
+from mat.logger_controller_ble import LoggerControllerBLE, ERR_MAT_ANS
 from threads.utils import rm_folder, create_folder, exists_file, json_mac_dns
 from mat.logger_controller import (
     RWS_CMD,
@@ -111,7 +111,8 @@ def _logger_ls(lc, fol, sig=None, pre_rm=False):
     gps_f = lc.ls_ext(b'gps')
     s = 'BLE: DIR gps {}'.format(gps_f)
     emit_status(sig, s)
-    if lid_f == [b'ERR'] or gps_f == [b'ERR']:
+    err = ERR_MAT_ANS.encode()
+    if lid_f == err or gps_f == err:
         return None
     files = lid_f
     files.update(gps_f)

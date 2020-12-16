@@ -35,6 +35,7 @@ def _time_sync_net():
             if linux_set_datetime(t):
                 return True
 
+
 def _time_sync_gps():
     # update only GPS time, don't care lat, lon
     # _, _, gps_time = get_one_lat_lon_dt)
