@@ -185,9 +185,11 @@ def _logger_get_files(lc, sig, folder, files):
 
 
 def _logger_rws(lc, sig, g):
-    # todo: do better RWS command format in firmware
+    max_gps_len_fw = 20
     lat = g[0] if g else 'N/A'
     lon = g[1] if g else 'N/A'
+    lat = lat[:max_gps_len_fw]
+    lon = lon[:max_gps_len_fw]
     sig.status.emit('BLE: RWS coordinates {}, {}'.format(lat, lon))
     # don't rearrange the RWS command format
     g = '{}{}\n'.format(lat, lon)

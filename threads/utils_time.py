@@ -35,22 +35,22 @@ def _time_sync_net():
             if linux_set_datetime(t):
                 return True
 
-# todo: test this, seems complete
 def _time_sync_gps():
     # update only GPS time, don't care lat, lon
     # _, _, gps_time = get_one_lat_lon_dt)
 
-    # todo: remove after testing
-    _, _, gps_time = (None, None, datetime.datetime(1994, 3, 23, 12, 35, 19))
+    # uncomment for testing purposes
+    dt = datetime.datetime(1994, 3, 23, 12, 35, 19)
+    _, _, gps_time = (None, None, dt)
 
     # this is my timezone, apply it to UTC-based datetime from GPS frame
     tz_utc = datetime.timezone.utc
     tz_me = get_localzone()
     my_dt = gps_time.replace(tzinfo=tz_utc).astimezone(tz=tz_me)
-    print(my_dt)
 
     # apply time to the box
     t = str(my_dt)[:-6]
+    # todo: on production, really set time in box
     # linux_set_datetime(t)
     return True
 

@@ -29,7 +29,7 @@ def emit_gps_error(sig, e):
 
 
 def gps_get_one_lat_lon_dt(timeout=3):
-    # todo: remove when GPS attached
+    # todo: on production, remove when GPS attached
     time.sleep(timeout / 3)
     dt = datetime(1994, 3, 23, 12, 35, 19)
     lat = '{:.6f}'.format(77.28940666666666)
@@ -37,27 +37,28 @@ def gps_get_one_lat_lon_dt(timeout=3):
     return (lat, lon, dt)
 
 
-    _till = time.perf_counter() + timeout
-    enable_gps_quectel_output()
-    # print('GPS Quectel receiving...')
-    sp = serial.Serial(PORT_DATA, baudrate=115200, timeout=0.5)
+    # uncomment on production
+    # _till = time.perf_counter() + timeout
+    # enable_gps_quectel_output()
+    # # print('GPS Quectel receiving...')
+    # sp = serial.Serial(PORT_DATA, baudrate=115200, timeout=0.5)
+    #
+    # while True:
+    #     if time.perf_counter() > _till:
+    #         break
+    #     data = sp.readline()
+    #     if b'$GPRMC' in data:
+    #         rv = gps_parse_rmc_frame(data)
+    #         if rv:
+    #             return rv
+    # return None
 
-    while True:
-        if time.perf_counter() > _till:
-            break
-        data = sp.readline()
-        if b'$GPRMC' in data:
-            rv = gps_parse_rmc_frame(data)
-            if rv:
-                return rv
-    return None
 
-
-# todo: use this
 def gps_in_land(lat, lon):
-    test_water = (0, 0)
-    test_land_madrid = (40.416800, -3.703800)
-    lat, lon = test_land_madrid
+    # for testing purposes
+    # test_water = (0, 0)
+    # test_land_madrid = (40.416800, -3.703800)
+    # lat, lon = test_land_madrid
 
 
     geoms = fiona.open(shpreader.natural_earth(resolution='50m',

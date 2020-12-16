@@ -16,9 +16,9 @@ def loop(w, ev_can_i_boot, pre_rm=False):
     while 1:
         ctx.sem_ble.acquire()
         ctx.sem_plt.acquire()
-
-        # todo: we may not need to specify DissolvedOxygen, check
-        _, e = lid_to_csv(fol, 'DissolvedOxygen')
+        _, e = lid_to_csv(fol, '_DissolvedOxygen')
+        _, e = lid_to_csv(fol, '_Temperature')
+        _, e = lid_to_csv(fol, '_Pressure')
         w.sig_cnv.update.emit(e)
         ctx.sem_plt.release()
         ctx.sem_ble.release()

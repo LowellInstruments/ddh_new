@@ -38,7 +38,7 @@ def _show_colored_mac_lists(w, mb, mo):
         _d = 'SYS: deleting all orange entries'
         w.sig_ble.debug.emit(_d)
         mo.ls.delete_all()
-        # todo: remove this
+        # todo: on production, remove this blacklist deletion
         _d = 'SYS: --- warning testing --- deleting all black entries'
         w.sig_ble.debug.emit(_d)
         mb.ls.delete_all()
