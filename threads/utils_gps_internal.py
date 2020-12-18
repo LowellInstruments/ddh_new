@@ -8,26 +8,6 @@ import shapely.geometry as sgeom
 from shapely.prepared import prep
 
 
-def emit_gps_update_pos(sig, lat, lon):
-    if sig:
-        sig.update_pos.emit(lat, lon)
-
-
-def emit_gps_update_time_via(sig, via):
-    if sig:
-        sig.update_time_via.emit(via)
-
-
-def emit_gps_status(sig, s):
-    if sig:
-        sig.status.emit(s)
-
-
-def emit_gps_error(sig, e):
-    if sig:
-        sig.error.emit(e)
-
-
 def gps_get_one_lat_lon_dt(timeout=3):
     # todo: on production, remove when GPS attached
     time.sleep(timeout / 3)

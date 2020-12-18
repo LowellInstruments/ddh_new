@@ -2,24 +2,14 @@ import ipaddress
 import socket
 import subprocess as sp
 import time
+
+from threads.utils import emit_status, emit_update
 from threads.utils_wifi import worth_trying_sw_wifi
 
 
 SW_RELOAD = 10
 # set to 1 to not disturb boot
 countdown_sw_to_wifi = 1
-
-
-def emit_net_status(sig, s):
-    if sig:
-        sig.status.emit(s)
-    else:
-        print(s)
-
-
-def emit_net_update(sig, i):
-    if sig:
-        sig.update.emit(i)
 
 
 def ensure_resolv_conf():
@@ -50,21 +40,21 @@ def _switch_net(sig, org=None):
     if org == 'none':
         # no network at all, so try cell w/ full counter
         countdown_sw_to_wifi = SW_RELOAD
-        emit_net_status(sig, 'no network, trying none -> cell')
+        emit_status(sig, 'no network, trying none -> cell')
         _switch_net_to_cell()
         return
 
     # we are cell
     i = countdown_sw_to_wifi * SW_RELOAD
     s = 'countdown_to_switch_to_wifi is {}s'.format(i)
-    emit_net_status(sig, s.format(countdown_sw_to_wifi))
+    emit_status(sig, s.format(countdown_sw_to_wifi))
     if countdown_sw_to_wifi == 0:
         if worth_trying_sw_wifi('wlan0'):
-            emit_net_status(sig, 'trying cell -> wifi')
+            emit_status(sig, 'trying cell -> wifi')
             _switch_net_to_wifi()
         else:
             s = 'NET: unworthy trying cell -> wifi'
-            emit_net_status(sig, s)
+            emit_status(sig, s)
     if countdown_sw_to_wifi >= 1:
         countdown_sw_to_wifi -= 1
 
@@ -137,17 +127,13 @@ def check_net_best(sig=None):
     nt = _get_net_type()
     if nt == 'wifi':
         ssid = _get_ssid()
-        t = '{}'.format(ssid)
-        emit_net_update(sig, t)
-        t = 'NET: wi-fi {}'.format(ssid)
-        emit_net_status(sig, t)
+        emit_update(sig, '{}'.format(ssid))
+        emit_status(sig, 'NET: wi-fi {}'.format(ssid))
         return
 
     _switch_net(sig, org=nt)
-    t = '{}'.format(nt)
-    emit_net_update(sig, t)
-    t = 'NET: {}'.format(nt)
-    emit_net_update(sig, t)
+    emit_update(sig, '{}'.format(nt))
+    emit_update(sig, 'NET: {}'.format(nt))
 
 
 if __name__ == '__main__':

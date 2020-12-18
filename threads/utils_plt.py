@@ -8,18 +8,8 @@ from settings import ctx
 from db.db_plt import DBPlt
 from threads.utils import (
     mac_from_folder,
-    lid_to_csv)
+    lid_to_csv, emit_status, emit_error)
 import numpy as np
-
-
-def emit_error(sig, e):
-    if sig:
-        sig.error.emit(e)
-
-
-def emit_status(sig, s):
-    if sig:
-        sig.status.emit(s)
 
 
 def emit_start(sig):

@@ -4,16 +4,6 @@ from threads.utils import linux_is_net_ok, get_ntp_time, linux_set_datetime
 from threads.utils_gps_internal import gps_get_one_lat_lon_dt
 
 
-def emit_time_status(sig, s):
-    if sig:
-        sig.status.emit(s)
-
-
-def emit_time_gui_update(sig, b):
-    if sig:
-        sig.update.emit(b)
-
-
 def time_via(w):
     via = 'local'
     if _time_sync_gps():

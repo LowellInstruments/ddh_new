@@ -3,7 +3,7 @@ import json
 import pathlib
 import time
 from mat.logger_controller_ble import LoggerControllerBLE, ERR_MAT_ANS
-from threads.utils import rm_folder, create_folder, exists_file, json_mac_dns
+from threads.utils import rm_folder, create_folder, exists_file, emit_status, emit_error
 from mat.logger_controller import (
     RWS_CMD,
     SWS_CMD, STATUS_CMD
@@ -19,16 +19,6 @@ def _time_to_display(t):
 
 def _die(d):
     raise AppBLEException(d)
-
-
-def emit_status(sig, s):
-    if sig:
-        sig.status.emit(s)
-
-
-def emit_error(sig, e):
-    if sig:
-        sig.status.emit(e)
 
 
 def _show(rv, sig):

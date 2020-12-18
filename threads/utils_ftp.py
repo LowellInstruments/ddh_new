@@ -3,6 +3,8 @@ from ftplib import FTP
 from ftplib import all_errors as ftp_errors
 from pathlib import PurePosixPath, Path
 
+from threads.utils import emit_update, emit_status, emit_error
+
 
 class FileUploader:
     def __init__(self, host, local_dir, remote_dir='/'):
@@ -72,21 +74,6 @@ def _rep(i, n_files, status):
     # console_log.info(s)
 
 
-def emit_ftp_update(sig, s):
-    if sig:
-        sig.ftp_update.emit(s)
-
-
-def emit_ftp_status(sig, s):
-    if sig:
-        sig.ftp_status.emit(s)
-
-
-def emit_ftp_error(sig, e):
-    if sig:
-        sig.ftp_error.emit(e)
-
-
 def ftp_get_credentials():
     # bash: export DDH_FTP_H='ftp._.com'
     _h = os.environ.get('DDH_FTP_H')
@@ -110,9 +97,9 @@ def ftp_sync(sig, local_folder: str, cred_folder: str) -> bool:
 
     try:
         s = 'FTP: syncing {}'.format(local_folder)
-        emit_ftp_status(sig, s)
+        emit_status(sig, s)
         s = 'FTP syncing'
-        emit_ftp_update(sig, s)
+        emit_update(sig, s)
 
         wc = ['**/*.lid', '**/*.csv', '**/*.gps']
         for _ in wc:
@@ -122,22 +109,22 @@ def ftp_sync(sig, local_folder: str, cred_folder: str) -> bool:
             ul.upload_files(ff)
 
         s = 'FTP: OK'
-        emit_ftp_status(sig, s)
+        emit_status(sig, s)
         s = 'FTP OK'
-        emit_ftp_update(sig, s)
+        emit_update(sig, s)
         return True
 
     except ftp_errors as fe:
         e = 'FTP: error'
-        emit_ftp_error(sig, e)
-        emit_ftp_update(sig, e)
+        emit_error(sig, e)
+        emit_update(sig, e)
         print('ftplib error: {}'.format(fe))
         return False
 
     except (OSError, TypeError) as os_e:
         e = 'FTP: some error'
-        emit_ftp_error(sig, e)
-        emit_ftp_update(sig, e)
+        emit_error(sig, e)
+        emit_update(sig, e)
         print('ftplib OSerror: {}'.format(os_e))
         return False
 

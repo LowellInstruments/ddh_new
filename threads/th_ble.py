@@ -11,17 +11,17 @@ from threads.utils_macs import filter_white_macs, BlackMacList, OrangeMacList, b
 IGNORE_TIME_S = 60
 
 
-def _to_black(mb, mo, mac, t):
+def _mac_to_black_list(mb, mo, mac, t):
     mb.ls.macs_add_or_update(mac, t)
     # could be a previously orange one, or not
     mo.ls.macs_del_one(mac)
 
 
-def _to_orange(mo, mac):
+def _mac_to_orange_list(mo, mac):
     mo.ls.macs_add_or_update(mac, IGNORE_TIME_S)
 
 
-def _show_colored_mac_lists(w, mb, mo):
+def _mac_show_color_lists(w, mb, mo):
     if not ctx.macs_lists_persistent:
         # not persistent? remove old lists
         _d = 'SYS: no persistent mac color lists'
@@ -92,11 +92,11 @@ def _download_loggers(w, h, macs, mb, mo, ft_s):
 
             # get files from logger
             done = logger_download(mac, fol, h, w.sig_ble)
-            _to_black(mb, mo, mac, ft_s) if done else _to_orange(mo, mac)
+            _mac_to_black_list(mb, mo, mac, ft_s) if done else _mac_to_orange_list(mo, mac)
 
         except ble.BTLEException as ex:
             # not ours, but bluepy exception
-            _to_orange(mo, mac)
+            _mac_to_orange_list(mo, mac)
             w.sig_ble.error.emit('BLE: disconnect exc {}'.format(ex))
 
     # unprotect critical zone, give time to show messages
@@ -113,7 +113,7 @@ def loop(w, ev_can_i_boot):
     mo = OrangeMacList(ctx.db_ong, w.sig_ble)
     ft_s = json_get_forget_time_secs(ctx.json_file)
     assert ft_s >= 3600
-    _show_colored_mac_lists(w, mb, mo)
+    _mac_show_color_lists(w, mb, mo)
 
     while 1:
         if not ctx.ble_en:

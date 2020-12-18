@@ -18,6 +18,22 @@ import socket
 import struct
 
 
+
+def emit_status(sig, s):
+    if sig:
+        sig.status.emit(s)
+
+
+def emit_error(sig, e):
+    if sig:
+        sig.status.emit(e)
+
+
+def emit_update(sig, u):
+    if sig:
+        sig.status.emit(u)
+
+
 def rpi_set_brightness(v):
     v *= 127
     v = 50 if v < 50 else v

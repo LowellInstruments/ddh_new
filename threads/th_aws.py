@@ -5,7 +5,7 @@ from threads.utils import wait_boot_signal
 PERIOD_AWS = 300
 
 
-def sync_files(w, dl_folder):
+def _aws_sync_files(w, dl_folder):
     w.sig_aws.status.emit('AWS: syncing {}'.format(dl_folder))
     w.sig_aws.update.emit('AWS OK')
 
@@ -22,7 +22,7 @@ def loop(w, ev_can_i_boot):
 
         ctx.sem_ble.acquire()
         ctx.sem_aws.acquire()
-        sync_files(w, ctx.dl_folder)
+        _aws_sync_files(w, ctx.dl_folder)
         ctx.sem_aws.release()
         ctx.sem_ble.release()
         time.sleep(PERIOD_AWS)

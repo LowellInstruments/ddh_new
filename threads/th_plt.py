@@ -26,6 +26,7 @@ def _plot_data(w, plt_args):
 
     th = threading.Thread(target=_plot)
     th.start()
+    # todo: check if we wanna join() or not
     th.join()
 
 

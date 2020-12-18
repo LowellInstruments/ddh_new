@@ -1,7 +1,7 @@
 import time
 from mat.linux import linux_is_rpi
 from threads.utils import wait_boot_signal
-from threads.utils_net import check_net_best, emit_net_status, ensure_resolv_conf, get_ssid, emit_net_update
+from threads.utils_net import check_net_best, ensure_resolv_conf, get_ssid
 from settings import ctx
 
 
