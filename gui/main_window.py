@@ -2,7 +2,6 @@ import queue
 import threading
 from mat.linux import linux_is_rpi
 from threads.utils_ftp import ftp_assert_credentials
-from threads.utils_gps_internal import gps_get_one_lat_lon_dt
 from threads.utils_macs import black_macs_delete_all
 import datetime
 import pathlib
@@ -257,7 +256,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     @pyqtSlot(object, str, name='slot_plt_end')
     def slot_plt_end(self, result, s):
         if result:
-            self.slot_gui_update_plt('plot ok')
+            self.slot_gui_update_plt('plot OK')
             self.tabs.setCurrentIndex(1)
             to = ctx.PLT_SHOW_TIMEOUT
             self.plt_timeout_dis = to

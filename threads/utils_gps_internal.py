@@ -11,7 +11,7 @@ from shapely.prepared import prep
 def gps_get_one_lat_lon_dt(timeout=3):
     # todo: on production, remove when GPS attached
     time.sleep(timeout / 3)
-    dt = datetime(1994, 3, 23, 12, 35, 19)
+    dt = datetime.now()
     lat = '{:.6f}'.format(77.28940666666666)
     lon = '{:.6f}'.format(11.516666666666667)
     return (lat, lon, dt)

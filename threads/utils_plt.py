@@ -1,6 +1,8 @@
 import bisect
 import datetime
 import glob
+import warnings
+
 import iso8601
 import pandas as pd
 
@@ -99,10 +101,9 @@ def _slice_n_avg(t, d, ts, sig):
             i_s = bisect.bisect_left(i, s)
             i_e = bisect.bisect_left(i, e)
             sl = d.values[i_s:i_e]
-            try:
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore", category=RuntimeWarning)
                 v = np.nanmean(sl)
-            except RuntimeWarning:
-                sig.debug.emit('PLT: mean of empty slice')
             if sl.any():
                 # good mean for this slice
                 y.append(v)

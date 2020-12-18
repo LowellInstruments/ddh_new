@@ -71,8 +71,10 @@ def _scan_loggers(w, h, whitelist, mb, mo):
     w.sig_ble.dl_warning.emit(_o)
 
     # banner number of loggers to be done
-    s = 'BLE: {} fresh loggers'.format(len(li))
-    w.sig_ble.status.emit(s)
+    n = len(li)
+    if n:
+        s = 'BLE: {} fresh loggers'.format(n)
+        w.sig_ble.status.emit(s)
     return li
 
 

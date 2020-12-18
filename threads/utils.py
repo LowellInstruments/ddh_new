@@ -232,7 +232,8 @@ def mac_from_folder(fol):
 
 def lid_to_csv(fol, suffix) -> (bool, list):
     """ convert depending on if fileX_suffix.lid exists """
-    valid_suffixes = ('_DissolvedOxygen', '_Temperature', '_Pressure')
+    # valid_suffixes = ('_DissolvedOxygen', '_Temperature', '_Pressure')
+    valid_suffixes = ('_DissolvedOxygen')
     assert suffix in valid_suffixes
 
     if not os.path.exists(fol):
@@ -251,6 +252,7 @@ def lid_to_csv(fol, suffix) -> (bool, list):
             continue
 
         try:
+            # todo: ask Jeff for early leave if metric not in header, otherwise very slow
             DataConverter(f, parameters).convert()
             # print('{} -> {} OK'.format(f, suffix))
         except (ValueError, Exception) as ve:

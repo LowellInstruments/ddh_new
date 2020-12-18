@@ -1,6 +1,6 @@
 import threading
 from settings import ctx
-from threads.utils import json_mac_dns, mac_from_folder, json_get_span_dict, wait_boot_signal
+from threads.utils import json_mac_dns, mac_from_folder, json_get_span_dict, wait_boot_signal, emit_error
 from threads.utils_plt import plot
 
 
@@ -35,7 +35,8 @@ def loop(w, ev_can_i_boot):
 
     while 1:
         plt_args = w.qpo.get()
-        ctx.sem_plt.acquire()
-        _plot_data(w, plt_args)
-        ctx.sem_plt.release()
-
+        if ctx.sem_plt.acquire(timeout=1):
+            _plot_data(w, plt_args)
+            ctx.sem_plt.release()
+            continue
+        emit_error(w.sig_plt, 'no plot: ongoing conversion')
