@@ -27,8 +27,8 @@ class ColoredMacList:
     def macs_add_or_update(self, _mac, _inc):
         _t = datetime.datetime.now().timestamp() + _inc
         with shelve.open(self.db_name) as sh:
-            _s = 'SYS: {} to mac_{} list'
-            _s = _s.format(_mac, self.color)
+            _s = 'SYS: {} to mac_{} list, time increase of {}'
+            _s = _s.format(_mac, self.color, _inc)
             sh[_mac] = _t
 
     def macs_del_one(self, _mac):

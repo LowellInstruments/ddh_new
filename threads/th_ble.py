@@ -3,8 +3,10 @@ import bluepy.btle as ble
 import time
 from mat.logger_controller_ble import ble_scan
 from settings import ctx
-from threads.utils import json_get_macs, json_get_forget_time_secs, json_get_hci_if, wait_boot_signal
+from threads.utils import json_get_macs, json_get_forget_time_secs, json_get_hci_if, wait_boot_signal, \
+    json_get_forget_time_at_sea_secs
 from threads.utils_ble import logger_download
+from threads.utils_gps_internal import gps_in_land
 from threads.utils_macs import filter_white_macs, BlackMacList, OrangeMacList, bluepy_scan_results_to_strings
 
 
@@ -13,7 +15,7 @@ IGNORE_TIME_S = 60
 
 def _mac_to_black_list(mb, mo, mac, t):
     mb.ls.macs_add_or_update(mac, t)
-    # could be a previously orange one, or not
+    # could be a currently orange one, or not
     mo.ls.macs_del_one(mac)
 
 
@@ -62,15 +64,7 @@ def _scan_loggers(w, h, whitelist, mb, mo):
     # DDH macs -> w/o too recent bad ones
     li = mo.filter_orange_macs(li)
 
-    # know how many pending because previous errors
-    o_p = mo.ls.get_all_macs()
-    w.sig_ble.dl_warning.emit(o_p)
-
-    # banner warning left as pending
-    _o = mo.ls.get_all_macs()
-    w.sig_ble.dl_warning.emit(_o)
-
-    # banner number of loggers to be done
+    # banner number of fresh loggers to be downloaded now
     n = len(li)
     if n:
         s = 'BLE: {} fresh loggers'.format(n)
@@ -78,7 +72,7 @@ def _scan_loggers(w, h, whitelist, mb, mo):
     return li
 
 
-def _download_loggers(w, h, macs, mb, mo, ft_s):
+def _download_loggers(w, h, macs, mb, mo, ft: tuple):
     li = [i.lower() for i in macs]
 
     # protect critical zone
@@ -93,8 +87,23 @@ def _download_loggers(w, h, macs, mb, mo, ft_s):
             fol = ctx.dl_folder
 
             # get files from logger
-            done = logger_download(mac, fol, h, w.sig_ble)
-            _mac_to_black_list(mb, mo, mac, ft_s) if done else _mac_to_orange_list(mo, mac)
+            done, g = logger_download(mac, fol, h, w.sig_ble)
+
+            # NOT OK download session, we will retry this logger after 'ignore time'
+            if not done:
+                _mac_to_orange_list(mo, mac)
+
+                # display how many pending because previous errors
+                orange_pending_ones = mo.ls.get_all_macs()
+                w.sig_ble.dl_warning.emit(orange_pending_ones)
+                continue
+
+            # OK download session, set conditional (land / sea) 'forget time'
+            lat, lon, _ = g
+            ft_s, ft_sea_s = ft
+            t = ft_s if gps_in_land(lat, lon) else ft_sea_s
+            _mac_to_black_list(mb, mo, mac, t)
+
 
         except ble.BTLEException as ex:
             # not ours, but bluepy exception
@@ -114,7 +123,9 @@ def loop(w, ev_can_i_boot):
     mb = BlackMacList(ctx.db_blk, w.sig_ble)
     mo = OrangeMacList(ctx.db_ong, w.sig_ble)
     ft_s = json_get_forget_time_secs(ctx.json_file)
+    ft_sea_s = json_get_forget_time_at_sea_secs(ctx.json_file)
     assert ft_s >= 3600
+    assert ft_sea_s >= 900
     _mac_show_color_lists(w, mb, mo)
 
     while 1:
@@ -130,7 +141,7 @@ def loop(w, ev_can_i_boot):
                 continue
 
             # download stage
-            _download_loggers(w, h, macs, mb, mo, ft_s)
+            _download_loggers(w, h, macs, mb, mo, (ft_s, ft_sea_s))
         except ble.BTLEManagementError as ex:
             e = 'BLE: big error, wrong HCI or permissions? {}'
             w.sig_ble.error.emit(e.format(ex))

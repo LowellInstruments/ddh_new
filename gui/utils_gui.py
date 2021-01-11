@@ -103,7 +103,7 @@ def setup_buttons_gui(my_app):
     a.btn_load_current.clicked.connect(a._click_btn_load_current)
 
 
-def update_gps_icon(my_app, did_ok, lat, lon):
+def update_gps_icon_land_sea(my_app, did_ok, lat, lon):
     a = my_app
     if not did_ok:
         img = 'gui/res/img_gps_dis.png'

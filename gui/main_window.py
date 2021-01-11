@@ -20,7 +20,7 @@ from PyQt5.QtWidgets import (
     QFileDialog)
 from gui.utils_gui import (
     setup_view, setup_his_tab, setup_buttons_gui, setup_window_center, hide_edit_tab,
-    dict_from_list_view, setup_buttons_rpi, _confirm_by_user, update_gps_icon, populate_history_tab)
+    dict_from_list_view, setup_buttons_rpi, _confirm_by_user, update_gps_icon_land_sea, populate_history_tab)
 from threads import th_time, th_gps, th_ble, th_plt, th_net, th_cnv, th_aws, th_boot
 from settings.utils_settings import yaml_load_pairs, json_gen_ddh
 from db.db_his import DBHis
@@ -201,7 +201,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         s = '{}\n{}\n{}\n{}'.format(_[0], lat, lon, _[3])
         self.lbl_time_n_pos.setText(s)
         ok = lon not in ['missing', 'searching', 'malfunction']
-        update_gps_icon(self, ok, lat, lon)
+        update_gps_icon_land_sea(self, ok, lat, lon)
 
     @pyqtSlot(str, name='slot_gui_update_net')
     def slot_gui_update_net(self, via):

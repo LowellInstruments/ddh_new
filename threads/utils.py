@@ -153,10 +153,12 @@ def json_get_ship_name(j):
 
 def json_get_forget_time_secs(j):
     with open(j) as f:
-        cfg = json.load(f)
-        _ = int(cfg['forget_time'])
-        assert _ > 300
-        return _
+        return int(json.load(f)['forget_time'])
+
+
+def json_get_forget_time_at_sea_secs(j):
+    with open(j) as f:
+        return int(json.load(f)['forget_time_at_sea'])
 
 
 def json_get_macs(j):

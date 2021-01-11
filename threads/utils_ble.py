@@ -244,7 +244,7 @@ def _logger_re_setup(lc, sig):
 def logger_download(mac, fol, hci_if, sig=None):
     try:
         with LoggerControllerBLE(mac, hci_if) as lc:
-            # get GPS coordinates, send Run w/ string
+            # g-> (lat, lon, datetime object)
             g = gps_get_one_lat_lon_dt()
             _logger_sws(lc, sig, g)
             _logger_time_check(lc, sig)
@@ -262,25 +262,25 @@ def logger_download(mac, fol, hci_if, sig=None):
                 # plot it
                 _logger_plot(mac, sig)
                 _time_to_display(2)
-                return True
+                return True, g
 
             # mmm, we did NOT get all files
             e = 'logger {} not done yet'
             sig.logger_post.emit(e.format(False, e, mac))
             sig.error.emit(e.format(mac))
-            return False
+            return False, None
 
     # my exception, ex: no MAT.cfg file
     except AppBLEException as ex:
         e = 'error at {}, will retry'.format(ex)
         sig.logger_post.emit(False, e, mac)
         sig.error.emit('error: {}'.format(e))
-        return False
+        return False, None
 
     # such as None.command()
     except AttributeError as ae:
         sig.error.emit('error: {}'.format(ae))
-        return False
+        return False, None
 
 
 class AppBLEException(Exception):
