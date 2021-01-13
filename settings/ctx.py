@@ -17,6 +17,7 @@ dl_folder = None
 app_conf_folder = None
 app_logs_folder = None
 json_file = None
+plt_units = None
 span_dict = None
 db_plt = None
 db_his = None

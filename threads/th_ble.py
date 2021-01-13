@@ -47,7 +47,7 @@ def _mac_show_color_lists(w, mb, mo):
 
 
 def _scan_loggers(w, h, whitelist, mb, mo):
-    # scan all BLE devices around, '!' when USB dongle
+    # scan all BLE devices around, hint: '!' when USB dongle
     hci_if = '!' if h else ''
     w.sig_ble.scan_pre.emit('scanning{}'.format(hci_if))
     near = ble_scan(h)
@@ -64,7 +64,7 @@ def _scan_loggers(w, h, whitelist, mb, mo):
     # DDH macs -> w/o too recent bad ones
     li = mo.filter_orange_macs(li)
 
-    # banner number of fresh loggers to be downloaded now
+    # banner number of fresh loggers to be downloaded
     n = len(li)
     if n:
         s = 'BLE: {} fresh loggers'.format(n)
@@ -86,10 +86,10 @@ def _download_loggers(w, h, macs, mb, mo, ft: tuple):
             w.sig_ble.logger_pre.emit()
             fol = ctx.dl_folder
 
-            # get files from logger
+            # get files from ONE logger
             done, g = logger_download(mac, fol, h, w.sig_ble)
 
-            # NOT OK download session, we will retry this logger after 'ignore time'
+            # NOT OK download session, retry this logger after 'ignore time'
             if not done:
                 _mac_to_orange_list(mo, mac)
 

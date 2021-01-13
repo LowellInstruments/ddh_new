@@ -30,7 +30,7 @@ from threads.utils import (
     json_get_metrics,
     json_mac_dns,
     json_get_forget_time_secs, rpi_set_brightness, rm_plot_db, json_get_pairs, setup_app_log,
-    update_cnv_log_err_file)
+    update_cnv_log_err_file, json_set_plot_units)
 from logzero import logger as c_log
 from threads.sig import (
     SignalsBLE,
@@ -78,6 +78,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.tab_edit_wgt_ref = None
         self.key_shift = None
         self.last_time_icon_ble_press = 0
+        json_set_plot_units(ctx.json_file)
         hide_edit_tab(self)
         populate_history_tab(self)
         rm_plot_db()

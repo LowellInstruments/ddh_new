@@ -172,6 +172,7 @@ def _logger_get_files(lc, sig, folder, files):
         s = 'already had all files'
     s = '{}\n{}'.format(_, s)
     sig.logger_post.emit(True, s, mac)
+
     return num_to_get == got
 
 

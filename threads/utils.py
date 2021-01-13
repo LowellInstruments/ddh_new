@@ -151,6 +151,13 @@ def json_get_ship_name(j):
         return 'Unnamed ship'
 
 
+def json_set_plot_units(j):
+    with open(j) as f:
+        cfg = json.load(f)
+    assert cfg['units']
+    ctx.plt_units = cfg['units']
+
+
 def json_get_forget_time_secs(j):
     with open(j) as f:
         return int(json.load(f)['forget_time'])
