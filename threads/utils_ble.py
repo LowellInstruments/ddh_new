@@ -219,7 +219,7 @@ def _logger_re_setup(lc, sig):
         _die('no MAT.cfg size')
     s = 'BLE: getting MAT.cfg'
     emit_status(sig, s)
-    dff = ctx.dl_folder
+    dff = ctx.app_dl_folder
     rv = lc.get_file('MAT.cfg', dff, size, None)
     if not rv:
         _die('error downloading MAT.cfg')

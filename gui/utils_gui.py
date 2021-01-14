@@ -37,7 +37,7 @@ def setup_view(my_win, j):
     fmt = '{}\n{}\n{}\n{}'
     a.lbl_time_n_pos.setText(fmt.format('', '', '', ''))
     fmt = '{}\n{}'
-    a.lbl_net_n_ftp.setText(fmt.format('', ''))
+    a.lbl_net_n_cloud.setText(fmt.format('', ''))
     fmt = '{}\n{}\n{}'
     a.lbl_plot.setText(fmt.format('', '', ''))
     return a

@@ -24,7 +24,7 @@ def _mac_to_orange_list(mo, mac):
 
 
 def _mac_show_color_lists(w, mb, mo):
-    if not ctx.macs_lists_persistent:
+    if ctx.macs_lists_pre_rm:
         # not persistent? remove old lists
         _d = 'SYS: no persistent mac color lists'
         mb.ls.delete_all()
@@ -84,7 +84,7 @@ def _download_loggers(w, h, macs, mb, mo, ft: tuple):
             w.sig_ble.session_pre.emit(mac, i + 1, len(li))
             w.sig_ble.status.emit('BLE: connecting {}'.format(mac))
             w.sig_ble.logger_pre.emit()
-            fol = ctx.dl_folder
+            fol = ctx.app_dl_folder
 
             # get files from ONE logger
             done, g = logger_download(mac, fol, h, w.sig_ble)
@@ -118,12 +118,12 @@ def _download_loggers(w, h, macs, mb, mo, ft: tuple):
 def loop(w, ev_can_i_boot):
     wait_boot_signal(w, ev_can_i_boot, 'BLE')
 
-    whitelist = json_get_macs(ctx.json_file)
-    h = json_get_hci_if(ctx.json_file)
+    whitelist = json_get_macs(ctx.app_json_file)
+    h = json_get_hci_if(ctx.app_json_file)
     mb = BlackMacList(ctx.db_blk, w.sig_ble)
     mo = OrangeMacList(ctx.db_ong, w.sig_ble)
-    ft_s = json_get_forget_time_secs(ctx.json_file)
-    ft_sea_s = json_get_forget_time_at_sea_secs(ctx.json_file)
+    ft_s = json_get_forget_time_secs(ctx.app_json_file)
+    ft_sea_s = json_get_forget_time_at_sea_secs(ctx.app_json_file)
     assert ft_s >= 3600
     assert ft_sea_s >= 900
     _mac_show_color_lists(w, mb, mo)

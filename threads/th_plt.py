@@ -7,7 +7,7 @@ from threads.utils_plt import plot
 def _plot_data(w, plt_args):
     def _plot():
         fol, ax, ts, metric_pair = plt_args
-        j = ctx.json_file
+        j = ctx.app_json_file
         lg = json_mac_dns(j, mac_from_folder(fol))
         sd = json_get_span_dict(j)
 

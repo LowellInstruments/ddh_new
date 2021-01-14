@@ -15,11 +15,11 @@ if __name__ == "__main__":
     # common application context
     r = pathlib.Path.cwd()
     ctx.app_root_folder = r
-    ctx.dl_folder = r / 'dl_files/'
+    ctx.app_dl_folder = r / 'dl_files/'
     ctx.app_conf_folder = r / 'settings/'
     ctx.app_logs_folder = r / 'logs/'
     ctx.app_res_folder = r / 'gui/res/'
-    ctx.json_file = r / 'settings/ddh.json'
+    ctx.app_json_file = r / 'settings/ddh.json'
     ctx.db_his = str(r / 'db/db_his.db')
     ctx.db_plt = str(r / 'db/db_plt.db')
     ctx.db_blk = str(r / 'db/.black_macs.db')

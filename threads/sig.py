@@ -25,12 +25,6 @@ class SignalsGPS(QObject):
     update = pyqtSignal(tuple)
 
 
-class SignalsFTP(QObject):
-    update = pyqtSignal(str)
-    status = pyqtSignal(str)
-    error = pyqtSignal(str)
-
-
 class SignalsAWS(QObject):
     update = pyqtSignal(str)
     status = pyqtSignal(str)

@@ -13,10 +13,10 @@ PLT_MSG_TIMEOUT = 5
 # set at main.py, shared stuff
 app_root_folder = None
 app_res_folder = None
-dl_folder = None
+app_dl_folder = None
 app_conf_folder = None
 app_logs_folder = None
-json_file = None
+app_json_file = None
 plt_units = None
 span_dict = None
 db_plt = None
@@ -39,13 +39,13 @@ sem_plt = threading.Lock()
 
 # FTP: current and start states + switch capability
 aws_en = True
-sw_ftp_en = True
+sw_aws_en = True
 
 
 # BLE: current and start states + switch capability
 ble_en = True
 sw_ble_en = True
-macs_lists_persistent = True
+macs_lists_pre_rm = True
 
 
 def only_one_instance(name):

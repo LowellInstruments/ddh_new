@@ -89,7 +89,7 @@ def ftp_get_credentials():
 
 
 def ftp_assert_credentials():
-    ftp_get_credentials()
+    return ftp_get_credentials()
 
 
 def ftp_sync(sig, local_folder: str, cred_folder: str) -> bool:

@@ -22,7 +22,7 @@ def loop(w, ev_can_i_boot):
 
         ctx.sem_ble.acquire()
         ctx.sem_aws.acquire()
-        _aws_sync_files(w, ctx.dl_folder)
+        _aws_sync_files(w, ctx.app_dl_folder)
         ctx.sem_aws.release()
         ctx.sem_ble.release()
         time.sleep(PERIOD_AWS)

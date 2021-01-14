@@ -205,7 +205,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QLabel" name="lbl_net_n_ftp">
+               <widget class="QLabel" name="lbl_net_n_cloud">
                 <property name="text">
                  <string/>
                 </property>
@@ -530,14 +530,14 @@
               <property name="columnCount">
                <number>3</number>
               </property>
+              <attribute name="horizontalHeaderMinimumSectionSize">
+               <number>80</number>
+              </attribute>
               <attribute name="horizontalHeaderDefaultSectionSize">
                <number>230</number>
               </attribute>
               <attribute name="horizontalHeaderHighlightSections">
                <bool>false</bool>
-              </attribute>
-              <attribute name="horizontalHeaderMinimumSectionSize">
-               <number>80</number>
               </attribute>
               <attribute name="verticalHeaderVisible">
                <bool>false</bool>

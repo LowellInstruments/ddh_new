@@ -1,7 +1,7 @@
 import queue
 import threading
 from mat.linux import linux_is_rpi
-from threads.utils_ftp import ftp_assert_credentials
+from threads.utils_aws import aws_assert_credentials
 from threads.utils_macs import black_macs_delete_all
 import datetime
 import pathlib
@@ -47,12 +47,12 @@ from matplotlib.figure import Figure
 class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
 
     def __init__(self):
-        _ftp_credentials_check()
+        _aws_credentials_check()
 
         # gui: view
         super(DDHQtApp, self).__init__()
         self.plt_cnv = MplCanvas(self, width=5, height=3, dpi=100)
-        setup_view(self, ctx.json_file)
+        setup_view(self, ctx.app_json_file)
         setup_buttons_gui(self)
         setup_his_tab(self)
         setup_app_log(str(ctx.app_logs_folder / 'ddh.log'))
@@ -65,20 +65,20 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.bsy_dots = ''
         self.plt_timeout_dis = 0
         self.plt_timeout_msg = 0
-        self.plt_folders = update_dl_folder_list(ctx.dl_folder)
+        self.plt_folders = update_dl_folder_list(ctx.app_dl_folder)
         self.plt_folders_idx = 0
         self.plt_dir = None
         self.plt_time_spans = ('h', 'd', 'w', 'm', 'y')
         self.plt_ts_idx = 0
         self.plt_ts = self.plt_time_spans[0]
-        self.plt_metrics = json_get_metrics(ctx.json_file)
+        self.plt_metrics = json_get_metrics(ctx.app_json_file)
         self.bright_idx = 2
         self.btn_3_held = 0
         self.tab_edit_hide = True
         self.tab_edit_wgt_ref = None
         self.key_shift = None
         self.last_time_icon_ble_press = 0
-        json_set_plot_units(ctx.json_file)
+        json_set_plot_units(ctx.app_json_file)
         hide_edit_tab(self)
         populate_history_tab(self)
         rm_plot_db()
@@ -108,7 +108,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.sig_cnv.update.connect(self.slot_gui_update_cnv)
         self.sig_gps.update.connect(self.slot_gui_update_gps_pos)
         self.sig_tim.update.connect(self.slot_gui_update_time)
-        self.sig_net.update.connect(self.slot_gui_update_net)
+        self.sig_net.update.connect(self.slot_gui_update_net_via)
         self.sig_plt.update.connect(self.slot_gui_update_plt)
         self.sig_aws.update.connect(self.slot_gui_update_aws)
         self.sig_plt.start.connect(self.slot_plt_start)
@@ -184,7 +184,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
 
         # things updated less often
         if self.sys_secs % 30 == 0:
-            j = ctx.json_file
+            j = ctx.app_json_file
             s_n = json_get_ship_name(j)
             self.lbl_boatname.setText(s_n)
 
@@ -204,19 +204,19 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         ok = lon not in ['missing', 'searching', 'malfunction']
         update_gps_icon_land_sea(self, ok, lat, lon)
 
-    @pyqtSlot(str, name='slot_gui_update_net')
-    def slot_gui_update_net(self, via):
-        # SSID_or_CELL / FTP
+    @pyqtSlot(str, name='slot_gui_update_net_via')
+    def slot_gui_update_net_via(self, via):
+        # SSID_or_CELL
         via = via.replace('\n', '')
-        _ = self.lbl_net_n_ftp.text().split('\n')
+        _ = self.lbl_net_n_cloud.text().split('\n')
         s = '{}\n{}'.format(via, _[1])
-        self.lbl_net_n_ftp.setText(s)
+        self.lbl_net_n_cloud.setText(s)
 
     @pyqtSlot(str, name='slot_gui_update_aws')
     def slot_gui_update_aws(self, c):
-        _ = self.lbl_net_n_ftp.text().split('\n')
+        _ = self.lbl_net_n_cloud.text().split('\n')
         s = '{}\n{}'.format(_[0], c)
-        self.lbl_net_n_ftp.setText(s)
+        self.lbl_net_n_cloud.setText(s)
 
     @pyqtSlot(list, name='slot_gui_update_cnv')
     def slot_gui_update_cnv(self, _e):
@@ -243,7 +243,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
             lbl.setStyleSheet(style.format('black'))
             lbl.setText(s)
             return
-        _arp = json_mac_dns(ctx.json_file, w[0])
+        _arp = json_mac_dns(ctx.app_json_file, w[0])
         _e = '{} not deployed'.format(_arp)
         s = '{}\n{}\n{}'.format(_[0], _[1], _e)
         lbl.setStyleSheet(style.format('orange'))
@@ -302,7 +302,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     @pyqtSlot(str, int, int, name='slot_ble_session_pre')
     def slot_ble_session_pre(self, mac, val_1, val_2):
         # desc: mac, val_1: logger index, val_2: total num of loggers
-        j = ctx.json_file
+        j = ctx.app_json_file
         s = 'logger {} of {}\n{}'
         s = s.format(val_1, val_2, json_mac_dns(j, mac))
         ctx.lg_num = s
@@ -344,9 +344,9 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
             s = 'no plot from last logger'
             self.slot_gui_update_plt(s)
             return
-        d = ctx.dl_folder
+        d = ctx.app_dl_folder
         self.plt_folders = update_dl_folder_list(d)
-        d = pathlib.Path(ctx.dl_folder)
+        d = pathlib.Path(ctx.app_dl_folder)
         d = d / str(mac).replace(':', '-')
         self.plt_dir = str(d)
 
@@ -371,7 +371,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
 
     @pyqtSlot(str, str, str, name='slot_his_update')
     def slot_his_update(self, mac, lat, lon):
-        j = ctx.json_file
+        j = ctx.app_json_file
         name = json_mac_dns(j, mac)
         frm = '%m/%d/%y %H:%M:%S'
         frm_t = datetime.datetime.now().strftime(frm)
@@ -402,7 +402,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     def _click_btn_see_cur(self):
         # loads (mac, name) pairs in ddh.json file
         self.lst_mac_org.clear()
-        j = str(ctx.json_file)
+        j = str(ctx.app_json_file)
         pairs = json_get_pairs(j)
         for m, n in pairs.items():
             s = '{}  {}'.format(m, n)
@@ -447,7 +447,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
             s = 'restarting DDH...'
             self.lbl_setup_result.setText(s)
             j = json_gen_ddh(pairs, ves, t)
-            with open(ctx.json_file, 'w') as f:
+            with open(ctx.app_json_file, 'w') as f:
                 f.write(j)
             # bye, bye
             self.tim_q.start(2000)
@@ -515,7 +515,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     def _click_btn_dl_purge(self):
         s = 'sure to empty dl_files folder?'
         if _confirm_by_user(s):
-            d = pathlib.Path(ctx.dl_folder)
+            d = pathlib.Path(ctx.app_dl_folder)
             try:
                 # safety check
                 if 'dl_files' not in str(d):
@@ -536,7 +536,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self._populate_history_tab()
 
     def _click_btn_load_current(self):
-        j = ctx.json_file
+        j = ctx.app_json_file
         ves = json_get_ship_name(j)
         f_t = json_get_forget_time_secs(j)
         self.lne_vessel.setText(ves)
@@ -616,9 +616,9 @@ def on_ctrl_c(signal_num, _):
     os._exit(signal_num)
 
 
-def _ftp_credentials_check():
+def _aws_credentials_check():
     if ctx.aws_en:
-        ftp_assert_credentials()
+        aws_assert_credentials()
 
 
 class MplCanvas(FigureCanvasQTAgg):

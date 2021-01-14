@@ -7,10 +7,10 @@ PERIOD_CNV = 60
 
 def loop(w, ev_can_i_boot, pre_rm=False):
     assert PERIOD_CNV >= 30
-    assert ctx.dl_folder
+    assert ctx.app_dl_folder
     wait_boot_signal(w, ev_can_i_boot, 'CNV')
 
-    fol = str(ctx.dl_folder)
+    fol = str(ctx.app_dl_folder)
     pre_rm_csv(fol, pre_rm)
 
     while 1:
