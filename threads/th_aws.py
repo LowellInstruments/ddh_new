@@ -1,18 +1,16 @@
 import time
 from settings import ctx
 from threads.utils import wait_boot_signal
+from threads.utils_aws import aws_get_credentials, aws_ddh_sync
 
 PERIOD_AWS = 300
-
-
-def _aws_sync_files(w, dl_folder):
-    w.sig_aws.status.emit('AWS: syncing {}'.format(dl_folder))
-    w.sig_aws.update.emit('AWS OK')
 
 
 def loop(w, ev_can_i_boot):
     assert (PERIOD_AWS >= 30)
     wait_boot_signal(w, ev_can_i_boot, 'AWS')
+    name, key_id, secret = aws_get_credentials()
+    fol = str(ctx.app_dl_folder)
 
     while 1:
         if not ctx.aws_en:
@@ -22,7 +20,9 @@ def loop(w, ev_can_i_boot):
 
         ctx.sem_ble.acquire()
         ctx.sem_aws.acquire()
-        _aws_sync_files(w, ctx.app_dl_folder)
+        w.sig_aws.status.emit('AWS: syncing {}'.format(fol))
+        s = 'OK' if aws_ddh_sync(name, key_id, secret, fol) == 0 else 'ERR'
+        w.sig_aws.update.emit('AWS {}'.format(s))
         ctx.sem_aws.release()
         ctx.sem_ble.release()
         time.sleep(PERIOD_AWS)

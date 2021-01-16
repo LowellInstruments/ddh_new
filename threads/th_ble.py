@@ -116,6 +116,7 @@ def _download_loggers(w, h, macs, mb, mo, ft: tuple):
 
 
 def loop(w, ev_can_i_boot):
+    """ BLE loop: scan and download and re-deploy found loggers """
     wait_boot_signal(w, ev_can_i_boot, 'BLE')
 
     whitelist = json_get_macs(ctx.app_json_file)
