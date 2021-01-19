@@ -57,6 +57,7 @@ def _logger_sws(lc, sig, g):
     lon = g[1] if g else 'N/A'
     s = '{}{}'.format(lat, lon)
     t = 'BLE: SWS coordinates {}'.format(s)
+    #todo: we need to know the format of logger RWS/SWS, this prints latlon altogether here
     for _ in range(10):
         # slightly largest than worst sensor measurement
         rv = lc.command(SWS_CMD, s)
@@ -195,14 +196,12 @@ def _logger_plot(mac, sig):
 
 
 def _dir_cfg(lc, sig):
-    for _ in range(3):
-        rv = lc.ls_ext(b'.cfg')
-        s = 'BLE: DIR cfg {}'.format(rv)
-        emit_status(sig, s)
-        if rv:
-            return rv
-        time.sleep(1)
-    return None
+    # helps, x-modem may still be ending in logger
+    time.sleep(1)
+    rv = lc.ls_ext(b'.cfg')
+    s = 'BLE: DIR cfg {}'.format(rv)
+    emit_status(sig, s)
+    return rv
 
 
 def _logger_re_setup(lc, sig):

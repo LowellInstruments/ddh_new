@@ -12,11 +12,12 @@ def aws_get_credentials():
     secret = os.environ.get('DDH_AWS_SECRET')
 
     # testing
+    # todo: on production, remove this
     if not name:
         name = 'usr-mla'
         key_id = 'AKIA2SU3QQX6WO5MAHVN'
         secret = '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'
-        print('TESTING AWS with {}'.format(name))
+        print('WARNING: testing AWS with {}'.format(name))
 
 
     assert (name and key_id and secret)
@@ -55,27 +56,31 @@ def get_bucket_objects_keys_as_dict(cli, buk_name):
 def upload_objects_to_bucket(cli, usr_name, file_list: dict, buk_name):
     # file_list: {full_name: (size, short_name)}
     assert cli
-    for f in file_list:
+    uploaded_ones = []
+    for full_name, v in file_list.items():
         try:
-            # todo: do the proper dictionary indexing key, values
-            cli.upload_file(f, buk_name, f)
+            uploaded_ones.append(v[1])
+            cli.upload_file(full_name, buk_name, v[1])
         except S3UploadFailedError:
             e = '\t{} not allowed to upload objects to {}'
             print(e.format(usr_name, buk_name))
+            return None
+    return uploaded_ones
 
 
 def diff_dict_local_and_remote_objects(dlo, dro):
     if not dro:
         dro = {}
     diff_dict = {}
-    # dro: AWS remote objects, shortened path format
-    # dlo: AWS local objects, full path format so shorten before compare
-    # todo: compare shortened
+    # dlo: AWS local objects, full path, must shorten (sh) pre-compare
+    # dro: AWS remote objects, short path format
     for k, v in dlo.items():
-        if k not in dro.keys() or k in dro.keys() and dro[k] != v:
-            diff_dict[k] = v
-    # todo: we should do a dict with entries:
-    # {long_name: (size, shortened_name)}
+        # sh: <mac>/<file.x>
+        _ = k.rsplit('/', 2)
+        sh = '{}/{}'.format(_[-2], _[-1])
+        if sh not in dro.keys() or sh in dro.keys() and dro[sh] != v:
+            # {long_name: (size, shortened_name)}
+            diff_dict[k] = (v, sh)
     return diff_dict
 
 
@@ -98,7 +103,7 @@ def aws_ddh_sync(aws_name, aws_key_id, aws_secret, folder_to_sync):
     bkt_name = 'bkt-{}'.format(aws_name.split('-')[1])
     if not check_connection_to_aws_s3(cli, bkt_name):
         print('cannot connect our AWS S3')
-        return 1
+        return None
 
     # build dict of remote keys and sizes
     dict_remote_objects = get_bucket_objects_keys_as_dict(cli, bkt_name)
@@ -117,6 +122,4 @@ def aws_ddh_sync(aws_name, aws_key_id, aws_secret, folder_to_sync):
     dict_diff = diff_dict_local_and_remote_objects(dlo, dro)
 
     # upload the local ones missing in remote bucket
-    upload_objects_to_bucket(cli, aws_name, dict_diff, bkt_name)
-
-    return 0
+    return upload_objects_to_bucket(cli, aws_name, dict_diff, bkt_name)

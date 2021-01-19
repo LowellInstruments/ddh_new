@@ -41,8 +41,7 @@ def _mac_show_color_lists(w, mb, mo):
         w.sig_ble.debug.emit(_d)
         mo.ls.delete_all()
         # todo: on production, remove this blacklist deletion
-        _d = 'SYS: --- warning testing --- deleting all black entries'
-        w.sig_ble.debug.emit(_d)
+        print('WARNING: testing with all black entries deletion')
         mb.ls.delete_all()
 
 
@@ -143,6 +142,7 @@ def loop(w, ev_can_i_boot):
 
             # download stage
             _download_loggers(w, h, macs, mb, mo, (ft_s, ft_sea_s))
+
         except ble.BTLEManagementError as ex:
             e = 'BLE: big error, wrong HCI or permissions? {}'
             w.sig_ble.error.emit(e.format(ex))

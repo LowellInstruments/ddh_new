@@ -3,6 +3,7 @@ from settings import ctx
 from threads.utils import wait_boot_signal
 from threads.utils_aws import aws_get_credentials, aws_ddh_sync
 
+
 PERIOD_AWS = 300
 
 
@@ -21,7 +22,8 @@ def loop(w, ev_can_i_boot):
         ctx.sem_ble.acquire()
         ctx.sem_aws.acquire()
         w.sig_aws.status.emit('AWS: syncing {}'.format(fol))
-        s = 'OK' if aws_ddh_sync(name, key_id, secret, fol) == 0 else 'ERR'
+        synced_files = aws_ddh_sync(name, key_id, secret, fol)
+        s = 'OK' if type(synced_files) is list else 'ERR'
         w.sig_aws.update.emit('AWS {}'.format(s))
         ctx.sem_aws.release()
         ctx.sem_ble.release()
