@@ -53,14 +53,12 @@ def _logger_sws(lc, sig, g):
         return
 
     # logger running or delayed, need to stop
-    lat = g[0] if g else 'N/A'
-    lon = g[1] if g else 'N/A'
-    s = '{}{}'.format(lat, lon)
-    t = 'BLE: SWS coordinates {}'.format(s)
-    #todo: we need to know the format of logger RWS/SWS, this prints latlon altogether here
+    lat = '{:+.6f}'.format(float(g[0])) if g else 'N/A'
+    lon = '{:+.6f}'.format(float(g[1])) if g else 'N/A'
+    t = 'BLE: SWS coordinates {}, {}'.format(lat, lon)
     for _ in range(10):
-        # slightly largest than worst sensor measurement
-        rv = lc.command(SWS_CMD, s)
+        # SWS parameter goes altogether without comma
+        rv = lc.command(SWS_CMD, '{}{}'.format(lat, lon))
         if rv == [b'SWS', b'00']:
             emit_status(sig, t)
             return
@@ -178,17 +176,14 @@ def _logger_get_files(lc, sig, folder, files):
 
 
 def _logger_rws(lc, sig, g):
-    max_gps_len_fw = 20
-    lat = g[0] if g else 'N/A'
-    lon = g[1] if g else 'N/A'
-    lat = lat[:max_gps_len_fw]
-    lon = lon[:max_gps_len_fw]
-    sig.status.emit('BLE: RWS coordinates {}, {}'.format(lat, lon))
-    # don't rearrange the RWS command format
-    g = '{}{}\n'.format(lat, lon)
+    lat = float(g[0]) if g else 'N/A'
+    lon = float(g[1]) if g else 'N/A'
+    g = '{:+.6f}{:+.6f}'.format(lat, lon)
+    s = 'BLE: RWS coordinates {}'.format(g)
+    sig.status.emit(s)
     rv = lc.command(RWS_CMD, g)
     _ok_or_die([b'RWS', b'00'], rv, sig)
-    sig.deployed.emit(lc.per.addr, lat, lon)
+    sig.deployed.emit(lc.per.addr, str(lat), str(lon))
 
 
 def _logger_plot(mac, sig):

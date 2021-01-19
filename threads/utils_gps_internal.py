@@ -12,8 +12,8 @@ def gps_get_one_lat_lon_dt(timeout=3):
     # todo: on production, remove when real GPS present
     time.sleep(timeout / 3)
     dt = datetime.now()
-    lat = '{:.6f}'.format(77.28940666666666)
-    lon = '{:.6f}'.format(11.516666666666667)
+    lat = '{:+.6f}'.format(77.28940666666666)
+    lon = '{:+.6f}'.format(-11.516666666666667)
     return (lat, lon, dt)
 
 

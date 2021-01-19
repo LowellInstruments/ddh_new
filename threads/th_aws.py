@@ -27,4 +27,7 @@ def loop(w, ev_can_i_boot):
         w.sig_aws.update.emit('AWS {}'.format(s))
         ctx.sem_aws.release()
         ctx.sem_ble.release()
+        synced_files = [] if synced_files is None else synced_files
+        for each in synced_files:
+            w.sig_aws.status.emit('AWS: uploaded {}'.format(each))
         time.sleep(PERIOD_AWS)
