@@ -7,19 +7,10 @@ from botocore.exceptions import ClientError
 
 def aws_get_credentials():
     # bash: export DDH_AWS_NAME=whatever
+    # pycharm: run configuration edit
     name = os.environ.get('DDH_AWS_NAME')
     key_id = os.environ.get('DDH_AWS_KEY_ID')
     secret = os.environ.get('DDH_AWS_SECRET')
-
-    # testing
-    # todo: on production, remove this
-    if not name:
-        name = 'usr-mla'
-        key_id = 'AKIA2SU3QQX6WO5MAHVN'
-        secret = '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'
-        print('WARNING: testing AWS with {}'.format(name))
-
-
     assert (name and key_id and secret)
     return name, key_id, secret
 
@@ -92,7 +83,7 @@ def check_connection_to_aws_s3(cli, bkt_name):
         return False
 
 
-def aws_ddh_sync(aws_name, aws_key_id, aws_secret, folder_to_sync):
+def aws_ddh_sync(aws_name, aws_key_id, aws_secret, folder_to_sync, sig):
     # obtaining AWS S3 Client
     cli = boto3.client('s3',
                        region_name='us-east-1',
@@ -100,9 +91,10 @@ def aws_ddh_sync(aws_name, aws_key_id, aws_secret, folder_to_sync):
                        aws_secret_access_key=aws_secret)
 
     # check there is a connection
-    bkt_name = 'bkt-{}'.format(aws_name.split('-')[1])
+    bkt_name = 'bkt-{}'.format(aws_name)
     if not check_connection_to_aws_s3(cli, bkt_name):
-        print('cannot connect our AWS S3')
+        e = 'AWS: cannot connect S3 as \'{}\''
+        sig.emit(e.format(aws_name))
         return None
 
     # build dict of remote keys and sizes

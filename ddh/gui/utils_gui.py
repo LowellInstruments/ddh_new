@@ -18,16 +18,16 @@ def setup_view(my_win, j):
     a.setWindowTitle('Lowell Instruments\' Deck Data Hub')
     a.lbl_plt_bsy.setVisible(False)
     a.lbl_plt_msg.setVisible(False)
-    a.tabs.setTabIcon(0, QIcon('gui/res/icon_info.png'))
-    a.tabs.setTabIcon(1, QIcon('gui/res/icon_graph.ico'))
-    a.tabs.setTabIcon(2, QIcon('gui/res/icon_history.ico'))
-    a.tabs.setTabIcon(3, QIcon('gui/res/icon_setup.png'))
-    a.setWindowIcon(QIcon('gui/res/icon_lowell.ico'))
-    a.img_ble.setPixmap(QPixmap('gui/res/img_blue_color.png'))
-    a.img_gps.setPixmap(QPixmap('gui/res/img_gps_dis.png'))
-    a.img_plt.setPixmap(QPixmap('gui/res/img_plot_color.png'))
-    a.img_net.setPixmap(QPixmap('gui/res/img_sync_color.png'))
-    a.img_boat.setPixmap(QPixmap('gui/res/img_boatname_color.png'))
+    a.tabs.setTabIcon(0, QIcon('ddh/gui/res/icon_info.png'))
+    a.tabs.setTabIcon(1, QIcon('ddh/gui/res/icon_graph.ico'))
+    a.tabs.setTabIcon(2, QIcon('ddh/gui/res/icon_history.ico'))
+    a.tabs.setTabIcon(3, QIcon('ddh/gui/res/icon_setup.png'))
+    a.setWindowIcon(QIcon('ddh/gui/res/icon_lowell.ico'))
+    a.img_ble.setPixmap(QPixmap('ddh/gui/res/img_blue_color.png'))
+    a.img_gps.setPixmap(QPixmap('ddh/gui/res/img_gps_dis.png'))
+    a.img_plt.setPixmap(QPixmap('ddh/gui/res/img_plot_color.png'))
+    a.img_net.setPixmap(QPixmap('ddh/gui/res/img_sync_color.png'))
+    a.img_boat.setPixmap(QPixmap('ddh/gui/res/img_boatname_color.png'))
     ship = json_get_ship_name(j)
     a.lbl_boatname.setText(ship)
     a.setCentralWidget(a.tabs)
@@ -106,14 +106,14 @@ def setup_buttons_gui(my_app):
 def update_gps_icon_land_sea(my_app, did_ok, lat, lon):
     a = my_app
     if not did_ok:
-        img = 'gui/res/img_gps_dis.png'
+        img = 'ddh/gui/res/img_gps_dis.png'
         a.img_gps.setPixmap(QPixmap(img))
         return
     if gps_in_land(lat, lon):
-        img = 'gui/res/img_gps_land.png'
+        img = 'ddh/gui/res/img_gps_land.png'
         a.img_gps.setPixmap(QPixmap(img))
         return
-    img = 'gui/res/img_gps_sea.png'
+    img = 'ddh/gui/res/img_gps_sea.png'
     a.img_gps.setPixmap(QPixmap(img))
 
 

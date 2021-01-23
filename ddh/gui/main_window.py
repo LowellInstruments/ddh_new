@@ -508,7 +508,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         if self.tab_edit_hide:
             hide_edit_tab(self)
         else:
-            icon = QIcon('gui/res/icon_setup.png')
+            icon = QIcon('ddh/gui/res/icon_setup.png')
             self.tabs.addTab(self.tab_edit_wgt_ref, icon, ' Setup')
             self.tabs.setCurrentIndex(3)
 

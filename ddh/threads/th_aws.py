@@ -22,7 +22,8 @@ def loop(w, ev_can_i_boot):
         ctx.sem_ble.acquire()
         ctx.sem_aws.acquire()
         w.sig_aws.status.emit('AWS: syncing {}'.format(fol))
-        synced_files = aws_ddh_sync(name, key_id, secret, fol)
+        sig = w.sig_aws.error
+        synced_files = aws_ddh_sync(name, key_id, secret, fol, sig)
         s = 'OK' if type(synced_files) is list else 'ERR'
         w.sig_aws.update.emit('AWS {}'.format(s))
         ctx.sem_aws.release()

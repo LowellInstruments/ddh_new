@@ -18,6 +18,7 @@ import socket
 import struct
 
 
+
 def emit_status(sig, s):
     if sig:
         sig.status.emit(s)
