@@ -10,7 +10,7 @@ import glob
 import time
 from random import random
 from logzero import logger as console_log
-from settings import ctx
+from ddh.settings import ctx
 from mat.data_converter import DataConverter, default_parameters
 import json
 from socket import AF_INET, SOCK_DGRAM

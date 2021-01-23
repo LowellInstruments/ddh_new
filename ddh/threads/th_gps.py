@@ -1,7 +1,7 @@
 import time
-from settings import ctx
-from threads.utils import wait_boot_signal
-from threads.utils_gps_internal import gps_get_one_lat_lon_dt
+from ddh.settings import ctx
+from ddh.threads.utils import wait_boot_signal
+from ddh.threads.utils_gps_internal import gps_get_one_lat_lon_dt
 
 
 PERIOD_GPS = 10

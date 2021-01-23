@@ -4,6 +4,6 @@ apps/__pycache__/
 ddh.lo*
 *.db
 venv/
-logs/
-/dl_files/
+ddh/logs/
+/ddh/dl_files/
 ddh_run.sh_

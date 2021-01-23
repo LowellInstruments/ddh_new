@@ -1,7 +1,7 @@
 import threading
-from settings import ctx
-from threads.utils import json_mac_dns, mac_from_folder, json_get_span_dict, wait_boot_signal, emit_error
-from threads.utils_plt import plot
+from ddh.settings import ctx
+from ddh.threads.utils import json_mac_dns, mac_from_folder, json_get_span_dict, wait_boot_signal, emit_error
+from ddh.threads.utils_plt import plot
 
 
 def _plot_data(w, plt_args):

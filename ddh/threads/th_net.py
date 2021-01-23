@@ -1,9 +1,8 @@
 import time
 from mat.linux import linux_is_rpi
-from threads.utils import wait_boot_signal
-from threads.utils_net import check_net_best, ensure_resolv_conf, get_ssid
-from settings import ctx
-
+from ddh.threads.utils import wait_boot_signal
+from ddh.threads.utils_net import check_net_best, ensure_resolv_conf, get_ssid
+from ddh.settings import ctx
 
 NET_PERIOD = 60
 

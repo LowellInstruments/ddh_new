@@ -2,7 +2,7 @@
 BLE Graphical User Interface for Lowell Instruments' loggers.
 Intended to be used on fishing and research vessels.
 
-![alt text](gui/res/ddh_capture.png)
+![alt text](ddh/gui/res/ddh_capture.png)
 
 ## Installing on RPi
 Depending on platform, some pip packages such PyQt5 may be unavailable, so ensure them with:

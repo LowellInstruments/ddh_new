@@ -2,12 +2,12 @@ import os
 import bluepy.btle as ble
 import time
 from mat.logger_controller_ble import ble_scan
-from settings import ctx
-from threads.utils import json_get_macs, json_get_forget_time_secs, json_get_hci_if, wait_boot_signal, \
+from ddh.settings import ctx
+from ddh.threads.utils import json_get_macs, json_get_forget_time_secs, json_get_hci_if, wait_boot_signal, \
     json_get_forget_time_at_sea_secs
-from threads.utils_ble import logger_download
-from threads.utils_gps_internal import gps_in_land
-from threads.utils_macs import filter_white_macs, BlackMacList, OrangeMacList, bluepy_scan_results_to_strings
+from ddh.threads.utils_ble import logger_download
+from ddh.threads.utils_gps_internal import gps_in_land
+from ddh.threads.utils_macs import filter_white_macs, BlackMacList, OrangeMacList, bluepy_scan_results_to_strings
 
 
 IGNORE_TIME_S = 60

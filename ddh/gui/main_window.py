@@ -1,13 +1,13 @@
 import queue
 import threading
 from mat.linux import linux_is_rpi
-from threads.utils_aws import aws_assert_credentials
-from threads.utils_macs import black_macs_delete_all
+from ddh.threads.utils_aws import aws_assert_credentials
+from ddh.threads.utils_macs import black_macs_delete_all
 import datetime
 import pathlib
 import shutil
 import sys
-from settings import ctx
+from ddh.settings import ctx
 from PyQt5.QtCore import (
     Qt,
     pyqtSlot,
@@ -18,13 +18,13 @@ from PyQt5.QtGui import (
 from PyQt5.QtWidgets import (
     QMainWindow,
     QFileDialog)
-from gui.utils_gui import (
+from ddh.gui.utils_gui import (
     setup_view, setup_his_tab, setup_buttons_gui, setup_window_center, hide_edit_tab,
     dict_from_list_view, setup_buttons_rpi, _confirm_by_user, update_gps_icon_land_sea, populate_history_tab)
-from threads import th_time, th_gps, th_ble, th_plt, th_net, th_cnv, th_aws, th_boot
-from settings.utils_settings import yaml_load_pairs, json_gen_ddh
-from db.db_his import DBHis
-from threads.utils import (
+from ddh.threads import th_ble, th_cnv, th_plt, th_gps, th_aws, th_net, th_boot, th_time
+from ddh.settings.utils_settings import yaml_load_pairs, json_gen_ddh
+from ddh.db.db_his import DBHis
+from ddh.threads.utils import (
     update_dl_folder_list,
     json_get_ship_name,
     json_get_metrics,
@@ -32,12 +32,12 @@ from threads.utils import (
     json_get_forget_time_secs, rpi_set_brightness, rm_plot_db, json_get_pairs, setup_app_log,
     update_cnv_log_err_file, json_set_plot_units)
 from logzero import logger as c_log
-from threads.sig import (
+from ddh.threads.sig import (
     SignalsBLE,
     SignalsPLT,
     SignalsTime, SignalsGPS, SignalsNET, SignalsCNV, SignalsAWS, SignalsBoot)
 import os
-import gui.designer_main as d_m
+import ddh.gui.designer_main as d_m
 import matplotlib
 matplotlib.use('Qt5Agg')
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg

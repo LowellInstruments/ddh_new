@@ -1,6 +1,6 @@
 import pytest
 import sys
-from threads.utils_macs import BlackMacList, black_macs_delete_all
+from ddh.threads.utils_macs import BlackMacList, black_macs_delete_all
 
 
 db_name = 'test.db'

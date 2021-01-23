@@ -3,13 +3,13 @@ from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtWidgets import QDesktopWidget, QWidget, QMessageBox, QTableWidgetItem, \
     QHeaderView
 from gpiozero import Button
-from settings import ctx
-from db.db_his import DBHis
+from ddh.settings import ctx
+from ddh.db.db_his import DBHis
 from mat.linux import linux_is_docker_on_rpi, linux_is_rpi
-from settings.version import VER_SW
-from threads.th_time import ButtonPressEvent
-from threads.utils import json_get_ship_name
-from threads.utils_gps_internal import gps_in_land
+from ddh.settings.version import VER_SW
+from ddh.threads.th_time import ButtonPressEvent
+from ddh.threads.utils import json_get_ship_name
+from ddh.threads.utils_gps_internal import gps_in_land
 
 
 def setup_view(my_win, j):

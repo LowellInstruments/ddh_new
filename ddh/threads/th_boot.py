@@ -1,6 +1,6 @@
 import time
-from threads.utils_gps_internal import gps_get_one_lat_lon_dt
-from threads.utils_time import time_via
+from ddh.threads.utils_gps_internal import gps_get_one_lat_lon_dt
+from ddh.threads.utils_time import time_via
 
 
 def _boot_sync_time(w):

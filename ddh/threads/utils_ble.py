@@ -3,13 +3,13 @@ import json
 import pathlib
 import time
 from mat.logger_controller_ble import LoggerControllerBLE, ERR_MAT_ANS
-from threads.utils import rm_folder, create_folder, exists_file, emit_status, emit_error
+from ddh.threads.utils import rm_folder, create_folder, exists_file, emit_status, emit_error
 from mat.logger_controller import (
     RWS_CMD,
     SWS_CMD, STATUS_CMD
 )
-from settings import ctx
-from threads.utils_gps_internal import gps_get_one_lat_lon_dt
+from ddh.settings import ctx
+from ddh.threads.utils_gps_internal import gps_get_one_lat_lon_dt
 
 
 def _time_to_display(t):

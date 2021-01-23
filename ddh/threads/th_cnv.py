@@ -1,6 +1,6 @@
 import time
-from settings import ctx
-from threads.utils import lid_to_csv, pre_rm_csv, wait_boot_signal
+from ddh.settings import ctx
+from ddh.threads.utils import lid_to_csv, pre_rm_csv, wait_boot_signal
 
 PERIOD_CNV = 60
 

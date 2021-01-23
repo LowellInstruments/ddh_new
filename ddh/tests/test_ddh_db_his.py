@@ -1,6 +1,6 @@
 import pytest
 import sys
-from db.db_his import DBHis
+from ddh.db.db_his import DBHis
 
 
 db_n = 'test.db'

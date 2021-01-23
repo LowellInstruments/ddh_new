@@ -2,9 +2,9 @@ import pathlib
 import signal
 import sys
 from PyQt5.QtWidgets import QApplication
-from settings import ctx
-from settings.ctx import only_one_instance
-from gui.main_window import DDHQtApp, on_ctrl_c
+from ddh.settings import ctx
+from ddh.settings.ctx import only_one_instance
+from ddh.gui.main_window import DDHQtApp, on_ctrl_c
 
 
 if __name__ == "__main__":
@@ -13,8 +13,7 @@ if __name__ == "__main__":
     assert sys.version_info >= (3, 5)
 
     # common application context
-    r = pathlib.Path.cwd()
-    ctx.app_root_folder = r
+    r = pathlib.Path.cwd() / 'ddh'
     ctx.app_dl_folder = r / 'dl_files/'
     ctx.app_conf_folder = r / 'settings/'
     ctx.app_logs_folder = r / 'logs/'

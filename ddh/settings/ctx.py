@@ -11,7 +11,6 @@ PLT_MSG_TIMEOUT = 5
 
 
 # set at main.py, shared stuff
-app_root_folder = None
 app_res_folder = None
 app_dl_folder = None
 app_conf_folder = None

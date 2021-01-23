@@ -3,8 +3,8 @@ import socket
 import subprocess as sp
 import time
 
-from threads.utils import emit_status, emit_update
-from threads.utils_wifi import worth_trying_sw_wifi
+from ddh.threads.utils import emit_status, emit_update
+from ddh.threads.utils_wifi import worth_trying_sw_wifi
 
 
 SW_RELOAD = 10

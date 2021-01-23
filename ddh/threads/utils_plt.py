@@ -6,9 +6,9 @@ import warnings
 import iso8601
 import pandas as pd
 
-from settings import ctx
-from db.db_plt import DBPlt
-from threads.utils import (
+from ddh.settings import ctx
+from ddh.db.db_plt import DBPlt
+from ddh.threads.utils import (
     mac_from_folder,
     lid_to_csv, emit_status, emit_error)
 import numpy as np

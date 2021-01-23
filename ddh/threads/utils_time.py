@@ -1,7 +1,7 @@
 import datetime
 from tzlocal import get_localzone
-from threads.utils import linux_is_net_ok, get_ntp_time, linux_set_datetime
-from threads.utils_gps_internal import gps_get_one_lat_lon_dt
+from ddh.threads.utils import linux_is_net_ok, get_ntp_time, linux_set_datetime
+from ddh.threads.utils_gps_internal import gps_get_one_lat_lon_dt
 
 
 def time_via(w):
