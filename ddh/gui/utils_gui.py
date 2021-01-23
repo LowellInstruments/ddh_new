@@ -5,11 +5,11 @@ from PyQt5.QtWidgets import QDesktopWidget, QWidget, QMessageBox, QTableWidgetIt
 from gpiozero import Button
 from ddh.settings import ctx
 from ddh.db.db_his import DBHis
-from mat.linux import linux_is_docker_on_rpi, linux_is_rpi
 from ddh.settings.version import VER_SW
 from ddh.threads.th_time import ButtonPressEvent
 from ddh.threads.utils import json_get_ship_name
 from ddh.threads.utils_gps_internal import gps_in_land
+from mat.utils import linux_is_rpi, linux_is_docker_on_rpi
 
 
 def setup_view(my_win, j):
@@ -86,21 +86,21 @@ def setup_buttons_gui(my_app):
     a = my_app
 
     # labels' event connections
-    a.img_boat.mousePressEvent = a._click_icon_boat
-    a.img_ble.mousePressEvent = a._click_icon_ble
-    a.img_gps.mousePressEvent = a._click_icon_gps
-    a.img_net.mousePressEvent = a._click_icon_net
-    a.img_plt.mousePressEvent = a._click_icon_plot
+    a.img_boat.mousePressEvent = a.click_icon_boat
+    a.img_ble.mousePressEvent = a.click_icon_ble
+    a.img_gps.mousePressEvent = a.click_icon_gps
+    a.img_net.mousePressEvent = a.click_icon_net
+    a.img_plt.mousePressEvent = a.click_icon_plot
 
     # buttons' connections
-    a.btn_known_clear.clicked.connect(a._click_btn_known_clear)
-    a.btn_see_all.clicked.connect(a._click_btn_see_all)
-    a.btn_see_cur.clicked.connect(a._click_btn_see_cur)
-    a.btn_arrow.clicked.connect(a._click_btn_arrow)
-    a.btn_setup_apply.clicked.connect(a._click_btn_setup_apply)
-    a.btn_dl_purge.clicked.connect(a._click_btn_dl_purge)
-    a.btn_his_purge.clicked.connect(a._click_btn_his_purge)
-    a.btn_load_current.clicked.connect(a._click_btn_load_current)
+    a.btn_known_clear.clicked.connect(a.click_btn_clear_known_mac_list)
+    a.btn_see_all.clicked.connect(a.click_btn_clear_see_all_macs)
+    a.btn_see_cur.clicked.connect(a.click_btn_see_cur_macs_in_json_file)
+    a.btn_arrow.clicked.connect(a.click_btn_arrow_move_entries)
+    a.btn_setup_apply.clicked.connect(a.click_btn_apply_write_json_file)
+    a.btn_dl_purge.clicked.connect(a.click_btn_purge_dl_folder)
+    a.btn_his_purge.clicked.connect(a.click_btn_purge_his_db)
+    a.btn_load_current.clicked.connect(a.click_btn_load_current_json_file)
 
 
 def update_gps_icon_land_sea(my_app, did_ok, lat, lon):

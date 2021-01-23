@@ -1,6 +1,5 @@
 import queue
 import threading
-from mat.linux import linux_is_rpi
 from ddh.threads.utils_aws import aws_assert_credentials
 from ddh.threads.utils_macs import black_macs_delete_all
 import datetime
@@ -22,7 +21,7 @@ from ddh.gui.utils_gui import (
     setup_view, setup_his_tab, setup_buttons_gui, setup_window_center, hide_edit_tab,
     dict_from_list_view, setup_buttons_rpi, _confirm_by_user, update_gps_icon_land_sea, populate_history_tab)
 from ddh.threads import th_ble, th_cnv, th_plt, th_gps, th_aws, th_net, th_boot, th_time
-from ddh.settings.utils_settings import yaml_load_pairs, json_gen_ddh
+from ddh.settings.utils_settings import yaml_load_pairs, gen_n_write_json_file
 from ddh.db.db_his import DBHis
 from ddh.threads.utils import (
     update_dl_folder_list,
@@ -39,6 +38,9 @@ from ddh.threads.sig import (
 import os
 import ddh.gui.designer_main as d_m
 import matplotlib
+
+from mat.utils import linux_is_rpi
+
 matplotlib.use('Qt5Agg')
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
@@ -381,11 +383,11 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         db.safe_update(mac, name, lat, lon, frm_t)
         populate_history_tab(self)
 
-    def _click_btn_known_clear(self):
+    def click_btn_clear_known_mac_list(self):
         self.lst_mac_org.clear()
         self.lst_mac_dst.clear()
 
-    def _click_btn_see_all(self):
+    def click_btn_clear_see_all_macs(self):
         # loads (mac, name) pairs from yaml file
         self.lst_mac_org.clear()
         r = str(ctx.app_conf_folder)
@@ -399,7 +401,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
             s = '{}  {}'.format(m, n)
             self.lst_mac_org.addItem(s)
 
-    def _click_btn_see_cur(self):
+    def click_btn_see_cur_macs_in_json_file(self):
         # loads (mac, name) pairs in ddh.json file
         self.lst_mac_org.clear()
         j = str(ctx.app_json_file)
@@ -408,7 +410,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
             s = '{}  {}'.format(m, n)
             self.lst_mac_org.addItem(s)
 
-    def _click_btn_arrow(self):
+    def click_btn_arrow_move_entries(self):
         # dict from selected items in upper box
         ls = self.lst_mac_org.selectedItems()
         o = dict()
@@ -427,7 +429,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
             s = '{}  {}'.format(m, n)
             self.lst_mac_dst.addItem(s)
 
-    def _click_btn_setup_apply(self):
+    def click_btn_apply_write_json_file(self):
         # input: pairs we want to monitor
         l_v = self.lst_mac_dst
         pairs = dict_from_list_view(l_v)
@@ -446,7 +448,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         if t >= 3600 and ves and pairs:
             s = 'restarting DDH...'
             self.lbl_setup_result.setText(s)
-            j = json_gen_ddh(pairs, ves, t)
+            j = gen_n_write_json_file(pairs, ves, t)
             with open(ctx.app_json_file, 'w') as f:
                 f.write(j)
             # bye, bye
@@ -457,17 +459,17 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         s = 'bad'
         self.lbl_setup_result.setText(s)
 
-    def _click_icon_boat(self, _):
+    def click_icon_boat(self, _):
         c_log.debug('GUI: clicked secret bye!')
         self.closeEvent(_)
 
-    def _click_icon_plot(self, _):
+    def click_icon_plot(self, _):
         # requires shift key
         if not self.key_shift:
             return
         self.showMinimized()
 
-    def _click_icon_ble(self, _):
+    def click_icon_ble(self, _):
         # allow to click or not
         if not ctx.sw_ble_en:
             return
@@ -486,7 +488,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         s = 'GUI: secret BLE tap {}'.format(b)
         c_log.debug(s)
 
-    def _click_icon_gps(self, _):
+    def click_icon_gps(self, _):
         s = 'GUI: secret GPS tap {}'.format(self.bright_idx)
         c_log.debug(s)
 
@@ -495,7 +497,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
             v = self.bright_idx
             rpi_set_brightness(v)
 
-    def _click_icon_net(self, _):
+    def click_icon_net(self, _):
         # self.tab_edit_hide = not self.tab_edit_hide
         s = 'GUI: secret NET click'
         c_log.debug(s)
@@ -512,7 +514,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
             self.tabs.addTab(self.tab_edit_wgt_ref, icon, ' Setup')
             self.tabs.setCurrentIndex(3)
 
-    def _click_btn_dl_purge(self):
+    def click_btn_purge_dl_folder(self):
         s = 'sure to empty dl_files folder?'
         if _confirm_by_user(s):
             d = pathlib.Path(ctx.app_dl_folder)
@@ -527,7 +529,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
             except OSError as e:
                 print('error {} : {}'.format(d, e))
 
-    def _click_btn_his_purge(self):
+    def click_btn_purge_his_db(self):
         s = 'sure to purge history?'
         if _confirm_by_user(s):
             db = DBHis(ctx.db_his)
@@ -535,7 +537,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
             black_macs_delete_all(ctx.db_blk)
         self._populate_history_tab()
 
-    def _click_btn_load_current(self):
+    def click_btn_load_current_json_file(self):
         j = ctx.app_json_file
         ves = json_get_ship_name(j)
         f_t = json_get_forget_time_secs(j)

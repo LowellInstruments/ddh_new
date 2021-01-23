@@ -3,7 +3,7 @@ import time
 from wifi import Cell, exceptions
 import wifi
 
-from mat.linux import linux_is_rpi
+from mat.utils import linux_is_rpi
 
 
 def _get_known_wifi_names():

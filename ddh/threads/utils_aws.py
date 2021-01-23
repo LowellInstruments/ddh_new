@@ -93,7 +93,7 @@ def aws_ddh_sync(aws_name, aws_key_id, aws_secret, folder_to_sync, sig):
     # check there is a connection
     bkt_name = 'bkt-{}'.format(aws_name)
     if not check_connection_to_aws_s3(cli, bkt_name):
-        e = 'AWS: cannot connect S3 as \'{}\''
+        e = 'AWS: cannot connect S3 as user \'{}\''
         sig.emit(e.format(aws_name))
         return None
 
