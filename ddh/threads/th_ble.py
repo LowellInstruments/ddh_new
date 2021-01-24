@@ -107,7 +107,6 @@ def _download_loggers(w, h, macs, mb, mo, ft: tuple):
             t = ft_s if gps_in_land(lat, lon) else ft_sea_s
             _mac_to_black_list(mb, mo, mac, t)
 
-
         except ble.BTLEException as ex:
             # not ours, but bluepy exception
             _mac_to_orange_list(mo, mac)
@@ -134,7 +133,7 @@ def loop(w, ev_can_i_boot):
 
     while 1:
         if not ctx.ble_en:
-            w.sig_ble.ble_scan_pre('BLE: not scanning')
+            w.sig_ble.scan_pre.emit('not scanning')
             time.sleep(3)
             continue
 

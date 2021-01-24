@@ -1,7 +1,7 @@
 import time
 from ddh.settings import ctx
 from ddh.threads.utils import wait_boot_signal
-from ddh.threads.utils_aws import aws_get_credentials, aws_ddh_sync
+from ddh.threads.utils_aws import aws_credentials_get, aws_ddh_sync
 
 
 PERIOD_AWS = 300
@@ -10,7 +10,7 @@ PERIOD_AWS = 300
 def loop(w, ev_can_i_boot):
     assert (PERIOD_AWS >= 30)
     wait_boot_signal(w, ev_can_i_boot, 'AWS')
-    name, key_id, secret = aws_get_credentials()
+    name, key_id, secret = aws_credentials_get()
     fol = str(ctx.app_dl_folder)
 
     while 1:

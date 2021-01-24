@@ -1,6 +1,6 @@
 import queue
 import threading
-from ddh.threads.utils_aws import aws_assert_credentials
+from ddh.threads.utils_aws import aws_credentials_assert
 from ddh.threads.utils_macs import black_macs_delete_all
 import datetime
 import pathlib
@@ -110,7 +110,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.sig_cnv.update.connect(self.slot_gui_update_cnv)
         self.sig_gps.update.connect(self.slot_gui_update_gps_pos)
         self.sig_tim.update.connect(self.slot_gui_update_time)
-        self.sig_net.update.connect(self.slot_gui_update_net_via)
+        self.sig_net.update.connect(self.slot_gui_update_net_source)
         self.sig_plt.update.connect(self.slot_gui_update_plt)
         self.sig_aws.update.connect(self.slot_gui_update_aws)
         self.sig_plt.start.connect(self.slot_plt_start)
@@ -128,7 +128,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.sig_ble.dl_step.connect(self.slot_ble_dl_step)
         self.sig_ble.dl_warning.connect(self.slot_ble_dl_warning)
         self.sig_ble.logger_plot_req.connect(self.slot_ble_logger_plot_req)
-        self.sig_tim.via.connect(self.slot_gui_time_via)
+        self.sig_tim.via.connect(self.slot_gui_update_time_source)
 
         # app threads and queues
         evb = threading.Event()
@@ -190,8 +190,8 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
             s_n = json_get_ship_name(j)
             self.lbl_boatname.setText(s_n)
 
-    @pyqtSlot(str, name='slot_gui_time_via')
-    def slot_gui_time_via(self, s):
+    @pyqtSlot(str, name='slot_gui_update_time_source')
+    def slot_gui_update_time_source(self, s):
         _ = self.lbl_time_n_pos.text().split('\n')
         s = '{}\n{}\n{}\n{}'.format(s, _[1], _[2], _[3])
         self.lbl_time_n_pos.setText(s)
@@ -206,12 +206,12 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         ok = lon not in ['missing', 'searching', 'malfunction']
         update_gps_icon_land_sea(self, ok, lat, lon)
 
-    @pyqtSlot(str, name='slot_gui_update_net_via')
-    def slot_gui_update_net_via(self, via):
+    @pyqtSlot(str, name='slot_gui_update_net_source')
+    def slot_gui_update_net_source(self, s):
         # SSID_or_CELL
-        via = via.replace('\n', '')
+        s = s.replace('\n', '')
         _ = self.lbl_net_n_cloud.text().split('\n')
-        s = '{}\n{}'.format(via, _[1])
+        s = '{}\n{}'.format(s, _[1])
         self.lbl_net_n_cloud.setText(s)
 
     @pyqtSlot(str, name='slot_gui_update_aws')
@@ -334,14 +334,14 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
 
     @pyqtSlot(bool, str, str, name='slot_ble_logger_post')
     def slot_ble_logger_post(self, ok, s, mac):
-        x = 100 if ok else 0
-        self.bar_dl.setValue(x)
+        self.bar_dl.setValue(100 if ok else 0)
         self.lbl_ble.setText(s)
         if not ok:
             self.slot_his_update(mac, s, '')
 
     @pyqtSlot(str, name='slot_ble_logger_plot_req')
     def slot_ble_logger_plot_req(self, mac):
+        """ when asked to plot something """
         if not mac:
             s = 'no plot from last logger'
             self.slot_gui_update_plt(s)
@@ -401,7 +401,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
             s = '{}  {}'.format(m, n)
             self.lst_mac_org.addItem(s)
 
-    def click_btn_see_cur_macs_in_json_file(self):
+    def click_btn_see_macs_in_current_json_file(self):
         # loads (mac, name) pairs in ddh.json file
         self.lst_mac_org.clear()
         j = str(ctx.app_json_file)
@@ -620,7 +620,7 @@ def on_ctrl_c(signal_num, _):
 
 def _aws_credentials_check():
     if ctx.aws_en:
-        aws_assert_credentials()
+        aws_credentials_assert()
 
 
 class MplCanvas(FigureCanvasQTAgg):

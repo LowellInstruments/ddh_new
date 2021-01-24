@@ -95,7 +95,7 @@ def setup_buttons_gui(my_app):
     # buttons' connections
     a.btn_known_clear.clicked.connect(a.click_btn_clear_known_mac_list)
     a.btn_see_all.clicked.connect(a.click_btn_clear_see_all_macs)
-    a.btn_see_cur.clicked.connect(a.click_btn_see_cur_macs_in_json_file)
+    a.btn_see_cur.clicked.connect(a.click_btn_see_macs_in_current_json_file)
     a.btn_arrow.clicked.connect(a.click_btn_arrow_move_entries)
     a.btn_setup_apply.clicked.connect(a.click_btn_apply_write_json_file)
     a.btn_dl_purge.clicked.connect(a.click_btn_purge_dl_folder)

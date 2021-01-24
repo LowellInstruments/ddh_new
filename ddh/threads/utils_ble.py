@@ -239,6 +239,7 @@ def _logger_re_setup(lc, sig):
 
 
 def logger_download(mac, fol, hci_if, sig=None):
+    """ called by th_ble """
     try:
         # fixture to allow dummy loggers
         lc_ble_class = LoggerControllerBLE

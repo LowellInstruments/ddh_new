@@ -8,7 +8,7 @@ from ddh.threads.utils_wifi import worth_trying_sw_wifi
 
 
 SW_RELOAD = 10
-# set to 1 to not disturb boot
+# set 'countdown_sw_to_wifi' to 1 to not disturb boot
 countdown_sw_to_wifi = 1
 
 

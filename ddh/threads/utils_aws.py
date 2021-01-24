@@ -6,7 +6,7 @@ from boto3.exceptions import S3UploadFailedError
 from botocore.exceptions import ClientError, NoCredentialsError
 
 
-def aws_get_credentials():
+def aws_credentials_get():
     # bash: export DDH_AWS_NAME=whatever
     # pycharm: run configuration edit
     name = os.environ.get('DDH_AWS_NAME')
@@ -18,19 +18,11 @@ def aws_get_credentials():
     return name, key_id, secret
 
 
-def aws_assert_credentials():
-    return aws_get_credentials()
+def aws_credentials_assert():
+    return aws_credentials_get()
 
 
-def check_my_aws_s3_connection():
-    s3 = boto3.resource('s3')
-    bucket = s3.Bucket('bucket-to-test-connection')
-    if bucket.creation_date:
-        return True
-    return False
-
-
-def get_bucket_objects_keys_as_dict(cli, buk_name):
+def _get_bucket_objects_keys(cli, buk_name) -> dict:
     """ can return a filled dict, an empty dict or None """
     assert cli
     dict_objects = {}
@@ -47,7 +39,7 @@ def get_bucket_objects_keys_as_dict(cli, buk_name):
         return None
 
 
-def upload_objects_to_bucket(cli, usr_name, file_list: dict, buk_name):
+def _upload_objects_to_bucket(cli, usr_name, file_list: dict, buk_name):
     # file_list: {full_name: (size, short_name)}
     assert cli
     uploaded_ones = []
@@ -62,7 +54,7 @@ def upload_objects_to_bucket(cli, usr_name, file_list: dict, buk_name):
     return uploaded_ones
 
 
-def diff_dict_local_and_remote_objects(dlo, dro):
+def _diff_local_and_remote_objects(dlo, dro) -> dict:
     if not dro:
         dro = {}
     diff_dict = {}
@@ -78,7 +70,7 @@ def diff_dict_local_and_remote_objects(dlo, dro):
     return diff_dict
 
 
-def check_connection_to_aws_s3(cli, bkt_name):
+def aws_check_connection_to_s3(cli, bkt_name):
     try:
         cli.head_bucket(Bucket=bkt_name)
         return True
@@ -96,13 +88,13 @@ def aws_ddh_sync(aws_name, aws_key_id, aws_secret, folder_to_sync, sig):
 
     # check there is a connection
     bkt_name = 'bkt-{}'.format(aws_name)
-    if not check_connection_to_aws_s3(cli, bkt_name):
+    if not aws_check_connection_to_s3(cli, bkt_name):
         e = 'AWS: cannot connect S3 as user \'{}\''
         sig.emit(e.format(aws_name))
         return None
 
     # build dict of remote keys and sizes
-    dict_remote_objects = get_bucket_objects_keys_as_dict(cli, bkt_name)
+    dict_remote_objects = _get_bucket_objects_keys(cli, bkt_name)
 
     # build dict of local keys and sizes
     csv_local_keys = glob.glob(folder_to_sync + '/*/*.csv')
@@ -115,7 +107,7 @@ def aws_ddh_sync(aws_name, aws_key_id, aws_secret, folder_to_sync, sig):
 
     # see differences between local and remote dicts
     dlo, dro = dict_local_objects, dict_remote_objects
-    dict_diff = diff_dict_local_and_remote_objects(dlo, dro)
+    dict_diff = _diff_local_and_remote_objects(dlo, dro)
 
     # upload the local ones missing in remote bucket
-    return upload_objects_to_bucket(cli, aws_name, dict_diff, bkt_name)
+    return _upload_objects_to_bucket(cli, aws_name, dict_diff, bkt_name)
