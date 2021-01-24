@@ -1,8 +1,9 @@
 import os
 import boto3
 import glob
+from logzero import logger as logzero_logger
 from boto3.exceptions import S3UploadFailedError
-from botocore.exceptions import ClientError
+from botocore.exceptions import ClientError, NoCredentialsError
 
 
 def aws_get_credentials():
@@ -11,7 +12,9 @@ def aws_get_credentials():
     name = os.environ.get('DDH_AWS_NAME')
     key_id = os.environ.get('DDH_AWS_KEY_ID')
     secret = os.environ.get('DDH_AWS_SECRET')
-    assert (name and key_id and secret)
+
+    # todo: on production, re-enable this assert(AWS_NAME)
+    # assert (name and key_id and secret)
     return name, key_id, secret
 
 
@@ -79,7 +82,8 @@ def check_connection_to_aws_s3(cli, bkt_name):
     try:
         cli.head_bucket(Bucket=bkt_name)
         return True
-    except ClientError:
+    except (ClientError, NoCredentialsError) as e:
+        logzero_logger.error('AWS: connection error {}'.format(e))
         return False
 
 

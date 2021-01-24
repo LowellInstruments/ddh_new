@@ -16,7 +16,7 @@ import json
 from socket import AF_INET, SOCK_DGRAM
 import socket
 import struct
-
+from logzero import logger as logzero_logger
 
 
 def emit_status(sig, s):
@@ -271,7 +271,8 @@ def lid_to_csv(fol, suffix) -> (bool, list):
         except (ValueError, Exception) as ve:
             all_ok = False
             err_files.append(f)
-            print('error converting {} -> {}'.format(f, ve))
+            e = 'error converting {} -> {}'.format(f, ve)
+            logzero_logger.error(e)
 
     return all_ok, err_files
 
