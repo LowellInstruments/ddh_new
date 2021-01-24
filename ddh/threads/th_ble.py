@@ -1,7 +1,7 @@
 import os
 import bluepy.btle as ble
 import time
-from mat.logger_controller_ble import ble_scan
+from mat.logger_controller_ble import ble_scan, FAKE_MAC_CC26X2
 from ddh.settings import ctx
 from ddh.threads.utils import json_get_macs, json_get_forget_time_secs, json_get_hci_if, wait_boot_signal, \
     json_get_forget_time_at_sea_secs
@@ -62,6 +62,10 @@ def _scan_loggers(w, h, whitelist, mb, mo):
 
     # DDH macs -> w/o too recent bad ones
     li = mo.filter_orange_macs(li)
+
+    # testing, add at least one logger
+    # todo: _on production, remove this FAKE_MAC_CC26X2 scan
+    li.append(FAKE_MAC_CC26X2)
 
     # banner number of fresh loggers to be downloaded
     n = len(li)

@@ -219,9 +219,13 @@ def _mac_dns_no_case(j, mac):
 
 
 def json_mac_dns(j, mac):
+    """ find logger name for a mac """
     name = _mac_dns_no_case(j, mac.lower())
     if not name:
+        # make all these case insensitive
         name = _mac_dns_no_case(j, mac.upper())
+    if not name:
+        return '(unknown {})'.format(mac)
     return name
 
 

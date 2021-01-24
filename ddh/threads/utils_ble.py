@@ -2,7 +2,7 @@ import datetime
 import json
 import pathlib
 import time
-from mat.logger_controller_ble import LoggerControllerBLE, ERR_MAT_ANS
+from mat.logger_controller_ble import LoggerControllerBLE, ERR_MAT_ANS, FAKE_MAC_CC26X2
 from ddh.threads.utils import rm_folder, create_folder, exists_file, emit_status, emit_error
 from mat.logger_controller import (
     RWS_CMD,
@@ -10,6 +10,7 @@ from mat.logger_controller import (
 )
 from ddh.settings import ctx
 from ddh.threads.utils_gps_internal import gps_get_one_lat_lon_dt
+from mat.logger_controller_ble_dummy import LoggerControllerBLEDummyCC26x2
 
 
 def _time_to_display(t):
@@ -117,7 +118,7 @@ def _logger_get_files(lc, sig, folder, files):
     # skip files we already have locally
     for each in files.items():
         name = each[0]
-        size = each[1]
+        size = int(each[1])
 
         if size == 0:
             s = 'not downloading {}, size 0'.format(name)
@@ -222,6 +223,7 @@ def _logger_re_setup(lc, sig):
 
     # ensure MAT.cfg suitable for CFG command
     p = pathlib.Path(dff / 'MAT.cfg')
+    # todo: add for NO MAT.cfg file and JSONDECode error cases
     with open(p) as f:
         cfg_dict = json.load(f)
     if not cfg_dict:
@@ -238,7 +240,11 @@ def _logger_re_setup(lc, sig):
 
 def logger_download(mac, fol, hci_if, sig=None):
     try:
-        with LoggerControllerBLE(mac, hci_if) as lc:
+        LCBLEClass = LoggerControllerBLE
+        if mac in [FAKE_MAC_CC26X2]:
+            LCBLEClass = LoggerControllerBLEDummyCC26x2
+
+        with LCBLEClass(mac, hci_if) as lc:
             # g-> (lat, lon, datetime object)
             g = gps_get_one_lat_lon_dt()
             _logger_sws(lc, sig, g)
