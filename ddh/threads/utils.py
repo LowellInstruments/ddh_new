@@ -243,10 +243,10 @@ def mac_from_folder(fol):
         return None
 
 
-def lid_to_csv(fol, suffix) -> (bool, list):
+def lid_to_csv(fol, suffix, files_to_ignore=[]) -> (bool, list):
     """ convert depending on if fileX_suffix.lid exists """
     # valid_suffixes = ('_DissolvedOxygen', '_Temperature', '_Pressure')
-    valid_suffixes = ('_DissolvedOxygen')
+    valid_suffixes = ('_DissolvedOxygen', )
     assert suffix in valid_suffixes
 
     if not os.path.exists(fol):
@@ -259,6 +259,9 @@ def lid_to_csv(fol, suffix) -> (bool, list):
     all_ok = True
 
     for f in lid_files:
+        # prevents continuous warnings on same files
+        if f in files_to_ignore:
+            continue
         _ = '{}{}.csv'.format(f.split('.')[0], suffix)
         if os.path.exists(_):
             # print('file {} already exists'.format(_))
@@ -267,7 +270,8 @@ def lid_to_csv(fol, suffix) -> (bool, list):
         try:
             # todo: ask Jeff for early leave if metric not in header, otherwise very slow
             DataConverter(f, parameters).convert()
-            # print('{} -> {} OK'.format(f, suffix))
+            s = 'converted OK -> {}'.format(f)
+            logzero_logger.error(s)
         except (ValueError, Exception) as ve:
             all_ok = False
             err_files.append(f)

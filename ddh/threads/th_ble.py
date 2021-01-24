@@ -54,6 +54,10 @@ def _scan_loggers(w, h, whitelist, mb, mo):
     # scan results format -> [strings]
     li = bluepy_scan_results_to_strings(near)
 
+    # testing, add at least one logger
+    # todo: _on production, remove this FAKE_MAC_CC26X2 scan
+    li.append(FAKE_MAC_CC26X2)
+
     # any BLE mac -> DDH known macs
     li = filter_white_macs(whitelist, li)
 
@@ -62,10 +66,6 @@ def _scan_loggers(w, h, whitelist, mb, mo):
 
     # DDH macs -> w/o too recent bad ones
     li = mo.filter_orange_macs(li)
-
-    # testing, add at least one logger
-    # todo: _on production, remove this FAKE_MAC_CC26X2 scan
-    li.append(FAKE_MAC_CC26X2)
 
     # banner number of fresh loggers to be downloaded
     n = len(li)

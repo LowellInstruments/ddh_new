@@ -227,7 +227,7 @@ def plot(sig, fol, ax, ts, metric_pair, sd, lg):
     s = 'PLT: plotting {}({}) for {}'.format(m_p, ts, f)
     emit_status(sig, s)
 
-    # pair metric #1, required, query database
+    # metric 1 of 2, required, query database
     try:
         t, y0 = _cache_or_process(sig, fol, ts, m_p[0], sd)
     except (AttributeError, Exception) as ex:
@@ -237,7 +237,7 @@ def plot(sig, fol, ax, ts, metric_pair, sd, lg):
         # print(ex)
         return False
 
-    # pair metric #2, not always required, query database
+    # metric 2 of 2, not always required, query database
     try:
         _, y1 = _cache_or_process(sig, fol, ts, m_p[1], sd)
     except (AttributeError, Exception):
@@ -254,55 +254,54 @@ def plot(sig, fol, ax, ts, metric_pair, sd, lg):
         emit_msg(sig, m)
         return False
 
-    # pair metric #1, get axis
+    # metric 1 of 2, get axis
     ax.figure.clf()
     ax.figure.tight_layout()
-    ax1 = ax.figure.add_subplot(111)
+    ax0 = ax.figure.add_subplot(111)
 
-    # pair metric #1, hack for Fahrenheits T display
+    # metric 1 of 2, hack for Fahrenheits T display
     if y0 and l0 == 'DO Temperature (C)' and ctx.plt_units == 'F':
         l0 = 'DO Temperature (F)'
         y0 = [((i * 9 / 5) + 32) for i in y1]
 
-    # pair metric #1, hack for P / depth display
+    # metric 1 of 2, hack for P / depth display
     if y0 and l0 == 'Depth (m)':
-        ax1.invert_yaxis()
+        ax0.invert_yaxis()
 
-    # pair metric #1, plot
+    # metric 1 of 2, plot
     tit = _fmt_title(t, ts)
     sym = '{} '.format('\u2014')
-    ax1.set_ylabel(sym + l0, fontsize='large', fontweight='bold', color=clr0)
-    ax1.tick_params(axis='y', labelcolor=clr0)
-    ax1.plot(t, y0, label=l0, color=clr0)
-    ax1.set_xlabel('time', fontsize='large', fontweight='bold')
-    ax1.set_title('Logger ' + lg + ', ' + tit, fontsize='x-large')
+    ax0.set_ylabel(sym + l0, fontsize='large', fontweight='bold', color=clr0)
+    ax0.tick_params(axis='y', labelcolor=clr0)
+    ax0.plot(t, y0, label=l0, color=clr0)
+    ax0.set_xlabel('time', fontsize='large', fontweight='bold')
+    ax0.set_title('Logger ' + lg + ', ' + tit, fontsize='x-large')
     lbs = _fmt_x_ticks(t, ts, sd)
 
-
-    # pair metric #2, not always present, get axis
+    # metric 2 of 2, not always present, get axis
     if y1:
-        ax2 = ax1.twinx()
+        ax1 = ax0.twinx()
 
-        # pair metric #2, hack for Fahrenheits T display
+        # metric 2 of 2, hack for Fahrenheits T display
         if y1 and l1 == 'DO Temperature (C)' and ctx.plt_units == 'F':
             l1 = 'DO Temperature (F)'
             y1 = [((i * 9 / 5) + 32) for i in y1]
 
-        # pair metric #2, hack for P / depth display
+        # metric 2 of 2, hack for P / depth display
         if l1 == 'Depth (m)':
-            ax2.invert_yaxis()
+            ax1.invert_yaxis()
 
-        # pair metric #2, plot
+        # metric 2 of 2, plot
         sym = '- -  '
-        ax2.set_ylabel(sym + l1, fontsize='large', fontweight='bold', color=clr1)
-        ax2.tick_params(axis='y', labelcolor=clr1)
-        ax2.plot(t, y1, '--', label=l1, color=clr1)
-        ax2.set_xticks(lbs)
+        ax1.set_ylabel(sym + l1, fontsize='large', fontweight='bold', color=clr1)
+        ax1.tick_params(axis='y', labelcolor=clr1)
+        ax1.plot(t, y1, '--', label=l1, color=clr1)
+        ax1.set_xticks(lbs)
 
     # common labels MUST be formatted here, at the end
     # cnv.figure.legend(bbox_to_anchor=[0.9, 0.5], loc='center right')
-    ax1.set_xticklabels(_fmt_x_labels(lbs, ts, sd))
-    ax1.set_xticks(lbs)
+    ax0.set_xticklabels(_fmt_x_labels(lbs, ts, sd))
+    ax0.set_xticks(lbs)
     cnv = ax.figure.canvas
     cnv.draw()
     return True

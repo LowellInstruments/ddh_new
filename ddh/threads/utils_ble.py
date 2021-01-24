@@ -165,7 +165,7 @@ def _logger_get_files(lc, sig, folder, files):
     # logger was downloaded ok
     _ = 'almost done, '
     if got > 0:
-        s = 'we got {} file(s)'.format(got)
+        s = 'got {} file(s)'.format(got)
     elif got == 0:
         s = 'no files to get'
     else:
@@ -240,11 +240,12 @@ def _logger_re_setup(lc, sig):
 
 def logger_download(mac, fol, hci_if, sig=None):
     try:
-        LCBLEClass = LoggerControllerBLE
+        # fixture to allow dummy loggers
+        lc_ble_class = LoggerControllerBLE
         if mac in [FAKE_MAC_CC26X2]:
-            LCBLEClass = LoggerControllerBLEDummyCC26x2
+            lc_ble_class = LoggerControllerBLEDummyCC26x2
 
-        with LCBLEClass(mac, hci_if) as lc:
+        with lc_ble_class(mac, hci_if) as lc:
             # g-> (lat, lon, datetime object)
             g = gps_get_one_lat_lon_dt()
             _logger_sws(lc, sig, g)

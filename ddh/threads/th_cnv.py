@@ -13,10 +13,11 @@ def loop(w, ev_can_i_boot, pre_rm=False):
     fol = str(ctx.app_dl_folder)
     pre_rm_csv(fol, pre_rm)
 
+    e = []
     while 1:
         ctx.sem_ble.acquire()
         ctx.sem_plt.acquire()
-        _, e = lid_to_csv(fol, '_DissolvedOxygen')
+        _, e = lid_to_csv(fol, '_DissolvedOxygen', e)
         # _, e = lid_to_csv(fol, '_Temperature')
         # _, e = lid_to_csv(fol, '_Pressure')
         w.sig_cnv.update.emit(e)
