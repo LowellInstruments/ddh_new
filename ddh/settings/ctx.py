@@ -45,6 +45,7 @@ sw_aws_en = True
 ble_en = True
 sw_ble_en = True
 macs_lists_pre_rm = True
+dummy_ti_logger = True
 
 
 def only_one_instance(name):

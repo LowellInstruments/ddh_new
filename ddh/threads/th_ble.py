@@ -55,8 +55,8 @@ def _scan_loggers(w, h, whitelist, mb, mo):
     li = bluepy_scan_results_to_strings(near)
 
     # testing, add at least one logger
-    # todo: _on production, remove this FAKE_MAC_CC26X2 scan
-    li.append(FAKE_MAC_CC26X2)
+    if ctx.dummy_ti_logger:
+        li.append(FAKE_MAC_CC26X2)
 
     # any BLE mac -> DDH known macs
     li = filter_white_macs(whitelist, li)
