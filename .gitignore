@@ -1,5 +1,6 @@
 ddh.lo*
 *.db
+ddh/dl_files/*
 
 
 # Byte-compiled / optimized / DLL files
