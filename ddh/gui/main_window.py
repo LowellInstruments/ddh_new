@@ -50,6 +50,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
 
     def __init__(self):
         _aws_credentials_check()
+        _sudo_permissions_check()
 
         # gui: view
         super(DDHQtApp, self).__init__()
@@ -621,6 +622,12 @@ def on_ctrl_c(signal_num, _):
 def _aws_credentials_check():
     if ctx.aws_en:
         aws_credentials_assert()
+
+
+def _sudo_permissions_check():
+    if not 'SUDO_UID' in os.environ.keys():
+        print('bluetooth requires root permissions')
+        os._exit(1)
 
 
 class MplCanvas(FigureCanvasQTAgg):
