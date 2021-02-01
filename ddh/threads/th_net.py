@@ -1,6 +1,6 @@
 import time
 from ddh.threads.utils import wait_boot_signal
-from ddh.threads.utils_net import check_net_best, ensure_resolv_conf, get_ssid
+from ddh.threads.utils_net import net_check_connectivity, net_ensure_my_resolv_conf, net_get_my_wlan_ssid
 from ddh.settings import ctx
 from mat.utils import linux_is_rpi
 
@@ -13,15 +13,15 @@ def loop(w, ev_can_i_boot):
 
     while 1:
         if not linux_is_rpi():
-            s = '{}'.format(get_ssid())
+            s = '{}'.format(net_get_my_wlan_ssid())
             w.sig_net.update.emit(s)
-            time.sleep(60)
+            time.sleep(NET_PERIOD)
             continue
 
         ctx.sem_ble.acquire()
         ctx.sem_aws.acquire()
-        ensure_resolv_conf()
-        check_net_best(w.sig_net)
+        net_ensure_my_resolv_conf()
+        net_check_connectivity(w.sig_net)
         ctx.sem_aws.release()
         ctx.sem_ble.release()
         time.sleep(NET_PERIOD)

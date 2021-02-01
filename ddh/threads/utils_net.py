@@ -2,21 +2,15 @@ import ipaddress
 import socket
 import subprocess as sp
 import time
-
+import wifi
+from wifi import Cell, exceptions
 from ddh.threads.utils import emit_status, emit_update
-from ddh.threads.utils_wifi import worth_trying_sw_wifi
+from mat.utils import linux_is_rpi
 
 
-SW_RELOAD = 10
-# set 'countdown_sw_to_wifi' to 1 to not disturb at boot
-countdown_sw_to_wifi = 1
-
-
-def ensure_resolv_conf():
-    # file resolv.conf may get written, restore it w/ good one
-    s = 'sudo bash -c \'echo '
-    s += '"nameserver 8.8.8.8" > /etc/resolv.conf\''
-    _shell(s)
+# set to 1 to not disturb at boot
+_net_sw_wifi_countdown = 1
+_NET_MAX_SW_WIFI_COUNTDOWN = 10
 
 
 def _shell(s):
@@ -24,43 +18,99 @@ def _shell(s):
     return rv.returncode
 
 
-def _switch_net_to_cell():
+def _net_set_via_to_internet_as_cell():
     _shell('sudo ifmetric ppp0 0')
 
 
-def _switch_net_to_wifi():
+def _net_set_via_to_internet_as_wifi():
     _shell('sudo ifmetric ppp0 400')
 
 
-def _switch_net(sig, org=None):
-    global countdown_sw_to_wifi
-    ensure_resolv_conf()
+def _net_get_my_wlan_ssid() -> str:
+    c = 'iwgetid -r'
+    s = sp.run(c, shell=True, stdout=sp.PIPE)
+    return s.stdout.decode().rstrip('\n')
+
+
+def net_get_my_wlan_ssid():
+    return _net_get_my_wlan_ssid()
+
+
+def _net_get_known_wifi_names():
+    try:
+        c = 'wpa_cli list_networks'
+        s = sp.run(c, shell=True, stdout=sp.PIPE)
+        s = s.stdout.decode().rstrip('\n')
+        return s
+    except OSError:
+        return ''
+
+
+def _net_get_nearby_wlan_ssids(interface: str):
+    try:
+        wn = []
+        around = Cell.all(interface)
+        for _ in around:
+            if _.ssid != '':
+                wn.append(_.ssid)
+        return wn
+    except wifi.exceptions.InterfaceError:
+        e = 'interface {} exists?'.format(interface)
+        print(e)
+        return None
+
+
+def _net_is_worth_trying_sw_wifi(interface: str) -> bool:
+    if not linux_is_rpi():
+        print('no RPI system, no wpa_supplicant')
+        return False
+
+    kn = _net_get_known_wifi_names()
+    an = _net_get_nearby_wlan_ssids(interface)
+
+    if an is None:
+        # interface wi-fi error, sure to try switching
+        return True
+
+    for _ in an:
+        if _ in kn:
+            return True
+    return False
+
+
+def _net_switch_via_to_internet(sig, org=None):
+    global _net_sw_wifi_countdown
+    net_ensure_my_resolv_conf()
 
     assert org in ('none', 'cell')
     if org == 'none':
         # no network at all, so try cell w/ full counter
-        countdown_sw_to_wifi = SW_RELOAD
+        _net_sw_wifi_countdown = _NET_MAX_SW_WIFI_COUNTDOWN
         emit_status(sig, 'no network, trying none -> cell')
-        _switch_net_to_cell()
+        _net_set_via_to_internet_as_cell()
         return
 
     # we are cell
-    i = countdown_sw_to_wifi * SW_RELOAD
-    # todo: check this print seconds calculation, since it may be wrong
-    s = 'countdown_to_switch_to_wifi is {}s'.format(i)
-    emit_status(sig, s.format(countdown_sw_to_wifi))
-    if countdown_sw_to_wifi == 0:
-        if worth_trying_sw_wifi('wlan0'):
+    s = '{} steps left to try a switch to wi-fi'
+    emit_status(sig, s.format(_net_sw_wifi_countdown))
+    if _net_sw_wifi_countdown == 0:
+        _net_sw_wifi_countdown = _NET_MAX_SW_WIFI_COUNTDOWN
+        if _net_is_worth_trying_sw_wifi('wlan0'):
             emit_status(sig, 'trying cell -> wifi')
-            _switch_net_to_wifi()
+            _net_set_via_to_internet_as_wifi()
         else:
             s = 'NET: unworthy trying cell -> wifi'
             emit_status(sig, s)
-    if countdown_sw_to_wifi >= 1:
-        countdown_sw_to_wifi -= 1
+    if _net_sw_wifi_countdown >= 1:
+        _net_sw_wifi_countdown -= 1
 
 
-def _get_ip():
+def _net_get_my_ip_to_internet():
+    """
+    returns '169.x' (zeroconf), '192.x / 10.x' (wi-fi),
+    25.x' (cell) or None
+    """
+
     try:
         sk = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     except (OSError, Exception) as ex:
@@ -70,7 +120,6 @@ def _get_ip():
     address = ('8.8.8.8', 80)
     try:
         sk.connect(address)
-        # zeroconf (169.), wi-fi (192. / 10.), cell (25.x)
         rv = sk.getsockname()[0]
     except OSError as oe:
         print('OSerror {}'.format(oe))
@@ -83,8 +132,10 @@ def _get_ip():
     return rv
 
 
-def _get_net_type() -> str:
-    ip_s = _get_ip()
+def _net_get_via_to_internet() -> str:
+    """ returns 'wifi', 'cell' or 'none' """
+
+    ip_s = _net_get_my_ip_to_internet()
 
     # when zero-conf address, ensure interface is up
     if ip_s and ip_s.startswith('169.'):
@@ -102,43 +153,39 @@ def _get_net_type() -> str:
 
     # some internet connection
     my_ip = ipaddress.ip_address(ip_s)
-    if my_ip.is_private:
-        # wi-fi, so re-set to cell w/ full counter
-        global countdown_sw_to_wifi
-        countdown_sw_to_wifi = SW_RELOAD
-        return 'wifi'
-    return 'cell'
+    return 'wifi' if my_ip.is_private else 'cell'
 
 
-def _get_ssid() -> str:
-    c = 'iwgetid -r'
-    s = sp.run(c, shell=True, stdout=sp.PIPE)
-    return s.stdout.decode().rstrip('\n')
-
-
-def get_ssid():
-    return _get_ssid()
-
-
-def check_net_best(sig=None):
+def net_check_connectivity(sig=None):
     """
     preferred: wi-fi > cell > no net
     check: RFKill on wi-fi
     """
-    nt = _get_net_type()
+
+    nt = _net_get_via_to_internet()
     if nt == 'wifi':
-        ssid = _get_ssid()
+        global _net_sw_wifi_countdown
+        _net_sw_wifi_countdown = _NET_MAX_SW_WIFI_COUNTDOWN
+        ssid = _net_get_my_wlan_ssid()
         emit_update(sig, '{}'.format(ssid))
         emit_status(sig, 'NET: wi-fi {}'.format(ssid))
         return
 
-    _switch_net(sig, org=nt)
+    # in case via is 'cell' or 'none'
+    _net_switch_via_to_internet(sig, org=nt)
     emit_update(sig, '{}'.format(nt))
     emit_update(sig, 'NET: {}'.format(nt))
 
 
+def net_ensure_my_resolv_conf():
+    # file resolv.conf may get written, restore it w/ good one
+    s = 'sudo bash -c \'echo '
+    s += '"nameserver 8.8.8.8" > /etc/resolv.conf\''
+    _shell(s)
+
+
 if __name__ == '__main__':
-    ensure_resolv_conf()
+    net_ensure_my_resolv_conf()
     while 1:
-        check_net_best()
+        net_check_connectivity()
         time.sleep(5)
