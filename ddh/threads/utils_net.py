@@ -8,7 +8,7 @@ from ddh.threads.utils_wifi import worth_trying_sw_wifi
 
 
 SW_RELOAD = 10
-# set 'countdown_sw_to_wifi' to 1 to not disturb boot
+# set 'countdown_sw_to_wifi' to 1 to not disturb at boot
 countdown_sw_to_wifi = 1
 
 
@@ -46,6 +46,7 @@ def _switch_net(sig, org=None):
 
     # we are cell
     i = countdown_sw_to_wifi * SW_RELOAD
+    # todo: check this print seconds calculation, since it may be wrong
     s = 'countdown_to_switch_to_wifi is {}s'.format(i)
     emit_status(sig, s.format(countdown_sw_to_wifi))
     if countdown_sw_to_wifi == 0:
