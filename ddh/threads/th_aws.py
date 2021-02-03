@@ -23,12 +23,15 @@ def loop(w, ev_can_i_boot):
         ctx.sem_aws.acquire()
         w.sig_aws.status.emit('AWS: syncing {}'.format(fol))
         sig = w.sig_aws.error
-        synced_files = aws_ddh_sync(name, key_id, secret, fol, sig)
-        s = 'OK' if type(synced_files) is list else 'ERR'
+
+        # sf means 'synced_files'
+        sf = aws_ddh_sync(name, key_id, secret, fol, sig)
+        s = 'OK' if type(sf) is list else 'ERR'
         w.sig_aws.update.emit('AWS {}'.format(s))
         ctx.sem_aws.release()
         ctx.sem_ble.release()
-        synced_files = [] if synced_files is None else synced_files
-        for each in synced_files:
+
+        sf = [] if sf is None else sf
+        for each in sf:
             w.sig_aws.status.emit('AWS: uploaded {}'.format(each))
         time.sleep(PERIOD_AWS)

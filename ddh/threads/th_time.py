@@ -29,7 +29,6 @@ def loop(w, ev_can_i_boot):
         idx = (idx + 1) % len(symbols)
         w.sig_tim.update.emit(symbols[idx])
 
-
         # things to do often but not always
         if ctx.sem_ble.acquire(blocking=False):
             if steps >= TIME_SYNC_PERIOD_S:
