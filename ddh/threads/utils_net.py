@@ -8,9 +8,11 @@ from ddh.threads.utils import emit_status, emit_update
 from mat.utils import linux_is_rpi
 
 
-# set to 1 to not disturb at boot
+# multiplies sleep (TH_NET_PERIOD_S) in thread code
+_NET_MAX_SW_WIFI_COUNTDOWN = 5
+
+# initially set to 1 to not disturb during DDH boot
 _net_sw_wifi_countdown = 1
-_NET_MAX_SW_WIFI_COUNTDOWN = 10
 
 
 def _shell(s):
@@ -26,17 +28,17 @@ def _net_set_via_to_internet_as_wifi():
     _shell('sudo ifmetric ppp0 400')
 
 
-def _net_get_my_wlan_ssid() -> str:
+def _net_get_my_current_wlan_ssid() -> str:
     c = 'iwgetid -r'
     s = sp.run(c, shell=True, stdout=sp.PIPE)
     return s.stdout.decode().rstrip('\n')
 
 
-def net_get_my_wlan_ssid():
-    return _net_get_my_wlan_ssid()
+def net_get_my_current_wlan_ssid():
+    return _net_get_my_current_wlan_ssid()
 
 
-def _net_get_known_wifi_names():
+def _net_get_known_wlan_ssids():
     try:
         c = 'wpa_cli list_networks'
         s = sp.run(c, shell=True, stdout=sp.PIPE)
@@ -62,10 +64,10 @@ def _net_get_nearby_wlan_ssids(interface: str):
 
 def _net_is_worth_trying_sw_wifi(interface: str) -> bool:
     if not linux_is_rpi():
-        print('no RPI system, no wpa_supplicant')
+        print('no RPI system, no wpa_cli')
         return False
 
-    kn = _net_get_known_wifi_names()
+    kn = _net_get_known_wlan_ssids()
     an = _net_get_nearby_wlan_ssids(interface)
 
     if an is None:
@@ -81,16 +83,17 @@ def _net_is_worth_trying_sw_wifi(interface: str) -> bool:
 def _net_switch_via_to_internet(sig, org=None):
     global _net_sw_wifi_countdown
     net_ensure_my_resolv_conf()
-
     assert org in ('none', 'cell')
+
+    # network: none at all, try switching to cell
     if org == 'none':
-        # no network at all, so try cell w/ full counter
-        _net_sw_wifi_countdown = _NET_MAX_SW_WIFI_COUNTDOWN
         emit_status(sig, 'no network, trying none -> cell')
         _net_set_via_to_internet_as_cell()
+        # optimistic countdown reload for next loop, maybe will be cell
+        _net_sw_wifi_countdown = _NET_MAX_SW_WIFI_COUNTDOWN
         return
 
-    # we are cell
+    # network: we are cell
     s = '{} steps left to try a switch to wi-fi'
     emit_status(sig, s.format(_net_sw_wifi_countdown))
     if _net_sw_wifi_countdown == 0:
@@ -108,7 +111,7 @@ def _net_switch_via_to_internet(sig, org=None):
 def _net_get_my_ip_to_internet():
     """
     returns '169.x' (zeroconf), '192.x / 10.x' (wi-fi),
-    25.x' (cell) or None
+    '25.x' (cell) or None
     """
 
     try:
@@ -117,15 +120,15 @@ def _net_get_my_ip_to_internet():
         print('SYS: ' + str(ex))
         return
 
-    address = ('8.8.8.8', 80)
+    adr = ('8.8.8.8', 80)
     try:
-        sk.connect(address)
+        sk.connect(adr)
         rv = sk.getsockname()[0]
     except OSError as oe:
         print('OSerror {}'.format(oe))
         rv = None
 
-    if sk.connect_ex(address):
+    if sk.connect_ex(adr):
         sk.shutdown(socket.SHUT_RDWR)
         sk.close()
 
@@ -135,25 +138,25 @@ def _net_get_my_ip_to_internet():
 def _net_get_via_to_internet() -> str:
     """ returns 'wifi', 'cell' or 'none' """
 
-    ip_s = _net_get_my_ip_to_internet()
+    ip = _net_get_my_ip_to_internet()
 
     # when zero-conf address, ensure interface is up
-    if ip_s and ip_s.startswith('169.'):
+    if ip and ip.startswith('169.'):
         _shell('sudo ifconfig wlan0 down')
         _shell('sudo ifconfig wlan0 up')
         time.sleep(5)
 
     # no internet, or zero-conf address
-    if not ip_s:
+    if not ip:
         return 'none'
-    if ip_s.startswith('0.0.0.0'):
+    if ip.startswith('0.0.0.0'):
         return 'none'
-    if ip_s.startswith('169.'):
+    if ip.startswith('169.'):
         return 'none'
 
-    # some internet connection
-    my_ip = ipaddress.ip_address(ip_s)
-    return 'wifi' if my_ip.is_private else 'cell'
+    # some valid internet IP address
+    _ = ipaddress.ip_address(ip)
+    return 'wifi' if _.is_private else 'cell'
 
 
 def net_check_connectivity(sig=None):
@@ -162,11 +165,12 @@ def net_check_connectivity(sig=None):
     check: RFKill on wi-fi
     """
 
+    global _net_sw_wifi_countdown
     nt = _net_get_via_to_internet()
+
     if nt == 'wifi':
-        global _net_sw_wifi_countdown
         _net_sw_wifi_countdown = _NET_MAX_SW_WIFI_COUNTDOWN
-        ssid = _net_get_my_wlan_ssid()
+        ssid = _net_get_my_current_wlan_ssid()
         emit_update(sig, '{}'.format(ssid))
         emit_status(sig, 'NET: wi-fi {}'.format(ssid))
         return
