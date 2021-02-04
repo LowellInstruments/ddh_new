@@ -2,7 +2,7 @@ import datetime
 import json
 import pathlib
 import time
-from mat.logger_controller_ble import LoggerControllerBLE, ERR_MAT_ANS, FAKE_MAC_CC26X2
+from mat.logger_controller_ble import ERR_MAT_ANS
 from ddh.threads.utils import rm_folder, create_folder, exists_file, emit_status, emit_error
 from mat.logger_controller import (
     RWS_CMD,
@@ -10,7 +10,7 @@ from mat.logger_controller import (
 )
 from ddh.settings import ctx
 from ddh.threads.utils_gps_internal import gps_get_one_lat_lon_dt
-from mat.logger_controller_ble_dummy import LoggerControllerBLEDummyCC26x2
+from mat.logger_controller_ble_factory import LcBLEFactory
 
 
 def _time_to_display(t):
@@ -241,12 +241,9 @@ def _logger_re_setup(lc, sig):
 def logger_download(mac, fol, hci_if, sig=None):
     """ called by th_ble """
     try:
-        # fixture to allow dummy loggers
-        lc_ble_class = LoggerControllerBLE
-        if mac in [FAKE_MAC_CC26X2]:
-            lc_ble_class = LoggerControllerBLEDummyCC26x2
-
-        with lc_ble_class(mac, hci_if) as lc:
+        # real or dummy loggers, all welcome via Factory
+        lc = LcBLEFactory.generate(mac)
+        with lc(mac, hci_if) as lc:
             # g-> (lat, lon, datetime object)
             g = gps_get_one_lat_lon_dt()
             _logger_sws(lc, sig, g)
