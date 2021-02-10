@@ -1,7 +1,7 @@
 import time
 from datetime import datetime
 import serial
-from mat.gps_quectel import gps_parse_rmc_frame, PORT_DATA, enable_gps_quectel_output
+#from mat.gps_quectel import gps_parse_rmc_frame, PORT_DATA, enable_gps_quectel_output
 import fiona
 import cartopy.io.shapereader as shpreader
 import shapely.geometry as sgeom

@@ -1,3 +1,6 @@
+.. _sw-using:
+
+
 Using it
 ########
 
@@ -8,9 +11,10 @@ The third tab is a history log displaying when and where each logger was last se
 
 
 The first tab has 4 icons. Each icon displays the result of a thread in the source code.
-The first icon is the GPS icon. This may be disabled, brown, when the DDH is not at sea,
+The first icon is the GPS icon. This icon may be colored grey, when
+no GPS signal is detected, brown, when the DDH is not at sea,
 or blue, when it is. Next to it, we display GPS position and time. The DDH can synchronize
-its time via GPS or NTP, this is shown here too.
+its time via GPS or NTP, this information is shown here, too.
 
 
 .. image:: img_gps_land.png
@@ -45,8 +49,8 @@ shows the status of the cloud file upload synchronization.
 
 
 Finally, the fourth and last icon is about the data files downloaded from the loggers.
-Such files have .lid extension and are binary. Once the DDH has them locally,
-it will try to convert them to .csv, as well as plot a summary of them. This icon
+Such files have `'.lid`' extension and are binary. Once the DDH has them locally,
+it will try to convert them to `'.csv`', as well as plot a summary of them. This icon
 will show the status of both operations.
 
 

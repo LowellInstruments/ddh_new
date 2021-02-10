@@ -13,11 +13,11 @@ the code about the Internet connectivity feature of the DDH, that is, the code b
     :alt: alternate text
     :figclass: align-center
 
-    Network connectivity icon
+    Internet connectivity icon
 
 
-The code for the networking feature is in 2 files, so called th_net.py and utils_net.py. The former
-is about the behavior, what the networking feature does. The latter is about the how. The th_net.py file
+The code for the networking feature is in 2 files, so called `'th_net.py`' and `'utils_net.py`'. The former
+is about the behavior, what the networking feature does. The latter is about the how. The `'th_net.py`' file
 consists of a single function, which executes forever the same task, without blocking. The networking
 feature is about choosing the most economic way to keep internet connectivity. Thus, the DDH will try to
 use wi-fi whenever possible. If this is not possible, for example when the DDH is on a vessel at sea
@@ -64,11 +64,11 @@ connectivity every second, we can do this, for example, every 2 minutes, that is
 
 
 The core line in this snippet is line 13, which already resides in the net_utils.py file. As mentioned,
-files which name starts with 'th_code' represent what the code does, while file names ending with
-'code_utils.py' files represent how the code does it.
+files which name starts with `''th_code'`' represent what the code does, while file names ending with
+`''code_utils.py'`' files represent how the code does it.
 
 
-Let's see file 'net_utils.py' next.
+Let's see file `'net_utils.py`' next.
 
 
  .. code-block:: python
@@ -101,9 +101,9 @@ If wi-fi connectivity is not available, line 11 attempts a switch to cell connec
 code is not intended to be modified, its complexity is about the same of the shown in this page.
 
 
-Similarly, other threads such as 'th_ble.py' contain what is to be done in terms of Bluetooth Low Energy, such
+Similarly, other threads such as `'th_ble.py`' contain what is to be done in terms of Bluetooth Low Energy, such
 as detecting and downloading loggers, as we show in the following snippet in lines 4 and 9. In this case, and accordingly
-to what we just explained, the how-to-do-it code of such thread resides in the file 'utils_ble.py'.
+to what we just explained, the how-to-do-it code of such thread resides in the file `'utils_ble.py`'.
 
 
  .. code-block:: python

@@ -39,6 +39,6 @@ The rest of this Software section introduces DDH configuration and development.
 .. toctree::
    :maxdepth: 3
 
-   sw_operating
-   sw_configuring
-   sw_developing
+   sw-using
+   sw-configuring
+   sw-developing

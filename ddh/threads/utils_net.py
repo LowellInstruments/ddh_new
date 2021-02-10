@@ -5,11 +5,10 @@ import time
 import wifi
 from wifi import Cell, exceptions
 from ddh.threads.utils import emit_status, emit_update
+from mat.utils import linux_is_rpi
 
 
 # multiplies sleep (TH_NET_PERIOD_S) in thread code
-from mat.linux import linux_is_rpi
-
 _NET_MAX_SW_WIFI_COUNTDOWN = 5
 
 # initially set to 1 to not disturb during DDH boot
