@@ -125,4 +125,4 @@ to what we just explained, the how-to-do-it code of such thread resides in the f
 The `'macs'` variable is the one containing the loggers that are going to be queried, and downloaded.
 This `'scan_loggers'` function already filtered the loggers already done recently.
 For the sake of clarity, in this snippet we have omitted some variables collection. For example, the variable
-`'h'` corresponds to the HCI interface explained in the DDH configuration section: :ref:`sw-configuring`
+`'h'` corresponds to the HCI interface explained in the DDH configuration section: :ref:`sw-configuring`.

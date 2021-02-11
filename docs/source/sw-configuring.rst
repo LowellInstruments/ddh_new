@@ -1,8 +1,5 @@
 .. _sw-configuring:
 
-..
-   use a - in labels not a _ or it does not work
-
 
 Configuring it
 ##############
@@ -27,7 +24,7 @@ In the following snippet, we highlight the most important lines.
         "forget_time_at_sea": 900,
         "units": "F",
         "hci_if": 0,
-        ...
+        "comment": ".... here comes more stuff but we skipped it"
         }
     }
 

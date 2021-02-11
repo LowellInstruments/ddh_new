@@ -36,8 +36,9 @@ the `MAT library github page <https://github.com/LowellInstruments/lowell-mat>`_
 
 The rest of this Software section introduces DDH configuration and development.
 
+
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 1
 
    sw-using
    sw-configuring
