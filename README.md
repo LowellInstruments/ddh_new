@@ -7,9 +7,6 @@ This GUI is fully automatic. It detects, downloads and plots loggers data and up
 
 ![alt text](ddh/gui/res/ddh_capture.png)
 
-## Installing on RPi from scratch
-You may not need this, DDH are delivered totally installed and configured.
-
 DDH extended documentation can be found here (todo: add the readtedocs.io link).
 
 ## License
