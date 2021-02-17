@@ -1,0 +1,9 @@
+
+see
+https://askubuntu.com/questions/2368/how-do-i-set-up-a-cron-job
+
+
+crontab -e
+(e.g. every 2 minutes)
+*/2 * * * * /home/pi/li/ddh/ddh_run.sh
+

@@ -2,7 +2,7 @@ Recall python project source folder is somehow repeated:
     <module_root>/<module_name> # usually they match
 
 For sphinx to generate skeleton:
-    $ pip3 install sphinx
+    $ pip3 install sphinx sphinx-autobuild sphinx_rtd_theme
     $ mkdir docs && cd docs
     $ sphinx-quickstart
     -> answer yes to separate 'build' and 'src' folders
@@ -31,8 +31,8 @@ For sphinx-autodoc to create .RST files from .PY files:
 For sphinx to auto and recursively build .HTML from .RST files:
     $ cd docs
     $ sphinx-autobuild -c source source build --ignore '*.rst~'
-    # -c <path_to_dir_containing_file_conf_py>, that is source
-    # source -> repeat it, the <path_to_dir_containing_file_index_rst>
+    # -c <path_to_dir_containing_file_conf_py>, that is 'source'
+    # 'source' -> repeat it, the <path_to_dir_containing_file_index_rst>
     # 'build' -> the <output_dir>
     # visit http://localhost:8000
 

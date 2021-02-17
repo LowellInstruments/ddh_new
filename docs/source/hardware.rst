@@ -39,3 +39,14 @@ Lowell Instruments manufactures a wide selection of loggers sporting different
 sensor technologies and types. The DDH automatically detects, downloads and re-setups
 these loggers once it detects them and it does in a smart manner which
 avoids querying the same loggers over and over.
+
+
+
+As mentioned, DDH come already setup. Out of curiosity, these are some steps involved when building one from scratch:
+
+
+.. toctree::
+   :maxdepth: 1
+
+   hw-build
+
