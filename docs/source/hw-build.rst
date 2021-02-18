@@ -55,6 +55,10 @@ In your DDH, obtain and install the cell and GPS script from SixFab.
     $ sudo ./ppp_install_standalone.sh
 
 
+.. warning::
+    When using Twilio cards, ensure they are in the 'Ready' state. The 'New' state is not enough.
+
+
 In your DDH, test Sixfab Hat Internet-via-cell capabilities by running:
 
 .. code:: bash

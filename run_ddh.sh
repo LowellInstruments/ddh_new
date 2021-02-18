@@ -1,30 +1,30 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-function cleanup {
-  printf "DDH NOT running\n"
-}
-trap cleanup EXIT
-
-# in RPi, root check not needed, sudo at the end
+# exit on error, keep track of executed commands, print error
+set -e
+trap 'echo ‘$BASH_COMMAND’ returned code $?' EXIT
 clear
+
 FOL_LI=/home/pi/li
 FOL_DDH=$FOL_LI/ddh
 FOL_VENV=$FOL_LI/venv
 
-# check venv
-if [ ! -d $FOL_VENV ]; then printf "DDH python venv NOT detected\n"; exit 1; fi
+# (un)comment this depending on if you use python virtualenv on or not
+# if [ ! -d $FOL_VENV ]; then printf "DDH python venv NOT detected\n"; exit 1; fi
 
 # setting X server vars
 export XAUTHORITY=/home/pi/.Xauthority
 export DISPLAY=:0
 
 # on PyCharm, set in Run/ Edit Configurations/environment
-export DDH_FTP_U=_U_
-export DDH_FTP_H=_H_
-export DDH_FTP_P=_P_
-if [ $DDH_FTP_U == _U_ ]; then printf "DDH FTP env vars U error\n"; exit 2; fi
-if [ $DDH_FTP_P == _P_ ]; then printf "DDH FTP env vars P error\n"; exit 3; fi
-if [ $DDH_FTP_H == _H_ ]; then printf "DDH FTP env vars H error\n"; exit 4; fi
+export DDH_AWS_NAME=_AN_
+export DDH_AWS_KEY_ID=_AK_
+export DDH_AWS_SECRET=_AS_
+
+# (un)comment depending on if you allow running without setting AWS
+if [ $DDH_AWS_NAME == "_AN_" ]; then printf "AWS environment error\n"; exit 2; fi
+if [ $DDH_AWS_KEY_ID == "_AK_" ]; then printf "AWS environment error\n"; exit 3; fi
+if [ $DDH_AWS_SECRET == "_AS_"_ ]; then printf "AWS environment error\n"; exit 4; fi
 
 # -E considers DDH_FTP_* env vars
 printf "entering DDH folder\n"
