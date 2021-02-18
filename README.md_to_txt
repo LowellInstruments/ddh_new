@@ -3,6 +3,13 @@ BLE Graphical User Interface for Lowell Instruments' loggers.
 
 Intended to be used on fishing and research vessels.
 
+To install:
+
+```console
+$ wget <path_to_script_install.sh>
+$ sudo ./<this_one>
+```
+
 This GUI is fully automatic. It detects, downloads and plots loggers data and uploads their info to the cloud.
 
 ![alt text](ddh/gui/res/ddh_capture.png)

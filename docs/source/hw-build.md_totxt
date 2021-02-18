@@ -22,6 +22,7 @@ Still in your desktop computer, copy the following files from DDH 'tools' folder
 
 * rc.local -> /etc
 * shutdown_script.py -> /home/pi/juice4halt/bin/shutdown_script.py
+* `DWService <https://www.dwservice.net>`_ OR nomachine.tar.gz -> /home/pi/Downloads
 
        
 Boot the DDH / raspberry.
@@ -81,9 +82,6 @@ In your DDH, test external hardware buttons by running:
 In your DDH, test `juice4halt` board. Just press the power button and wait for DDH to switch off. If the juice4halt has worked as expected, the following file should be present upon restart. Delete it to repeat the test.
 
 ``/home/pi/juice4halt/bin/j4h_flag`` 
-
-
-In your DDH, install a remote control soluction like `DWService <https://www.dwservice.net>`_.
 
 
 In your DDH, monitor the GUI to be always kept running by monitoring it with a 2 minutes period adding this to crontab ``*/2 * * * * /home/pi/li/ddh/ddh_run.sh``:
