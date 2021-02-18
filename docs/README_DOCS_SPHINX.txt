@@ -52,3 +52,6 @@ To get rid of '... WARNING: document isn't included in any toctree',
 
 Check sphinx themes in https://sphinx-themes.org/, apply them in conf.py:
     html_theme = "sphinx_rtd_theme"
+
+For favicon, put a favicon.ico in the source folder and modify conf.py with:
+    html_favicon = 'favicon.ico'

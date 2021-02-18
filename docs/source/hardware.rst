@@ -42,11 +42,14 @@ avoids querying the same loggers over and over.
 
 
 
-As mentioned, DDH come already setup. Out of curiosity, these are some steps involved when building one from scratch:
+As mentioned, DDH come already setup. Out of curiosity, these are some steps involved when building one from scratch or to clone
+one already built:
 
 
 .. toctree::
    :maxdepth: 1
 
    hw-build
+   hw-clone
+
 
