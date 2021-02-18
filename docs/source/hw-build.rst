@@ -57,14 +57,28 @@ In your DDH, obtain and install the cell and GPS script from SixFab.
     $ sudo ./ppp_install_standalone.sh
 
 
-In your DDH, test DDH external hardware buttons by running:
+In your DDH, test Sixfab Hat Internet-via-cell capabilities by running:
+
+.. code:: bash
+
+    $ ifmetric ppp0 0
+
+    $ ping www.google.com
+
+    $ ip route get 8.8.8.8
+
+
+In your DDH, test Sixfab Hat GPS capabilities by following these `official instructions <https://sixfab.com/gps-tracker-with-3g-4glte-shield/>`_.
+
+
+In your DDH, test external hardware buttons by running:
 
 .. code:: bash
 
     $ python3 tools/check_buttons.py
 
 
-In your DDH, test DDH juice4halt board. Just press the power button and wait for DDH to switch off. If the juice4halt has worked as expected, the following file should be present upon restart. Delete it to repeat the test.
+In your DDH, test `juice4halt` board. Just press the power button and wait for DDH to switch off. If the juice4halt has worked as expected, the following file should be present upon restart. Delete it to repeat the test.
 
 ``/home/pi/juice4halt/bin/j4h_flag`` 
 
