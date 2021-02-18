@@ -3,8 +3,7 @@
 
 # keep track of executed commands, print and exit upon error
 set -e
-trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
-trap 'printf "\"${last_command}\" command filed with exit code $?."' EXIT
+trap echo 'exit on error: last command was ["!!"]' EXIT
 
 
 clear
