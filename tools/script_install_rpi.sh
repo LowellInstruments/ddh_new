@@ -1,14 +1,15 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 
 # keep track of executed commands, print and exit upon error
 set -e
-trap echo 'exit on error: last command was ["!!"]' EXIT
+trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
+trap 'echo "\"${last_command}\" command filed with exit code $?."' EXIT
 
 
 clear
 printf 'Welcome to DDH installer for Raspberry platforms \n'
-printf '------------------------------------------------ \n'
+printf '================================================ \n'
 
 if [ "$EUID" -ne 0 ]; then printf 'Please run as root'; exit; fi
 
