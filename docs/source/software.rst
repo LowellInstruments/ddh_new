@@ -28,10 +28,26 @@ it re-setups the logger, performs sanity configuration checks and re-runs it so 
 the next data files recovered will start at the current precise time.
 
 
-DDH are delivered with all the software already pre-installed. However, the software
-installation procedure and details can be seen in the
-`DDH project github page <https://github.com/LowellInstruments/ddh>`_. For developers' convenience, we also provide
-the `MAT library github page <https://github.com/LowellInstruments/lowell-mat>`_.
+DDH are delivered with all the software already pre-installed. However, to install the DDH software on one
+completely from scratch on a Raspberry:
+
+.. code-block:: bash
+
+    $ wget https://raw.githubusercontent.com/LowellInstruments/ddh/master/tools/script_install_rpi.sh
+    $ chmod +x script_install_rpi.sh
+    $ sudo script_install_rpi.sh
+
+
+To install on a laptop or workstation, for development purposes:
+
+.. code-block:: bash
+
+    $ wget https://raw.githubusercontent.com/LowellInstruments/ddh/master/tools/script_install_dev.sh
+    $ chmod +x script_install_dev.sh
+    $ sudo script_install_dev.sh
+
+
+It is left to the user to decide if a python virtual environment is used, or not.
 
 
 The rest of this Software section introduces DDH configuration and development.

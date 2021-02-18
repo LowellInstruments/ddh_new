@@ -5,6 +5,8 @@ Intended to be used on fishing and research vessels and is fully automatic. It d
 
 ![alt text](ddh/gui/res/ddh_capture.png)
 
+DDH are pre-configured upon delivery.
+
 To install on a Raspberry:
 
 ```console

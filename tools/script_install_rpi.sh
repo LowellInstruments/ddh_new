@@ -20,11 +20,11 @@ sudo apt-get install libatlas3-base libglib2.0-dev python3-pyqt5 libhdf5-dev pyt
 
 printf '\n' && printf 'Installing Raspberry linux python dependencies... \n'
 printf '================================================= \n\n\n\n'
-pip3 install Cartopy==0.18.0
+sudo pip3 install Cartopy==0.18.0
 
 printf '\n' && printf 'Cloning DDH source from github... \n'
 printf '================================= \n\n\n\n'
 cd /home/pi/li
 git clone https://github.com/LowellInstruments/ddh.git
 cd /home/pi/li/ddh
-pip3 install -r requirements.txt
+sudo pip3 install -r requirements.txt

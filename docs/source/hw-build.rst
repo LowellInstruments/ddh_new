@@ -35,7 +35,6 @@ In your DDH, install some required linux packages for desktop purposes:
 .. code:: bash
 
     $ sudo apt update
-
     $ sudo apt install xscreensaver matchbox-keyboard
 
 
@@ -52,9 +51,7 @@ In your DDH, obtain and install the cell and GPS script from SixFab.
 .. code:: bash
 
     $ wget https://raw.githubusercontent.com/sixfab/Sixfab_PPP_Installer/master/ppp_install_standalone.sh
-
     $ sudo chmod +x ppp_install_standalone.sh
-
     $ sudo ./ppp_install_standalone.sh
 
 
@@ -63,9 +60,7 @@ In your DDH, test Sixfab Hat Internet-via-cell capabilities by running:
 .. code:: bash
 
     $ ifmetric ppp0 0
-
     $ ping www.google.com
-
     $ ip route get 8.8.8.8
 
 
