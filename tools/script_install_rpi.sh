@@ -1,13 +1,11 @@
 #!/usr/bin/env bash
 
-
 # keep track of executed commands, print and exit upon error
 set -e
-trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
-trap 'error: when running echo "\"${last_command}\", failed with exit code $?."' EXIT
-
-
+trap 'echo ‘$BASH_COMMAND’ failed with error code $?' EXIT
 clear
+
+
 printf '\n' && printf 'Welcome to DDH installer for Raspberry platforms \n'
 printf 'You only need to run this once. When installed, use git pull \n'
 printf '============================================================ \n\n\n\n'
