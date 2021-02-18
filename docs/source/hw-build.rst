@@ -1,4 +1,4 @@
-.. _hw-setup:
+.. _hw-build:
 
 
 Build it
@@ -36,14 +36,6 @@ In your DDH, install some required linux packages for desktop purposes:
 
     $ sudo apt update
     $ sudo apt install xscreensaver matchbox-keyboard
-
-
-In your DDH, install some required linux packages for DDH DDH purposes:
-
-.. code:: bash
-
-    $ sudo apt-get install libatlas3-base libglib2.0-dev python3-pyqt5 libhdf5-dev python3-dev libgdal-dev
-    $ pip3 install Cartopy==0.18.0
 
 
 In your DDH, obtain and install the cell and GPS script from SixFab.
@@ -96,14 +88,3 @@ In your DDH, if you want, set a black background and remove icons and shortcuts 
 .. code:: bash
 
     $ alacarte
-
-
-In your DDH, install rpi-clone from github. Connect another SSD to USB port and:
-
-.. code:: bash
-    
-    $ rpi-clone sdb
-
-
-And, you are good to go.
-
