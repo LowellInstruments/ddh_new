@@ -35,3 +35,19 @@ def loop(w, ev_can_i_boot):
         for each in sf:
             w.sig_aws.status.emit('AWS: uploaded {}'.format(each))
         time.sleep(PERIOD_AWS)
+
+
+# for testing purposes
+if __name__ == '__main__':
+    i = 0
+    _an_, _ak_, _as_ = aws_credentials_get()
+    src_dir = '.'
+    while 1:
+        print('\nmain iteration #{}'.format(i))
+        i += 1
+        ff = aws_ddh_sync(_an_, _ak_, _as_, src_dir, None)
+        ff = [] if ff is None else ff
+        for f in ff:
+            print(f)
+        time.sleep(30)
+

@@ -13,7 +13,7 @@ def aws_credentials_get():
     key_id = os.environ.get('DDH_AWS_KEY_ID')
     secret = os.environ.get('DDH_AWS_SECRET')
 
-    # todo: on production, re-enable this assert(AWS_NAME)
+    # todo: on production, re-enable this assert()
     # assert (name and key_id and secret)
     return name, key_id, secret
 
@@ -90,7 +90,8 @@ def aws_ddh_sync(aws_name, aws_key_id, aws_secret, folder_to_sync, sig):
     bkt_name = 'bkt-{}'.format(aws_name)
     if not aws_check_connection_to_s3(cli, bkt_name):
         e = 'AWS: cannot connect S3 as user \'{}\''
-        sig.emit(e.format(aws_name))
+        if sig:
+            sig.emit(e.format(aws_name))
         return None
 
     # build dict of remote keys and sizes
