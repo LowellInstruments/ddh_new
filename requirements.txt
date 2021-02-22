@@ -9,3 +9,4 @@ tzlocal
 Fiona==1.8.13.post1
 parse
 lowell-mat@git+https://github.com/LowellInstruments/lowell-mat.git
+boto3
