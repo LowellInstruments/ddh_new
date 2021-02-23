@@ -13,8 +13,7 @@ def aws_credentials_get():
     key_id = os.environ.get('DDH_AWS_KEY_ID')
     secret = os.environ.get('DDH_AWS_SECRET')
 
-    # todo: on production, re-enable this assert()
-    # assert (name and key_id and secret)
+    assert (name and key_id and secret)
     return name, key_id, secret
 
 
@@ -75,19 +74,23 @@ def aws_check_connection_to_s3(cli, bkt_name):
         cli.head_bucket(Bucket=bkt_name)
         return True
     except (ClientError, NoCredentialsError) as e:
-        logzero_logger.error('AWS: connection error {}'.format(e))
+        logzero_logger.error('AWS: argh! connection error {}'.format(e))
         return False
 
 
-def aws_ddh_sync(aws_name, aws_key_id, aws_secret, folder_to_sync, sig):
+def aws_ddh_sync(aws_name, aws_key_id, aws_secret, folder_to_sync, bkt=None, sig=None):
+    assert(folder_to_sync != '.')
+
     # obtaining AWS S3 Client
     cli = boto3.client('s3',
                        region_name='us-east-1',
                        aws_access_key_id=aws_key_id,
                        aws_secret_access_key=aws_secret)
 
+    # grab or generate bucket name
+    bkt_name = bkt if bkt else 'bkt-{}'.format(aws_name)
+
     # check there is a connection
-    bkt_name = 'bkt-{}'.format(aws_name)
     if not aws_check_connection_to_s3(cli, bkt_name):
         e = 'AWS: cannot connect S3 as user \'{}\''
         if sig:
@@ -105,6 +108,11 @@ def aws_ddh_sync(aws_name, aws_key_id, aws_secret, folder_to_sync, sig):
     list_local_keys = [i for i in list_local_keys if os.path.isfile(i)]
     list_local_sizes = [os.stat(i).st_size for i in list_local_keys]
     dict_local_objects = dict(zip(list_local_keys, list_local_sizes))
+
+    # useful note
+    if not list_local_keys:
+        s = 'note files to sync must be in {}/<sub-folder>/files.csv'
+        print(s.format(folder_to_sync))
 
     # see differences between local and remote dicts
     dlo, dro = dict_local_objects, dict_remote_objects

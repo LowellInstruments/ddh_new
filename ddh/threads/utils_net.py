@@ -82,7 +82,6 @@ def _net_is_worth_trying_sw_wifi(interface: str) -> bool:
 
 def _net_switch_via_to_internet(sig, org=None):
     global _net_sw_wifi_countdown
-    net_ensure_my_resolv_conf()
     assert org in ('none', 'cell')
 
     # network: none at all, try switching to cell
@@ -181,15 +180,7 @@ def net_check_connectivity(sig=None):
     emit_update(sig, 'NET: {}'.format(nt))
 
 
-def net_ensure_my_resolv_conf():
-    # file resolv.conf may get written, restore it w/ good one
-    s = 'sudo bash -c \'echo '
-    s += '"nameserver 8.8.8.8" > /etc/resolv.conf\''
-    _shell(s)
-
-
 if __name__ == '__main__':
-    net_ensure_my_resolv_conf()
     while 1:
         net_check_connectivity()
         time.sleep(5)

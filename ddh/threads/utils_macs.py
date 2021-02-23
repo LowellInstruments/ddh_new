@@ -15,7 +15,7 @@ class ColoredMacList:
             # print('{}_macs DB erased'.format(self.color))
         except FileNotFoundError as _:
             _e = 'asked to del file {} but not found'
-            print(_e)
+            print(_e.format(self.db_name))
 
     def macs_dump(self) -> str:
         _s = ''

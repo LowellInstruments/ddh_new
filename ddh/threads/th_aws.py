@@ -25,7 +25,7 @@ def loop(w, ev_can_i_boot):
         sig = w.sig_aws.error
 
         # sf means 'synced_files'
-        sf = aws_ddh_sync(name, key_id, secret, fol, sig)
+        sf = aws_ddh_sync(name, key_id, secret, fol, None, sig)
         s = 'OK' if type(sf) is list else 'ERR'
         w.sig_aws.update.emit('AWS {}'.format(s))
         ctx.sem_aws.release()
@@ -41,11 +41,19 @@ def loop(w, ev_can_i_boot):
 if __name__ == '__main__':
     i = 0
     _an_, _ak_, _as_ = aws_credentials_get()
-    src_dir = '.'
+    _bk_ = 'bkt-osu'
+    print('_an_ {}'.format(_an_))
+    print('_ak_ {}'.format(_ak_))
+    print('_as_ {}'.format(_as_))
+    print('_bk_ {}'.format(_bk_))
+
+    # recall files must be in <local_dir>/<sub-folder>/files.lid
+    local_dir = '/tmp/mine'
+
     while 1:
         print('\nmain iteration #{}'.format(i))
         i += 1
-        ff = aws_ddh_sync(_an_, _ak_, _as_, src_dir, None)
+        ff = aws_ddh_sync(_an_, _ak_, _as_, local_dir, _bk_, None)
         ff = [] if ff is None else ff
         for f in ff:
             print(f)

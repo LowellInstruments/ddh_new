@@ -13,6 +13,10 @@ printf '\n\n\n\n' && printf 'Installing linux apt dependencies... \n'
 printf '=================================== \n'
 apt-get install libatlas3-base libglib2.0-dev libhdf5-dev python3-dev libgdal-dev
 
+# more of them, from https://stackoverflow.com/questions/53697814/using-pip-install-to-install-cartopy-but-missing-proj-version-at-least-4-9-0
+apt-get install libproj-dev proj-data proj-bin libgeos-dev
+pip3 install cython Cartopy==0.18.0
+
 printf '\n\n\n\n' && printf 'Cloning DDH source from github... \n'
 printf '================================= \n'
 git clone https://github.com/LowellInstruments/ddh.git

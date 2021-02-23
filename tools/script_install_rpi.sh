@@ -18,7 +18,10 @@ apt-get install libatlas3-base libglib2.0-dev python3-pyqt5 libhdf5-dev python3-
 
 printf '\n\n\n\n' && printf 'Installing Raspberry linux python dependencies... \n'
 printf '================================================= \n'
-pip3 install Cartopy==0.18.0
+printf 'TODO check if we need this on Rpi \n'
+# more of them, from https://stackoverflow.com/questions/53697814/using-pip-install-to-install-cartopy-but-missing-proj-version-at-least-4-9-0
+apt-get install libproj-dev proj-data proj-bin libgeos-dev
+pip3 install cython Cartopy==0.18.0
 
 printf '\n\n\n\n' && printf 'Cloning DDH source from github... \n'
 printf '================================= \n'
