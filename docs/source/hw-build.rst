@@ -75,7 +75,7 @@ In your DDH, see cell capabilities were installed properly by typing the followi
 In your DDH, test `juice4halt` board. Just press the power button and wait for DDH to switch off. If the juice4halt has worked as expected, the file ``/home/pi/juice4halt/bin/j4h_halt_flag``  should be present upon restart. Delete it to repeat the test.
 
 
-In your DDH, monitor the GUI to be always kept running by monitoring it with a 2 minutes period adding:
+In your DDH, even if at this point the DDH GUI software may no be installer yet, monitor the GUI to be always kept running by monitoring it with a 2 minutes period adding:
 
     */2 * * * * /home/pi/li/ddh/ddh_run.sh
 
@@ -96,8 +96,4 @@ In your DDH, if you want, set a black background and remove icons and shortcuts 
 In your DDH, if you are NOT cloning, you can proceed to install a remote control solution such as `DWService <https://www.dwservice.net>`_. Recall we copied its installer file, so-called `dwagent.sh`, in the ``/home/pi/Downloads`` folder during the first steps of this document.
 
 
-Now, we are done. Again, DDH come with all this done so probably this procedure is not needed by you. Finally, just a gentle reminder:
-
-.. note:
-
-	Did you remember to remove your wi-fi network in case other people use this DDH? :)
+Now, we are done. Again, DDH come with all this done so probably this procedure will not be needed.
