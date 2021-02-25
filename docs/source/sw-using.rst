@@ -70,3 +70,8 @@ at the office or lab more comfortably. The first button will switch between the 
 different loggers. The third button modifies the span of the plots
 so the user can see the last hour of the downloaded data, last day, last week, last
 month or last year. The second button is left for future use.
+
+
+.. note:
+
+	If you ever need to rebbot the DDH, don't worry and press the upside hardware power button. This is better than suing a `reboot` shell command, since allows the power hats to shutdown all properly. Same thing to shutdown the DDH completely.
