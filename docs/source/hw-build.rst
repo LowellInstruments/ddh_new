@@ -65,7 +65,7 @@ In your DDH, obtain and install the cell and GPS script from SixFab. DDH uses a 
     When using Twilio cards, ensure they are in the 'Ready' state. The 'New' state is not enough.
 
 
-In your DDH, see cell capabilities were installed properly by typing the following, which should result in some lines like ``ppp0: flags=4305<UP,POINTOPOINT,RUNNING,NOARP,MULTICAST>  mtu 1500``.
+In your DDH, see cell communication-capabilities were installed properly by typing the followingcode. Once done, its answer must to something similar to ``ppp0: flags=4305<UP,POINTOPOINT,RUNNING,NOARP,MULTICAST>  mtu 1500``.
 
 .. code:: bash
 
@@ -75,7 +75,7 @@ In your DDH, see cell capabilities were installed properly by typing the followi
 In your DDH, test `juice4halt` board. Just press the power button and wait for DDH to switch off. If the juice4halt has worked as expected, the file ``/home/pi/juice4halt/bin/j4h_halt_flag``  should be present upon restart. Delete it to repeat the test.
 
 
-In your DDH, even if at this point the DDH GUI software may no be installer yet, monitor the GUI to be always kept running by monitoring it with a 2 minutes period adding:
+In your DDH, even if at this point the DDH GUI software may not be installed yet, monitor the GUI to be always kept running by monitoring it with a 2 minutes period adding:
 
     */2 * * * * /home/pi/li/ddh/ddh_run.sh
 
@@ -91,6 +91,16 @@ In your DDH, if you want, set a black background and remove icons and shortcuts 
 .. code:: bash
 
     $ alacarte
+
+
+Or, you can also do this from your desktop computer by knowing and replacing your ``<DDH_IP>`` and running:
+
+.. code:: bash
+
+    $ ssh -X pi@<DDH_IP> alacarte
+
+
+In your DDH, finally forget any wi-fi network you don't want DDH to preserve. This is useful if DDH are going to be cloned and shipped.
 
 
 In your DDH, if you are NOT cloning, you can proceed to install a remote control solution such as `DWService <https://www.dwservice.net>`_. Recall we copied its installer file, so-called `dwagent.sh`, in the ``/home/pi/Downloads`` folder during the first steps of this document.
