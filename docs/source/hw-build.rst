@@ -77,7 +77,7 @@ In your DDH, test `juice4halt` board. Just press the power button and wait for D
 
 In your DDH, even if at this point the DDH GUI software may not be installed yet, monitor the GUI to be always kept running by monitoring it with a 2 minutes period adding:
 
-    */2 * * * * /home/pi/li/ddh/ddh_run.sh
+    */2 * * * * /home/pi/li/ddh/run_ddh.sh
 
 to crontab by doing:
 
