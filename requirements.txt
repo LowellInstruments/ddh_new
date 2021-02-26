@@ -1,13 +1,14 @@
 PyYAML~=5.3.1
 matplotlib==3.3.3
 wifi==0.3.8
-pandas
+pandas==1.2.2
+numpy==1.16.5
 iso8601==0.1.12
 gpiozero==1.5.0
 logzero==1.5.0
-tzlocal
+tzlocal==2.1
 Fiona==1.8.13.post1
-parse
+parse==1.19.0
 lowell-mat@git+https://github.com/LowellInstruments/lowell-mat.git
 boto3
 # PyQt5 NOT, since no packages for Rpi, do manually for dev platforms
