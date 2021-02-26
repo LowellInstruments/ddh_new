@@ -37,6 +37,9 @@ completely from scratch on a Raspberry:
     $ chmod +x script_install_rpi.sh
     $ sudo script_install_rpi.sh
 
+.. note::
+
+    When on a DDH platform, recall to check crontab file with ``crontab -e`` (for editing) or ``crontab -l`` for displaying to see if the DDH gui is kept monitoring. (Un)comment the line depending on what you need.
 
 To install on a laptop or workstation, for development purposes:
 
