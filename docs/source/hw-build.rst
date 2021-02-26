@@ -44,7 +44,7 @@ In your DDH, install some required linux packages for desktop purposes. Open a t
 .. code:: bash
 
     $ sudo apt update
-    $ sudo apt install xscreensaver matchbox-keyboard ifmetric joe
+    $ sudo apt install xscreensaver matchbox-keyboard ifmetric joe git
 
 
 In your DDH, open the screensaver settings and completely disable it. Yes, you need to install a screensaver in order
