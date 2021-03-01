@@ -13,6 +13,7 @@ from mat.utils import linux_is_rpi, linux_is_docker_on_rpi
 
 
 def setup_view(my_win, j):
+    """ fills window with titles and default contents """
     a = my_win
     a.setupUi(a)
     a.setWindowTitle('Lowell Instruments\' Deck Data Hub')
@@ -44,6 +45,8 @@ def setup_view(my_win, j):
 
 
 def setup_his_tab(my_app):
+    """ fills history tab"""
+
     a = my_app
     a.tbl_his.clear()
 
@@ -69,10 +72,10 @@ def populate_history_tab(self):
 
 
 def setup_window_center(my_app):
+    """ on RPi, DDH app uses full screen """
     a = my_app
 
     if linux_is_rpi() or linux_is_docker_on_rpi():
-        # on RPi, use full screen
         a.showFullScreen()
 
     # get window + screen shape, match both, adjust upper left corner
@@ -83,6 +86,7 @@ def setup_window_center(my_app):
 
 
 def setup_buttons_gui(my_app):
+    """ link buttons and labels clicks and signals """
     a = my_app
 
     # labels' event connections
@@ -103,7 +107,8 @@ def setup_buttons_gui(my_app):
     a.btn_load_current.clicked.connect(a.click_btn_load_current_json_file)
 
 
-def update_gps_icon_land_sea(my_app, did_ok, lat, lon):
+def paint_gps_icon_w_color_land_sea(my_app, did_ok, lat, lon):
+    """ paints the gps icon """
     a = my_app
     if not did_ok:
         img = 'ddh/gui/res/img_gps_dis.png'
@@ -126,6 +131,7 @@ def hide_edit_tab(ui):
 
 
 def dict_from_list_view(l_v):
+    """ grab listview entries 'name mac' and build a dict """
     d = dict()
     n = l_v.count()
     for _ in range(n):
@@ -136,6 +142,8 @@ def dict_from_list_view(l_v):
 
 
 def setup_buttons_rpi(my_app, c_log):
+    """ link raspberry buttons with callback functions """
+
     a = my_app
     if not linux_is_rpi():
         c_log.debug('SYS: not a raspberry system')
@@ -168,6 +176,8 @@ def setup_buttons_rpi(my_app, c_log):
 
 
 def _confirm_by_user(s):
+    """ ask user to press OK or CANCEL """
+
     m = QMessageBox()
     m.setIcon(QMessageBox.Information)
     m.setWindowTitle('warning')

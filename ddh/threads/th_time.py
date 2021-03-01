@@ -1,7 +1,7 @@
 import time
 from ddh.settings import ctx
 from ddh.threads.utils import wait_boot_signal
-from ddh.threads.utils_time import time_via
+from ddh.threads.utils_time import update_datetime_source
 
 
 class ButtonPressEvent:
@@ -33,5 +33,5 @@ def loop(w, ev_can_i_boot):
         if ctx.sem_ble.acquire(blocking=False):
             if steps >= TIME_SYNC_PERIOD_S:
                 steps = 0
-                time_via(w)
+                update_datetime_source(w)
             ctx.sem_ble.release()

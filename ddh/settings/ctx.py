@@ -1,16 +1,14 @@
 import sys
 import socket
-
-
-# constants
 import threading
 
 
+# messagebox timeout constants
 PLT_SHOW_TIMEOUT = 120
 PLT_MSG_TIMEOUT = 5
 
 
-# set at main.py, shared stuff
+# set at main.py
 app_res_folder = None
 app_dl_folder = None
 app_conf_folder = None
@@ -36,20 +34,24 @@ sem_ble = threading.Lock()
 sem_plt = threading.Lock()
 
 
-# FTP: current and start states + switch capability
+# AWS: enabled or not
 aws_en = True
-sw_aws_en = True
 
 
-# BLE: current and start states + switch capability
+# BLE: enabled or not + switch capability
 ble_en = True
 sw_ble_en = True
-macs_lists_pre_rm = True
+
+
+# APP behavior modifier
+# todo: on production, adjust these
+macs_lists_pre_rm = False
 dummy_ti_logger = True
+dummy_gps = False
 
 
 def only_one_instance(name):
-    # hold a ref or garbage collector makes all this not work
+    """ ensures only one DDH program running"""
     ooi = only_one_instance
     ooi._lock_socket = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
 

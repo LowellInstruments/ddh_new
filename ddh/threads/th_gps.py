@@ -10,14 +10,13 @@ PERIOD_GPS = 10
 def loop(w, ev_can_i_boot):
     wait_boot_signal(w, ev_can_i_boot, 'GPS')
 
-    # helps in booting order since GPS blocks
+    # extra delay in booting order since GPS blocks
     time.sleep(1)
 
     while 1:
+        # updates only position, time source updated in other thread
         ctx.sem_ble.acquire()
         _o = gps_get_one_lat_lon_dt()
-
-        # update only position since time could be NTP-based
         w.sig_gps.update.emit(_o)
         ctx.sem_ble.release()
         time.sleep(PERIOD_GPS)

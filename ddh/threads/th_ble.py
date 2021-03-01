@@ -24,25 +24,24 @@ def _mac_to_orange_list(mo, mac):
 
 
 def _mac_show_color_lists(w, mb, mo):
+    # maybe remove old lists
     if ctx.macs_lists_pre_rm:
-        # not persistent? remove old lists
-        _d = 'SYS: no persistent mac color lists'
+        _d = 'SYS: pre-removing mac color lists'
         mb.ls.delete_all()
         mo.ls.delete_all()
         w.sig_ble.debug.emit(_d)
-    else:
-        _d = 'SYS: loaded persistent black list -> '
-        _d += mb.ls.macs_dump()
-        w.sig_ble.debug.emit(_d)
-        _d = 'SYS: loaded persistent orange list -> '
-        _d += mo.ls.macs_dump()
-        w.sig_ble.debug.emit(_d)
-        _d = 'SYS: deleting all orange entries'
-        w.sig_ble.debug.emit(_d)
-        mo.ls.delete_all()
-        # todo: on production, remove this blacklist deletion
-        print('WARNING: testing with all black entries deletion')
-        mb.ls.delete_all()
+
+    _d = 'SYS: loaded persistent black list -> '
+    _d += mb.ls.macs_dump()
+    w.sig_ble.debug.emit(_d)
+    _d = 'SYS: loaded persistent orange list -> '
+    _d += mo.ls.macs_dump()
+    w.sig_ble.debug.emit(_d)
+    _d = 'SYS: deleting all orange entries'
+    w.sig_ble.debug.emit(_d)
+    mo.ls.delete_all()
+    print('WARNING: testing with all black entries deletion')
+    mb.ls.delete_all()
 
 
 def _scan_loggers(w, h, whitelist, mb, mo):
@@ -76,6 +75,7 @@ def _scan_loggers(w, h, whitelist, mb, mo):
 
 
 def _download_loggers(w, h, macs, mb, mo, ft: tuple):
+    """ downloads every BLE logger found """
     li = [i.lower() for i in macs]
 
     # protect critical zone
@@ -84,19 +84,20 @@ def _download_loggers(w, h, macs, mb, mo, ft: tuple):
     # downloading files
     for i, mac in enumerate(li):
         try:
+            # start a download session for ONE logger
             w.sig_ble.session_pre.emit(mac, i + 1, len(li))
             w.sig_ble.status.emit('BLE: connecting {}'.format(mac))
             w.sig_ble.logger_pre.emit()
             fol = ctx.app_dl_folder
 
-            # get files from ONE logger
+            # get files from the logger
             done, g = logger_download(mac, fol, h, w.sig_ble)
 
-            # NOT OK download session, retry this logger after 'ignore time'
+            # NOT OK download session, ignore logger for 'ignore time'
             if not done:
                 _mac_to_orange_list(mo, mac)
 
-                # display how many pending because previous errors
+                # warn GUI we have a logger pending
                 orange_pending_ones = mo.ls.get_all_macs()
                 w.sig_ble.dl_warning.emit(orange_pending_ones)
                 continue
@@ -118,7 +119,7 @@ def _download_loggers(w, h, macs, mb, mo, ft: tuple):
 
 
 def loop(w, ev_can_i_boot):
-    """ BLE loop: scan and download and re-deploy found loggers """
+    """ BLE loop: scan, download and re-deploy found loggers """
     wait_boot_signal(w, ev_can_i_boot, 'BLE')
 
     whitelist = json_get_macs(ctx.app_json_file)

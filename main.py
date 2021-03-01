@@ -27,7 +27,7 @@ if __name__ == "__main__":
     # catch control + c
     signal.signal(signal.SIGINT, on_ctrl_c)
 
-    # PyQt5-enabled app
+    # launch DDH PyQt5 app
     app = QApplication(sys.argv)
     ex = DDHQtApp()
     ex.show()

@@ -17,7 +17,7 @@ def _plot_data(w, plt_args):
                 w.sig_plt.end.emit(True, None)
                 return
 
-            # oops, went wrong
+            # oops, plotting went wrong
             e = 'PLT: no {}({}) plots for \'{}\''.format(pair, ts, lg)
             w.sig_plt.error.emit(e)
             e = 'cannot plot 1{} for \'{}\''.format(ts, lg)
@@ -32,6 +32,7 @@ def loop(w, ev_can_i_boot):
     wait_boot_signal(w, ev_can_i_boot, 'PLT')
 
     while 1:
+        # wait to be unblocked by a plot petition
         plt_args = w.qpo.get()
         if ctx.sem_plt.acquire(timeout=1):
             _plot_data(w, plt_args)

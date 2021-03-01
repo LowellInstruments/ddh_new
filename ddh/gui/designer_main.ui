@@ -175,7 +175,7 @@
              <number>12</number>
             </property>
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="4,6">
+             <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="9,12">
               <item>
                <widget class="QLabel" name="img_net">
                 <property name="sizePolicy">

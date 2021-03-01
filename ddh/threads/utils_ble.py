@@ -157,6 +157,7 @@ def _logger_get_files(lc, sig, folder, files):
             return False
 
         # check got file ok
+        # todo: do a CRC calculation here?
         if exists_file(name, size, folder):
             got += 1
             speed = size / (time.time() - s_t)
@@ -239,12 +240,11 @@ def _logger_re_setup(lc, sig):
 
 
 def logger_download(mac, fol, hci_if, sig=None):
-    """ called by th_ble """
     try:
-        # real or dummy loggers, all welcome via Factory
+        # real or dummy loggers, all possible via Factory
         lc = LcBLEFactory.generate(mac)
         with lc(mac, hci_if) as lc:
-            # g-> (lat, lon, datetime object)
+            # g -> (lat, lon, datetime object)
             g = gps_get_one_lat_lon_dt()
             _logger_sws(lc, sig, g)
             _logger_time_check(lc, sig)

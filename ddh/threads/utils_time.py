@@ -4,7 +4,7 @@ from ddh.threads.utils import linux_is_net_ok, get_ntp_time, linux_set_datetime
 from ddh.threads.utils_gps_internal import gps_get_one_lat_lon_dt
 
 
-def time_via(w):
+def update_datetime_source(w):
     via = 'local'
     if _time_sync_gps():
         via = 'GPS'
@@ -30,10 +30,14 @@ def _time_sync_net():
 def _time_sync_gps():
     # update only GPS time, don't care lat, lon
     _, _, gps_time = gps_get_one_lat_lon_dt()
+    if gps_time in ('missing', 'malfunction'):
+        return False
 
     # this is my timezone, apply it to UTC-based datetime from GPS frame
     tz_utc = datetime.timezone.utc
     tz_me = get_localzone()
+
+    # here gps_time is a datetime object, NOT a string
     my_dt = gps_time.replace(tzinfo=tz_utc).astimezone(tz=tz_me)
 
     # apply time to the box
