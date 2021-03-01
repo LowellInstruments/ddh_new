@@ -1,3 +1,4 @@
+import datetime
 import sqlite3
 
 
@@ -109,7 +110,10 @@ class DBHis:
         if self.does_record_exist(m):
             i = self.get_record_id(m)
             self.delete_record(i)
-        self.add_record(m, n, lat, lon, t)
+        #  -> YYYY/MM/DD HH:mm:ss
+        dt_in = datetime.datetime.strptime(t, '%m/%d/%y %H:%M:%S')
+        dt_out = datetime.datetime.strftime(dt_in, '%Y/%m/%d %H:%M:%S')
+        self.add_record(m, n, lat, lon, dt_out)
 
     def get_recent_records(self):
         db = sqlite3.connect(self.dbfilename)

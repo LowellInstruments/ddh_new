@@ -61,7 +61,8 @@ def setup_his_tab(my_app):
         a.tbl_his.setItem(i, 0, it)
         s = '{},{}'.format(lat, lon)
         a.tbl_his.setItem(i, 1, QTableWidgetItem(s))
-        a.tbl_his.setItem(i, 2, QTableWidgetItem(ts[:14]))
+        # 2021/03/01 14:56:34 -> '21/03/01 14:56'
+        a.tbl_his.setItem(i, 2, QTableWidgetItem(ts[2:-3]))
     a.tbl_his.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
     labels = ['serial num', 'last position', 'last time']
     a.tbl_his.setHorizontalHeaderLabels(labels)
