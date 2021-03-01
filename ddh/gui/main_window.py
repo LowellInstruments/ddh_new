@@ -400,7 +400,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         """ th_ble sends the signal for this slot """
         j = ctx.app_json_file
         name = json_mac_dns(j, mac)
-        frm = '%m/%d/%y %H:%M:%S'
+        frm = '%Y/%m/%d %H:%M:%S'
         frm_t = datetime.datetime.now().strftime(frm)
         db = DBHis(ctx.db_his)
         if lat is None or lat == '':

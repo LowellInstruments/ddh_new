@@ -14,7 +14,6 @@
 import RPi.GPIO as GPIO
 import time
 import os
-import subprocess
 
 
 print ("Starting up j4h interface")

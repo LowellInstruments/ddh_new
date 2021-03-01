@@ -23,28 +23,6 @@ class DBHis:
         c.close()
         db.close()
 
-    # v is a list which gets converted to string
-    def add_record(self, m, n, lat, lon, t):
-        db = sqlite3.connect(self.dbfilename)
-        c = db.cursor()
-        c.execute('INSERT INTO records('
-                  'mac, name, lat, lon, sws_time) '
-                  'VALUES(?,?,?,?,?)',
-                  (m, n, lat, lon, t))
-        db.commit()
-        c.close()
-        db.close()
-
-    def update_record(self, m, n, lat, lon, t, i):
-        db = sqlite3.connect(self.dbfilename)
-        c = db.cursor()
-        c.execute('UPDATE records set mac=?, name=?, \
-                    lat=?, lon=?, sws_time=? \
-                    WHERE id=?', (m, n, lat, lon, t, i))
-        db.commit()
-        c.close()
-        db.close()
-
     def delete_record(self, record_id):
         db = sqlite3.connect(self.dbfilename)
         c = db.cursor()
@@ -106,19 +84,27 @@ class DBHis:
         db.close()
         return r[0][0]
 
+    def _add_record(self, m, n, lat, lon, t):
+        db = sqlite3.connect(self.dbfilename)
+        c = db.cursor()
+        c.execute('INSERT INTO records('
+                  'mac, name, lat, lon, sws_time) '
+                  'VALUES(?,?,?,?,?)',
+                  (m, n, lat, lon, t))
+        db.commit()
+        c.close()
+        db.close()
+
     def safe_update(self, m, n, lat, lon, t):
         if self.does_record_exist(m):
             i = self.get_record_id(m)
             self.delete_record(i)
-        #  -> YYYY/MM/DD HH:mm:ss
-        dt_in = datetime.datetime.strptime(t, '%m/%d/%y %H:%M:%S')
-        dt_out = datetime.datetime.strftime(dt_in, '%Y/%m/%d %H:%M:%S')
-        self.add_record(m, n, lat, lon, dt_out)
+        self._add_record(m, n, lat, lon, t)
 
     def get_recent_records(self):
         db = sqlite3.connect(self.dbfilename)
         c = db.cursor()
-        c.execute('SELECT * from records ORDER BY sws_time ASC')
+        c.execute('SELECT * from records ORDER BY sws_time DESC')
         records = c.fetchall()
         c.close()
         db.close()
