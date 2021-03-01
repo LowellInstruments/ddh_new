@@ -1,6 +1,7 @@
 import shelve
 import os
 import datetime
+import time
 
 
 class ColoredMacList:
@@ -21,7 +22,9 @@ class ColoredMacList:
         _s = ''
         with shelve.open(self.db_name) as sh:
             for k, v in sh.items():
-                _s += '{}: {}, '.format(k, int(v))
+                # v: datestamp
+                v = int(v - datetime.datetime.now().timestamp())
+                _s += '{}: {} seconds left,'.format(k, v)
         return _s
 
     def macs_add_or_update(self, _mac, _inc):

@@ -54,14 +54,20 @@ def _logger_sws(lc, sig, g):
         return
 
     # logger running or delayed, need to stop
-    lat = '{:+.6f}'.format(float(g[0])) if g else 'N/A'
-    lon = '{:+.6f}'.format(float(g[1])) if g else 'N/A'
-    t = 'BLE: SWS coordinates {}, {}'.format(lat, lon)
+    lat, lon, _ = g
+    if lat and lat.isnumeric() and lon and lon.isnumeric:
+        lat = '{:+.6f}'.format(float(lat))
+        lon = '{:+.6f}'.format(float(lon))
+    else:
+        lat, lon = 'N/A', 'N/A'
+
+    # SWS parameter goes altogether without comma
     for _ in range(10):
-        # SWS parameter goes altogether without comma
-        rv = lc.command(SWS_CMD, '{}{}'.format(lat, lon))
+        g = '{}{}'.format(lat, lon)
+        rv = lc.command(SWS_CMD, '{}'.format(g))
         if rv == [b'SWS', b'00']:
-            emit_status(sig, t)
+            s = 'BLE: SWS coordinates {}'.format(g)
+            emit_status(sig, s)
             return
         time.sleep(.5)
     _die(rv)
@@ -178,9 +184,14 @@ def _logger_get_files(lc, sig, folder, files):
 
 
 def _logger_rws(lc, sig, g):
-    lat = float(g[0]) if g else 'N/A'
-    lon = float(g[1]) if g else 'N/A'
-    g = '{:+.6f}{:+.6f}'.format(lat, lon)
+    lat, lon, _ = g
+    if lat and lat.isnumeric() and lon and lon.isnumeric:
+        lat = '{:+.6f}'.format(float(lat))
+        lon = '{:+.6f}'.format(float(lon))
+    else:
+        lat, lon = 'N/A', 'N/A'
+
+    g = '{}{}'.format(lat, lon)
     s = 'BLE: RWS coordinates {}'.format(g)
     sig.status.emit(s)
     rv = lc.command(RWS_CMD, g)

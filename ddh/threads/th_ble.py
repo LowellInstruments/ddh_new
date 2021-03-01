@@ -24,11 +24,10 @@ def _mac_to_orange_list(mo, mac):
 
 
 def _mac_show_color_lists(w, mb, mo):
-    # maybe remove old lists
+    mo.ls.delete_all()
     if ctx.macs_lists_pre_rm:
-        _d = 'SYS: pre-removing mac color lists'
+        _d = 'SYS: pre-removing mac black list'
         mb.ls.delete_all()
-        mo.ls.delete_all()
         w.sig_ble.debug.emit(_d)
 
     _d = 'SYS: loaded persistent black list -> '
@@ -39,9 +38,6 @@ def _mac_show_color_lists(w, mb, mo):
     w.sig_ble.debug.emit(_d)
     _d = 'SYS: deleting all orange entries'
     w.sig_ble.debug.emit(_d)
-    mo.ls.delete_all()
-    print('WARNING: testing with all black entries deletion')
-    mb.ls.delete_all()
 
 
 def _scan_loggers(w, h, whitelist, mb, mo):
@@ -102,10 +98,16 @@ def _download_loggers(w, h, macs, mb, mo, ft: tuple):
                 w.sig_ble.dl_warning.emit(orange_pending_ones)
                 continue
 
-            # OK download session, set conditional (land / sea) 'forget time'
-            lat, lon, _ = g
+            # OK download session, set 'forget time_sea or land'
             ft_s, ft_sea_s = ft
-            t = ft_s if gps_in_land(lat, lon) else ft_sea_s
+            lat, lon, _ = g
+            if lat and lat.isnumeric():
+                t = ft_s if gps_in_land(lat, lon) else ft_sea_s
+            else:
+                # 'missing', or 'malfunction'
+                t = ft_sea_s
+            s = 'BLE: blacklisting {} with {} seconds'.format(mac, t)
+            w.sig_ble.debug.emit(s)
             _mac_to_black_list(mb, mo, mac, t)
 
         except ble.BTLEException as ex:

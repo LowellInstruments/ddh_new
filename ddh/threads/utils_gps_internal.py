@@ -24,8 +24,8 @@ def gps_in_land(lat, lon):
     """ tells if a GPS position is in-land """
 
     if ctx.dummy_gps:
-        test_water = (0, 0)
-        test_land_madrid = (40.416800, -3.703800)
+        test_water = ('0', '0')
+        test_land_madrid = ('40.416800', '-3.703800')
         # set the dummy you wanna test
         lat, lon = test_land_madrid
 
