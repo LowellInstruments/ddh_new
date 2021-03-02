@@ -6,6 +6,11 @@ Clone it
 
 Prepare one SSD with the instructions in :ref:`hw-build`.
 
+In your DDH, look for utility ``SD card copier``. Your source disk will be ``/dev/sda``, your destination ``/dev/sdb``. Please make sure of this.
+
+In another DDH, try to boot it with the newly cloned disk.
+
+If the previous does NOT work, we can try another way.
 
 In your DDH, install rpi-clone from github. 
 
