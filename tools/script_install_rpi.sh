@@ -14,7 +14,7 @@ if [ "$EUID" -ne 0 ]; then printf 'Please run as root'; exit; fi
 printf '\n\n\n\n' && printf 'Installing Raspberry linux apt dependencies... \n'
 printf '============================================== \n'
 apt-get update
-apt-get install libatlas3-base libglib2.0-dev python3-pyqt5 libhdf5-dev python3-dev libgdal-dev libproj-dev proj-data proj-bin libgeos-dev RPi
+apt-get -y install libatlas3-base libglib2.0-dev python3-pyqt5 libhdf5-dev python3-dev libgdal-dev libproj-dev proj-data proj-bin libgeos-dev RPi
 
 printf '\n\n\n\n' && printf 'Installing Raspberry linux python dependencies... \n'
 printf '================================================= \n'
