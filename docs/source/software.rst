@@ -35,7 +35,7 @@ completely from scratch on a Raspberry:
 
     $ wget https://raw.githubusercontent.com/LowellInstruments/ddh/master/tools/script_install_rpi.sh
     $ chmod +x script_install_rpi.sh
-    $ sudo script_install_rpi.sh
+    $ sudo ./script_install_rpi.sh
 
 .. note::
 
@@ -47,7 +47,7 @@ To install on a laptop or workstation, for development purposes:
 
     $ wget https://raw.githubusercontent.com/LowellInstruments/ddh/master/tools/script_install_dev.sh
     $ chmod +x script_install_dev.sh
-    $ sudo script_install_dev.sh
+    $ sudo ./script_install_dev.sh
 
 
 It is left to the user to decide if a python virtual environment is used, or not.
