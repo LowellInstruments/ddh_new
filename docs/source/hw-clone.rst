@@ -7,7 +7,15 @@ Clone it
 Prepare one SSD with the instructions in :ref:`hw-build`.
 
 
-In your DDH, install rpi-clone from github. Connect another SSD to USB port and:
+In your DDH, install rpi-clone from github. 
+
+.. code:: bash
+
+    $ git clone https://github.com/billw2/rpi-clone.git 
+	$ cd rpi-clone
+	$ sudo cp rpi-clone rpi-clone-setup /usr/local/sbin
+
+In your DDH, connect another SSD to USB port and:
 
 .. code:: bash
     
