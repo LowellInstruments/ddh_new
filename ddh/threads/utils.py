@@ -11,6 +11,7 @@ import time
 from random import random
 from logzero import logger as console_log
 from ddh.settings import ctx
+from mat.crc import calculate_local_file_crc
 from mat.data_converter import DataConverter, default_parameters
 import json
 from socket import AF_INET, SOCK_DGRAM
@@ -282,17 +283,23 @@ def lid_to_csv(fol, suffix, files_to_ignore=[]) -> (bool, list):
 
 
 def create_folder(mac, fol):
+    """ mkdir folder based on mac """
     fol = fol / '{}/'.format(mac.replace(':', '-').lower())
     os.makedirs(fol, exist_ok=True)
     return fol
 
 
-def exists_file(file_name, size, fol):
+def check_local_file_exists(file_name, size, fol):
     path = os.path.join(fol, file_name)
     if os.path.isfile(path):
         if os.path.getsize(path) == size:
             return True
     return False
+
+
+def check_local_file_integrity(file_name, fol, remote_crc):
+    path = os.path.join(fol, file_name)
+    return calculate_local_file_crc(path) == remote_crc
 
 
 def rm_folder(mac):

@@ -2,14 +2,21 @@ import datetime
 import json
 import pathlib
 import time
-from mat.logger_controller_ble import ERR_MAT_ANS
-from ddh.threads.utils import rm_folder, create_folder, exists_file, emit_status, emit_error
+from json import JSONDecodeError
+from ddh.settings import ctx
+from ddh.threads.utils import (
+    rm_folder,
+    create_folder,
+    check_local_file_exists,
+    emit_status,
+    check_local_file_integrity
+)
+from ddh.threads.utils_gps_internal import gps_get_one_lat_lon_dt
 from mat.logger_controller import (
     RWS_CMD,
     SWS_CMD, STATUS_CMD
 )
-from ddh.settings import ctx
-from ddh.threads.utils_gps_internal import gps_get_one_lat_lon_dt
+from mat.logger_controller_ble import ERR_MAT_ANS
 from mat.logger_controller_ble_factory import LcBLEFactory
 
 
@@ -53,7 +60,7 @@ def _logger_sws(lc, sig, g):
         emit_status(sig, s)
         return
 
-    # logger running or delayed, need to stop
+    # logger running or delayed, we gonna stop it
     lat, lon, _ = g
     if lat and lat.isnumeric() and lon and lon.isnumeric:
         lat = '{:+.6f}'.format(float(lat))
@@ -61,13 +68,12 @@ def _logger_sws(lc, sig, g):
     else:
         lat, lon = 'N/A', 'N/A'
 
-    # SWS parameter goes altogether without comma
+    # SWS parameter contains no comma
+    g = '{}{}'.format(lat, lon)
     for _ in range(10):
-        g = '{}{}'.format(lat, lon)
         rv = lc.command(SWS_CMD, '{}'.format(g))
         if rv == [b'SWS', b'00']:
-            s = 'BLE: SWS coordinates {}'.format(g)
-            emit_status(sig, s)
+            _show('SWS coordinates {}'.format(g), sig)
             return
         time.sleep(.5)
     _die(rv)
@@ -75,21 +81,21 @@ def _logger_sws(lc, sig, g):
 
 def _logger_time_check(lc, sig=None):
     # command: GTM
-    rv = lc.get_time()
-    _show(rv, sig)
+    dt = lc.get_time()
+    _show(dt, sig)
 
     # protection
-    if rv is None:
+    if dt is None:
         _die(__name__)
 
-    # command: STM only if needed
-    d = datetime.datetime.now() - rv
-    rv = 'time sync not needed'
-    if abs(d.total_seconds()) > 60:
+    # command: STM only if dates off by > 1 minute
+    diff = datetime.datetime.now() - dt
+    s = 'time sync not needed'
+    if abs(diff.total_seconds()) > 60:
         rv = lc.sync_time()
         _ok_or_die([b'STM', b'00'], rv, sig)
-        rv = 'time synced {}'.format(lc.get_time())
-    _show(rv, sig)
+        s = 'time synced {}'.format(lc.get_time())
+    _show(s, sig)
 
 
 def _logger_ls(lc, fol, sig=None, pre_rm=False):
@@ -116,58 +122,52 @@ def _logger_ls(lc, fol, sig=None, pre_rm=False):
 
 
 def _logger_get_files(lc, sig, folder, files):
-    mac = lc.per.addr
-    num_to_get = 0
-    name_n_size = {}
-    b_total = 0
+    mac, num_to_get, got = lc.per.addr, 0, 0
+    name_n_size, b_total = {}, 0
 
-    # skip files we already have locally
+    # filter we'll get, omit locally existing ones
     for each in files.items():
-        name = each[0]
-        size = int(each[1])
+        name, size = each[0], int(each[1])
 
         if size == 0:
-            s = 'not downloading {}, size 0'.format(name)
-            emit_status(sig, s)
+            _show('not downloading {}, size 0'.format(name), sig)
             continue
 
-        if not exists_file(name, size, folder):
+        if not check_local_file_exists(name, size, folder):
             name_n_size[name] = size
             num_to_get += 1
             b_total += size
 
     # statistics
-    got = 0
     b_left = b_total
-    s = 'BLE: {} has {} files for us'.format(mac, num_to_get)
-    emit_status(sig, s)
+    _show('{} has {} files for us'.format(mac, num_to_get), sig)
 
     # download files one by one
-    num = 1
+    label = 1
     for name, size in name_n_size.items():
         mm = ((b_left // 5000) // 60) + 1
         b_left -= size
-        s = 'BLE: get {}, {} B'.format(name, size)
-        emit_status(sig, s)
-        sig.file_pre.emit(name, b_total, num, num_to_get, mm)
-        num += 1
+        _show('get {}, {} B'.format(name, size), sig)
+        sig.file_pre.emit(name, b_total, label, num_to_get, mm)
+        label += 1
 
         # x-modem download
         s_t = time.time()
-        if lc.get_file(name, folder, size, sig.dl_step):
-            emit_status(sig, 'BLE: got {}'.format(name))
-        else:
-            e = 'BLE: can\'t get {}, size {}'.format(name, size)
-            emit_error(sig, e)
-            # continue
+        if not lc.get_file(name, folder, size, sig.dl_step):
+            _error('can\'t get {}, size {}'.format(name, size))
+            return False
+        emit_status(sig, 'BLE: got {}'.format(name))
+
+        # check file CRC
+        crc = lc.command('CRC', name)
+        if check_local_file_integrity(name, folder, crc):
+            _error('can\'t get {}, size {}'.format(name, size))
             return False
 
-        # check got file ok
-        # todo: do a CRC calculation here?
-        if exists_file(name, size, folder):
-            got += 1
-            speed = size / (time.time() - s_t)
-            sig.file_post.emit(speed)
+        # show statistics
+        got += 1
+        speed = size / (time.time() - s_t)
+        sig.file_post.emit(speed)
 
     # logger was downloaded ok
     _ = 'almost done, '
@@ -180,6 +180,7 @@ def _logger_get_files(lc, sig, folder, files):
     s = '{}\n{}'.format(_, s)
     sig.logger_post.emit(True, s, mac)
 
+    # success condition
     return num_to_get == got
 
 
@@ -204,56 +205,57 @@ def _logger_plot(mac, sig):
 
 
 def _dir_cfg(lc, sig):
-    # helps, x-modem may still be ending in logger
+    # sleep helps, logger may still in previous x-modem
     time.sleep(1)
     rv = lc.ls_ext(b'.cfg')
-    s = 'BLE: DIR cfg {}'.format(rv)
-    emit_status(sig, s)
+    _show('DIR cfg {}'.format(rv), sig)
     return rv
 
 
 def _logger_re_setup(lc, sig):
-    rv = _dir_cfg(lc, sig)
-    size = 0
+    """ get logger's MAT.cfg, formats mem, re-sends MAT.cfg """
+
+    size, rv = 0, _dir_cfg(lc, sig)
     try:
         size = rv['MAT.cfg']
     except (KeyError, TypeError):
-        # no MAT.cfg within logger, that is an error
-        _die('no MAT.cfg to download')
-
-    # download MAT.cfg
+        _die('no MAT.cfg within logger to re-setup')
     if not size:
         _die('no MAT.cfg size')
-    s = 'BLE: getting MAT.cfg'
-    emit_status(sig, s)
+
+    # download MAT.cfg
     dff = ctx.app_dl_folder
-    rv = lc.get_file('MAT.cfg', dff, size, None)
-    if not rv:
+    _show('getting MAT.cfg...', sig)
+    if not lc.get_file('MAT.cfg', dff, size, None):
         _die('error downloading MAT.cfg')
-    s = 'BLE: got MAT.cfg'
-    emit_status(sig, s)
+    _show('got MAT.cfg', sig)
 
     # ensure MAT.cfg suitable for CFG command
-    p = pathlib.Path(dff / 'MAT.cfg')
-    # todo: add for NO MAT.cfg file and JSONDECode error cases
-    with open(p) as f:
-        cfg_dict = json.load(f)
-    if not cfg_dict:
-        _die('no MAT.cfg dict')
+    try:
+        with open(pathlib.Path(dff / 'MAT.cfg')) as f:
+            cfg_dict = json.load(f)
+            if not cfg_dict:
+                _die('no MAT.cfg dict')
+    except FileNotFoundError:
+        _die('cannot load downloaded MAT.cfg')
+    except JSONDecodeError:
+        _die('cannot decode downloaded MAT.cfg')
 
-    # if we reach here, we are doing ok
+    # format the logger
     rv = lc.command('FRM')
     _ok_or_die([b'FRM', b'00'], rv, sig)
 
-    # ex: PRR = 16, PRN = 65535 --> 4095 > SRI = 3600
+    # re-config the logger
     rv = lc.send_cfg(cfg_dict)
     _ok_or_die([b'CFG', b'00'], rv, sig)
 
 
 def logger_download(mac, fol, hci_if, sig=None):
+    """ downloads logger files and re-setups it """
+
     try:
-        # real or dummy loggers, all possible via Factory
         lc = LcBLEFactory.generate(mac)
+
         with lc(mac, hci_if) as lc:
             # g -> (lat, lon, datetime object)
             g = gps_get_one_lat_lon_dt()
@@ -264,7 +266,7 @@ def logger_download(mac, fol, hci_if, sig=None):
             fol, ls = _logger_ls(lc, fol, sig, pre_rm=False)
             got_all = _logger_get_files(lc, sig, fol, ls)
 
-            # got all files, everything went perfect
+            # :) got all files
             if got_all:
                 _logger_re_setup(lc, sig)
                 _logger_rws(lc, sig, g)
@@ -275,7 +277,7 @@ def logger_download(mac, fol, hci_if, sig=None):
                 _time_to_display(2)
                 return True, g
 
-            # mmm, we did NOT get all files
+            # :( did NOT get all files
             e = 'logger {} not done yet'
             sig.logger_post.emit(e.format(False, e, mac))
             sig.error.emit(e.format(mac))
@@ -283,12 +285,12 @@ def logger_download(mac, fol, hci_if, sig=None):
 
     # my exception, ex: no MAT.cfg file
     except AppBLEException as ex:
-        e = 'error at {}, will retry'.format(ex)
+        e = 'error: {}, will retry'.format(ex)
         sig.logger_post.emit(False, e, mac)
-        sig.error.emit('error: {}'.format(e))
+        sig.error.emit(e)
         return False, None
 
-    # such as None.command()
+    # bluepy or python exception, ex: None.command()
     except AttributeError as ae:
         sig.error.emit('error: {}'.format(ae))
         return False, None
