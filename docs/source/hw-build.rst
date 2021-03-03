@@ -8,14 +8,15 @@ Build it
 In your desktop computer, get `Raspberry Pi Imager <https://www.raspberrypi.org/software/>`_. Connect a SSD external disk and flash it.
 
 
-In your desktop computer, obtain DDH source code by typing the following:
+In your desktop computer, obtain some files for DDH configuration with:
 
 .. code:: bash
 
-    $ git clone https://github.com/LowellInstruments/ddh.git
+    $ wget https://raw.githubusercontent.com/LowellInstruments/ddh/master/tools/rc.local
+    $ wget https://raw.githubusercontent.com/LowellInstruments/ddh/master/tools/shutdown_script.py
+    $ wget https://github.com/LowellInstruments/ddh/raw/master/tools/dwagent.sh
 
-
-In your desktop computer, copy the following files from within DDH 'tools' folder to locations behind '->' to the SSD disk, in its `rootfs` partition.
+In your desktop computer, move them to locations behind '->' to the DDH SSD disk, in its `rootfs` partition.
 
 * rc.local -> /etc
 * shutdown_script.py -> /home/pi/juice4halt/bin/shutdown_script.py
@@ -35,8 +36,7 @@ In your DDH, set its time & timezone. The initial setup tool that will pop-up du
 	You may be prompted to restart DDH at some point during this procedure. Don't worry and press the upside hardware power button. This is better than suing a `reboot` command, since allows the power hats to shutdown all properly.
 
 
-In your DDH, decide if you are going to use a USB keyboard to continue configuration or just enable SSH access
-in the raspberry configuration tool.
+In your DDH, enable SSH access in the raspberry configuration tool.
 
 
 In your DDH, install some required linux packages for desktop purposes. Open a terminal and type:
@@ -44,11 +44,10 @@ In your DDH, install some required linux packages for desktop purposes. Open a t
 .. code:: bash
 
     $ sudo apt update
-    $ sudo apt install xscreensaver matchbox-keyboard ifmetric joe git python-rpi.gpio
+    $ sudo apt install -y xscreensaver matchbox-keyboard ifmetric joe git python-rpi.gpio
 
 
-In your DDH, open the screensaver settings and completely disable it. Yes, you need to install a screensaver in order
-to disable the screensaver settings.
+In your DDH, open the screensaver settings and completely disable it. Yes, you need to install a screensaver in order to disable the screensaver settings.
 
 
 In your DDH, obtain and install the cell and GPS script from SixFab. DDH uses a `hat` so during the installer you will probably choose an option such as `6: 3G/4G Base HAT` in the `ttyUSB3` port. You will also need to specify your SIM carrier, such as `wireless.twilio.com` and that it `does NOT need a user and password`. Finally, you say YES to enable `auto connect/reconnect service at R.Pi boot up?`.
@@ -72,14 +71,10 @@ In your DDH, see cell communication-capabilities were installed properly by typi
     $ ifconfig | grep ppp0
 
 
-In your DDH, test `juice4halt` board. Just press the power button and wait for DDH to switch off. If the juice4halt has worked as expected, the file ``/home/pi/juice4halt/bin/j4h_halt_flag``  should be present upon restart. Delete it to repeat the test.
+In your DDH, test `juice4halt` board. Just press the power button and wait for DDH to switch off. If the juice4halt has worked as expected, the file ``/home/pi/juice4halt/bin/j4h_halt_flag`` should be present upon restart. Delete it to repeat the test.
 
 
-In your DDH, even if at this point the DDH GUI software may not be installed yet, monitor the GUI to be always kept running by monitoring it with a 2 minutes period adding:
-
-    */2 * * * * /home/pi/li/ddh/run_ddh.sh
-
-to crontab by doing:
+In your DDH, even if at this point the DDH GUI software may not be installed yet, set the GUI to be always kept running by monitoring it with a 2 minutes period adding ``*/2 * * * * /home/pi/li/ddh/run_ddh.sh`` to crontab by:
 
 .. code:: bash
 
@@ -100,10 +95,15 @@ Or, you can also do this from your desktop computer by knowing and replacing you
     $ ssh -X pi@<DDH_IP> alacarte
 
 
-In your DDH, finally forget any wi-fi network you don't want DDH to preserve. This is useful if DDH are going to be cloned and shipped.
+In your desktop computer, you can add your public key to the DDH by generating it and copying to it.
+
+.. code:: bash
+
+    $ ssh-keygen
+    $ ssh-copy-id -i ~/.ssh/id_rsa.pub pi@<DDH_IP>
 
 
-In your DDH, if you are NOT cloning, you can proceed to install a remote control solution such as `DWService <https://www.dwservice.net>`_. Recall we copied its installer file, so-called `dwagent.sh`, in the ``/home/pi/Downloads`` folder during the first steps of this document.
+In your DDH, if you are NOT cloning from this one you just finished building, you can proceed to install a remote control solution such as `DWService <https://www.dwservice.net>`_. Recall we copied its installer file, so-called `dwagent.sh`, in the ``/home/pi/Downloads`` folder during the first steps of this document.
 
 
 Now, we are done. Again, DDH come with all this done so probably this procedure will not be needed.
