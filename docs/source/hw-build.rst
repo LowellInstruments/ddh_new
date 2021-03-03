@@ -49,6 +49,13 @@ In your DDH, install some required linux packages for desktop purposes. Open a t
 
 In your DDH, open the screensaver settings and completely disable it. Yes, you need to install a screensaver in order to disable the screensaver settings.
 
+In your DDH, open ``/etc/resolv.conf`` as root and edit it so it only has the following content:
+
+
+    # resolv.conf, protect this with 'chattr +i' to prevent interfaces changing it
+    nameserver 8.8.8.8
+    nameserver 8.8.4.4
+
 
 In your DDH, obtain and install the cell and GPS script from SixFab. DDH uses a `hat` so during the installer you will probably choose an option such as `6: 3G/4G Base HAT` in the `ttyUSB3` port. You will also need to specify your SIM carrier, such as `wireless.twilio.com` and that it `does NOT need a user and password`. Finally, you say YES to enable `auto connect/reconnect service at R.Pi boot up?`.
 
