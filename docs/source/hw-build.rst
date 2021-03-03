@@ -2,7 +2,7 @@
 
 
 Build it
-########
+========
 
 
 In your desktop computer, get `Raspberry Pi Imager <https://www.raspberrypi.org/software/>`_. Connect a SSD external disk and flash it.
@@ -103,7 +103,7 @@ In your desktop computer, you can add your public key to the DDH by generating i
     $ ssh-copy-id -i ~/.ssh/id_rsa.pub pi@<DDH_IP>
 
 
-In your DDH, if you are NOT cloning from this one you just finished building, you can proceed to install a remote control solution such as `DWService <https://www.dwservice.net>`_. Recall we copied its installer file, so-called `dwagent.sh`, in the ``/home/pi/Downloads`` folder during the first steps of this document.
+In your DDH, if you are NOT cloning from this one you just finished building, you can proceed to section :ref:`hw-access`.
 
 
-Now, we are done. Again, DDH come with all this done so probably this procedure will not be needed.
+Now, we are done. Again, DDH come with all this done so probably the procedure explained in this section will not be needed.
