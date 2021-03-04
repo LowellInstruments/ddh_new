@@ -8,7 +8,7 @@ from ddh.db.db_his import DBHis
 from ddh.settings.version import VER_SW
 from ddh.threads.th_time import ButtonPressEvent
 from ddh.threads.utils import json_get_ship_name
-from ddh.threads.utils_gps_internal import gps_in_land
+from ddh.threads.utils_gps_internal import utils_gps_in_land
 from mat.utils import linux_is_rpi, linux_is_docker_on_rpi
 
 
@@ -115,7 +115,7 @@ def paint_gps_icon_w_color_land_sea(my_app, did_ok, lat, lon):
         img = 'ddh/gui/res/img_gps_dis.png'
         a.img_gps.setPixmap(QPixmap(img))
         return
-    if gps_in_land(lat, lon):
+    if utils_gps_in_land(lat, lon):
         img = 'ddh/gui/res/img_gps_land.png'
         a.img_gps.setPixmap(QPixmap(img))
         return

@@ -1,7 +1,7 @@
 import time
 from ddh.settings import ctx
 from ddh.threads.utils import wait_boot_signal
-from ddh.threads.utils_gps_internal import gps_get_one_lat_lon_dt
+from ddh.threads.utils_gps_internal import utils_gps_get_one_lat_lon_dt
 
 
 PERIOD_GPS = 10
@@ -16,7 +16,7 @@ def loop(w, ev_can_i_boot):
     while 1:
         # updates only position, time source updated in other thread
         ctx.sem_ble.acquire()
-        _o = gps_get_one_lat_lon_dt()
+        _o = utils_gps_get_one_lat_lon_dt()
         w.sig_gps.update.emit(_o)
         ctx.sem_ble.release()
         time.sleep(PERIOD_GPS)

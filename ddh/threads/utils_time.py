@@ -1,7 +1,7 @@
 import datetime
 from tzlocal import get_localzone
 from ddh.threads.utils import linux_is_net_ok, get_ntp_time, linux_set_datetime
-from ddh.threads.utils_gps_internal import gps_get_one_lat_lon_dt
+from ddh.threads.utils_gps_internal import utils_gps_get_one_lat_lon_dt
 
 
 def update_datetime_source(w):
@@ -29,8 +29,9 @@ def _time_sync_net():
 
 def _time_sync_gps():
     # update only GPS time, don't care lat, lon
-    _, _, gps_time = gps_get_one_lat_lon_dt()
-    if gps_time in ('missing', 'malfunction'):
+    g = utils_gps_get_one_lat_lon_dt()
+    _, _, gps_time = g if g else (None, ) * 3
+    if not gps_time:
         return False
 
     # this is my timezone, apply it to UTC-based datetime from GPS frame

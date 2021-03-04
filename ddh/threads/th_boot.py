@@ -1,7 +1,10 @@
+import os
+import sys
 import time
-from ddh.threads.utils_gps_internal import gps_get_one_lat_lon_dt
+from ddh.settings.ctx import dummy_gps
+from ddh.threads.utils_gps_internal import utils_gps_get_one_lat_lon_dt
 from ddh.threads.utils_time import update_datetime_source
-from mat.gps_quectel import configure_gps_internal
+from mat.gps_quectel import gps_configure_quectel
 
 
 def _boot_sync_time(w):
@@ -11,7 +14,7 @@ def _boot_sync_time(w):
 
 def _boot_sync_position(w):
     """ th_boot gets first GPS position """
-    _o = gps_get_one_lat_lon_dt()
+    _o = utils_gps_get_one_lat_lon_dt()
     w.sig_gps.update.emit(_o)
 
 
@@ -20,7 +23,10 @@ def boot(w, evb):
     time.sleep(.5)
 
     # tries to enable GPS, used for position and time source
-    configure_gps_internal()
+    if not dummy_gps and gps_configure_quectel() != 0:
+        w.sig_boot.error('SYS: th_boot cannot open GPS port')
+        os._exit(1)
+        sys.exit(1)
 
     # gets first values for position and time and their sources
     _boot_sync_time(w)

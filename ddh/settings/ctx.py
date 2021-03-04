@@ -47,7 +47,7 @@ sw_ble_en = True
 # todo: on production, adjust these
 macs_lists_pre_rm = False
 dummy_ti_logger = True
-dummy_gps = False
+dummy_gps = True
 
 
 def only_one_instance(name):

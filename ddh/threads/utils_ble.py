@@ -11,7 +11,7 @@ from ddh.threads.utils import (
     emit_status,
     check_local_file_integrity
 )
-from ddh.threads.utils_gps_internal import gps_get_one_lat_lon_dt
+from ddh.threads.utils_gps_internal import utils_gps_get_one_lat_lon_dt
 from mat.logger_controller import (
     RWS_CMD,
     SWS_CMD, STATUS_CMD
@@ -61,7 +61,7 @@ def _logger_sws(lc, sig, g):
         return
 
     # logger running or delayed, we gonna stop it
-    lat, lon, _ = g
+    lat, lon, _ = g if g else (None, ) * 3
     if lat and lat.isnumeric() and lon and lon.isnumeric:
         lat = '{:+.6f}'.format(float(lat))
         lon = '{:+.6f}'.format(float(lon))
@@ -185,7 +185,7 @@ def _logger_get_files(lc, sig, folder, files):
 
 
 def _logger_rws(lc, sig, g):
-    lat, lon, _ = g
+    lat, lon, _ = g if g else (None, ) * 3
     if lat and lat.isnumeric() and lon and lon.isnumeric:
         lat = '{:+.6f}'.format(float(lat))
         lon = '{:+.6f}'.format(float(lon))
@@ -258,7 +258,7 @@ def logger_download(mac, fol, hci_if, sig=None):
 
         with lc(mac, hci_if) as lc:
             # g -> (lat, lon, datetime object)
-            g = gps_get_one_lat_lon_dt()
+            g = utils_gps_get_one_lat_lon_dt()
             _logger_sws(lc, sig, g)
             _logger_time_check(lc, sig)
 

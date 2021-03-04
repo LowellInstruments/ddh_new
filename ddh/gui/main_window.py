@@ -104,6 +104,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.sig_plt.status.connect(self.slot_status)
         self.sig_aws.status.connect(self.slot_status)
         self.sig_tim.status.connect(self.slot_status)
+        self.sig_boot.error.connect(self.slot_error)
         self.sig_gps.error.connect(self.slot_error)
         self.sig_cnv.error.connect(self.slot_error)
         self.sig_plt.error.connect(self.slot_error)
@@ -203,17 +204,18 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         s = '{}\n{}\n{}\n{}'.format(s, _[1], _[2], _[3])
         self.lbl_time_n_pos.setText(s)
 
-    @pyqtSlot(tuple, name='slot_gui_update_gps_pos')
+    @pyqtSlot(object, name='slot_gui_update_gps_pos')
     def slot_gui_update_gps_pos(self, u):
         """ th_gps sends the signal for this slot """
 
+        # save current content (cc) of GUI
+        cc = self.lbl_time_n_pos.text().split('\n')
+
         # u: lat, lon, timestamp
-        lat, lon, self.gps_last_ts = u
-        _ = self.lbl_time_n_pos.text().split('\n')
-        s = '{}\n{}\n{}\n{}'.format(_[0], lat, lon, _[3])
+        lat, lon, self.gps_last_ts = u if u else ('N/A', ) * 3
+        s = '{}\n{}\n{}\n{}'.format(cc[0], lat, lon, cc[3])
         self.lbl_time_n_pos.setText(s)
-        ok = lon not in ['missing', 'searching', 'malfunction']
-        paint_gps_icon_w_color_land_sea(self, ok, lat, lon)
+        paint_gps_icon_w_color_land_sea(self, u, lat, lon)
 
     @pyqtSlot(str, name='slot_gui_update_net_source')
     def slot_gui_update_net_source(self, s):

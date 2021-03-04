@@ -6,7 +6,7 @@ from ddh.settings import ctx
 from ddh.threads.utils import json_get_macs, json_get_forget_time_secs, json_get_hci_if, wait_boot_signal, \
     json_get_forget_time_at_sea_secs
 from ddh.threads.utils_ble import logger_download
-from ddh.threads.utils_gps_internal import gps_in_land
+from ddh.threads.utils_gps_internal import utils_gps_in_land
 from ddh.threads.utils_macs import filter_white_macs, BlackMacList, OrangeMacList, bluepy_scan_results_to_strings
 
 
@@ -102,7 +102,7 @@ def _download_loggers(w, h, macs, mb, mo, ft: tuple):
             ft_s, ft_sea_s = ft
             lat, lon, _ = g
             if lat and lat.isnumeric():
-                t = ft_s if gps_in_land(lat, lon) else ft_sea_s
+                t = ft_s if utils_gps_in_land(lat, lon) else ft_sea_s
             else:
                 # 'missing', or 'malfunction'
                 t = ft_sea_s

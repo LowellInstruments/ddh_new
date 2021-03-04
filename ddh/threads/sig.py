@@ -22,7 +22,7 @@ class SignalsBLE(QObject):
 class SignalsGPS(QObject):
     status = pyqtSignal(str)
     error = pyqtSignal(str)
-    update = pyqtSignal(tuple)
+    update = pyqtSignal(object)
 
 
 class SignalsAWS(QObject):
@@ -33,6 +33,7 @@ class SignalsAWS(QObject):
 
 class SignalsBoot(QObject):
     status = pyqtSignal(str)
+    error = pyqtSignal(str)
 
 
 class SignalsPLT(QObject):
