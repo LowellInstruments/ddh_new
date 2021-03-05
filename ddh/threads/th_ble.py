@@ -100,11 +100,10 @@ def _download_loggers(w, h, macs, mb, mo, ft: tuple):
 
             # OK download session, set 'forget time_sea or land'
             ft_s, ft_sea_s = ft
-            lat, lon, _ = g
-            if lat and lat.isnumeric():
+            lat, lon, _ = g if g else (None,) * 3
+            if lat and lat.isnumeric() and lon and lon.isnumeric:
                 t = ft_s if utils_gps_in_land(lat, lon) else ft_sea_s
             else:
-                # 'missing', or 'malfunction'
                 t = ft_sea_s
             s = 'BLE: blacklisting {} with {} seconds'.format(mac, t)
             w.sig_ble.debug.emit(s)

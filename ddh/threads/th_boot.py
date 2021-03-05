@@ -24,7 +24,7 @@ def boot(w, evb):
 
     # tries to enable GPS, used for position and time source
     if not dummy_gps and gps_configure_quectel() != 0:
-        w.sig_boot.error('SYS: th_boot cannot open GPS port')
+        w.sig_boot.error.emit('SYS: th_boot cannot open GPS port')
         os._exit(1)
         sys.exit(1)
 
