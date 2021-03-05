@@ -24,8 +24,10 @@ def _mac_to_orange_list(mo, mac):
 
 
 def _mac_show_color_lists(w, mb, mo):
+    _d = 'SYS: deleting all orange entries'
+    w.sig_ble.debug.emit(_d)
     mo.ls.delete_all()
-    if ctx.macs_lists_pre_rm:
+    if ctx.macs_blacklist_pre_rm:
         _d = 'SYS: pre-removing mac black list'
         mb.ls.delete_all()
         w.sig_ble.debug.emit(_d)
@@ -35,8 +37,6 @@ def _mac_show_color_lists(w, mb, mo):
     w.sig_ble.debug.emit(_d)
     _d = 'SYS: loaded persistent orange list -> '
     _d += mo.ls.macs_dump()
-    w.sig_ble.debug.emit(_d)
-    _d = 'SYS: deleting all orange entries'
     w.sig_ble.debug.emit(_d)
 
 

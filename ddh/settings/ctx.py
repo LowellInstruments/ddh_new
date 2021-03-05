@@ -45,7 +45,7 @@ sw_ble_en = True
 
 # APP behavior modifier
 # todo: on production, adjust these
-macs_lists_pre_rm = False
+macs_blacklist_pre_rm = False
 dummy_ti_logger = True
 dummy_gps = True
 

@@ -1,12 +1,10 @@
 import shelve
 import os
 import datetime
-import time
 
 
 class ColoredMacList:
     def __init__(self, name, sig, color):
-        print(name)
         self.db_name = name
         self.sig = sig
         self.color = color
