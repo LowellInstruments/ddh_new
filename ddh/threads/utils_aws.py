@@ -75,7 +75,7 @@ def aws_check_connection_to_s3(cli, bkt_name):
         cli.head_bucket(Bucket=bkt_name)
         return True
     except (ClientError, NoCredentialsError) as e:
-        logzero_logger.error('AWS: argh! connection error {}'.format(e))
+        logzero_logger.error('AWS: {}'.format(e))
         return False
 
 

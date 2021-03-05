@@ -27,7 +27,7 @@ def loop(w, ev_can_i_boot):
         # sf means 'synced_files'
         sf = aws_ddh_sync(name, key_id, secret, fol, None, sig)
         s = 'OK' if type(sf) is list else 'ERR'
-        w.sig_aws.update.emit('AWS {}'.format(s))
+        w.sig_aws.update.emit('AWS: {}'.format(s))
         ctx.sem_aws.release()
         ctx.sem_ble.release()
 

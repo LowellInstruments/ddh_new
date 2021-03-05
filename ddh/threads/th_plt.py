@@ -20,7 +20,7 @@ def _plot_data(w, plt_args):
             # oops, plotting went wrong
             e = 'PLT: no {}({}) plots for \'{}\''.format(pair, ts, lg)
             w.sig_plt.error.emit(e)
-            e = 'cannot plot 1{} for \'{}\''.format(ts, lg)
+            e = 'can\'t plot 1{} \'{}\''.format(ts, lg)
             w.sig_plt.msg.emit(e)
             w.sig_plt.end.emit(False, e)
 

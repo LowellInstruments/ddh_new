@@ -89,13 +89,13 @@ def _download_loggers(w, h, macs, mb, mo, ft: tuple):
             # get files from the logger
             done, g = logger_download(mac, fol, h, w.sig_ble)
 
+            # update GUI with logger pending warnings, if any
+            orange_pending_ones = mo.ls.get_all_macs()
+            w.sig_ble.dl_warning.emit(orange_pending_ones)
+
             # NOT OK download session, ignore logger for 'ignore time'
             if not done:
                 _mac_to_orange_list(mo, mac)
-
-                # warn GUI we have a logger pending
-                orange_pending_ones = mo.ls.get_all_macs()
-                w.sig_ble.dl_warning.emit(orange_pending_ones)
                 continue
 
             # OK download session, set 'forget time_sea or land'

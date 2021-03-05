@@ -220,21 +220,14 @@ def _mac_dns_no_case(j, mac):
 
 
 def json_mac_dns(j, mac):
-    """ find logger name for a mac """
+    """ returns logger name (known) or mac (unknown) for mac """
+
     name = _mac_dns_no_case(j, mac.lower())
+    # check for both upper() and lower() cases
     if not name:
-        # make all these case insensitive
         name = _mac_dns_no_case(j, mac.upper())
-    if not name:
-        return '(unknown {})'.format(mac)
-    return name
-
-
-def test_json_mac_dns():
-    r = pathlib.Path.cwd()
-    j = r / 'settings/ddh.json'
-    rv = json_mac_dns(j, '60:77:71:22:c8:07')
-    print(rv)
+    rv = name if name else mac
+    return rv
 
 
 def mac_from_folder(fol):
@@ -269,7 +262,6 @@ def lid_to_csv(fol, suffix, files_to_ignore=[]) -> (bool, list):
             continue
 
         try:
-            # todo: ask Jeff for early leave if metric not in header, otherwise very slow
             DataConverter(f, parameters).convert()
             s = 'converted OK -> {}'.format(f)
             logzero_logger.error(s)

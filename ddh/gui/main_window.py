@@ -211,10 +211,14 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         # save current content (cc) of GUI
         cc = self.lbl_time_n_pos.text().split('\n')
 
-        print('slot_gui_update_gps_pos {}'.format(u))
-
         # u: lat, lon, timestamp
-        lat, lon, self.gps_last_ts = u if u else ('N/A', ) * 3
+        if not u:
+            lat, lon, self.gps_last_ts = u if u else ('N/A', ) * 3
+        else:
+            lat = '{:+.6f}'.format(float(u[0]))
+            lon = '{:+.6f}'.format(float(u[1]))
+            self.gps_last_ts = u[2]
+
         s = '{}\n{}\n{}\n{}'.format(cc[0], lat, lon, cc[3])
         self.lbl_time_n_pos.setText(s)
         paint_gps_icon_w_color_land_sea(self, u, lat, lon)
@@ -239,7 +243,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         """ th_cnv sends the signal for this slot """
         path = str(ctx.app_logs_folder / 'ddh_err_cnv.log')
         update_cnv_log_err_file(path, _e)
-        s = 'some bad conversion' if _e else 'conversion OK'
+        s = 'CNV: error' if _e else 'conversion OK'
         _ = self.lbl_plot.text().split('\n')
         s = '{}\n{}\n{}'.format(_[0], s, _[2])
         self.lbl_plot.setText(s)
@@ -531,8 +535,8 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     def click_icon_net(self, _):
         """ clicking shift + NET icon (un)shows the EDIT tab """
 
-        s = 'GUI: secret NET click'
-        c_log.debug(s)
+        s = 'GUI: secret NET click, shift pressed = {}'
+        c_log.debug(s.format(self.key_shift))
 
         if not self.key_shift:
             return
@@ -589,9 +593,8 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         os._exit(0)
 
     def keyReleaseEvent(self, e):
-        """ controls status of the RELEASE event of the shift key """
-        if e.key() == Qt.Key_Shift:
-            self.key_shift = 0
+        # just ensure it
+        self.key_shift = 0
 
     def keyPressEvent(self, e):
         """ controls status of the PRESS event of any keyboard keys """
