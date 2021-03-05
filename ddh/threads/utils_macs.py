@@ -3,6 +3,11 @@ import os
 import datetime
 
 
+# careful, Rpi requires 1 packages or it wrongly adds extra 'db' on file_names
+# see: stackoverflow 16171833
+# $ sudo apt install python3-gdbm
+
+
 class ColoredMacList:
     def __init__(self, name, sig, color):
         self.db_name = name
