@@ -6,7 +6,7 @@ from ddh.settings import ctx
 from ddh.threads.utils import json_get_macs, json_get_forget_time_secs, json_get_hci_if, wait_boot_signal, \
     json_get_forget_time_at_sea_secs
 from ddh.threads.utils_ble import logger_download
-from ddh.threads.utils_gps_internal import utils_gps_in_land
+from ddh.threads.utils_gps_quectel import utils_gps_in_land
 from ddh.threads.utils_macs import filter_white_macs, BlackMacList, OrangeMacList, bluepy_scan_results_to_strings
 
 

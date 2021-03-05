@@ -23,7 +23,10 @@ def utils_gps_get_one_lat_lon_dt(timeout=3):
         # return None
         return lat, lon, dt
 
-    return gps_get_rmc_frame()
+    rv = gps_get_rmc_frame()
+    print('utils_gps_quectel {}'.format(rv))
+    return rv
+
 
 
 def utils_gps_in_land(lat, lon):

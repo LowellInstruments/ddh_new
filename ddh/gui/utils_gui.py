@@ -8,7 +8,7 @@ from ddh.db.db_his import DBHis
 from ddh.settings.version import VER_SW
 from ddh.threads.th_time import ButtonPressEvent
 from ddh.threads.utils import json_get_ship_name
-from ddh.threads.utils_gps_internal import utils_gps_in_land
+from ddh.threads.utils_gps_quectel import utils_gps_in_land
 from mat.utils import linux_is_rpi, linux_is_docker_on_rpi
 
 

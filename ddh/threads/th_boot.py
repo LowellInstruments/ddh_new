@@ -2,7 +2,7 @@ import os
 import sys
 import time
 from ddh.settings.ctx import dummy_gps
-from ddh.threads.utils_gps_internal import utils_gps_get_one_lat_lon_dt
+from ddh.threads.utils_gps_quectel import utils_gps_get_one_lat_lon_dt
 from ddh.threads.utils_time import update_datetime_source
 from mat.gps_quectel import gps_configure_quectel
 

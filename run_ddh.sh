@@ -20,9 +20,9 @@ export DDH_AWS_KEY_ID=_AK_
 export DDH_AWS_SECRET=_AS_
 
 # (un)comment depending on if you allow running without AWS
-if [ $DDH_AWS_NAME == "_AN_" ]; then printf "AWS env error\n"; exit 2; fi
-if [ $DDH_AWS_KEY_ID == "_AK_" ]; then printf "AWS env error\n"; exit 3; fi
-if [ $DDH_AWS_SECRET == "_AS_"_ ]; then printf "AWS env error\n"; exit 4; fi
+#if [ $DDH_AWS_NAME == "_AN_" ]; then printf "AWS env error\n"; exit 2; fi
+#if [ $DDH_AWS_KEY_ID == "_AK_" ]; then printf "AWS env error\n"; exit 3; fi
+#if [ $DDH_AWS_SECRET == "_AS_"_ ]; then printf "AWS env error\n"; exit 4; fi
 
 # sudo -E considers environment vars such as DDH_AWS_NAME
 printf "entering DDH folder\n"; cd $FOL_DDH || exit 5

@@ -11,7 +11,7 @@ from ddh.threads.utils import (
     emit_status,
     check_local_file_integrity
 )
-from ddh.threads.utils_gps_internal import utils_gps_get_one_lat_lon_dt
+from ddh.threads.utils_gps_quectel import utils_gps_get_one_lat_lon_dt
 from mat.logger_controller import (
     RWS_CMD,
     SWS_CMD, STATUS_CMD

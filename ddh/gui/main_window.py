@@ -211,6 +211,8 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         # save current content (cc) of GUI
         cc = self.lbl_time_n_pos.text().split('\n')
 
+        print('slot_gui_update_gps_pos {}'.format(u))
+
         # u: lat, lon, timestamp
         lat, lon, self.gps_last_ts = u if u else ('N/A', ) * 3
         s = '{}\n{}\n{}\n{}'.format(cc[0], lat, lon, cc[3])
