@@ -2,6 +2,8 @@ import shelve
 import os
 import datetime
 
+from mat.utils import linux_is_rpi
+
 
 # careful, Rpi requires 1 packages or it wrongly adds extra 'db' on file_names
 # see: stackoverflow 16171833
@@ -12,19 +14,25 @@ class ColoredMacList:
     def __init__(self, name, sig, color):
         self.db_name = name
         self.sig = sig
-        self.color = color
+
+    def _get_name_argh(self):
+        name = self.db_name
+        if linux_is_rpi():
+            # argh, peculiarities of shelve implementations
+            name += '{}.db'
+        return name
 
     def delete_all(self):
         try:
-            os.remove(self.db_name)
+            os.remove(self._get_name_argh())
             # print('{}_macs DB erased'.format(self.color))
         except FileNotFoundError as _:
             _e = 'asked to del file {} but not found'
-            print(_e.format(self.db_name))
+            print(_e.format(self._get_name_argh()))
 
     def macs_dump(self) -> str:
         _s = ''
-        with shelve.open(self.db_name) as sh:
+        with shelve.open(self._get_name_argh()) as sh:
             for k, v in sh.items():
                 # v: datestamp
                 v = int(v - datetime.datetime.now().timestamp())
@@ -33,24 +41,24 @@ class ColoredMacList:
 
     def macs_add_or_update(self, _mac, _inc):
         _t = datetime.datetime.now().timestamp() + _inc
-        with shelve.open(self.db_name) as sh:
-            _s = 'SYS: {} to mac_{} list, time increase of {}'
-            _s = _s.format(_mac, self.color, _inc)
+        with shelve.open(self._get_name_argh()) as sh:
+            _s = 'SYS: {} to {}, time increase of {}'
+            _s = _s.format(_mac, self._get_name_argh(), _inc)
             sh[_mac] = _t
 
     def macs_del_one(self, _mac):
         try:
-            with shelve.open(self.db_name) as sh:
+            with shelve.open(self._get_name_argh()) as sh:
                 del sh[_mac]
         except KeyError:
             pass
 
     def len_macs_list(self):
-        with shelve.open(self.db_name) as sh:
+        with shelve.open(self._get_name_argh()) as sh:
             return len(sh)
 
     def get_all_macs(self) -> list:
-        with shelve.open(self.db_name) as sh:
+        with shelve.open(self._get_name_argh()) as sh:
             return list(sh.keys())
 
 
