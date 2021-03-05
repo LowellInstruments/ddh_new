@@ -9,7 +9,7 @@ from ddh.threads.utils import (
     create_folder,
     check_local_file_exists,
     emit_status,
-    check_local_file_integrity
+    check_local_file_integrity, is_float
 )
 from ddh.threads.utils_gps_quectel import utils_gps_get_one_lat_lon_dt
 from mat.logger_controller import (
@@ -62,7 +62,7 @@ def _logger_sws(lc, sig, g):
 
     # logger running or delayed, we gonna stop it
     lat, lon, _ = g if g else (None, ) * 3
-    if lat and lat.isnumeric() and lon and lon.isnumeric:
+    if lat and is_float(lat) and lon and is_float(lon):
         lat = '{:+.6f}'.format(float(lat))
         lon = '{:+.6f}'.format(float(lon))
     else:
@@ -186,7 +186,7 @@ def _logger_get_files(lc, sig, folder, files):
 
 def _logger_rws(lc, sig, g):
     lat, lon, _ = g if g else (None, ) * 3
-    if lat and lat.isnumeric() and lon and lon.isnumeric:
+    if lat and is_float(lat) and lon and is_float(lon):
         lat = '{:+.6f}'.format(float(lat))
         lon = '{:+.6f}'.format(float(lon))
     else:

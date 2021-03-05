@@ -4,7 +4,7 @@ import time
 from mat.logger_controller_ble import ble_scan, FAKE_MAC_CC26X2
 from ddh.settings import ctx
 from ddh.threads.utils import json_get_macs, json_get_forget_time_secs, json_get_hci_if, wait_boot_signal, \
-    json_get_forget_time_at_sea_secs
+    json_get_forget_time_at_sea_secs, is_float
 from ddh.threads.utils_ble import logger_download
 from ddh.threads.utils_gps_quectel import utils_gps_in_land
 from ddh.threads.utils_macs import filter_white_macs, BlackMacList, OrangeMacList, bluepy_scan_results_to_strings
@@ -101,7 +101,8 @@ def _download_loggers(w, h, macs, mb, mo, ft: tuple):
             # OK download session, set 'forget time_sea or land'
             ft_s, ft_sea_s = ft
             lat, lon, _ = g if g else (None,) * 3
-            if lat and lat.isnumeric() and lon and lon.isnumeric:
+            print(lat, lon)
+            if lat and is_float(lat) and lon and is_float(lon):
                 t = ft_s if utils_gps_in_land(lat, lon) else ft_sea_s
             else:
                 t = ft_sea_s

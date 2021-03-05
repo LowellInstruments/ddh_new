@@ -339,6 +339,14 @@ def wait_boot_signal(w, ev, s):
     w.sig_aws.status.emit(_)
 
 
+def is_float(s: str):
+    try:
+        float(s)
+        return True
+    except ValueError:
+        return False
+
+
 # test robustness
 if __name__ == '__main__':
     while 1:
