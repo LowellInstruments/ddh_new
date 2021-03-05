@@ -103,10 +103,16 @@ def _download_loggers(w, h, macs, mb, mo, ft: tuple):
             lat, lon, _ = g if g else (None,) * 3
             print(lat, lon)
             if lat and is_float(lat) and lon and is_float(lon):
-                t = ft_s if utils_gps_in_land(lat, lon) else ft_sea_s
+                if utils_gps_in_land(lat, lon):
+                    t = ft_s
+                    s = 'BLE: in-land, blacklist {} w/ {} secs'.format(mac, t)
+                else:
+                    t = ft_sea_s
+                    s = 'BLE: at sea, blacklist {} w/ {} secs'.format(mac, t)
             else:
                 t = ft_sea_s
-            s = 'BLE: blacklisting {} with {} seconds'.format(mac, t)
+                s = 'BLE: unknown, blacklist {} w/ {} secs'.format(mac, t)
+
             w.sig_ble.debug.emit(s)
             _mac_to_black_list(mb, mo, mac, t)
 
