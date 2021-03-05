@@ -101,7 +101,6 @@ def _download_loggers(w, h, macs, mb, mo, ft: tuple):
             # OK download session, set 'forget time_sea or land'
             ft_s, ft_sea_s = ft
             lat, lon, _ = g if g else (None,) * 3
-            print(lat, lon)
             if lat and is_float(lat) and lon and is_float(lon):
                 if utils_gps_in_land(lat, lon):
                     t = ft_s
