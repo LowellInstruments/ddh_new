@@ -154,17 +154,20 @@ def _logger_get_files(lc, sig, folder, files):
         # x-modem download
         s_t = time.time()
         if not lc.get_file(name, folder, size, sig.dl_step):
-            _error('can\'t get {}, size {}'.format(name, size))
+            _error('BLE: bad CRC for {}, size {}'.format(name, size))
             return False
-        emit_status(sig, 'BLE: got {}'.format(name))
+        emit_status(sig, 'BLE: got {} w/ good CRC'.format(name))
 
         # check file CRC
         crc = lc.command('CRC', name)
-        if check_local_file_integrity(name, folder, crc):
-            _error('can\'t get {}, size {}'.format(name, size))
+        rv, l_crc = check_local_file_integrity(name, folder, crc)
+        s = 'BLE: {} remote crc {} | local crc {}'
+        emit_status(sig, s.format(name, crc, l_crc))
+        if not rv:
+            _error('can\'t get {}, size {}'.format(name, size), sig)
             return False
 
-        # show statistics
+        # show CRC and statistics
         got += 1
         speed = size / (time.time() - s_t)
         sig.file_post.emit(speed)
@@ -228,6 +231,13 @@ def _logger_re_setup(lc, sig):
     _show('getting MAT.cfg...', sig)
     if not lc.get_file('MAT.cfg', dff, size, None):
         _die('error downloading MAT.cfg')
+
+    # check MAT.cfg file
+    # todo: adjust this path
+    crc = lc.command('CRC', 'MAT.cfg')
+    rv, l_crc = check_local_file_integrity('MAT.cfg', '.', crc)
+    s = 'BLE: {} remote crc {} | local crc {}'
+    print(s)
     _show('got MAT.cfg', sig)
 
     # ensure MAT.cfg suitable for CFG command
@@ -279,7 +289,7 @@ def logger_download(mac, fol, hci_if, sig=None):
 
             # :( did NOT get all files
             e = 'logger {} not done yet'
-            sig.logger_post.emit(e.format(False, e, mac))
+            sig.logger_post.emit(False, e, mac)
             sig.error.emit(e.format(mac))
             return False, None
 

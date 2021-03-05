@@ -3,7 +3,8 @@
     "db_logger_macs": {
         "ee:ee:ee:ee:ee:ee": "example_entry_1",
         "xx:cc:26:x2:ff:ff": "fake_mac_ti",
-        "60:77:71:22:c9:c1": "2006677"
+        "60:77:71:22:c9:c1": "2006677",
+        "60:77:71:22:c8:18": "2006671"
     },
     "ship_name": "My boat!",
     "forget_time": 86400,

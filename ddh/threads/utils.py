@@ -239,17 +239,18 @@ def mac_from_folder(fol):
 
 def lid_to_csv(fol, suffix, files_to_ignore=[]) -> (bool, list):
     """ convert depending on if fileX_suffix.lid exists """
+
     # valid_suffixes = ('_DissolvedOxygen', '_Temperature', '_Pressure')
     valid_suffixes = ('_DissolvedOxygen', )
     assert suffix in valid_suffixes
+    err_files = []
 
     if not os.path.exists(fol):
-        return False
+        return False, err_files
 
     # prepare conversion
     parameters = default_parameters()
     lid_files = linux_ls_by_ext(fol, 'lid')
-    err_files = []
     all_ok = True
 
     for f in lid_files:
@@ -290,8 +291,16 @@ def check_local_file_exists(file_name, size, fol):
 
 
 def check_local_file_integrity(file_name, fol, remote_crc):
+    # remote_crc: [b'CRC', b'08eac2e456']
     path = os.path.join(fol, file_name)
-    return calculate_local_file_crc(path) == remote_crc
+    local_crc = calculate_local_file_crc(path)
+    if len(remote_crc) != 2:
+        return False
+    # b'08eac2e456' -> 'EAC2E456'
+    if len(remote_crc[1]) != 10:
+        return False
+    remote_crc = remote_crc[1].decode()[2:].upper()
+    return local_crc == remote_crc, local_crc
 
 
 def rm_folder(mac):
