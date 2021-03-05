@@ -27,6 +27,7 @@ def _mac_show_color_lists(w, mb, mo):
     _d = 'SYS: deleting all orange entries'
     w.sig_ble.debug.emit(_d)
     mo.ls.delete_all()
+
     if ctx.macs_blacklist_pre_rm:
         _d = 'SYS: pre-removing mac black list'
         mb.ls.delete_all()
