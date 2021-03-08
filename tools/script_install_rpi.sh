@@ -7,9 +7,9 @@ clear
 
 printf '\n' && printf 'Welcome to DDH installer for Raspberry platforms \n'
 printf 'You only need to run this once. When installed, use git pull on DDH folder \n'
-printf '************************************************************************** \n'
+printf '************************************************************************** \n\n'
 
-read -p "\nThis will uninstall any previous DDH, if any. Continue (y/n)? " choice
+read -p "This will uninstall any previous DDH, if any. Continue (y/n)? " choice
 case "$choice" in
   y|Y ) echo "yes";;
   n|N ) echo "no"; exit;;
