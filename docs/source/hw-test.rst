@@ -33,16 +33,6 @@ Go to DDH source folder and run:
     $ python3 tools/check_gps_quectel.py
 
 
-GPS
----
-
-Go to DDH source folder and run:
-
-.. code:: bash
-
-    $ python3 tools/check_gps_quectel.py
-
-
 cell shield
 -----------
 
