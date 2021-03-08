@@ -9,7 +9,7 @@ printf '\n' && printf 'Welcome to DDH installer for Raspberry platforms \n'
 printf 'You only need to run this once. When installed, use git pull on DDH folder \n'
 printf '************************************************************************** \n'
 
-read -p "This will uninstall any previou DDH installation. Continue (y/n)?" choice
+read -p "This will uninstall any previous DDH, if any. Continue (y/n)? " choice
 case "$choice" in
   y|Y ) echo "yes";;
   n|N ) echo "no"; exit;;
@@ -17,6 +17,11 @@ case "$choice" in
 esac
 
 if [ "$EUID" -ne 0 ]; then printf 'Please run as root'; exit; fi
+
+printf '\n\n\n\n' && printf 'Removing previous DDH, if any... \n'
+printf '================================ \n'
+if [ -d "/home/pi/li/ddh" ]; then rm -rf /home/pi/li/ddh; fi
+
 
 printf '\n\n\n\n' && printf 'Installing Raspberry linux apt dependencies... \n'
 printf '============================================== \n'
