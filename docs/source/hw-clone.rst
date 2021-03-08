@@ -4,6 +4,8 @@
 Backup it
 =========
 
+This is optional. Just in case in the future you want to clone a DDH and you do not have 2 SSD disks.
+
 Prepare a DDH SSD with the instructions in :ref:`hw-build`.
 
 In your desktop computer, do:

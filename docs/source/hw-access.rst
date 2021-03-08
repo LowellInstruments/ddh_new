@@ -14,7 +14,7 @@ If you set SSH public key authentication, you can use ``parallel-ssh`` as follow
 
     $ parallel-ssh -h phosts.txt -i "uptime"
 
-If you did not set SSH public key authentication, you can use ``parallel-ssh`` as follows. The -A flag asks for a password. The -P flag prints immediately. You can also test -i flag.
+If you did not set SSH public key authentication, you can use ``parallel-ssh`` as follows. The -A flag asks for a password. The -P flag prints immediately. You can also try -i flag.
 
 .. code:: bash
 
