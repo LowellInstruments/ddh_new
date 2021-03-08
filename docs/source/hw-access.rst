@@ -20,6 +20,12 @@ If you did not set SSH public key authentication, you can use ``parallel-ssh`` a
 
     $ parallel-ssh -h phosts.txt -A -P "uptime"
 
+You probably need to copy your AWS credentials. They are inside file ``run_ddh.sh``. Easiest way to do it:
+
+.. code:: bash
+
+    $ parallel-scp -h phosts.txt ./run_ddh.sh /home/pi/li/ddh/run_ddh.sh
+
 Finally, install DWService. If you cloned this DDH from an existing one, run the 2 lines next. Otherwise, you only need to run the second one:
 
 .. code:: bash
