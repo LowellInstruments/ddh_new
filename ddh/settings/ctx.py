@@ -44,10 +44,9 @@ sw_ble_en = True
 
 
 # APP behavior modifier
-# todo: on production, adjust these
-macs_blacklist_pre_rm = True
+macs_blacklist_pre_rm = False
 dummy_ti_logger = False
-dummy_gps = True
+dummy_gps = False
 
 
 def only_one_instance(name):

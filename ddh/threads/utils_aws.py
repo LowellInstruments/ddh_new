@@ -12,9 +12,6 @@ def aws_credentials_get():
     name = os.environ.get('DDH_AWS_NAME')
     key_id = os.environ.get('DDH_AWS_KEY_ID')
     secret = os.environ.get('DDH_AWS_SECRET')
-
-    # todo: on production, restore this assert
-    # assert (name and key_id and secret)
     return name, key_id, secret
 
 

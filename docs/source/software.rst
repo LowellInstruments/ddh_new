@@ -33,6 +33,7 @@ completely from scratch on a Raspberry:
 
 .. code-block:: bash
 
+    $ cd /home/pi/Downloads
     $ wget https://raw.githubusercontent.com/LowellInstruments/ddh/master/tools/script_install_rpi.sh
     $ chmod +x script_install_rpi.sh
     $ sudo ./script_install_rpi.sh
