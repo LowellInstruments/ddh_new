@@ -1,4 +1,4 @@
-.. _hw-test::
+.. _hw-test:
 
 
 Test it
