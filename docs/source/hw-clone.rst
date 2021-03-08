@@ -4,7 +4,7 @@
 Clone it
 ========
 
-Prepare a DDH SSD with the instructions in :ref:`hw-build`. The rest of DDH will be cloned from this one.
+Prepare a DDH SSD with the instructions in :ref:`hw-build`. The rest of DDH will be cloned from it.
 
 
 1st way to clone

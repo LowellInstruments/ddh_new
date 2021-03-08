@@ -9,6 +9,13 @@ printf '\n' && printf 'Welcome to DDH installer for Raspberry platforms \n'
 printf 'You only need to run this once. When installed, use git pull on DDH folder \n'
 printf '************************************************************************** \n'
 
+read -p "This will uninstall any previou DDH installation. Continue (y/n)?" choice
+case "$choice" in
+  y|Y ) echo "yes";;
+  n|N ) echo "no"; exit;;
+  * ) echo "invalid"; exit;;
+esac
+
 if [ "$EUID" -ne 0 ]; then printf 'Please run as root'; exit; fi
 
 printf '\n\n\n\n' && printf 'Installing Raspberry linux apt dependencies... \n'

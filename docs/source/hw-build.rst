@@ -16,7 +16,7 @@ In your desktop computer, obtain some files for DDH configuration with:
     $ wget https://raw.githubusercontent.com/LowellInstruments/ddh/master/tools/shutdown_script.py
     $ wget https://github.com/LowellInstruments/ddh/raw/master/tools/dwagent.sh
 
-In your desktop computer, move them to locations behind '->' to the DDH SSD disk, in its `rootfs` partition.
+In your desktop computer, move such files to locations behind '->' to the DDH SSD disk, in its `rootfs` partition.
 
 * rc.local -> /etc
 * shutdown_script.py -> /home/pi/juice4halt/bin/shutdown_script.py
@@ -27,7 +27,11 @@ In your desktop computer, edit the SSD file ``/etc/dhcpcd.conf`` in the SSD disk
 
     static domain_name_servers=8.8.4.4 8.8.8.8
 
-In your desktop computer, unmount the SSD disk and boot the DDH / raspberry.
+In your desktop computer, unmount the SSD disk. 
+
+
+In your DDH, boot the DDH / raspberry.
+
 
 In your DDH, set its time & timezone. The initial setup tool that will pop-up during the first boot will ask you for this, along with a system password. Also, you will set a wi-fi network so the operating system can update itself to latest version.
 
@@ -110,7 +114,7 @@ In your desktop computer, you can add your public key to the DDH by generating i
     $ ssh-copy-id -i ~/.ssh/id_rsa.pub pi@<DDH_IP>
 
 
-In your DDH, if you are NOT cloning from this one you just finished building, you can proceed to section :ref:`hw-access`.
+In your DDH, if you don't plan to clone more DDH from the one you just prepared, you can proceed to section :ref:`hw-access`.
 
 
 Now, we are done. Again, DDH come with all this done so probably the procedure explained in this section will not be needed.

@@ -4,7 +4,7 @@
 Access it
 =========
 
-Recall we copied its installer file, so-called `dwagent.sh`, in the ``/home/pi/Downloads`` folder during the first steps of this document. We will run the installed contained in such file so we can access DDH worldwide. But first, let's configure some SSH.
+Recall we copied its installer file, so-called `dwagent.sh`, in the ``/home/pi/Downloads`` folder during the first steps of this document. We will run the installed contained in such file so we can access DDH worldwide. But first, let's configure SSH.
 
 You will need to connect once via SSH to this DDH in order to add it to your known SSH hosts file. Next, you can automate tasks on it with tools like ``parallel-ssh``. The ``phosts.txt`` file has one line entries in the format ``pi@X.X.X.X``. 
 
@@ -20,10 +20,11 @@ If you did not set SSH public key authentication, you can use ``parallel-ssh`` a
 
     $ parallel-ssh -h phosts.txt -A -P "uptime"
 
-Finally, to install DWService, you can SSH to your DDH and run:
+Finally, install DWService. If you cloned this DDH from an existing one, run the 2 lines next. Otherwise, you only need to run the second one:
 
 .. code:: bash
 
+    $ sudo ./dwagent.sh uninstall
     $ sudo ./dwagent.sh -silent user=<YOUR_USER@HERE> password=<YOUR_PASS_HERE> name=<DDH_UNIQUE_SERIAL_NAME_HERE>
 
 And should appear in your DWService Agents page.
