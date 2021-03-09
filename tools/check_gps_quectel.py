@@ -60,6 +60,7 @@ if __name__ == '__main__':
         while True:
             if time.perf_counter() > _till:
                 e = '[ ER ] GPS Quectel, could not get any data frame'
+                print(e)
                 break
             data = sp.readline()
             if b'$GPRMC' in data:
