@@ -60,3 +60,14 @@ Instead, you can change such interface to cell by setting a higher ppp0 priority
 
     $ sudo ifmetric ppp0 0
 
+
+IP raspberries
+--------------
+
+Wanna know the IP of the raspberries in your network? Run:
+
+.. code:: bash
+
+    $ python3 tools/check_nmap_rpi.py
+
+
