@@ -64,11 +64,16 @@ if __name__ == '__main__':
                 break
             data = sp.readline()
             if b'$GPRMC' in data:
-                print('[ -> ] {}'.format(data))
-                print('[ OK ] GPS Quectel data success'.format(_till))
-                break
+                data = data.decode()
+                if s[2] == 'V':
+                    continue
+                if s[3] and s[5]:
+                    print('[ -> ] {}'.format(data))
+                    print('[ OK ] GPS Quectel data success'.format(_till))
+                    break
     except SerialException as se:
         print(se)
     finally:
         if sp:
-            sp.close()
+            sp.close()          
+ 
