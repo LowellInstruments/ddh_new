@@ -65,6 +65,7 @@ if __name__ == '__main__':
             data = sp.readline()
             if b'$GPRMC' in data:
                 data = data.decode()
+                s = data.split(",")
                 if s[2] == 'V':
                     continue
                 if s[3] and s[5]:
