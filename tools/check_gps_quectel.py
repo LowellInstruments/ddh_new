@@ -11,6 +11,16 @@ PORT_CTRL = '/dev/ttyUSB2'
 PORT_DATA = '/dev/ttyUSB1'
 
 
+def _coord_decode(coord: str):
+    # src: stackoverflow 18442158 latitude format
+    x = coord.split(".")
+    head = x[0]
+    deg = head[:-2]
+    minutes = '{}.{}'.format(head[-2:], x[1])
+    decimal = int(deg) + float(minutes) / 60
+    return decimal
+
+
 def _gps_configure_quectel() -> int:
     """ only needed once, configures Quectel GPS via USB and closes port """
     rv = 0
@@ -70,7 +80,8 @@ if __name__ == '__main__':
                     continue
                 if s[3] and s[5]:
                     print('[ -> ] {}'.format(data))
-                    print('[ OK ] GPS Quectel data success'.format(_till))
+                    lat, lon = _coord_decode(s[3]), _coord_decode(s[5])
+                    print('[ OK ] GPS Quectel data success: {}, {}'.format(lat, lon))
                     break
     except SerialException as se:
         print(se)
