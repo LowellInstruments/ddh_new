@@ -51,7 +51,7 @@ if __name__ == '__main__':
         time.sleep(1)
 
     # try to get GPS frames
-    sp, _till = None, 10
+    sp, _till = None, 20
     s = '[ .. ] GPS Quectel, will check for frames up to {} seconds...'
     print(s.format(_till))
     try:
