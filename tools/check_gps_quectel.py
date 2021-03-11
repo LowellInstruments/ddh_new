@@ -11,6 +11,16 @@ PORT_CTRL = '/dev/ttyUSB2'
 PORT_DATA = '/dev/ttyUSB1'
 
 
+def _coord_decode(coord: str):
+    # src: stackoverflow 18442158 latitude format
+    x = coord.split(".")
+    head = x[0]
+    deg = head[:-2]
+    minutes = '{}.{}'.format(head[-2:], x[1])
+    decimal = int(deg) + float(minutes) / 60
+    return decimal
+
+
 def _gps_configure_quectel() -> int:
     """ only needed once, configures Quectel GPS via USB and closes port """
     rv = 0
@@ -51,7 +61,7 @@ if __name__ == '__main__':
         time.sleep(1)
 
     # try to get GPS frames
-    sp, _till = None, 10
+    sp, _till = None, 20
     s = '[ .. ] GPS Quectel, will check for frames up to {} seconds...'
     print(s.format(_till))
     try:
@@ -64,11 +74,18 @@ if __name__ == '__main__':
                 break
             data = sp.readline()
             if b'$GPRMC' in data:
-                print('[ -> ] {}'.format(data))
-                print('[ OK ] GPS Quectel data success'.format(_till))
-                break
+                data = data.decode()
+                s = data.split(",")
+                if s[2] == 'V':
+                    continue
+                if s[3] and s[5]:
+                    print('[ -> ] {}'.format(data))
+                    lat, lon = _coord_decode(s[3]), _coord_decode(s[5])
+                    print('[ OK ] GPS Quectel data success: {}, {}'.format(lat, lon))
+                    break
     except SerialException as se:
         print(se)
     finally:
         if sp:
-            sp.close()
+            sp.close()          
+ 
