@@ -40,7 +40,7 @@ completely from scratch on a Raspberry:
 
 .. note::
 
-    When on a DDH platform, recall to check crontab file with ``crontab -e`` (for editing) or ``crontab -l`` for displaying to see if the DDH gui is kept monitoring. (Un)comment the line depending on what you need.
+    When on a DDH platform, recall to check crontab file with ``crontab -e`` (for editing) or ``crontab -l`` for displaying to see if the DDH gui is kept monitored, that is, restarted in case it crashes, if ever. (Un)comment the line depending on what you need.
 
 To install on a laptop or workstation, for development purposes:
 
@@ -60,6 +60,6 @@ The rest of this Software section introduces DDH configuration and development.
 .. toctree::
    :maxdepth: 1
 
-   sw-using
    sw-configuring
+   sw-running
    sw-developing

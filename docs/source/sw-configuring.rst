@@ -100,18 +100,3 @@ the DDH gui using any original or modified `'ddh.json`' file.
 
 The `'ddh.json'` file can have a couple more parameters, although the rest of parameters have been omitted
 from this explanation since they are not intended to be modified by the final user.
-
-
-.. note ::
-
-	DDH has plenty of testing tools to ensure its components work properly and independently of the installed software. While you don't need to do this, please see next a couple tools you can check for the external buttons and GPS capabilities of the DDH.
-
-
-You can check the external hardware buttons by going to the downloaded DDH source folder and running:
-
-.. code:: bash
-
-    $ python3 tools/check_buttons.py
-
-
-You can also test the GPS capabilities of the DDH by following these `Sixfab official GPS instructions <https://sixfab.com/gps-tracker-with-3g-4glte-shield/>`_.

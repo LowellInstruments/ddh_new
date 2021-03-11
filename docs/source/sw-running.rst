@@ -1,8 +1,15 @@
 .. _sw-using:
 
 
-Using it
-########
+Running it
+==========
+
+The DDH is executed automatically by the operating system. More precisely, its ``run_ddh.sh``, as explained in Section :ref:`software`. 
+
+.. note::
+
+    The ``run_ddh.sh`` file contains your AWS credentials. If they are not set, the DDH will not start. Ask us to provide this for you, if not yet.
+
 
 The DDH operates autonomously and its Graphical User Interface of the DDH is very simple. It consists of 3 tabs.
 The first tab summarizes the operation of the DDH.
@@ -74,4 +81,4 @@ month or last year. The second button is left for future use.
 
 .. note:
 
-	If you ever need to rebbot the DDH, don't worry and press the upside hardware power button. This is better than suing a `reboot` shell command, since allows the power hats to shutdown all properly. Same thing to shutdown the DDH completely.
+	If you ever need to reboot the DDH, don't worry and press the upside hardware power button. This is better than suing a `reboot` shell command, since allows the power hats to shutdown all properly. Same thing to shutdown the DDH completely.
