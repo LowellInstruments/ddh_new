@@ -265,7 +265,7 @@ def lid_to_csv(fol, suffix, files_to_ignore=[]) -> (bool, list):
         try:
             DataConverter(f, parameters).convert()
             s = 'converted OK -> {}'.format(f)
-            logzero_logger.error(s)
+            logzero_logger.info(s)
         except (ValueError, Exception) as ve:
             all_ok = False
             err_files.append(f)
