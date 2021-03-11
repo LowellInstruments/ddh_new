@@ -7,6 +7,16 @@ Test it
 Some of these tests have already been mentioned. This page collects them all in order do have a good testing framework for each DDH.
 
 
+crontab
+-------
+
+Check crontab is enabled, in case you wish it to be.
+
+.. code:: bash
+
+    $ crontab -l
+
+
 juice4halt
 ----------
 
