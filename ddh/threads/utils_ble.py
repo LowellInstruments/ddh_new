@@ -154,7 +154,7 @@ def _logger_get_files(lc, sig, folder, files):
         # x-modem download
         s_t = time.time()
         if not lc.get_file(name, folder, size, sig.dl_step):
-            _error('BLE: bad CRC for {}, size {}'.format(name, size))
+            _error('BLE: bad CRC for {}, size {}'.format(name, size), sig)
             return False
         emit_status(sig, 'BLE: got {} w/ good CRC'.format(name))
 
@@ -268,7 +268,7 @@ def logger_download(mac, fol, hci_if, sig=None):
 
         with lc(mac, hci_if) as lc:
             # g -> (lat, lon, datetime object)
-            g = utils_gps_get_one_lat_lon_dt()
+            g = utils_gps_get_one_lat_lon_dt(timeout=5)
             _logger_sws(lc, sig, g)
             _logger_time_check(lc, sig)
 

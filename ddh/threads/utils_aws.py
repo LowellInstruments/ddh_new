@@ -77,6 +77,7 @@ def aws_check_connection_to_s3(cli, bkt_name):
 
 
 def aws_ddh_sync(aws_name, aws_key_id, aws_secret, folder_to_sync, bkt=None, sig=None):
+    # recall files to sync must be in: dl_files/<sub-folder>/files.csv
     assert(folder_to_sync != '.')
 
     # obtaining AWS S3 Client
@@ -106,11 +107,6 @@ def aws_ddh_sync(aws_name, aws_key_id, aws_secret, folder_to_sync, bkt=None, sig
     list_local_keys = [i for i in list_local_keys if os.path.isfile(i)]
     list_local_sizes = [os.stat(i).st_size for i in list_local_keys]
     dict_local_objects = dict(zip(list_local_keys, list_local_sizes))
-
-    # useful note
-    if not list_local_keys:
-        s = 'note files to sync must be in {}/<sub-folder>/files.csv'
-        print(s.format(folder_to_sync))
 
     # see differences between local and remote dicts
     dlo, dro = dict_local_objects, dict_remote_objects

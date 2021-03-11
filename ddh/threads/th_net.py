@@ -13,9 +13,11 @@ def loop(w, ev_can_i_boot):
     wait_boot_signal(w, ev_can_i_boot, 'NET')
 
     while 1:
+        s = '{}'.format(net_get_my_current_wlan_ssid())
+        w.sig_net.update.emit(s)
+
         if not linux_is_rpi():
-            s = '{}'.format(net_get_my_current_wlan_ssid())
-            w.sig_net.update.emit(s)
+            # on a desktop computer, we end here
             time.sleep(TH_NET_PERIOD_S)
             continue
 

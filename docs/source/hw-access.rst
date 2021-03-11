@@ -20,7 +20,7 @@ If you did not set SSH public key authentication, you can use ``parallel-ssh`` a
 
     $ parallel-ssh -h phosts.txt -A -P "uptime"
 
-You probably need to copy your AWS credentials. They are inside file ``run_ddh.sh``. Easiest way to do it:
+You probably need to copy your AWS credentials. They are inside file ``run_ddh.sh``, which should have been provided for you by Lowell Instruments. Easiest way to do it:
 
 .. code:: bash
 

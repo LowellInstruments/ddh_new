@@ -61,7 +61,7 @@ if __name__ == '__main__':
         time.sleep(1)
 
     # try to get GPS frames
-    sp, _till = None, 20
+    sp, _till, i = None, 20, 0
     s = '[ .. ] GPS Quectel, will check for frames up to {} seconds...'
     print(s.format(_till))
     try:
@@ -73,6 +73,8 @@ if __name__ == '__main__':
                 print(e)
                 break
             data = sp.readline()
+            if (i % 10) == 0:
+                print('.')
             if b'$GPRMC' in data:
                 data = data.decode()
                 s = data.split(",")

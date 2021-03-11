@@ -111,7 +111,7 @@ def _download_loggers(w, h, macs, mb, mo, ft: tuple):
                     s = 'BLE: at sea, blacklist {} w/ {} secs'.format(mac, t)
             else:
                 t = ft_sea_s
-                s = 'BLE: unknown, blacklist {} w/ {} secs'.format(mac, t)
+                s = 'BLE: no idea about sea or in-land, blacklist {} w/ {} secs'.format(mac, t)
 
             w.sig_ble.debug.emit(s)
             _mac_to_black_list(mb, mo, mac, t)

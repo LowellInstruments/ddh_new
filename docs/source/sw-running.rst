@@ -8,7 +8,7 @@ The DDH is executed automatically by the operating system. More precisely, its `
 
 .. note::
 
-    The ``run_ddh.sh`` file contains your AWS credentials. If they are not set, the DDH will not start. Ask us to provide this for you, if not yet.
+    The ``run_ddh.sh`` file contains your AWS credentials. If they are not set within in, the DDH will not start. Ask us to provide this for you, if not yet.
 
 
 The DDH operates autonomously and its Graphical User Interface of the DDH is very simple. It consists of 3 tabs.

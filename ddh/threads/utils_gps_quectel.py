@@ -26,7 +26,7 @@ def utils_gps_get_one_lat_lon_dt(timeout=3):
         # you can also 'return None' to simulate an error
         return lat, lon, dt
 
-    return gps_get_rmc_frame()
+    return gps_get_rmc_frame(timeout)
 
 
 def utils_gps_in_land(lat, lon):
