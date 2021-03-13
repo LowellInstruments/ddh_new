@@ -310,6 +310,12 @@ def rm_folder(mac):
     shutil.rmtree(fol, ignore_errors=True)
 
 
+def get_mac_folder_path(mac):
+    fol = ctx.app_dl_folder
+    fol = fol / '{}/'.format(mac.replace(':', '-').lower())
+    return fol
+
+
 # removes db_plt, setups logs
 def rm_plot_db():
     p = ctx.db_plt

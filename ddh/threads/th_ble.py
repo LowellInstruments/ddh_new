@@ -1,10 +1,13 @@
 import os
+import pathlib
+import shutil
+
 import bluepy.btle as ble
 import time
 from mat.logger_controller_ble import ble_scan, FAKE_MAC_CC26X2
 from ddh.settings import ctx
 from ddh.threads.utils import json_get_macs, json_get_forget_time_secs, json_get_hci_if, wait_boot_signal, \
-    json_get_forget_time_at_sea_secs, is_float
+    json_get_forget_time_at_sea_secs, is_float, get_mac_folder_path
 from ddh.threads.utils_ble import logger_download
 from ddh.threads.utils_gps_quectel import utils_gps_in_land
 from ddh.threads.utils_macs import filter_white_macs, BlackMacList, OrangeMacList, bluepy_scan_results_to_strings
@@ -80,6 +83,14 @@ def _download_loggers(w, h, macs, mb, mo, ft: tuple):
 
     # downloading files
     for i, mac in enumerate(li):
+
+        # pre-rm files useful for testing
+        if ctx.pre_rm_files:
+            s = 'BLE: pre_rm_files for {}'.format(mac)
+            w.sig_ble.debug.emit(s)
+            _pre_rm_path = pathlib.Path(get_mac_folder_path(mac))
+            shutil.rmtree(str(_pre_rm_path), ignore_errors=True)
+
         try:
             # start a download session for ONE logger
             w.sig_ble.session_pre.emit(mac, i + 1, len(li))

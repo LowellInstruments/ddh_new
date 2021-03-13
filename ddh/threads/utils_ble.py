@@ -9,7 +9,7 @@ from ddh.threads.utils import (
     create_folder,
     check_local_file_exists,
     emit_status,
-    check_local_file_integrity, is_float
+    check_local_file_integrity, is_float, get_mac_folder_path
 )
 from ddh.threads.utils_gps_quectel import utils_gps_get_one_lat_lon_dt
 from mat.logger_controller import (
@@ -99,6 +99,7 @@ def _logger_time_check(lc, sig=None):
 
 
 def _logger_ls(lc, fol, sig=None, pre_rm=False):
+
     # create folder when not exists
     assert ':' not in str(fol)
     mac = lc.per.addr
@@ -125,7 +126,7 @@ def _logger_get_files(lc, sig, folder, files):
     mac, num_to_get, got = lc.per.addr, 0, 0
     name_n_size, b_total = {}, 0
 
-    # filter we'll get, omit locally existing ones
+    # filter what we'll get, omit locally existing ones
     for each in files.items():
         name, size = each[0], int(each[1])
 
@@ -154,7 +155,8 @@ def _logger_get_files(lc, sig, folder, files):
         # x-modem download
         s_t = time.time()
         if not lc.get_file(name, folder, size, sig.dl_step):
-            _error('BLE: bad CRC for {}, size {}'.format(name, size), sig)
+            e = 'BLE: bad CRC for {}, size {}'
+            _error(e.format(name, size), sig)
             return False
         emit_status(sig, 'BLE: got {} w/ good CRC'.format(name))
 
@@ -164,7 +166,7 @@ def _logger_get_files(lc, sig, folder, files):
         s = 'BLE: {} remote crc {} | local crc {}'
         emit_status(sig, s.format(name, crc, l_crc))
         if not rv:
-            _error('can\'t get {}, size {}'.format(name, size), sig)
+            _error('bad crc on {}'.format(name), sig)
             return False
 
         # show CRC and statistics
@@ -217,39 +219,39 @@ def _dir_cfg(lc, sig):
 
 def _logger_re_setup(lc, sig):
     """ get logger's MAT.cfg, formats mem, re-sends MAT.cfg """
+    _MC = 'MAT.cfg'
 
     size, rv = 0, _dir_cfg(lc, sig)
     try:
-        size = rv['MAT.cfg']
+        size = rv[_MC]
     except (KeyError, TypeError):
-        _die('no MAT.cfg within logger to re-setup')
+        _die('no {} within logger to re-setup'.format(_MC))
     if not size:
-        _die('no MAT.cfg size')
+        _die('no {} size'.format(_MC))
 
     # download MAT.cfg
-    dff = ctx.app_dl_folder
-    _show('getting MAT.cfg...', sig)
-    if not lc.get_file('MAT.cfg', dff, size, None):
-        _die('error downloading MAT.cfg')
+    dff = get_mac_folder_path(lc.address)
+    _show('getting {}...'.format(_MC), sig)
+    if not lc.get_file(_MC, dff, size, None):
+        _die('error downloading {}'.format(_MC))
 
     # check MAT.cfg file
-    # todo: adjust this path
-    crc = lc.command('CRC', 'MAT.cfg')
-    rv, l_crc = check_local_file_integrity('MAT.cfg', '.', crc)
+    crc = lc.command('CRC', _MC)
+    rv, l_crc = check_local_file_integrity(_MC, dff, crc)
     s = 'BLE: {} remote crc {} | local crc {}'
-    print(s)
-    _show('got MAT.cfg', sig)
+    emit_status(sig, s.format(_MC, crc, l_crc))
+    _show('got {}'.format(_MC), sig)
 
     # ensure MAT.cfg suitable for CFG command
     try:
-        with open(pathlib.Path(dff / 'MAT.cfg')) as f:
+        with open(pathlib.Path(dff / _MC)) as f:
             cfg_dict = json.load(f)
             if not cfg_dict:
-                _die('no MAT.cfg dict')
+                _die('no {} dict'.format(_MC))
     except FileNotFoundError:
-        _die('cannot load downloaded MAT.cfg')
+        _die('cannot load downloaded {}'.format(_MC))
     except JSONDecodeError:
-        _die('cannot decode downloaded MAT.cfg')
+        _die('cannot decode downloaded {}'.format(_MC))
 
     # format the logger
     rv = lc.command('FRM')

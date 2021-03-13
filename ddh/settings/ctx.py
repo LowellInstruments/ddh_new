@@ -44,9 +44,10 @@ sw_ble_en = True
 
 
 # APP behavior modifier
-macs_blacklist_pre_rm = False
-dummy_ti_logger = False
-dummy_gps = False
+macs_blacklist_pre_rm = True
+dummy_ti_logger = True
+dummy_gps = True
+pre_rm_files = True
 
 
 def only_one_instance(name):
