@@ -107,6 +107,8 @@ def _download_loggers(w, h, macs, mb, mo, ft: tuple):
 
             # NOT OK download session, ignore logger for 'ignore time'
             if not done:
+                e = 'BLE: download process did not finish for {}'
+                w.sig_ble.error.emit(e.format(mac))
                 _mac_to_orange_list(mo, mac)
                 continue
 

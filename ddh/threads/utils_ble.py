@@ -225,7 +225,8 @@ def _logger_re_setup(lc, sig):
     try:
         size = rv[_MC]
     except (KeyError, TypeError):
-        _die('no {} within logger to re-setup'.format(_MC))
+        e = 'no {} in logger to re-setup'
+        _die(e.format(_MC))
     if not size:
         _die('no {} size'.format(_MC))
 
