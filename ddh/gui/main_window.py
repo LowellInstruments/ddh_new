@@ -227,10 +227,10 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     def slot_gui_update_net_source(self, s):
         """ th_net sends the signal for this slot """
         s = s.replace('\n', '')
-        _ = self.lbl_net_n_cloud.text().split('\n')
-        s = '{}\n{}'.format(s, _[1])
-        self.lbl_net_n_cloud.setText(s)
         self.slot_status(s)
+        _ = self.lbl_net_n_cloud.text().split('\n')
+        v = '{}\n{}'.format(s, _[1])
+        self.lbl_net_n_cloud.setText(v)
 
     @pyqtSlot(str, name='slot_gui_update_aws')
     def slot_gui_update_aws(self, c):
