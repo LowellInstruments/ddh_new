@@ -360,8 +360,9 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     @pyqtSlot(int, name='slot_ble_file_post')
     def slot_ble_file_post(self, speed):
         """ th_ble sends the signal for this slot """
-        s = 'BLE: approximate speed {} B/s'.format(speed)
-        self.slot_status(s)
+        # s = 'BLE: approximate speed {} B/s'.format(speed)
+        # self.slot_status(s)
+        pass
 
     @pyqtSlot(bool, str, str, name='slot_ble_logger_post')
     def slot_ble_logger_post(self, ok, s, mac):

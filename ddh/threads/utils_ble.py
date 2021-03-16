@@ -163,8 +163,8 @@ def _logger_get_files(lc, sig, folder, files):
         # check file CRC
         crc = lc.command('CRC', name)
         rv, l_crc = check_local_file_integrity(name, folder, crc)
-        s = 'BLE: {} remote crc {} | local crc {}'
-        emit_status(sig, s.format(name, crc, l_crc))
+        # s = 'BLE: {} remote crc {} | local crc {}'
+        # emit_status(sig, s.format(name, crc, l_crc))
         if not rv:
             _error('bad crc on {}'.format(name), sig)
             return False
@@ -239,8 +239,8 @@ def _logger_re_setup(lc, sig):
     # check MAT.cfg file
     crc = lc.command('CRC', _MC)
     rv, l_crc = check_local_file_integrity(_MC, dff, crc)
-    s = 'BLE: {} remote crc {} | local crc {}'
-    emit_status(sig, s.format(_MC, crc, l_crc))
+    # s = 'BLE: {} remote crc {} | local crc {}'
+    # emit_status(sig, s.format(_MC, crc, l_crc))
     _show('got {}'.format(_MC), sig)
 
     # ensure MAT.cfg suitable for CFG command

@@ -27,7 +27,7 @@ def _mac_to_orange_list(mo, mac):
 
 
 def _mac_show_color_lists_on_boot(w, mb, mo):
-    _d = 'SYS: removing all mac_orange_list entries on boot'
+    _d = 'SYS: purging mac_orange_list on boot'
     w.sig_ble.debug.emit(_d)
     mo.ls.delete_all()
 
