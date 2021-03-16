@@ -18,10 +18,12 @@ def loop(w, ev_can_i_boot):
         if is_rpi:
             break
         s = '{}'.format(net_get_my_current_wlan_ssid())
+        s = 'no network' if not s else 'wi-fi {}'.format(s)
         w.sig_net.update.emit(s)
         time.sleep(TH_NET_PERIOD_S)
 
     # on a raspberry DDH, we stay here
+    print('pepe')
     while 1:
         ctx.sem_ble.acquire()
         ctx.sem_aws.acquire()

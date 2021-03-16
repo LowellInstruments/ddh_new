@@ -172,11 +172,10 @@ def net_check_connectivity(sig=None):
     # conditional update :)
     if via_inet_now != _via_inet_last:
         if via_inet_now == 'wifi':
-            ssid = _net_get_my_current_wlan_ssid()
-            emit_update(sig, 'NET: wifi {}'.format(ssid))
+            sig.emit(_net_get_my_current_wlan_ssid())
         else:
             # 'cell' or 'none'
-            emit_update(sig, 'NET: {}'.format(via_inet_now))
+            sig.emit(via_inet_now)
     _via_inet_last = via_inet_now
 
     if via_inet_now == 'wifi':
