@@ -348,7 +348,7 @@ def update_cnv_log_err_file(path_to_log_file, _err_reasons):
 
 def wait_boot_signal(w, ev, s):
     ev.wait()
-    t =  random() * 1
+    t = random() * 1
     time.sleep(1 + t)
     _ = 'SYS: {} thread started'.format(s)
     w.sig_aws.status.emit(_)

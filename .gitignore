@@ -1,6 +1,9 @@
+# our own stuff
 ddh.lo*
 *.db
+.*.sl
 ddh/dl_files/*
+tools/recipe_script_macs.py
 
 
 # Byte-compiled / optimized / DLL files

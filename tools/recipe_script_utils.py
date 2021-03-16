@@ -1,7 +1,7 @@
 import time
 import bluepy.btle as ble
 from bluepy.btle import Scanner
-from mat.logger_controller_ble import FAKE_MAC_CC26X2
+from mat.logger_controller_ble import FAKE_MAC_CC26X2, LED_CMD
 from mat.logger_controller import (LOGGER_INFO_CMD_W,
                                    LOGGER_INFO_CMD,
                                    STOP_CMD,
@@ -42,7 +42,11 @@ def frm_n_run(mac, sn):
         lc = LcBLEFactory.generate(mac)
         ok = 0
         with lc(mac) as lc:
-            # sets up logger time, memory, serial number
+            # sets up logger time, memory, serial number, tests leds
+            rv = lc.command(LED_CMD)
+            print('\t\tLED --> {}'.format(rv))
+            ok += b'ERR' in rv
+
             rv = lc.command(STATUS_CMD)
             print('\t\tSTS --> {}'.format(rv))
             ok += b'ERR' in rv
