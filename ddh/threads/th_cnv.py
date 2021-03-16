@@ -17,9 +17,9 @@ def loop(w, ev_can_i_boot, pre_rm=False):
     while 1:
         ctx.sem_ble.acquire()
         ctx.sem_plt.acquire()
-        _, rv = lid_to_csv(fol, '_DissolvedOxygen', e)
-        # _, rv = lid_to_csv(fol, '_Temperature')
-        # _, rv = lid_to_csv(fol, '_Pressure')
+        _, rv = lid_to_csv(fol, '_DissolvedOxygen', w.sig_cnv, e)
+        # _, rv = lid_to_csv(fol, '_Temperature', w.sig_cnv, e)
+        # _, rv = lid_to_csv(fol, '_Pressure', w.sig_cnv, e)
         w.sig_cnv.update.emit(rv)
         ctx.sem_plt.release()
         ctx.sem_ble.release()

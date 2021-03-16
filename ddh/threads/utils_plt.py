@@ -192,7 +192,7 @@ def _cache_or_process(sig, folder, ts, metric, sd):
 
     # load + prune data within last 'ts'
     suffix = _metric_to_csv_suffix(metric)
-    lid_to_csv(folder, suffix)
+    lid_to_csv(folder, suffix, sig)
     df = _csv_to_df(folder, metric)
     x, y = _rm_df_before(df, c, sd[ts])
     s, e = x.values[0], x.values[-1]

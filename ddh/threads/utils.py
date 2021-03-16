@@ -2,7 +2,6 @@ import datetime
 import logzero
 from logzero import logger
 import http.client
-import pathlib
 import subprocess as sp
 import shlex
 import os
@@ -17,7 +16,6 @@ import json
 from socket import AF_INET, SOCK_DGRAM
 import socket
 import struct
-from logzero import logger as logzero_logger
 
 
 def emit_status(sig, s):
@@ -237,7 +235,7 @@ def mac_from_folder(fol):
         return None
 
 
-def lid_to_csv(fol, suffix, files_to_ignore=[]) -> (bool, list):
+def lid_to_csv(fol, suffix, sig, files_to_ignore=[]) -> (bool, list):
     """ convert depending on if fileX_suffix.lid exists """
 
     # valid_suffixes = ('_DissolvedOxygen', '_Temperature', '_Pressure')
@@ -265,12 +263,12 @@ def lid_to_csv(fol, suffix, files_to_ignore=[]) -> (bool, list):
         try:
             DataConverter(f, parameters).convert()
             s = 'converted OK -> {}'.format(f)
-            logzero_logger.info(s)
+            sig.status.emit(s)
         except (ValueError, Exception) as ve:
             all_ok = False
             err_files.append(f)
             e = 'error converting {} -> {}'.format(f, ve)
-            logzero_logger.error(e)
+            sig.error.emit(e)
 
     return all_ok, err_files
 
