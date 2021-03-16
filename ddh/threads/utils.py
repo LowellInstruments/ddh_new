@@ -291,16 +291,17 @@ def check_local_file_exists(file_name, size, fol):
 
 
 def check_local_file_integrity(file_name, fol, remote_crc):
-    # remote_crc: [b'CRC', b'08eac2e456']
+    # remote_crc: logger's one, crc: local one
     path = os.path.join(fol, file_name)
-    local_crc = calculate_local_file_crc(path)
+    crc = calculate_local_file_crc(path)
+    # remote_crc: [b'CRC', b'08eac2e456']
     if len(remote_crc) != 2:
-        return False
-    # b'08eac2e456' -> 'EAC2E456'
+        return False, crc
     if len(remote_crc[1]) != 10:
-        return False
-    remote_crc = remote_crc[1].decode()[2:].upper()
-    return local_crc == remote_crc, local_crc
+        return False, crc
+    # b'08eac2e456' -> 'eac2e456'
+    remote_crc = remote_crc[1].decode()[2:]
+    return crc == remote_crc, crc
 
 
 def rm_folder(mac):

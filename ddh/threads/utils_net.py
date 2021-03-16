@@ -13,6 +13,7 @@ _NET_MAX_SW_WIFI_COUNTDOWN = 5
 
 # initially set to 1 to not disturb during DDH boot
 _net_sw_wifi_countdown = 1
+_via_inet_last = ''
 
 
 def _shell(s):
@@ -165,19 +166,25 @@ def net_check_connectivity(sig=None):
     """
 
     global _net_sw_wifi_countdown
-    nt = _net_get_via_to_internet()
+    global _via_inet_last
+    via_inet_now = _net_get_via_to_internet()
 
-    if nt == 'wifi':
+    # conditional update :)
+    if via_inet_now != _via_inet_last:
+        if via_inet_now == 'wifi':
+            ssid = _net_get_my_current_wlan_ssid()
+            emit_update(sig, 'NET: wifi {}'.format(ssid))
+        else:
+            # 'cell' or 'none'
+            emit_update(sig, 'NET: {}'.format(via_inet_now))
+    _via_inet_last = via_inet_now
+
+    if via_inet_now == 'wifi':
         _net_sw_wifi_countdown = _NET_MAX_SW_WIFI_COUNTDOWN
-        ssid = _net_get_my_current_wlan_ssid()
-        emit_update(sig, '{}'.format(ssid))
-        emit_status(sig, 'NET: wi-fi {}'.format(ssid))
         return
 
     # in case via is 'cell' or 'none'
-    _net_switch_via_to_internet(sig, org=nt)
-    emit_update(sig, '{}'.format(nt))
-    emit_update(sig, 'NET: {}'.format(nt))
+    _net_switch_via_to_internet(sig, org=via_inet_now)
 
 
 if __name__ == '__main__':

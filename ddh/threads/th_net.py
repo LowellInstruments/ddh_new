@@ -11,16 +11,18 @@ assert TH_NET_PERIOD_S >= 30
 
 def loop(w, ev_can_i_boot):
     wait_boot_signal(w, ev_can_i_boot, 'NET')
+    is_rpi = linux_is_rpi()
 
+    # on a desktop computer, we stay here
     while 1:
+        if is_rpi:
+            break
         s = '{}'.format(net_get_my_current_wlan_ssid())
         w.sig_net.update.emit(s)
+        time.sleep(TH_NET_PERIOD_S)
 
-        if not linux_is_rpi():
-            # on a desktop computer, we end here
-            time.sleep(TH_NET_PERIOD_S)
-            continue
-
+    # on a raspberry DDH, we stay here
+    while 1:
         ctx.sem_ble.acquire()
         ctx.sem_aws.acquire()
         net_check_connectivity(w.sig_net)

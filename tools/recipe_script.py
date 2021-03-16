@@ -9,7 +9,7 @@ def _screen_clear():
 
 
 def _menu_build(_sr: dict):
-    # sr: scan results
+    # sr: scan results5
     d = dict((i, j) for i, j in enumerate(_sr))
     # dict entries> (int, object)
     return d

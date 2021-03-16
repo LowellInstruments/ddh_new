@@ -160,15 +160,15 @@ def loop(w, ev_can_i_boot):
             continue
 
         try:
-            # scan stage
+            # >>> scan stage
             macs = _scan_loggers(w, h, whitelist, mb, mo)
             if not macs:
                 continue
 
-            # download stage
+            # >>> download stage
             _download_loggers(w, h, macs, mb, mo, (ft_s, ft_sea_s))
 
-        except ble.BTLEManagementError as ex:
+        except (ble.BTLEManagementError, ble.BTLEDisconnectError) as ex:
             e = 'BLE: big error, wrong HCI or permissions? {}'
             w.sig_ble.error.emit(e.format(ex))
             time.sleep(1)
