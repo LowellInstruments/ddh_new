@@ -291,7 +291,7 @@ def logger_download(mac, fol, hci_if, sig=None):
                 return True, g
 
             # :( did NOT get all files
-            e = 'logger {} not done yet'
+            e = 'logger {} not done yet'.format(mac)
             sig.logger_post.emit(False, e, mac)
             sig.error.emit(e.format(mac))
             return False, None

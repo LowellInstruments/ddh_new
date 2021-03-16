@@ -63,7 +63,7 @@ def _menu_do(_m, _c):
 
 def main_loop():
     _screen_clear()
-    sr, _ = get_ordered_scan_results(dummies=True)
+    sr, _ = get_ordered_scan_results(dummies=False)
     _menu_banner()
     m = _menu_build(sr)
     _menu_show(m)

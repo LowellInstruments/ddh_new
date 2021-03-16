@@ -26,20 +26,20 @@ def _mac_to_orange_list(mo, mac):
     mo.ls.macs_add_or_update(mac, IGNORE_TIME_S)
 
 
-def _mac_show_color_lists(w, mb, mo):
-    _d = 'SYS: deleting all orange entries'
+def _mac_show_color_lists_on_boot(w, mb, mo):
+    _d = 'SYS: removing all mac_orange_list entries on boot'
     w.sig_ble.debug.emit(_d)
     mo.ls.delete_all()
 
     if ctx.macs_blacklist_pre_rm:
-        _d = 'SYS: pre-removing mac black list'
+        _d = 'SYS: forced pre-removing mac_black_list'
         mb.ls.delete_all()
         w.sig_ble.debug.emit(_d)
 
-    _d = 'SYS: loaded persistent black list -> '
+    _d = 'SYS: loaded mac_black_list -> '
     _d += mb.ls.macs_dump()
     w.sig_ble.debug.emit(_d)
-    _d = 'SYS: loaded persistent orange list -> '
+    _d = 'SYS: loaded mac_orange_list -> '
     _d += mo.ls.macs_dump()
     w.sig_ble.debug.emit(_d)
 
@@ -151,7 +151,7 @@ def loop(w, ev_can_i_boot):
     ft_sea_s = json_get_forget_time_at_sea_secs(ctx.app_json_file)
     assert ft_s >= 3600
     assert ft_sea_s >= 900
-    _mac_show_color_lists(w, mb, mo)
+    _mac_show_color_lists_on_boot(w, mb, mo)
 
     while 1:
         if not ctx.ble_en:

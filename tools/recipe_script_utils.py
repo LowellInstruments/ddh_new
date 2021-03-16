@@ -125,11 +125,14 @@ def get_ordered_scan_results(dummies=False) -> dict:
     sr = Scanner().scan(float(till))
 
     # bluepy 'scan results (sr)' format -> friendlier one
-    sr_f = {each_sr.addr: each_sr.rssi for each_sr in sr}
+    sr_f = {each_sr.addr: (each_sr.rssi, each_sr.rawData) for each_sr in sr}
+
+    # filter: only keep lowell instruments' DO-1 loggers
+    sr_f = {k: v[0] for k, v in sr_f.items() if v[1] and b'DO-1' in v[1]}
 
     if dummies:
         sr_f[FAKE_MAC_CC26X2] = -10
-        sr_f['dummy_2'] = -20
+        sr_f['dummy_2'] = -11
 
     # nearest: the highest value, less negative
     sr_f_near = sorted(sr_f.items(), key=lambda x: x[1], reverse=True)

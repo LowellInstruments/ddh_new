@@ -47,7 +47,7 @@ sw_ble_en = True
 macs_blacklist_pre_rm = True
 dummy_ti_logger = False
 dummy_gps = True
-pre_rm_files = True
+pre_rm_files = False
 
 
 def only_one_instance(name):

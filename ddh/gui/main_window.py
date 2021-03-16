@@ -230,7 +230,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         _ = self.lbl_net_n_cloud.text().split('\n')
         s = '{}\n{}'.format(s, _[1])
         self.lbl_net_n_cloud.setText(s)
-        self.slot_status(self, s)
+        self.slot_status(s)
 
     @pyqtSlot(str, name='slot_gui_update_aws')
     def slot_gui_update_aws(self, c):
