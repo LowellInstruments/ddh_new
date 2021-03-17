@@ -22,7 +22,7 @@ We will provide your link as well as the information to be typed in the areas in
 .. figure:: aws_ss1.png
     :width: 700px
     :align: center
-    :height: 300px
+    :height: 200px
     :alt: AWS listing 2 logger folders
     :figclass: align-center
 
