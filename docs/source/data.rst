@@ -20,9 +20,9 @@ The data is stored on Amazon's cloud, so called AWS S3, and it can be checked by
 We will provide your link as well as the information to be typed in the areas indicated by the green dots in the figure. When successfully logged in, the user is presented with an easy way to navigate the files uploaded by their loggers. For example, there are 2 logger folders listed in the following screenshot.
 
 .. figure:: aws_ss1.png
-    :width: 600px
+    :width: 700px
     :align: center
-    :height: 200px
+    :height: 300px
     :alt: AWS listing 2 logger folders
     :figclass: align-center
 
@@ -31,7 +31,7 @@ We will provide your link as well as the information to be typed in the areas in
 When selecting one of them, we will find the proper sets of files for each deployment of this logger: the GPS file, the LID file and the CSV file.
 
 .. figure:: aws_ss2.png
-    :width: 440px
+    :width: 700px
     :align: center
     :height: 700px
     :alt: AWS listing the files pertaining to one logger
