@@ -15,7 +15,7 @@ def loop(w, ev_can_i_boot):
 
     while 1:
         if not ctx.aws_en:
-            w.sig_aws.update('AWS: disabled')
+            w.sig_aws.update.emit('AWS: off')
             time.sleep(120)
             return
 
