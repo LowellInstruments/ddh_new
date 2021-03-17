@@ -17,12 +17,12 @@ The data is stored on Amazon's cloud, so called AWS S3, and it can be checked by
 
     The DDH login for AWS
 
-We will provide your link as well as the information to be typed in the areas indicated by the green dots in the figure. When successfully logged in, the user is presented with an easy way to navigate the files uploaded by their loggers. For example, there are 2 logger folders listed in the following screenshot.
+We will provide your link as well as the information to be typed in the areas indicated by the green dots in the figure. When successfully logged in, the user is presented with an easy way to navigate the files uploaded by their loggers. For example, there are 2 logger folders listed in the following screenshot. Click the image for an enlarged view of it.
 
 .. figure:: aws_ss1.png
     :width: 700px
     :align: center
-    :height: 200px
+    :height: 180px
     :alt: AWS listing 2 logger folders
     :figclass: align-center
 

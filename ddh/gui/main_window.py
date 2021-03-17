@@ -227,7 +227,6 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     def slot_gui_update_net_source(self, s):
         """ th_net sends the signal for this slot """
         s = s.replace('\n', '')
-        print(s)
         self.slot_status('NET: {}'.format(s))
         _ = self.lbl_net_n_cloud.text().split('\n')
         v = '{}\n{}'.format(s, _[1])

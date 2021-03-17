@@ -35,7 +35,7 @@ sem_plt = threading.Lock()
 
 
 # AWS: enabled or not
-aws_en = True
+aws_en = False
 
 
 # BLE: enabled or not + switch capability

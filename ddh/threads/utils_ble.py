@@ -215,7 +215,7 @@ def _logger_dwg_files(lc, sig, folder, files):
     for name, size in name_n_size.items():
         mm = ((b_left // 5000) // 60) + 1
         b_left -= size
-        _show('get {}, {} B'.format(name, size), sig)
+        _show('dwg {}, {} B'.format(name, size), sig)
         sig.file_pre.emit(name, b_total, label, num_to_dwg, mm)
         label += 1
 
@@ -233,7 +233,8 @@ def _logger_dwg_files(lc, sig, folder, files):
         # s = 'BLE: {} remote crc {} | local crc {}'
         # emit_status(sig, s.format(name, crc, l_crc))
         if not rv:
-            _error('bad crc on {}'.format(name), sig)
+            _error('crc mismatch for {}'.format(name), sig)
+            _error('local crc {} remote crc {}'.format(l_crc, crc), sig)
             return False
         emit_status(sig, 'BLE: got {} w/ good CRC'.format(name))
 
@@ -307,8 +308,10 @@ def _logger_re_setup(lc, sig):
     # check MAT.cfg file
     crc = lc.command('CRC', _MC)
     rv, l_crc = check_local_file_integrity(_MC, dff, crc)
-    # s = 'BLE: {} remote crc {} | local crc {}'
-    # emit_status(sig, s.format(_MC, crc, l_crc))
+    if not rv:
+        _error('crc mismatch for {}'.format(_MC), sig)
+        _error('local crc {} remote crc {}'.format(l_crc, crc), sig)
+        _die('error CRC for {}'.format(_MC))
     _show('got {}'.format(_MC), sig)
 
     # ensure MAT.cfg suitable for CFG command
@@ -345,6 +348,7 @@ def logger_download(mac, fol, hci_if, sig=None):
 
             # DIR logger files and get them
             fol, ls = _logger_ls(lc, fol, sig, pre_rm=False)
+            # got_all = _logger_get_files(lc, sig, fol, ls)
             got_all = _logger_dwg_files(lc, sig, fol, ls)
 
             # :) got all files
