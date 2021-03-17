@@ -401,8 +401,12 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     @pyqtSlot(name='slot_ble_dl_step')
     def slot_ble_dl_step(self):
         """ th_ble sends the signal for this slot """
-        pc = 100 * (128 / ctx.lg_dl_size)
+
         # 128 is hardcoded XMODEM packet size
+        step = 128
+
+        # 2048 is hardcoded when using DWG
+        pc = 100 * (2048 / ctx.lg_dl_size)
         ctx.lg_dl_bar_pc += pc
         self.bar_dl.setValue(ctx.lg_dl_bar_pc)
 

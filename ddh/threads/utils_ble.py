@@ -122,8 +122,75 @@ def _logger_ls(lc, fol, sig=None, pre_rm=False):
     return fol, files
 
 
-def _logger_get_files(lc, sig, folder, files):
-    mac, num_to_get, got = lc.per.addr, 0, 0
+# def _logger_get_files(lc, sig, folder, files):
+#     mac, num_to_get, got = lc.per.addr, 0, 0
+#     name_n_size, b_total = {}, 0
+#
+#     # filter what we'll get, omit locally existing ones
+#     for each in files.items():
+#         name, size = each[0], int(each[1])
+#
+#         if size == 0:
+#             _show('not getting {}, size 0'.format(name), sig)
+#             continue
+#
+#         if not check_local_file_exists(name, size, folder):
+#             name_n_size[name] = size
+#             num_to_get += 1
+#             b_total += size
+#
+#     # statistics
+#     b_left = b_total
+#     _show('{} has {} files for us'.format(mac, num_to_get), sig)
+#
+#     # download files one by one
+#     label = 1
+#     for name, size in name_n_size.items():
+#         mm = ((b_left // 5000) // 60) + 1
+#         b_left -= size
+#         _show('get {}, {} B'.format(name, size), sig)
+#         sig.file_pre.emit(name, b_total, label, num_to_get, mm)
+#         label += 1
+#
+#         # x-modem download
+#         s_t = time.time()
+#         if not lc.get_file(name, folder, size, sig.dl_step):
+#             e = 'BLE: cannot get {}, size {}'
+#             _error(e.format(name, size), sig)
+#             return False
+#
+#         # check file CRC
+#         crc = lc.command('CRC', name)
+#         rv, l_crc = check_local_file_integrity(name, folder, crc)
+#         # s = 'BLE: {} remote crc {} | local crc {}'
+#         # emit_status(sig, s.format(name, crc, l_crc))
+#         if not rv:
+#             _error('bad crc on {}'.format(name), sig)
+#             return False
+#         emit_status(sig, 'BLE: got {} w/ good CRC'.format(name))
+#
+#         # show CRC and statistics
+#         got += 1
+#         speed = size / (time.time() - s_t)
+#         sig.file_post.emit(speed)
+#
+#     # logger was downloaded ok
+#     _ = 'almost done, '
+#     if got > 0:
+#         s = 'got {} file(s)'.format(got)
+#     elif got == 0:
+#         s = 'no files to get'
+#     else:
+#         s = 'already had all files'
+#     s = '{}\n{}'.format(_, s)
+#     sig.logger_post.emit(True, s, mac)
+#
+#     # success condition
+#     return num_to_get == got
+
+
+def _logger_dwg_files(lc, sig, folder, files):
+    mac, num_to_dwg, dwg_ed = lc.per.addr, 0, 0
     name_n_size, b_total = {}, 0
 
     # filter what we'll get, omit locally existing ones
@@ -136,12 +203,12 @@ def _logger_get_files(lc, sig, folder, files):
 
         if not check_local_file_exists(name, size, folder):
             name_n_size[name] = size
-            num_to_get += 1
+            num_to_dwg += 1
             b_total += size
 
     # statistics
     b_left = b_total
-    _show('{} has {} files for us'.format(mac, num_to_get), sig)
+    _show('{} has {} files for us'.format(mac, num_to_dwg), sig)
 
     # download files one by one
     label = 1
@@ -149,16 +216,16 @@ def _logger_get_files(lc, sig, folder, files):
         mm = ((b_left // 5000) // 60) + 1
         b_left -= size
         _show('get {}, {} B'.format(name, size), sig)
-        sig.file_pre.emit(name, b_total, label, num_to_get, mm)
+        sig.file_pre.emit(name, b_total, label, num_to_dwg, mm)
         label += 1
 
         # x-modem download
         s_t = time.time()
-        if not lc.get_file(name, folder, size, sig.dl_step):
-            e = 'BLE: bad CRC for {}, size {}'
+
+        if not lc.dwg_file(name, folder, size, sig.dl_step):
+            e = 'BLE: cannot download {}, size {}'
             _error(e.format(name, size), sig)
             return False
-        emit_status(sig, 'BLE: got {} w/ good CRC'.format(name))
 
         # check file CRC
         crc = lc.command('CRC', name)
@@ -168,17 +235,18 @@ def _logger_get_files(lc, sig, folder, files):
         if not rv:
             _error('bad crc on {}'.format(name), sig)
             return False
+        emit_status(sig, 'BLE: got {} w/ good CRC'.format(name))
 
         # show CRC and statistics
-        got += 1
+        dwg_ed += 1
         speed = size / (time.time() - s_t)
         sig.file_post.emit(speed)
 
     # logger was downloaded ok
     _ = 'almost done, '
-    if got > 0:
-        s = 'got {} file(s)'.format(got)
-    elif got == 0:
+    if dwg_ed > 0:
+        s = 'got {} file(s)'.format(dwg_ed)
+    elif dwg_ed == 0:
         s = 'no files to get'
     else:
         s = 'already had all files'
@@ -186,7 +254,7 @@ def _logger_get_files(lc, sig, folder, files):
     sig.logger_post.emit(True, s, mac)
 
     # success condition
-    return num_to_get == got
+    return num_to_dwg == dwg_ed
 
 
 def _logger_rws(lc, sig, g):
@@ -277,7 +345,7 @@ def logger_download(mac, fol, hci_if, sig=None):
 
             # DIR logger files and get them
             fol, ls = _logger_ls(lc, fol, sig, pre_rm=False)
-            got_all = _logger_get_files(lc, sig, fol, ls)
+            got_all = _logger_dwg_files(lc, sig, fol, ls)
 
             # :) got all files
             if got_all:
