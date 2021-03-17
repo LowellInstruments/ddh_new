@@ -22,7 +22,7 @@ copyright = '2021, Lowell Instruments'
 author = 'Lowell Instruments'
 
 # The full version, including alpha/beta/rc tags
-release = '3.0.00'
+release = '2.8.00'
 
 
 # -- General configuration ---------------------------------------------------
