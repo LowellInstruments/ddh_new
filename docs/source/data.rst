@@ -9,7 +9,7 @@ You can check the data uploaded by all your DDH online. For this, in order to ke
 The data is stored on Amazon's cloud, so called AWS S3, and it can be checked by visiting the proper link, which will welcome you with this login:
 
 .. figure:: aws_login.png
-    :width: 440px
+    :width: 500px
     :align: center
     :height: 700px
     :alt: DDH login for AWS
