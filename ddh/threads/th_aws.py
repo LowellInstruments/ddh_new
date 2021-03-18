@@ -8,6 +8,8 @@ PERIOD_AWS = 300
 
 
 def loop(w, ev_can_i_boot):
+    """ syncs local files to AWS S3 """
+
     assert (PERIOD_AWS >= 30)
     wait_boot_signal(w, ev_can_i_boot, 'AWS')
     name, key_id, secret = aws_credentials_get()
@@ -39,6 +41,7 @@ def loop(w, ev_can_i_boot):
 
 # for testing purposes
 if __name__ == '__main__':
+
     i = 0
     _an_, _ak_, _as_ = aws_credentials_get()
     _bk_ = 'bkt-osu'

@@ -8,6 +8,7 @@ PERIOD_GPS = 10
 
 
 def loop(w, ev_can_i_boot):
+
     wait_boot_signal(w, ev_can_i_boot, 'GPS')
 
     # extra delay in booting order since GPS blocks

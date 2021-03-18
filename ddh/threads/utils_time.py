@@ -1,21 +1,32 @@
 import datetime
 from tzlocal import get_localzone
+
+from ddh.settings import ctx
 from ddh.threads.utils import linux_is_net_ok, get_ntp_time, linux_set_datetime
 from ddh.threads.utils_gps_quectel import utils_gps_get_one_lat_lon_dt
 
 
 def update_datetime_source(w):
+
+    # preferred NTP > GPS > local
     via = 'local'
-    if _time_sync_gps():
-        via = 'GPS'
-    elif _time_sync_net():
+    if _time_sync_net():
         via = 'NTP'
+    else:
+        if _time_sync_gps():
+            via = 'GPS'
     w.sig_tim.status.emit('TIM: sync date via {}'.format(via))
     w.sig_tim.via.emit(via)
     return via
 
 
 def _time_sync_net():
+
+    # debug hook, forces NTP clock sync to fail
+    if ctx.force_ntp_fail:
+        return
+
+    # we cannot NTP without internet access
     if not linux_is_net_ok():
         return
 
@@ -28,6 +39,7 @@ def _time_sync_net():
 
 
 def _time_sync_gps():
+
     # update only GPS time, don't care lat, lon
     g = utils_gps_get_one_lat_lon_dt()
     _, _, gps_time = g if g else (None, ) * 3
@@ -47,6 +59,6 @@ def _time_sync_gps():
     return True
 
 
-
 if __name__ == '__main__':
+
     _time_sync_gps()

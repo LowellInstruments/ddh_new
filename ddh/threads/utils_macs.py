@@ -9,12 +9,15 @@ import datetime
 
 
 class ColoredMacList:
+
     def __init__(self, name, sig, color):
         self.db_name = name
         self.sig = sig
         self.color = color
 
     def delete_all(self):
+        """ removes all entries (mac, time) in a mac database """
+
         try:
             os.remove(self.db_name)
             # print('{}_macs DB erased'.format(self.color))
@@ -23,6 +26,8 @@ class ColoredMacList:
             print(_e.format(self.db_name))
 
     def macs_dump(self) -> str:
+        """ shows all entries in a mac database"""
+
         _s = ''
         with shelve.open(self.db_name) as sh:
             for k, v in sh.items():
@@ -32,6 +37,8 @@ class ColoredMacList:
         return _s
 
     def macs_add_or_update(self, _mac, _inc):
+        """ adds or refreshes time of an entry in a mac database """
+
         _t = datetime.datetime.now().timestamp() + _inc
         with shelve.open(self.db_name) as sh:
             _s = 'SYS: {} to {}, time increase of {}'
@@ -39,6 +46,8 @@ class ColoredMacList:
             sh[_mac] = _t
 
     def macs_del_one(self, _mac):
+        """ removes one entry of a mac database, orange or black """
+
         try:
             with shelve.open(self.db_name) as sh:
                 del sh[_mac]
@@ -50,17 +59,21 @@ class ColoredMacList:
             return len(sh)
 
     def get_all_macs(self) -> list:
+        """ returns list of existing macs in a mac database """
+
         with shelve.open(self.db_name) as sh:
             return list(sh.keys())
 
 
 class OrangeMacList:
     """ MACs that had error on download """
+
     def __init__(self, name, sig):
         self.ls = ColoredMacList(name, sig, 'orange')
 
     def _macs_not_expired(self):
-        """ return keys w/ timestamp NOT expired """
+        """ return keys (macs) w/ timestamp NOT expired """
+
         db = shelve.open(self.ls.db_name)
         _bad = []
         _now = datetime.datetime.now().timestamp()
@@ -71,8 +84,9 @@ class OrangeMacList:
         return _bad
 
     def filter_orange_macs(self, in_macs):
+        """ from in_macs, we remove still orange ones """
+
         _o = self._macs_not_expired()
-        # remove any not expired ones
         _idx_to_rm = []
         for _ in _o:
             try:
@@ -84,11 +98,13 @@ class OrangeMacList:
 
 class BlackMacList:
     """ MACs that went well on download """
+
     def __init__(self, name, sig):
         self.ls = ColoredMacList(name, sig, 'black')
 
     def _macs_prune(self):
-        """ remove keys with expired timestamp """
+        """ remove black macs w/ expired timestamp """
+
         db = shelve.open(self.ls.db_name)
         _expired = []
         _now = datetime.datetime.now().timestamp()
@@ -101,9 +117,10 @@ class BlackMacList:
         db.close()
 
     def filter_black_macs(self, in_macs):
+        """ prune() black mac list and return 'in_macs' not in it """
+
         self._macs_prune()
         _bm = self.ls.get_all_macs()
-        # return the ones not present in black list
         return [i for i in in_macs if i not in _bm]
 
 
@@ -111,7 +128,7 @@ def filter_white_macs(wl, in_macs) -> list:
     return [i for i in in_macs if i in wl]
 
 
-# for purge() buttons
+# for secret EDIT tab purge() buttons
 def black_macs_delete_all(name):
     bm = BlackMacList(name, None)
     bm.ls.delete_all()

@@ -9,7 +9,7 @@ import pandas as pd
 from ddh.settings import ctx
 from ddh.db.db_plt import DBPlt
 from ddh.threads.utils import (
-    mac_from_folder,
+    get_mac_from_folder_path,
     lid_to_csv, emit_status, emit_error)
 import numpy as np
 
@@ -188,7 +188,7 @@ def _metric_to_legend_name(metric):
 def _cache_or_process(sig, folder, ts, metric, sd):
     # metadata
     c = _metric_to_col_name(metric)
-    mac = mac_from_folder(folder)
+    mac = get_mac_from_folder_path(folder)
 
     # load + prune data within last 'ts'
     suffix = _metric_to_csv_suffix(metric)

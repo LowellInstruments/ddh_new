@@ -10,17 +10,20 @@ from mat.utils import linux_is_rpi
 
 def _boot_sync_time(w):
     """ th_boot gets datetime source """
+
     update_datetime_source(w)
 
 
 def _boot_sync_position(w):
     """ th_boot gets first GPS position """
+
     _o = utils_gps_get_one_lat_lon_dt()
     w.sig_gps.update.emit(_o)
 
 
 def boot(w, evb):
     """ allows GUI to boot and does pre-threads things """
+
     time.sleep(.5)
 
     # tries to enable GPS, used for position and time source

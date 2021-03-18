@@ -16,6 +16,8 @@ TIME_SYNC_PERIOD_S = 300
 
 
 def loop(w, ev_can_i_boot):
+    """ basically, updates some GUI fields """
+
     assert TIME_SYNC_PERIOD_S > 120
     wait_boot_signal(w, ev_can_i_boot, 'TIM')
 

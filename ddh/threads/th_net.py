@@ -10,10 +10,14 @@ assert TH_NET_PERIOD_S >= 30
 
 
 def loop(w, ev_can_i_boot):
+    """
+    checks we have the best network connection possible
+    """
+
     wait_boot_signal(w, ev_can_i_boot, 'NET')
-    is_rpi = linux_is_rpi()
 
     # on a desktop computer, we stay here
+    is_rpi = linux_is_rpi()
     while 1:
         if is_rpi:
             break
@@ -23,7 +27,6 @@ def loop(w, ev_can_i_boot):
         time.sleep(TH_NET_PERIOD_S)
 
     # on a raspberry DDH, we stay here
-    print('pepe')
     while 1:
         ctx.sem_ble.acquire()
         ctx.sem_aws.acquire()

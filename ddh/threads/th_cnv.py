@@ -5,13 +5,15 @@ from ddh.threads.utils import lid_to_csv, pre_rm_csv, wait_boot_signal
 PERIOD_CNV = 60
 
 
-def loop(w, ev_can_i_boot, pre_rm=False):
+def loop(w, ev_can_i_boot, pre_rm_csv_files=False):
+    """ converts new LID files to CSV, if any found """
+
     assert PERIOD_CNV >= 30
     assert ctx.app_dl_folder
     wait_boot_signal(w, ev_can_i_boot, 'CNV')
 
     fol = str(ctx.app_dl_folder)
-    pre_rm_csv(fol, pre_rm)
+    pre_rm_csv(fol, pre_rm_csv_files)
 
     e = []
     while 1:

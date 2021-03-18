@@ -43,15 +43,17 @@ ble_en = True
 sw_ble_en = True
 
 
-# APP behavior modifier
+# debug hooks :)
 macs_blacklist_pre_rm = True
 dummy_ti_logger = False
 dummy_gps = True
 pre_rm_files = False
+force_ntp_fail = True
 
 
 def only_one_instance(name):
     """ ensures only one DDH program running"""
+
     ooi = only_one_instance
     ooi._lock_socket = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
 

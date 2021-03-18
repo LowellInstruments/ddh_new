@@ -14,9 +14,11 @@ def utils_gps_get_one_lat_lon_dt(timeout=3):
     from a dummy or real GPS measurement
     """
 
+    # debug hook, returns our custom GPS frame
     if ctx.dummy_gps:
+        # we need .utcnow(), not .now()
         time.sleep(timeout / 3)
-        dt = datetime.now()
+        dt = datetime.utcnow()
         # dummy gps 1 (random)
         lat = '{:+.6f}'.format(12.34567866666666)
         lon = '{:+.6f}'.format(-77.777777666666667)

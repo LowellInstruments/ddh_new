@@ -7,6 +7,8 @@ from botocore.exceptions import ClientError, NoCredentialsError
 
 
 def aws_credentials_get():
+    """ see if needed AWS environment variables are set """
+
     # bash: export DDH_AWS_NAME=whatever
     # pycharm: run configuration edit
     name = os.environ.get('DDH_AWS_NAME')
@@ -20,7 +22,8 @@ def aws_credentials_assert():
 
 
 def _get_bucket_objects_keys(cli, buk_name) -> dict:
-    """ can return a filled dict, an empty dict or None """
+    """ returns a filled dict, an empty dict or None """
+
     assert cli
     dict_objects = {}
     try:
@@ -37,6 +40,8 @@ def _get_bucket_objects_keys(cli, buk_name) -> dict:
 
 
 def _upload_objects_to_bucket(cli, usr_name, file_list: dict, buk_name):
+    """ uploads files to AWS, with maybe different name """
+
     # file_list: {full_name: (size, short_name)}
     assert cli
     uploaded_ones = []
@@ -52,13 +57,15 @@ def _upload_objects_to_bucket(cli, usr_name, file_list: dict, buk_name):
 
 
 def _diff_local_and_remote_objects(dlo, dro) -> dict:
+    """ compares local files to AWS ones """
+
+    # dlo: AWS local objects, full path, shorten (sh) before compare
+    # dro: AWS remote objects, short path format
     if not dro:
         dro = {}
     diff_dict = {}
-    # dlo: AWS local objects, full path, must shorten (sh) pre-compare
-    # dro: AWS remote objects, short path format
     for k, v in dlo.items():
-        # sh: <mac>/<file.x>
+        # sh: <mac>/<file.x> instead of absolute path
         _ = k.rsplit('/', 2)
         sh = '{}/{}'.format(_[-2], _[-1])
         if sh not in dro.keys() or sh in dro.keys() and dro[sh] != v:
@@ -68,6 +75,8 @@ def _diff_local_and_remote_objects(dlo, dro) -> dict:
 
 
 def aws_check_connection_to_s3(cli, bkt_name):
+    """ checks we can reach AWS """
+
     try:
         cli.head_bucket(Bucket=bkt_name)
         return True
@@ -77,6 +86,10 @@ def aws_check_connection_to_s3(cli, bkt_name):
 
 
 def aws_ddh_sync(aws_name, aws_key_id, aws_secret, folder_to_sync, bkt=None, sig=None):
+    """
+    super function: gets remote file list, compares to local, updates differences
+    """
+
     # recall files to sync must be in: dl_files/<sub-folder>/files.csv
     assert(folder_to_sync != '.')
 

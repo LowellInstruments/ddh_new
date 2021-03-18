@@ -34,6 +34,8 @@ def emit_update(sig, u):
 
 
 def rpi_set_brightness(v):
+    """ adjusts DDH screen brightness """
+
     v *= 127
     v = 50 if v < 50 else v
     v = 255 if v > 250 else v
@@ -45,6 +47,7 @@ def rpi_set_brightness(v):
 
 def linux_set_datetime(t_str):
     # e.g. $ date -s "19 APR 2012 11:14:00"
+
     s = 'sudo date -s "{}"'.format(t_str)
     o = sp.DEVNULL
     rv = sp.run(shlex.split(s), stdout=o, stderr=o)
@@ -52,6 +55,7 @@ def linux_set_datetime(t_str):
 
 
 def get_ntp_time(host="pool.ntp.org"):
+
     # credit: Matt Crampton
     try:
         sk = socket.socket(AF_INET, SOCK_DGRAM)
@@ -91,6 +95,8 @@ def get_ntp_time(host="pool.ntp.org"):
 
 
 def linux_is_net_ok():
+    """ returns True if we have internet connectivity """
+
     for _ in range(5):
         conn = http.client.HTTPConnection('www.google.com', timeout=.3)
         try:
@@ -104,6 +110,8 @@ def linux_is_net_ok():
 
 
 def pre_rm_csv(fol, pre_rm=False):
+    """ util to remove CSV files """
+
     if not pre_rm:
         return
     ff = linux_ls_by_ext(fol, 'csv')
@@ -112,8 +120,9 @@ def pre_rm_csv(fol, pre_rm=False):
         print('removed {}'.format(os.path.basename(_)))
 
 
-# recursively collect all logger files w/ indicated extension
 def linux_ls_by_ext(fol, extension):
+    """ recursively collect all logger files w/ indicated extension """
+
     if not fol:
         return []
     if os.path.isdir(fol):
@@ -121,8 +130,9 @@ def linux_ls_by_ext(fol, extension):
         return glob.glob(wildcard, recursive=True)
 
 
-# be sure we up-to-date w/ downloaded logger folders
 def update_dl_folder_list(d):
+    """ gets updated logger folders list """
+
     if os.path.isdir(d):
         f_l = [f.path for f in os.scandir(d) if f.is_dir()]
         return f_l
@@ -131,6 +141,8 @@ def update_dl_folder_list(d):
 
 
 def json_check_metrics(j):
+    """ ensure we do not ask for too much metrics """
+
     try:
         with open(j) as f:
             cfg = json.load(f)
@@ -168,6 +180,8 @@ def json_get_forget_time_at_sea_secs(j):
 
 
 def json_get_macs(j):
+    """ gets list of macs in ddh.json file """
+
     try:
         with open(j) as f:
             cfg = json.load(f)
@@ -178,6 +192,8 @@ def json_get_macs(j):
 
 
 def json_get_pairs(j):
+    """ gets list of pairs {mac, names} in ddh.json file """
+
     try:
         with open(j) as f:
             cfg = json.load(f)
@@ -209,6 +225,8 @@ def json_get_hci_if(j):
 
 
 def _mac_dns_no_case(j, mac):
+    """ gets mac from ddh.json file and return its name case-sensitive """
+
     try:
         with open(j) as f:
             cfg = json.load(f)
@@ -218,7 +236,7 @@ def _mac_dns_no_case(j, mac):
 
 
 def json_mac_dns(j, mac):
-    """ returns logger name (known) or mac (unknown) for mac """
+    """ returns non-case-sensitive logger name (known) or mac (unknown) """
 
     name = _mac_dns_no_case(j, mac.lower())
     # check for both upper() and lower() cases
@@ -228,15 +246,25 @@ def json_mac_dns(j, mac):
     return rv
 
 
-def mac_from_folder(fol):
+def get_mac_from_folder_path(fol):
+    """ returns '11:22:33' from 'dl_files/11-22-33' """
+
     try:
         return fol.split('/')[-1].replace('-', ':')
     except (ValueError, Exception):
         return None
 
 
+def get_folder_path_from_mac(mac):
+    """ returns 'dl_files/11-22-33' from '11:22:33' """
+
+    fol = ctx.app_dl_folder
+    fol = fol / '{}/'.format(mac.replace(':', '-').lower())
+    return fol
+
+
 def lid_to_csv(fol, suffix, sig, files_to_ignore=[]) -> (bool, list):
-    """ convert depending on if fileX_suffix.lid exists """
+    """ converts depending on fileX_suffix.lid is an existing file """
 
     # valid_suffixes = ('_DissolvedOxygen', '_Temperature', '_Pressure')
     valid_suffixes = ('_DissolvedOxygen', )
@@ -274,7 +302,8 @@ def lid_to_csv(fol, suffix, sig, files_to_ignore=[]) -> (bool, list):
 
 
 def create_folder(mac, fol):
-    """ mkdir folder based on mac """
+    """ mkdir folder based on mac without ':' characters but '-' """
+
     fol = fol / '{}/'.format(mac.replace(':', '-').lower())
     os.makedirs(fol, exist_ok=True)
     return fol
@@ -289,6 +318,8 @@ def check_local_file_exists(file_name, size, fol):
 
 
 def check_local_file_integrity(file_name, fol, remote_crc):
+    """ calculates local file name CRC and compares to parameter """
+
     # remote_crc: logger's one, crc: local one
     path = os.path.join(fol, file_name)
     crc = calculate_local_file_crc(path)
@@ -310,20 +341,17 @@ def rm_folder(mac):
     shutil.rmtree(fol, ignore_errors=True)
 
 
-def get_mac_folder_path(mac):
-    fol = ctx.app_dl_folder
-    fol = fol / '{}/'.format(mac.replace(':', '-').lower())
-    return fol
-
-
-# removes db_plt, setups logs
 def rm_plot_db():
+    """ removes plot database file """
+
     p = ctx.db_plt
     if os.path.exists(p):
         os.remove(p)
 
 
 def setup_app_log(path_to_log_file: str):
+    """ setups application logging """
+
     log = path_to_log_file
     logzero.logfile(log, maxBytes=int(1e6), backupCount=3, mode='a')
     fmt = '%b %d %H:%M:%S'
@@ -335,6 +363,8 @@ def setup_app_log(path_to_log_file: str):
 
 
 def update_cnv_log_err_file(path_to_log_file, _err_reasons):
+    """ puts LID file conversion errors to log file """
+
     if not _err_reasons:
         return
 
@@ -347,6 +377,8 @@ def update_cnv_log_err_file(path_to_log_file, _err_reasons):
 
 
 def wait_boot_signal(w, ev, s):
+    """ threads do not proceed until receiving ev """
+
     ev.wait()
     t = random() * 1
     time.sleep(1 + t)

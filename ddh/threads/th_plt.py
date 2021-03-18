@@ -1,14 +1,15 @@
 import threading
 from ddh.settings import ctx
-from ddh.threads.utils import json_mac_dns, mac_from_folder, json_get_span_dict, wait_boot_signal, emit_error
+from ddh.threads.utils import json_mac_dns, get_mac_from_folder_path, json_get_span_dict, wait_boot_signal, emit_error
 from ddh.threads.utils_plt import plot
 
 
 def _plot_data(w, plt_args):
+
     def _plot():
         fol, ax, ts, metric_pair = plt_args
         j = ctx.app_json_file
-        lg = json_mac_dns(j, mac_from_folder(fol))
+        lg = json_mac_dns(j, get_mac_from_folder_path(fol))
         sd = json_get_span_dict(j)
 
         # plot
@@ -29,6 +30,8 @@ def _plot_data(w, plt_args):
 
 
 def loop(w, ev_can_i_boot):
+    """ plots, when triggered """
+
     wait_boot_signal(w, ev_can_i_boot, 'PLT')
 
     while 1:

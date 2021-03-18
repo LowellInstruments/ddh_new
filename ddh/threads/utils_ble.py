@@ -9,7 +9,7 @@ from ddh.threads.utils import (
     create_folder,
     check_local_file_exists,
     emit_status,
-    check_local_file_integrity, is_float, get_mac_folder_path
+    check_local_file_integrity, is_float, get_folder_path_from_mac
 )
 from ddh.threads.utils_gps_quectel import utils_gps_get_one_lat_lon_dt
 from mat.logger_controller import (
@@ -300,7 +300,7 @@ def _logger_re_setup(lc, sig):
         _die('no {} size'.format(_MC))
 
     # download MAT.cfg
-    dff = get_mac_folder_path(lc.address)
+    dff = get_folder_path_from_mac(lc.address)
     _show('getting {}...'.format(_MC), sig)
     if not lc.get_file(_MC, dff, size, None):
         _die('error downloading {}'.format(_MC))

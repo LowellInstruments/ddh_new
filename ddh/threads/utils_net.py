@@ -4,6 +4,8 @@ import subprocess as sp
 import time
 import wifi
 from wifi import Cell, exceptions
+
+from ddh.settings import ctx
 from ddh.threads.utils import emit_status, emit_update
 from mat.utils import linux_is_rpi
 
@@ -17,19 +19,29 @@ _via_inet_last = ''
 
 
 def _shell(s):
+    """
+    runs a linux shell command
+    """
+
     rv = sp.run(s, shell=True, stdout=sp.DEVNULL)
     return rv.returncode
 
 
 def _net_set_via_to_internet_as_cell():
+    """ increases cell connection priority """
+
     _shell('sudo ifmetric ppp0 0')
 
 
 def _net_set_via_to_internet_as_wifi():
+    """ decreases cell connection priority """
+
     _shell('sudo ifmetric ppp0 400')
 
 
 def _net_get_my_current_wlan_ssid() -> str:
+    """ gets connected wi-fi network name, if any """
+
     c = 'iwgetid -r'
     s = sp.run(c, shell=True, stdout=sp.PIPE)
     return s.stdout.decode().rstrip('\n')
@@ -40,6 +52,8 @@ def net_get_my_current_wlan_ssid():
 
 
 def _net_get_known_wlan_ssids():
+    """ gets a list of wi-fi SSIDs we ever connected OK to """
+
     try:
         c = 'wpa_cli list_networks'
         s = sp.run(c, shell=True, stdout=sp.PIPE)
@@ -50,6 +64,8 @@ def _net_get_known_wlan_ssids():
 
 
 def _net_get_nearby_wlan_ssids(interface: str):
+    """ gets a list of wi-fi SSIDs around """
+
     try:
         wn = []
         around = Cell.all(interface)
@@ -64,6 +80,8 @@ def _net_get_nearby_wlan_ssids(interface: str):
 
 
 def _net_is_worth_trying_sw_wifi(interface: str) -> bool:
+    """ in case wifis around, and known, we have a good scenario """
+
     if not linux_is_rpi():
         print('no RPI system, no wpa_cli')
         return False
@@ -82,6 +100,8 @@ def _net_is_worth_trying_sw_wifi(interface: str) -> bool:
 
 
 def _net_switch_via_to_internet(sig, org=None):
+    """ do a switch: preferred Wi-Fi > cell > None """
+
     global _net_sw_wifi_countdown
     assert org in ('none', 'cell')
 
@@ -136,7 +156,7 @@ def _net_get_my_ip_to_internet():
 
 
 def _net_get_via_to_internet() -> str:
-    """ returns 'wifi', 'cell' or 'none' """
+    """ gets current internet via: 'wifi', 'cell' or 'none' """
 
     ip = _net_get_my_ip_to_internet()
 
@@ -161,6 +181,7 @@ def _net_get_via_to_internet() -> str:
 
 def net_check_connectivity(sig=None):
     """
+    super function: checks if internet switch and does it if so
     preferred: wi-fi > cell > no net
     check: RFKill on wi-fi
     """
