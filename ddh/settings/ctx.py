@@ -46,7 +46,7 @@ sw_ble_en = True
 # debug hooks :)
 macs_blacklist_pre_rm = True
 dummy_ti_logger = False
-dummy_gps = True
+dummy_gps = False
 pre_rm_files = False
 force_ntp_fail = True
 

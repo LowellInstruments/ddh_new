@@ -24,6 +24,7 @@ def _time_sync_net():
 
     # debug hook, forces NTP clock sync to fail
     if ctx.force_ntp_fail:
+        print('DBG: ctx.force_ntp_fail is set')
         return
 
     # we cannot NTP without internet access

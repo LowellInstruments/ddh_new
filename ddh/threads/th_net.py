@@ -18,12 +18,14 @@ def loop(w, ev_can_i_boot):
 
     # on a desktop computer, we stay here
     is_rpi = linux_is_rpi()
+    old_s = ''
     while 1:
         if is_rpi:
             break
-        s = '{}'.format(net_get_my_current_wlan_ssid())
-        s = 'no network' if not s else 'wi-fi {}'.format(s)
-        w.sig_net.update.emit(s)
+        s = net_get_my_current_wlan_ssid()
+        if s != old_s:
+            w.sig_net.update.emit('no network' if not s else s)
+        old_s = s
         time.sleep(TH_NET_PERIOD_S)
 
     # on a raspberry DDH, we stay here

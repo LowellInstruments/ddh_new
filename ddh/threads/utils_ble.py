@@ -301,8 +301,9 @@ def _logger_re_setup(lc, sig):
 
     # download MAT.cfg
     dff = get_folder_path_from_mac(lc.address)
-    _show('getting {}...'.format(_MC), sig)
-    if not lc.get_file(_MC, dff, size, None):
+    _show('downloading {}...'.format(_MC), sig)
+
+    if not lc.dwg_file(_MC, dff, size, None):
         _die('error downloading {}'.format(_MC))
 
     # check MAT.cfg file
@@ -341,7 +342,7 @@ def logger_download(mac, fol, hci_if, sig=None):
         lc = LcBLEFactory.generate(mac)
 
         with lc(mac, hci_if) as lc:
-            # g -> (lat, lon, datetime object)
+            # g -> (lat, lon, ignored datetime object)
             g = utils_gps_get_one_lat_lon_dt(timeout=5)
             _logger_sws(lc, sig, g)
             _logger_time_check(lc, sig)
