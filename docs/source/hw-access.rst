@@ -37,7 +37,11 @@ And should appear in your DWService Agents page.
 
 .. note::
 
-    Your DDH already has cell-network features enabled, so be careful with data usage, if any request to Internet is done. Recall removing your wi-fi networks from the cloned DDH, if so.
+    Your DDH already has cell-network features enabled, so be careful with data usage, if any request to Internet is done. The data usage for 24 hours when only DWService is active and no other network activity on the DDH was measured to be 0.450 MB down, 0.291 MB up, so less than 1 MB per day.
+
+.. warning::
+
+    Recall removing your wi-fi networks from the cloned DDH, if so.
 
 
 

@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
+import argparse
 
 import time
 import serial
 import sys
 from serial import SerialException
+from mat.utils import PrintColors as PC
 
 
 # hardcoded, since they are FIXED on SixFab hats
+
 PORT_CTRL = '/dev/ttyUSB2'
 PORT_DATA = '/dev/ttyUSB1'
 
@@ -47,9 +50,17 @@ def _gps_configure_quectel() -> int:
 
 
 if __name__ == '__main__':
-    retries = 0
+
+    # -n 1: infinite loop, -n 0: only once
+    ap = argparse.ArgumentParser(description='Test the GPS Quectel in Raspberry')
+    ap.add_argument('-n', action='store', choices=['0', '1'], required=True)
+    args = ap.parse_args()
+
+    # inform of command parameters
+    print('[ in ] GPS Quectel test infinite mode {}'.format(args.n))
 
     # try to enable GPS port
+    retries = 0
     while 1:
         if retries == 3:
             e = '[ ER ] GPS Quectel failure init, retry {}'
@@ -60,34 +71,56 @@ if __name__ == '__main__':
             break
         time.sleep(1)
 
-    # try to get GPS frames
-    sp, _till, i = None, 20, 0
-    s = '[ .. ] GPS Quectel, will check for frames up to {} seconds...'
-    print(s.format(_till))
-    try:
-        sp = serial.Serial(PORT_DATA, baudrate=115200, timeout=0.1)
-        _till = time.perf_counter() + _till
-        while True:
-            if time.perf_counter() > _till:
-                e = '[ ER ] GPS Quectel, could not get any data frame'
-                print(e)
-                break
-            data = sp.readline()
-            if (i % 10) == 0:
-                print('.')
-            if b'$GPRMC' in data:
-                data = data.decode()
-                s = data.split(",")
-                if s[2] == 'V':
+    # benchmark how we get GPS frames
+    sp = serial.Serial(PORT_DATA, baudrate=115200, timeout=0.1)
+    while 1:
+        _till, i, ns = 20, 0, 0
+        s = '\n[ .. ] GPS Quectel, will check for frames up to {} seconds...'
+        print(s.format(_till))
+        try:
+            _start = time.perf_counter()
+            _till = time.perf_counter() + _till
+            while True:
+
+                # '_till' did expire
+                if time.perf_counter() > _till:
+                    print('[ ER ] GPS Quectel, could not get any data frame')
                     continue
-                if s[3] and s[5]:
-                    print('[ -> ] {}'.format(data))
-                    lat, lon = _coord_decode(s[3]), _coord_decode(s[5])
-                    print('[ OK ] GPS Quectel data success: {}, {}'.format(lat, lon))
-                    break
-    except SerialException as se:
-        print(se)
-    finally:
-        if sp:
-            sp.close()          
+
+                # reading serial port
+                data = sp.readline()
+
+                if b'$GPGGA' in data:
+                    gga = data.decode()
+                    s = gga.split(',')
+                    # index 6: quality indicator, 7: num of satellites
+                    if s[6] in ('1', '2'):
+                        ns = int(s[7])
+
+                if b'$GPRMC' in data:
+                    rmc = data.decode()
+                    s = rmc.split(",")
+                    if s[2] == 'V':
+                        continue
+                    if s[3] and s[5]:
+                        print('[ -> ] {}'.format(rmc), end='')
+                        lat, lon = _coord_decode(s[3]), _coord_decode(s[5])
+                        print('[ OK ] RMC data: {}, {}'.format(lat, lon))
+                        _took = time.perf_counter() - _start
+                        PC.G('[ OK ] took: {:.2f} seconds, #sats {}'.format(_took, ns))
+                        break
+
+            # use the command-line argument
+            if int(args.n) == 0:
+                print('[ .. ] GPS test only had to run once, leaving!')
+                break
+
+        except SerialException as se:
+            print(se)
+            break
+
+    # clean-up
+    if sp:
+        sp.close()
+
  
