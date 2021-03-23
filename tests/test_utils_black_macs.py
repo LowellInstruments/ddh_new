@@ -13,8 +13,8 @@ class TestBlackMacs:
         black_macs_delete_all(db_name)
         _mac = '11:11:11:11:11:11'
         _till = 100
-        bm.ls.macs_add_or_update(_mac, _till)
-        n = bm.ls.len_macs_list()
+        bm.ls.mac_list_add_or_update(_mac, _till)
+        n = bm.ls.mac_list_len()
         assert n == 1
 
     def test_black_macs_prune(self):
@@ -22,12 +22,12 @@ class TestBlackMacs:
         black_macs_delete_all(db_name)
         _mac = '11:11:11:11:11:11'
         _till = -100
-        bm.ls.macs_add_or_update(_mac, _till)
+        bm.ls.mac_list_add_or_update(_mac, _till)
         _mac = '22:22:22:22:22:22'
         _till = 100
-        bm.ls.macs_add_or_update(_mac, _till)
-        bm._macs_prune()
-        n = bm.ls.len_macs_list()
+        bm.ls.mac_list_add_or_update(_mac, _till)
+        bm.mac_list_prune_black()
+        n = bm.ls.mac_list_len()
         assert n == 1
 
     def test_black_macs_how_many_pending(self):
@@ -35,14 +35,14 @@ class TestBlackMacs:
         black_macs_delete_all(db_name)
         _mac = '11:11:11:11:11:11'
         _till = -100
-        bm.ls.macs_add_or_update(_mac, _till)
+        bm.ls.mac_list_add_or_update(_mac, _till)
         _mac = '22:22:22:22:22:22'
         _till = 100
-        bm.ls.macs_add_or_update(_mac, _till)
+        bm.ls.mac_list_add_or_update(_mac, _till)
         # prune will be done inside
         _scan_result = ['22:22:22:22:22:22']
-        n = len(bm.filter_black_macs(_scan_result))
+        n = len(bm.mac_list_filter_black_macs(_scan_result))
         assert n == 0
         _scan_result = ['33:33:33:33:33:33']
-        n = len(bm.filter_black_macs(_scan_result))
+        n = len(bm.mac_list_filter_black_macs(_scan_result))
         assert n == 1

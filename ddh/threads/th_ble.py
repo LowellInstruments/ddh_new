@@ -10,45 +10,32 @@ from ddh.threads.utils import json_get_macs, json_get_forget_time_secs, json_get
     json_get_forget_time_at_sea_secs, is_float, get_folder_path_from_mac
 from ddh.threads.utils_ble import logger_download
 from ddh.threads.utils_gps_quectel import utils_gps_in_land
-from ddh.threads.utils_macs import filter_white_macs, BlackMacList, OrangeMacList, bluepy_scan_results_to_strings
+from ddh.threads.utils_macs import filter_white_macs, bluepy_scan_results_to_strings
 
 
 IGNORE_TIME_S = 60
 
 
-def _mac_to_black_list(mb, mo, mac, t):
-
-    mb.ls.macs_add_or_update(mac, t)
-    # could be a currently orange one, or not
-    mo.ls.macs_del_one(mac)
-
-
-def _mac_to_orange_list(mo, mac):
-
-    mo.ls.macs_add_or_update(mac, IGNORE_TIME_S)
-
-
-def _mac_show_color_lists_on_boot(w, mb, mo):
+def _mac_show_color_lists_on_boot(w, ml):
 
     _d = 'SYS: purging mac_orange_list on boot'
     w.sig_ble.debug.emit(_d)
-    mo.ls.delete_all()
+    ol = ml.mac_list_get_all_orange_macs()
+    for each in ol:
+        ml.mac_list_delete_one(each)
 
     # debug hook, forces a brand new mac black list
     if ctx.macs_blacklist_pre_rm:
         _d = 'SYS: forced pre-removing mac_black_list'
-        mb.ls.delete_all()
+        ml.mac_list_delete_file()
         w.sig_ble.debug.emit(_d)
 
     _d = 'SYS: loaded mac_black_list -> '
-    _d += mb.ls.macs_dump()
-    w.sig_ble.debug.emit(_d)
-    _d = 'SYS: loaded mac_orange_list -> '
-    _d += mo.ls.macs_dump()
+    _d += ml.mac_list_get_all_entries()
     w.sig_ble.debug.emit(_d)
 
 
-def _scan_loggers(w, h, whitelist, mb, mo):
+def _scan_loggers(w, h, whitelist, ml):
 
     # scan all BLE devices around, hint: '!' when USB dongle
     s = '!' if h else ''
@@ -66,10 +53,10 @@ def _scan_loggers(w, h, whitelist, mb, mo):
     li = filter_white_macs(whitelist, li)
 
     # DDH macs -> w/o recently well done ones
-    li = mb.filter_black_macs(li)
+    li = ml.mac_list_filter_black_macs(li)
 
     # DDH macs -> w/o too recent bad ones
-    li = mo.filter_orange_macs(li)
+    li = ml.mac_list_filter_orange_macs(li)
 
     # banner number of fresh loggers to be downloaded
     n = len(li)
@@ -79,7 +66,7 @@ def _scan_loggers(w, h, whitelist, mb, mo):
     return li
 
 
-def _download_loggers(w, h, macs, mb, mo, ft: tuple):
+def _download_loggers(w, h, macs, ml, ft: tuple):
     """ downloads every BLE logger found """
 
     # ensure all scanned macs format in lower case
@@ -109,13 +96,18 @@ def _download_loggers(w, h, macs, mb, mo, ft: tuple):
             done, g = logger_download(mac, fol, h, w.sig_ble)
 
             # update GUI with logger pending warnings, if any
-            orange_pending_ones = mo.ls.get_all_macs()
+            orange_pending_ones = ml.ls.mac_list_get_all_macs()
             w.sig_ble.dl_warning.emit(orange_pending_ones)
 
             # NOT OK download session, ignore logger for 'ignore time'
             if not done:
                 e = 'BLE: download process did not finish for {}'
                 w.sig_ble.error.emit(e.format(mac))
+                _ =
+
+                ml.mac_list_add_or_update(MAC_B, inc, 0, 'black')
+
+
                 _mac_to_orange_list(mo, mac)
                 continue
 
