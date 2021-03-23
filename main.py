@@ -21,9 +21,8 @@ if __name__ == "__main__":
     ctx.app_json_file = r / 'settings/ddh.json'
     ctx.db_his = str(r / 'db/db_his.db')
     ctx.db_plt = str(r / 'db/db_plt.db')
-    # these are shelves, do not change this extension
-    ctx.db_blk = str(r / 'db/.black_macs.sl')
-    ctx.db_ong = str(r / 'db/.orange_macs.sl')
+    # shelve, do not change this extension
+    ctx.db_color_macs = str(r / 'db/.color_macs.sl')
 
     # catch control + c
     signal.signal(signal.SIGINT, on_ctrl_c)

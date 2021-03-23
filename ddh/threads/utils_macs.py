@@ -14,7 +14,7 @@ class ColorMacList:
         self.db_name = name
         self.sig = sig
 
-    def mac_list_delete_file(self):
+    def delete_color_mac_file(self):
         """ removes database file """
 
         try:
@@ -25,7 +25,7 @@ class ColorMacList:
             print(_e.format(self.db_name))
             return 1
 
-    def mac_list_get_all_entries(self) -> str:
+    def get_all_entries_as_string(self) -> str:
         """ show entries in database {mac: (t, retries, color)} """
 
         s = ''
@@ -33,11 +33,24 @@ class ColorMacList:
             for k, v in sh.items():
                 # v: (datestamp, retries, color)
                 t = int(v[0] - datetime.datetime.now().timestamp())
-                _ = '{}: {} seconds left, retries {}, color {}'
+                _ = '{}: {} seconds left, retries {}, color {} / '
                 s += _.format(k, t, v[1], v[2])
         return s
 
-    def mac_list_add_or_update(self, mac, inc, retries, color):
+    def get_all_orange_entries_as_string(self) -> str:
+        """ show entries in database {mac: (t, retries, color)} """
+
+        s = ''
+        with shelve.open(self.db_name) as sh:
+            for k, v in sh.items():
+                if v[2] == 'orange':
+                    # v: (datestamp, retries, color)
+                    t = int(v[0] - datetime.datetime.now().timestamp())
+                    _ = '{}: {} seconds left, retries {}, color {} / '
+                    s += _.format(k, t, v[1], v[2])
+        return s
+
+    def entry_add_or_update(self, mac, inc, retries, color):
         """ adds or refreshes time of an entry in a mac database """
 
         assert color in ('black', 'orange')
@@ -47,8 +60,8 @@ class ColorMacList:
         with shelve.open(self.db_name) as sh:
             sh[mac] = (t, retries, color)
 
-    def mac_list_del_one(self, mac):
-        """ removes one entry of a mac database, orange or black """
+    def entry_delete(self, mac):
+        """ removes one entry of database """
 
         try:
             with shelve.open(self.db_name) as sh:
@@ -56,28 +69,36 @@ class ColorMacList:
         except KeyError:
             pass
 
-    def mac_list_get_one(self, mac):
+    def entry_get(self, mac):
         try:
             with shelve.open(self.db_name) as sh:
                 return sh[mac]
         except KeyError:
             return None
 
+    def entries_get_all_orange(self) -> dict:
+        """ return orange entries """
+
+        db = shelve.open(self.db_name)
+        rv = {k: v for k,v in db.items() if v[2] == 'orange'}
+        db.close()
+        return rv
+
     def mac_list_len(self):
         with shelve.open(self.db_name) as sh:
             return len(sh)
 
-    def mac_list_get_all_macs(self) -> list:
+    def macs_get_all(self) -> list:
         """ returns list of existing macs in a mac database """
 
         with shelve.open(self.db_name) as sh:
             return list(sh.keys())
 
-    def mac_list_get_all_orange_macs_not_expired(self) -> list:
+    def macs_get_orange_not_expired(self) -> list:
         """ return keys (macs) w/ timestamp NOT expired """
 
-        db = shelve.open(self.db_name)
         rv = []
+        db = shelve.open(self.db_name)
         _now = datetime.datetime.now().timestamp()
         for k, v in db.items():
             if _now < v[0] and v[2] == 'orange':
@@ -85,11 +106,11 @@ class ColorMacList:
         db.close()
         return rv
 
-    def mac_list_get_all_orange_macs(self) -> list:
-        """ return keys (macs) w/ timestamp NOT expired """
+    def macs_get_orange(self) -> list:
+        """ return all orange keys (macs) """
 
-        db = shelve.open(self.db_name)
         rv = []
+        db = shelve.open(self.db_name)
         _now = datetime.datetime.now().timestamp()
         for k, v in db.items():
             if v[2] == 'orange':
@@ -97,8 +118,8 @@ class ColorMacList:
         db.close()
         return rv
 
-    def mac_list_get_all_black_macs(self) -> list:
-        """ return keys (macs) w/ timestamp NOT expired """
+    def macs_get_black(self) -> list:
+        """ return keys (macs) in black list """
 
         db = shelve.open(self.db_name)
         rv = []
@@ -108,13 +129,27 @@ class ColorMacList:
         db.close()
         return rv
 
-    def mac_list_filter_orange_macs(self, in_macs):
+    def retries_get_from_orange_mac(self, mac) -> list:
+        om = self.entries_get_all_orange()
+        try:
+            return om[mac][1]
+        except KeyError:
+            return None
+
+    def macs_filter_not_in_orange(self, in_macs):
         """ return 'in_macs' entries NOT PRESENT in mac_orange_list"""
 
-        o = self.mac_list_get_all_orange_macs_not_expired()
+        o = self.macs_get_orange_not_expired()
         return [i for i in in_macs if i not in o]
 
-    def mac_list_prune_black(self):
+    def macs_filter_not_in_black(self, in_macs):
+        """ prune() black mac list, return 'in_macs' entries NOT PRESENT in it """
+
+        self.entries_prune_black()
+        b = self.macs_get_black()
+        return [i for i in in_macs if i not in b]
+
+    def entries_prune_black(self):
         """ remove black macs w/ expired timestamp """
 
         db = shelve.open(self.db_name)
@@ -128,22 +163,15 @@ class ColorMacList:
             del db[each]
         db.close()
 
-    def mac_list_filter_black_macs(self, in_macs):
-        """ prune() black mac list, return 'in_macs' entries NOT PRESENT in it """
-
-        self.mac_list_prune_black()
-        b = self.mac_list_get_all_black_macs()
-        return [i for i in in_macs if i not in b]
-
 
 def filter_white_macs(wl, in_macs) -> list:
     return [i for i in in_macs if i in wl]
 
 
 # for secret EDIT tab purge() buttons
-def black_macs_delete_all(name):
+def delete_color_mac_file(name):
     ml = ColorMacList(name, None)
-    ml.mac_list_delete_file()
+    ml.delete_color_mac_file()
 
 
 def bluepy_scan_results_to_strings(sr):

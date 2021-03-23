@@ -18,8 +18,7 @@ plt_units = None
 span_dict = None
 db_plt = None
 db_his = None
-db_blk = None
-db_ong = None
+db_color_macs = None
 
 
 # current logger context

@@ -39,7 +39,7 @@ from ddh.threads.utils import (
     json_get_forget_time_secs, rpi_set_brightness, rm_plot_db, json_get_pairs, setup_app_log,
     update_cnv_log_err_file, json_set_plot_units)
 from ddh.threads.utils_aws import aws_credentials_assert
-from ddh.threads.utils_macs import black_macs_delete_all
+from ddh.threads.utils_macs import delete_color_mac_file
 from mat.utils import linux_is_rpi
 
 matplotlib.use('Qt5Agg')
@@ -580,7 +580,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         if _confirm_by_user(s):
             db = DBHis(ctx.db_his)
             db.delete_all_records()
-            black_macs_delete_all(ctx.db_blk)
+            delete_color_mac_file(ctx.db_color_macs)
         self._populate_history_tab()
 
     def click_btn_load_current_json_file(self):

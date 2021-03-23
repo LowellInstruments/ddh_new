@@ -10,29 +10,31 @@ from ddh.threads.utils import json_get_macs, json_get_forget_time_secs, json_get
     json_get_forget_time_at_sea_secs, is_float, get_folder_path_from_mac
 from ddh.threads.utils_ble import logger_download
 from ddh.threads.utils_gps_quectel import utils_gps_in_land
-from ddh.threads.utils_macs import filter_white_macs, bluepy_scan_results_to_strings
+from ddh.threads.utils_macs import filter_white_macs, bluepy_scan_results_to_strings, ColorMacList
 
 
+TOO_BAD_TIME_S = 3600
 IGNORE_TIME_S = 60
 
 
 def _mac_show_color_lists_on_boot(w, ml):
 
-    _d = 'SYS: purging mac_orange_list on boot'
-    w.sig_ble.debug.emit(_d)
-    ol = ml.mac_list_get_all_orange_macs()
+    s = 'SYS: purging mac_orange_list on boot'
+    w.sig_ble.debug.emit(s)
+    ol = ml.macs_get_orange()
     for each in ol:
-        ml.mac_list_delete_one(each)
+        ml.entry_delete(each)
 
     # debug hook, forces a brand new mac black list
     if ctx.macs_blacklist_pre_rm:
-        _d = 'SYS: forced pre-removing mac_black_list'
-        ml.mac_list_delete_file()
-        w.sig_ble.debug.emit(_d)
+        s = 'SYS: loaded previous mac_black_list -> {}'
+        w.sig_ble.debug.emit(s.format(ml.get_all_entries_as_string()))
+        s = 'SYS: forced pre-removing mac_black_list'
+        ml.delete_color_mac_file()
+        w.sig_ble.debug.emit(s)
 
-    _d = 'SYS: loaded mac_black_list -> '
-    _d += ml.mac_list_get_all_entries()
-    w.sig_ble.debug.emit(_d)
+    s = 'SYS: loaded current mac_black_list -> {}'
+    w.sig_ble.debug.emit(s.format(ml.get_all_entries_as_string()))
 
 
 def _scan_loggers(w, h, whitelist, ml):
@@ -53,10 +55,10 @@ def _scan_loggers(w, h, whitelist, ml):
     li = filter_white_macs(whitelist, li)
 
     # DDH macs -> w/o recently well done ones
-    li = ml.mac_list_filter_black_macs(li)
+    li = ml.macs_filter_not_in_black(li)
 
     # DDH macs -> w/o too recent bad ones
-    li = ml.mac_list_filter_orange_macs(li)
+    li = ml.macs_filter_not_in_orange(li)
 
     # banner number of fresh loggers to be downloaded
     n = len(li)
@@ -96,19 +98,24 @@ def _download_loggers(w, h, macs, ml, ft: tuple):
             done, g = logger_download(mac, fol, h, w.sig_ble)
 
             # update GUI with logger pending warnings, if any
-            orange_pending_ones = ml.ls.mac_list_get_all_macs()
+            orange_pending_ones = ml.macs_get_orange()
             w.sig_ble.dl_warning.emit(orange_pending_ones)
 
-            # NOT OK download session, ignore logger for 'ignore time'
+            # NOT OK download session
             if not done:
-                e = 'BLE: download process did not finish for {}'
+                # see if it as repetitive failure
+                r = ml.retries_get_from_orange_mac(mac)
+                r = 1 if not r else r + 1 if r < 5 else 5
+                if r == 5:
+                    # case lost-> remove mac from orange list, add to black
+                    ml.entry_delete(mac)
+                    ml.entry_add_or_update(mac, TOO_BAD_TIME_S, r, 'black')
+                    e = 'BLE: too many errors for {}, blacklist, r = {}'.format(mac, r)
+                else:
+                    # just add to orange list
+                    ml.entry_add_or_update(mac, IGNORE_TIME_S, r, 'orange')
+                    e = 'BLE: error for {}, orange-listing it r = {}'.format(mac, r)
                 w.sig_ble.error.emit(e.format(mac))
-                _ =
-
-                ml.mac_list_add_or_update(MAC_B, inc, 0, 'black')
-
-
-                _mac_to_orange_list(mo, mac)
                 continue
 
             # OK download session, set 'forget time_sea or land'
@@ -117,21 +124,25 @@ def _download_loggers(w, h, macs, ml, ft: tuple):
             if lat and is_float(lat) and lon and is_float(lon):
                 if utils_gps_in_land(lat, lon):
                     t = ft_s
-                    s = 'BLE: in-land, blacklist {} w/ {} secs'.format(mac, t)
+                    s = 'BLE: in-land GPS, blacklist {} w/ {} secs'.format(mac, t)
                 else:
                     t = ft_sea_s
-                    s = 'BLE: at sea, blacklist {} w/ {} secs'.format(mac, t)
+                    s = 'BLE: at sea GPS, blacklist {} w/ {} secs'.format(mac, t)
             else:
                 t = ft_sea_s
-                s = 'BLE: no idea about sea or in-land, blacklist {} w/ {} secs'.format(mac, t)
+                s = 'BLE: bad GPS signal or off, blacklist {} w/ {} secs'.format(mac, t)
 
+            # case good -> remove mac from orange list, if so, add to black
+            ml.entry_delete(mac)
+            ml.entry_add_or_update(mac, t, 0, 'black')
             w.sig_ble.debug.emit(s)
-            _mac_to_black_list(mb, mo, mac, t)
 
         except ble.BTLEException as ex:
             # not ours, but bluepy exception
-            _mac_to_orange_list(mo, mac)
-            w.sig_ble.error.emit('BLE: disconnect exc {}'.format(ex))
+            ml.entry_delete(mac)
+            ml.entry_add_or_update(mac, IGNORE_TIME_S, 0, 'orange')
+            e = 'BLE: caught exception {}, orange-listing it w/ r = 0'.format(ex)
+            w.sig_ble.error.emit(e)
 
         finally:
             # unprotect critical zone
@@ -148,13 +159,12 @@ def loop(w, ev_can_i_boot):
 
     whitelist = json_get_macs(ctx.app_json_file)
     h = json_get_hci_if(ctx.app_json_file)
-    mb = BlackMacList(ctx.db_blk, w.sig_ble)
-    mo = OrangeMacList(ctx.db_ong, w.sig_ble)
+    ml = ColorMacList(ctx.db_color_macs, w.sig_ble)
     ft_s = json_get_forget_time_secs(ctx.app_json_file)
     ft_sea_s = json_get_forget_time_at_sea_secs(ctx.app_json_file)
     assert ft_s >= 3600
     assert ft_sea_s >= 900
-    _mac_show_color_lists_on_boot(w, mb, mo)
+    _mac_show_color_lists_on_boot(w, ml)
 
     while 1:
         if not ctx.ble_en:
@@ -164,12 +174,12 @@ def loop(w, ev_can_i_boot):
 
         try:
             # >>> scan stage
-            macs = _scan_loggers(w, h, whitelist, mb, mo)
+            macs = _scan_loggers(w, h, whitelist, ml)
             if not macs:
                 continue
 
             # >>> download stage
-            _download_loggers(w, h, macs, mb, mo, (ft_s, ft_sea_s))
+            _download_loggers(w, h, macs, ml, (ft_s, ft_sea_s))
 
         except ble.BTLEManagementError as ex:
             e = 'BLE: big error, wrong HCI or permissions? {}'
