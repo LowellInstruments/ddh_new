@@ -97,10 +97,6 @@ def _download_loggers(w, h, macs, ml, ft: tuple):
             # get files from the logger
             done, g = logger_download(mac, fol, h, w.sig_ble)
 
-            # update GUI with logger pending warnings, if any
-            orange_pending_ones = ml.macs_get_orange()
-            w.sig_ble.dl_warning.emit(orange_pending_ones)
-
             # NOT OK download session
             if not done:
                 # see if it as repetitive failure
@@ -180,6 +176,10 @@ def loop(w, ev_can_i_boot):
 
             # >>> download stage
             _download_loggers(w, h, macs, ml, (ft_s, ft_sea_s))
+
+            # >>> report stage w/ download errors, if any
+            ol = ml.macs_get_orange()
+            w.sig_ble.dl_warning.emit(ol)
 
         except ble.BTLEManagementError as ex:
             e = 'BLE: big error, wrong HCI or permissions? {}'

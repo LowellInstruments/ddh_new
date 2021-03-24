@@ -200,6 +200,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     @pyqtSlot(str, name='slot_gui_update_time_source')
     def slot_gui_update_time_source(self, s):
         """ th_time sends the signal for this slot """
+
         _ = self.lbl_time_n_pos.text().split('\n')
         s = '{}\n{}\n{}\n{}'.format(s, _[1], _[2], _[3])
         self.lbl_time_n_pos.setText(s)
@@ -226,6 +227,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     @pyqtSlot(str, name='slot_gui_update_net_source')
     def slot_gui_update_net_source(self, s):
         """ th_net sends the signal for this slot """
+
         s = s.replace('\n', '')
         self.slot_status('NET: {}'.format(s))
         _ = self.lbl_net_n_cloud.text().split('\n')
@@ -235,6 +237,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     @pyqtSlot(str, name='slot_gui_update_aws')
     def slot_gui_update_aws(self, c):
         """ th_aws sends the signal for this slot """
+
         _ = self.lbl_net_n_cloud.text().split('\n')
         s = '{}\n{}'.format(_[0], c)
         self.lbl_net_n_cloud.setText(s)
@@ -242,29 +245,35 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     @pyqtSlot(list, name='slot_gui_update_cnv')
     def slot_gui_update_cnv(self, _e):
         """ th_cnv sends the signal for this slot """
+
         path = str(ctx.app_logs_folder / 'ddh_err_cnv.log')
         update_cnv_log_err_file(path, _e)
         s = 'CNV: error' if _e else 'conversion OK'
         _ = self.lbl_plot.text().split('\n')
+        # lbl_plot.text: {PLT} {CNV} {ERR}
         s = '{}\n{}\n{}'.format(_[0], s, _[2])
         self.lbl_plot.setText(s)
 
     @pyqtSlot(str, name='slot_gui_update_plt')
     def slot_gui_update_plt(self, s):
         """ th_plt sends the signal for this slot """
+
         _ = self.lbl_plot.text().split('\n')
+        # lbl_plot.text: {PLT} {CNV} {ERR}
         s = '{}\n{}\n{}'.format(s, _[1], _[2])
         self.lbl_plot.setText(s)
 
     @pyqtSlot(name='slot_plt_start')
     def slot_plt_start(self):
         """ th_plt sends the signal for this slot """
+
         self.slot_gui_update_plt('Plotting...')
         self.lbl_plt_bsy.setVisible(True)
 
     @pyqtSlot(object, str, name='slot_plt_end')
     def slot_plt_end(self, result, s):
         """ th_plt sends the signal for this slot """
+
         if result:
             self.slot_gui_update_plt('plot OK')
             self.tabs.setCurrentIndex(1)
@@ -278,6 +287,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     @pyqtSlot(str, name='slot_plt_msg')
     def slot_plt_msg(self, desc):
         """ th_plt sends the signal for this slot """
+
         self.lbl_plt_msg.setText(desc)
         self.lbl_plt_msg.setVisible(True)
         self.plt_timeout_msg = ctx.PLT_MSG_TIMEOUT
@@ -301,16 +311,21 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     @pyqtSlot(list, name='slot_ble_dl_warning')
     def slot_ble_dl_warning(self, w):
         """ th_ble sends the signal for this slot """
+
         lbl = self.lbl_plot
         _ = lbl.text().split('\n')
         style = 'color: {}; font: 18pt'
+
+        # lbl_plot.text: {PLT} {CNV} {ERR}
         if not w:
             s = '{}\n{}\n{}'.format(_[0], _[1], '')
             lbl.setStyleSheet(style.format('black'))
             lbl.setText(s)
             return
+
+        # some logger not deployed
         _arp = json_mac_dns(ctx.app_json_file, w[0])
-        _e = '{} not deployed'.format(_arp)
+        _e = '{} check history'.format(_arp)
         s = '{}\n{}\n{}'.format(_[0], _[1], _e)
         lbl.setStyleSheet(style.format('orange'))
         lbl.setText(s)
@@ -318,6 +333,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     @pyqtSlot(str, name='slot_ble_scan_pre')
     def slot_ble_scan_pre(self, s):
         """ th_ble sends the signal for this slot """
+
         self.bar_dl.setValue(0)
         self.lbl_ble.setText(s)
         r = ctx.app_res_folder
@@ -326,10 +342,11 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
             p = '{}/img_blue.png'.format(r)
         self.img_ble.setPixmap(QPixmap(p))
 
-    # a download session consists of 1 to n loggers
     @pyqtSlot(str, int, int, name='slot_ble_session_pre')
     def slot_ble_session_pre(self, mac, val_1, val_2):
         """ th_ble sends the signal for this slot """
+
+        # a download session consists of 1 to n loggers
         j = ctx.app_json_file
         s = 'logger {} of {}\n{}'
         # desc: mac, val_1: logger index, val_2: total num of loggers
@@ -338,10 +355,10 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         s = 'doing {}'.format(s)
         self.lbl_ble.setText(s)
 
-    # indicates current logger of current download session
     @pyqtSlot(name='slot_ble_logger_pre')
     def slot_ble_logger_pre(self):
         """ th_ble sends the signal for this slot """
+
         t = 'configuring {}'.format(ctx.lg_num)
         self.lbl_ble.setText(t)
         ctx.lg_dl_size = 0
@@ -351,6 +368,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     @pyqtSlot(str, int, int, int, int, name='slot_ble_file_pre')
     def slot_ble_file_pre(self, _, dl_s, val_1, val_2, val_3):
         """ th_ble sends the signal for this slot """
+
         s = 'get file {} of {}\n{} minutes left'
         s = s.format(val_1, val_2, val_3)
         self.lbl_ble.setText(s)
@@ -359,6 +377,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     @pyqtSlot(int, name='slot_ble_file_post')
     def slot_ble_file_post(self, speed):
         """ th_ble sends the signal for this slot """
+
         # s = 'BLE: approximate speed {} B/s'.format(speed)
         # self.slot_status(s)
         pass
@@ -366,6 +385,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     @pyqtSlot(bool, str, str, name='slot_ble_logger_post')
     def slot_ble_logger_post(self, ok, s, mac):
         """ th_ble sends the signal for this slot """
+
         self.bar_dl.setValue(100 if ok else 0)
         self.lbl_ble.setText(s)
         if not ok:
@@ -374,6 +394,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     @pyqtSlot(str, name='slot_ble_logger_plot_req')
     def slot_ble_logger_plot_req(self, mac):
         """ th_ble sends the signal for this slot """
+
         if not mac:
             s = 'no plot from last logger'
             self.slot_gui_update_plt(s)
@@ -395,16 +416,17 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     @pyqtSlot(str, name='slot_ble_session_post')
     def slot_ble_session_post(self, desc):
         """ th_ble sends the signal for this slot """
+
         self.lbl_ble.setText(desc)
 
     @pyqtSlot(name='slot_ble_dl_step')
     def slot_ble_dl_step(self):
         """ th_ble sends the signal for this slot """
 
-        # 128 is hardcoded XMODEM packet size
-        step = 128
+        # 128: hardcoded XMODEM packet size
+        # step = 128
 
-        # 2048 is hardcoded when using DWG
+        # 2048: hardcoded when using DWG
         pc = 100 * (2048 / ctx.lg_dl_size)
         ctx.lg_dl_bar_pc += pc
         self.bar_dl.setValue(ctx.lg_dl_bar_pc)
@@ -412,6 +434,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     @pyqtSlot(str, str, str, name='slot_his_update')
     def slot_his_update(self, mac, lat, lon):
         """ th_ble sends the signal for this slot """
+
         j = ctx.app_json_file
         name = json_mac_dns(j, mac)
         frm = '%Y/%m/%d %H:%M:%S'
@@ -428,6 +451,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
 
     def click_btn_clear_see_all_macs(self):
         """ loads (mac, name) pairs from yaml file """
+
         self.lst_mac_org.clear()
         r = str(ctx.app_conf_folder)
         f = QFileDialog.getOpenFileName(QFileDialog(),
@@ -442,6 +466,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
 
     def click_btn_see_macs_in_current_json_file(self):
         """ loads (mac, name) pairs in ddh.json file """
+
         self.lst_mac_org.clear()
         j = str(ctx.app_json_file)
         pairs = json_get_pairs(j)
@@ -451,6 +476,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
 
     def click_btn_arrow_move_entries(self):
         """ move items in upper box to lower box """
+
         ls = self.lst_mac_org.selectedItems()
         o = dict()
         for i in ls:
@@ -470,6 +496,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
 
     def click_btn_apply_write_json_file(self):
         """ creates a user ddh.json file """
+
         l_v = self.lst_mac_dst
         pairs = dict_from_list_view(l_v)
 
@@ -500,11 +527,13 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
 
     def click_icon_boat(self, _):
         """ clicking icon boat closes the DDH app """
+
         c_log.debug('GUI: clicked secret bye!')
         self.closeEvent(_)
 
     def click_icon_plot(self, _):
         """ clicking shift + plot icon minimizes the app """
+
         if not self.key_shift:
             return
         self.showMinimized()
@@ -530,6 +559,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
 
     def click_icon_gps(self, _):
         """ clicking shift + GPS icon adjusts DDH brightness :) """
+
         s = 'GUI: secret GPS tap {}'.format(self.bright_idx)
         c_log.debug(s)
 
@@ -560,18 +590,21 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         """ deletes contents in 'download files' folder """
 
         s = 'sure to empty dl_files folder?'
-        if _confirm_by_user(s):
-            d = pathlib.Path(ctx.app_dl_folder)
-            try:
-                # safety check
-                if 'dl_files' not in str(d):
-                    return
-                shutil.rmtree(str(d), ignore_errors=True)
-                self.plt_folders = update_dl_folder_list(d)
-                self.plt_folders_idx = 0
-                self.plt_dir = None
-            except OSError as e:
-                print('error {} : {}'.format(d, e))
+        if not _confirm_by_user(s):
+            return
+
+        # proceed to deletion
+        d = pathlib.Path(ctx.app_dl_folder)
+        try:
+            # safety check
+            if 'dl_files' not in str(d):
+                return
+            shutil.rmtree(str(d), ignore_errors=True)
+            self.plt_folders = update_dl_folder_list(d)
+            self.plt_folders_idx = 0
+            self.plt_dir = None
+        except OSError as e:
+            print('error {} : {}'.format(d, e))
 
     def click_btn_purge_his_db(self):
         """ deletes contents in history database """
@@ -603,7 +636,8 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.key_shift = 0
 
     def keyPressEvent(self, e):
-        """ controls status of the PRESS event of any keyboard keys """
+        """ controls status of the PRESS event of keyboard keys """
+
         if e.key() == Qt.Key_Shift:
             self.key_shift = 1
 

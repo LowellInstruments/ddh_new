@@ -372,6 +372,7 @@ def logger_download(mac, fol, hci_if, sig=None):
     # my exception, ex: no MAT.cfg file
     except AppBLEException as ex:
         e = 'error: {}, will retry'.format(ex)
+        # e: ends up in history tab
         sig.logger_post.emit(False, e, mac)
         sig.error.emit(e)
         return False, None
@@ -383,4 +384,5 @@ def logger_download(mac, fol, hci_if, sig=None):
 
 
 class AppBLEException(Exception):
+    # used 10 lines above
     pass
