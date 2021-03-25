@@ -1,7 +1,7 @@
 import os
 import sys
 import time
-from ddh.settings.ctx import dummy_gps
+from ddh.settings.ctx import dbg_hook_make_gps_give_fake_measurement
 from ddh.threads.utils_gps_quectel import utils_gps_get_one_lat_lon_dt
 from ddh.threads.utils_time import update_datetime_source
 from mat.gps_quectel import gps_configure_quectel
@@ -27,7 +27,7 @@ def boot(w, evb):
     time.sleep(.5)
 
     # tries to enable GPS, used for position and time source
-    if linux_is_rpi() and not dummy_gps and gps_configure_quectel() != 0:
+    if linux_is_rpi() and not dbg_hook_make_gps_give_fake_measurement and gps_configure_quectel() != 0:
         w.sig_boot.error.emit('SYS: th_boot cannot open GPS port')
         os._exit(1)
         sys.exit(1)

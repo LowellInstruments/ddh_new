@@ -16,7 +16,7 @@ from mat.logger_controller import (
     RWS_CMD,
     SWS_CMD, STATUS_CMD
 )
-from mat.logger_controller_ble import ERR_MAT_ANS
+from mat.logger_controller_ble import ERR_MAT_ANS, FORMAT_CMD, CRC_CMD, WAKE_CMD
 from mat.logger_controller_ble_factory import LcBLEFactory
 
 
@@ -286,6 +286,22 @@ def _dir_cfg(lc, sig):
     return rv
 
 
+def _ensure_wake_mode_is_on(lc, sig):
+    rv = lc.command(WAKE_CMD)
+    if len(rv) != 2:
+        _die('sending wake mode 1 failed')
+    wak_is_on = rv[1].decode()[-1]
+    if wak_is_on == '0':
+        rv = lc.command(WAKE_CMD)
+        if len(rv) != 2:
+            _die('sending wake mode 2 failed')
+    wak_is_on = rv[1].decode()[-1]
+    if wak_is_on == '1':
+        _show('wake mode enabled', sig)
+        return
+    _die('could not enable wake mode')
+
+
 def _logger_re_setup(lc, sig):
     """ get logger's MAT.cfg, formats mem, re-sends MAT.cfg """
     _MC = 'MAT.cfg'
@@ -307,7 +323,7 @@ def _logger_re_setup(lc, sig):
         _die('error downloading {}'.format(_MC))
 
     # check MAT.cfg file
-    crc = lc.command('CRC', _MC)
+    crc = lc.command(CRC_CMD, _MC)
     rv, l_crc = check_local_file_integrity(_MC, dff, crc)
     if not rv:
         _error('crc mismatch for {}'.format(_MC), sig)
@@ -327,12 +343,15 @@ def _logger_re_setup(lc, sig):
         _die('cannot decode downloaded {}'.format(_MC))
 
     # format the logger
-    rv = lc.command('FRM')
+    rv = lc.command(FORMAT_CMD)
     _ok_or_die([b'FRM', b'00'], rv, sig)
 
     # re-config the logger
     rv = lc.send_cfg(cfg_dict)
     _ok_or_die([b'CFG', b'00'], rv, sig)
+
+    # enable wake-up mode
+    _ensure_wake_mode_is_on(lc, sig)
 
 
 def logger_download(mac, fol, hci_if, sig=None):

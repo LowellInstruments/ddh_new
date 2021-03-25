@@ -10,7 +10,7 @@ from ddh.threads.utils import json_get_macs, json_get_forget_time_secs, json_get
     json_get_forget_time_at_sea_secs, is_float, get_folder_path_from_mac
 from ddh.threads.utils_ble import logger_download
 from ddh.threads.utils_gps_quectel import utils_gps_in_land
-from ddh.threads.utils_macs import filter_white_macs, bluepy_scan_results_to_strings, ColorMacList
+from ddh.threads.utils_macs import filter_white_macs, bluepy_scan_results_to_macs_string, ColorMacList
 
 
 TOO_BAD_TIME_S = 3600
@@ -26,7 +26,7 @@ def _mac_show_color_lists_on_boot(w, ml):
         ml.entry_delete(each)
 
     # debug hook, forces a brand new mac black list
-    if ctx.macs_blacklist_pre_rm:
+    if ctx.dbg_hook_purge_mac_blacklist_on_boot:
         s = 'SYS: loaded previous mac_black_list -> {}'
         w.sig_ble.debug.emit(s.format(ml.get_all_entries_as_string()))
         s = 'SYS: forced pre-removing mac_black_list'
@@ -39,16 +39,16 @@ def _mac_show_color_lists_on_boot(w, ml):
 
 def _scan_loggers(w, h, whitelist, ml):
 
-    # scan all BLE devices around, hint: '!' when USB dongle
+    # scan all BLE devices around, hint: '!' in GUI when USB dongle
     s = '!' if h else ''
     w.sig_ble.scan_pre.emit('scanning{}'.format(s))
     near = ble_scan(h)
 
     # scan results format -> [strings]
-    li = bluepy_scan_results_to_strings(near)
+    li = bluepy_scan_results_to_macs_string(near)
 
     # debug hook, adds at least one logger
-    if ctx.dummy_ti_logger:
+    if ctx.dbg_hook_make_dummy_ti_logger_visible:
         li.append(FAKE_MAC_CC26X2)
 
     # any BLE mac -> DDH known macs
@@ -60,7 +60,7 @@ def _scan_loggers(w, h, whitelist, ml):
     # DDH macs -> w/o too recent bad ones
     li = ml.macs_filter_not_in_orange(li)
 
-    # banner number of fresh loggers to be downloaded
+    # display number of fresh loggers to be downloaded
     n = len(li)
     if n:
         s = 'BLE: {} fresh loggers'.format(n)
@@ -81,7 +81,7 @@ def _download_loggers(w, h, macs, ml, ft: tuple):
     for i, mac in enumerate(li):
 
         # debug hook, removes existing logger files before download session
-        if ctx.pre_rm_files:
+        if ctx.dbg_hook_purge_dl_files_for_this_mac:
             s = 'BLE: pre_rm_files for {}'.format(mac)
             w.sig_ble.debug.emit(s)
             _pre_rm_path = pathlib.Path(get_folder_path_from_mac(mac))

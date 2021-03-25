@@ -15,8 +15,8 @@ def utils_gps_get_one_lat_lon_dt(timeout=3):
     """
 
     # debug hook, returns our custom GPS frame
-    if ctx.dummy_gps:
-        # we need .utcnow(), not .now()
+    if ctx.dbg_hook_make_gps_give_fake_measurement:
+        # remember: use .utcnow(), not .now()
         time.sleep(timeout / 3)
         dt = datetime.utcnow()
         # dummy gps 1 (random)

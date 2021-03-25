@@ -23,8 +23,8 @@ def update_datetime_source(w):
 def _time_sync_net():
 
     # debug hook, forces NTP clock sync to fail
-    if ctx.force_ntp_fail:
-        print('DBG: ctx.force_ntp_fail is set')
+    if ctx.dbg_hook_make_ntp_to_fail:
+        print('DBG: ctx.dbg_hook_make_ntp_to_fail == 1')
         return
 
     # we cannot NTP without internet access

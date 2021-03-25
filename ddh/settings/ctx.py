@@ -43,11 +43,11 @@ sw_ble_en = True
 
 
 # debug hooks :)
-macs_blacklist_pre_rm = True
-dummy_ti_logger = False
-dummy_gps = False
-pre_rm_files = False
-force_ntp_fail = True
+dbg_hook_purge_mac_blacklist_on_boot = False
+dbg_hook_purge_dl_files_for_this_mac = False
+dbg_hook_make_dummy_ti_logger_visible = False
+dbg_hook_make_gps_give_fake_measurement = False
+dbg_hook_make_ntp_to_fail = False
 
 
 def only_one_instance(name):

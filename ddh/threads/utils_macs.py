@@ -174,5 +174,5 @@ def delete_color_mac_file(name):
     ml.delete_color_mac_file()
 
 
-def bluepy_scan_results_to_strings(sr):
+def bluepy_scan_results_to_macs_string(sr):
     return [i.addr for i in sr]
