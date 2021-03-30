@@ -48,6 +48,7 @@ def gen_ddh_json_content(known, v, f_t):
     data['db_logger_macs'] = known
     data['ship_name'] = v
     data['forget_time'] = f_t
+    data['forget_time_at_sea'] = 86400
     data['metrics'] = [["DOS", "DOT"], ["T", "P"]]
     data['span_dict'] = {
             "h": [4, 15, 60, "%H:%M", 1],

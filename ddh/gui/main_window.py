@@ -159,7 +159,6 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.tim_q = QTimer()
         self.tim_q.timeout.connect(self._timer_bye)
 
-
     def _timer_bye(self):
         self.tim_q.stop()
         os._exit(0)
@@ -614,7 +613,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
             db = DBHis(ctx.db_his)
             db.delete_all_records()
             delete_color_mac_file(ctx.db_color_macs)
-        self._populate_history_tab()
+        populate_history_tab(self)
 
     def click_btn_load_current_json_file(self):
         """ updates EDIT tab from current 'ddh.json' file """
