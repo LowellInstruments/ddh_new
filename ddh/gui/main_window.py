@@ -358,7 +358,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     def slot_ble_logger_pre(self):
         """ th_ble sends the signal for this slot """
 
-        t = 'configuring {}'.format(ctx.lg_num)
+        t = 'querying {}'.format(ctx.lg_num)
         self.lbl_ble.setText(t)
         ctx.lg_dl_size = 0
         ctx.lg_dl_bar_pc = 0

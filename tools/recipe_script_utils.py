@@ -11,33 +11,8 @@ from mat.logger_controller import (LOGGER_INFO_CMD_W,
 from mat.logger_controller_ble_factory import LcBLEFactory
 
 
-def get_ordered_scan_results(dummies=False) -> dict:
-    """
-    Does a BLE scan and returns friendly results lists
-    :param dummies: add a couple dummies for resting
-    :return: near and far lists
-    """
-
-    till = 3
-    s = 'detecting nearby loggers, please wait {} seconds...'
-    print(s.format(till))
-    sr = Scanner().scan(float(till))
-
-    # bluepy 'scan results (sr)' format -> friendlier one
-    sr_f = {each_sr.addr: each_sr.rssi for each_sr in sr}
-
-    if dummies:
-        sr_f[FAKE_MAC_CC26X2] = -10
-        sr_f['dummy_2'] = -20
-
-    # nearest: the highest value, less negative
-    sr_f_near = sorted(sr_f.items(), key=lambda x: x[1], reverse=True)
-    sr_f_far = sorted(sr_f.items(), key=lambda x: x[1], reverse=False)
-    return sr_f_near, sr_f_far
-
-
 # resets a logger memory and runs it
-def frm_n_run(mac, sn):
+def frm_n_run(mac, sn, flag_run):
     try:
         lc = LcBLEFactory.generate(mac)
         ok = 0
@@ -71,7 +46,7 @@ def frm_n_run(mac, sn):
                 'DFN': 'sxt',
                 'TMP': 0, 'PRS': 0,
                 'DOS': 1, 'DOP': 1, 'DOT': 1,
-                'TRI': 10, 'ORI': 10, 'DRI': 10,
+                'TRI': 10, 'ORI': 10, 'DRI': 900,
                 'PRR': 8,
                 'PRN': 4,
                 'STM': '2012-11-12 12:14:00',
@@ -103,11 +78,14 @@ def frm_n_run(mac, sn):
             print('\t\tGDO --> {}'.format(result))
             ok += b'ERR' in rv
 
-            # starts the logger
-            time.sleep(1)
-            rv = lc.command(RUN_CMD)
-            print('\t\tRUN --> {}'.format(rv))
-            ok += b'ERR' in rv
+            # starts the logger, depending on flag
+            if flag_run:
+                time.sleep(1)
+                rv = lc.command(RUN_CMD)
+                print('\t\tRUN --> {}'.format(rv))
+                ok += b'ERR' in rv
+            else:
+                print('\t\tRUN command omitted: current flag value is False')
 
             # ok != 0 is bad
             return ok
@@ -116,7 +94,7 @@ def frm_n_run(mac, sn):
         print('BLE: connect exception --> {}'.format(ex))
 
 
-def get_ordered_scan_results(dummies=False) -> dict:
+def get_ordered_scan_results() -> dict:
     """
     Does a BLE scan and returns friendly results lists
     :param dummies: add a couple dummies for resting
@@ -133,10 +111,6 @@ def get_ordered_scan_results(dummies=False) -> dict:
 
     # filter: only keep lowell instruments' DO-1 loggers
     sr_f = {k: v[0] for k, v in sr_f.items() if v[1] and b'DO-1' in v[1]}
-
-    if dummies:
-        sr_f[FAKE_MAC_CC26X2] = -10
-        sr_f['dummy_2'] = -11
 
     # nearest: the highest value, less negative
     sr_f_near = sorted(sr_f.items(), key=lambda x: x[1], reverse=True)
