@@ -3,7 +3,7 @@ import boto3
 import glob
 from logzero import logger as logzero_logger
 from boto3.exceptions import S3UploadFailedError
-from botocore.exceptions import ClientError, NoCredentialsError
+from botocore.exceptions import ClientError, NoCredentialsError, EndpointConnectionError
 
 
 def aws_credentials_get():
@@ -32,10 +32,9 @@ def _get_bucket_objects_keys(cli, buk_name) -> dict:
         for each in contents:
             dict_objects[each['Key']] = each['Size']
         return dict_objects
-    except ClientError:
-        return None
-    except KeyError:
-        # empty folder
+    except KeyError as ke:
+        # empty bucket, no rsp['Contents']
+        print(ke)
         return None
 
 
@@ -85,7 +84,7 @@ def aws_check_connection_to_s3(cli, bkt_name):
         return False
 
 
-def aws_ddh_sync(aws_name, aws_key_id, aws_secret, folder_to_sync, bkt=None, sig=None):
+def _sync(aws_name, aws_key_id, aws_secret, folder_to_sync, bkt=None, sig=None):
     """
     super function: gets remote file list, compares to local, updates differences
     """
@@ -126,4 +125,14 @@ def aws_ddh_sync(aws_name, aws_key_id, aws_secret, folder_to_sync, bkt=None, sig
     dict_diff = _diff_local_and_remote_objects(dlo, dro)
 
     # upload the local ones missing in remote bucket
-    return _upload_objects_to_bucket(cli, aws_name, dict_diff, bkt_name)
+    ones = _upload_objects_to_bucket(cli, aws_name, dict_diff, bkt_name)
+    return ones
+
+
+def aws_ddh_sync(aws_name, aws_key_id, aws_secret, folder_to_sync, bkt=None, sig=None):
+    """ wrapper for better exception detection """
+    try:
+        return _sync(aws_name, aws_key_id, aws_secret, folder_to_sync, bkt, sig)
+    except (ClientError, EndpointConnectionError, Exception)as ex:
+        print(ex)
+        return None
