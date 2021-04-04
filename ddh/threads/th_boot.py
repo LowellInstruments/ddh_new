@@ -27,10 +27,12 @@ def boot(w, evb):
     time.sleep(.5)
 
     # tries to enable GPS, used for position and time source
-    if linux_is_rpi() and not dbg_hook_make_gps_give_fake_measurement and gps_configure_quectel() != 0:
-        w.sig_boot.error.emit('SYS: th_boot cannot open GPS port')
-        os._exit(1)
-        sys.exit(1)
+    if linux_is_rpi() and not dbg_hook_make_gps_give_fake_measurement:
+        rv = gps_configure_quectel()
+        if rv:
+            w.sig_boot.error.emit('SYS: boot error opening GPS port')
+            os._exit(rv)
+            sys.exit(rv)
 
     # gets first values for position and time and their sources
     _boot_sync_time(w)
