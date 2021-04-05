@@ -21,20 +21,26 @@ def _boot_sync_position(w):
     w.sig_gps.update.emit(_o)
 
 
-def boot(w, evb):
-    """ allows GUI to boot and does pre-threads things """
-
-    time.sleep(.5)
-
-    # tries to enable GPS, used for position and time source
+def _boot_connect_gps(w):
+    # tries twice to enable GPS, used for position and time source
     if linux_is_rpi() and not dbg_hook_make_gps_give_fake_measurement:
+        rv = gps_configure_quectel()
+        if rv == 0:
+            return
+        time.sleep(1)
         rv = gps_configure_quectel()
         if rv:
             w.sig_boot.error.emit('SYS: boot error opening GPS port')
             os._exit(rv)
             sys.exit(rv)
 
-    # gets first values for position and time and their sources
+
+def boot(w, evb):
+    """ allows GUI to boot and does pre-threads things """
+
+    # get first values ever for position and time and their sources
+    time.sleep(.5)
+    _boot_connect_gps(w)
     _boot_sync_time(w)
     _boot_sync_position(w)
 

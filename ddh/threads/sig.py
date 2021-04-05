@@ -43,6 +43,7 @@ class SignalsPLT(QObject):
     start = pyqtSignal()
     end = pyqtSignal(object, str)
     msg = pyqtSignal(str)
+    debug = pyqtSignal(str)
 
 
 class SignalsTime(QObject):

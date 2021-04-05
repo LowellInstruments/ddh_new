@@ -119,6 +119,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.sig_plt.start.connect(self.slot_plt_start)
         self.sig_plt.msg.connect(self.slot_plt_msg)
         self.sig_plt.end.connect(self.slot_plt_end)
+        self.sig_plt.debug.connect(self.slot_debug)
         self.sig_ble.debug.connect(self.slot_debug)
         self.sig_ble.scan_pre.connect(self.slot_ble_scan_pre)
         self.sig_ble.session_pre.connect(self.slot_ble_session_pre)
@@ -533,18 +534,26 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     def click_icon_plot(self, _):
         """ clicking shift + plot icon minimizes the app """
 
+        s = 'GUI: secret PLT click, shift pressed = {}'
+        c_log.debug(s.format(self.key_shift))
+
         if not self.key_shift:
             return
+        self.key_shift = 0
         self.showMinimized()
 
     def click_icon_ble(self, _):
         """ clicking shift + BLE icon disables bluetooth thread """
+
+        s = 'GUI: secret BLE click, shift pressed = {}'
+        c_log.debug(s.format(self.key_shift))
 
         # allows this feature or not
         if not ctx.sw_ble_en:
             return
         if not self.key_shift:
             return
+        self.key_shift = 0
 
         ctx.ble_en = not ctx.ble_en
         r = ctx.app_res_folder
@@ -575,6 +584,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
 
         if not self.key_shift:
             return
+        self.key_shift = 0
         self.tab_edit_hide = not self.tab_edit_hide
 
         if self.tab_edit_hide:

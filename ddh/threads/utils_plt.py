@@ -10,7 +10,7 @@ from ddh.settings import ctx
 from ddh.db.db_plt import DBPlt
 from ddh.threads.utils import (
     get_mac_from_folder_path,
-    lid_to_csv, emit_status, emit_error)
+    lid_to_csv, emit_status, emit_error, emit_debug)
 import numpy as np
 
 
@@ -53,8 +53,8 @@ def _csv_to_df(folder, metric):
         return None
 
 
-# t is a string
-def _off_mm(t, mm):
+def _off_mm(t: str, mm):
+    """ calculates forward in time """
     a = datetime.datetime.strptime(t, '%Y-%m-%dT%H:%M:%S.000')
     a += datetime.timedelta(minutes=mm)
     return a.strftime('%Y-%m-%dT%H:%M:%S.000')
@@ -77,53 +77,6 @@ def _rm_df_before(df, c, ts):
     except (KeyError, Exception):
         # print(exc)
         return None, None
-
-
-# t is time series, d data series
-def _slice_n_avg(t, d, ts, sig):
-    n_slices = ts[0]
-    n_slices_nan = 0
-    step_mm = ts[1]
-    if t is None:
-        return None, None
-
-    # build averaged output lists
-    x = []
-    y = []
-    s = t.values[0]
-    e = _off_mm(s, step_mm)
-    i = list(t.values)
-
-    # t: np.series, t.values: np.array, t.values[x]: str
-    for _ in range(n_slices):
-        try:
-            # y axis: contains data
-            i_s = bisect.bisect_left(i, s)
-            i_e = bisect.bisect_left(i, e)
-            sl = d.values[i_s:i_e]
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore", category=RuntimeWarning)
-                v = np.nanmean(sl)
-            if sl.any():
-                # good mean for this slice
-                y.append(v)
-            else:
-                # not so good one
-                n_slices_nan += 1
-                y.append(np.nan)
-        except (KeyError, Exception) as e:
-            print('** {}'.format(e))
-        finally:
-            # x axis: timestamps, update slice sides
-            x.append(s)
-            s = e
-            e = _off_mm(s, step_mm)
-
-    # summary
-    if len(x) - n_slices_nan < 2:
-        e = 'PLT: argh, good slices < 2'
-        sig.plt_error.emit(e)
-    return x, y
 
 
 def _fmt_x_labels(t, span, sd):
@@ -185,8 +138,62 @@ def _metric_to_legend_name(metric):
     return metric_dict[metric]
 
 
+# t, d: time, data series / ts: [4, 15, 60, '%H:%M', 1]
+def _slice_n_avg(t, d, ts, sig):
+    if t is None:
+        return None, None
+
+    # grab number of slices and duration of each
+    n_slices, mm_each_slice = ts[0], ts[1]
+    n_slices_nan = 0
+
+    # i -> all times, x -> timestamps, y -> data
+    x, y = [], []
+    i = list(t.values)
+
+    # calculate first slice
+    s = i[0]
+    e = _off_mm(s, mm_each_slice)
+    for _ in range(n_slices):
+        try:
+            # i_x: indexes, NOT minutes, or hours, or whatever
+            i_s = bisect.bisect_left(i, s)
+            i_e = bisect.bisect_left(i, e)
+            sl = d.values[i_s:i_e]
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore", category=RuntimeWarning)
+                v = np.nanmean(sl)
+
+            # y -> data
+            good_mean_for_this_slice = sl.any()
+            if good_mean_for_this_slice:
+                y.append(v)
+            else:
+                # not so good one, p.e. all 0
+                # emit_debug(sig, 'PLT: bad slice')
+                n_slices_nan += 1
+                y.append(np.nan)
+
+        except (KeyError, Exception) as e:
+            print('** {}'.format(e))
+
+        finally:
+            # x axis: timestamps, calculate new slice
+            x.append(s)
+            s = e
+            e = _off_mm(s, mm_each_slice)
+
+    # summary
+    num_good_slices = len(x) - n_slices_nan
+    if num_good_slices < 2:
+        e = 'PLT: argh, good slices {} < 2'.format(num_good_slices)
+        emit_debug(sig, e)
+    return x, y
+
+
 def _cache_or_process(sig, folder, ts, metric, sd):
     # metadata
+    emit_status(sig, 'PLT: processing {} data'.format(metric))
     c = _metric_to_col_name(metric)
     mac = get_mac_from_folder_path(folder)
 
@@ -201,15 +208,17 @@ def _cache_or_process(sig, folder, ts, metric, sd):
     p = ctx.db_plt
     db = DBPlt(p)
     if db.does_record_exist(mac, s, e, ts, c):
-        # data from cached database
+        # cached! grab data from database
         emit_status(sig, 'PLT: cache hit')
         r_id = db.get_record_id(mac, s, e, ts, c)
         t = db.get_record_times(r_id)
         y_avg = db.get_record_values(r_id)
         return t, y_avg
 
-    # not cached, process data and cache
+    # not cached! process it as slice and average
     t, y_avg = _slice_n_avg(x, y, sd[ts], sig)
+
+    # cache it so next time we found it
     db.add_record(mac, s, e, ts, c, t, y_avg)
     return t, y_avg
 
@@ -234,7 +243,6 @@ def plot(sig, fol, ax, ts, metric_pair, sd, lg):
         # e.g. when no values at all, None.values
         e = 'PLT: error _cache_or_process {}({}) for {}'
         emit_error(sig, e.format(m_p[0], ts, f))
-        # print(ex)
         return False
 
     # metric 2 of 2, not always required, query database

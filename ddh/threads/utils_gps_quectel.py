@@ -1,3 +1,5 @@
+import shelve
+
 import time
 from datetime import datetime
 import fiona
@@ -5,7 +7,28 @@ import cartopy.io.shapereader as shpreader
 import shapely.geometry as sgeom
 from shapely.prepared import prep
 from ddh.settings import ctx
-from mat.gps_quectel import gps_get_rmc_frame
+from mat.gps_quectel import gps_get_rmc_data
+
+
+BACKUP_GPS_SL = './backup_gps.sl'
+
+
+def utils_gps_backup_set(d):
+    t = time.perf_counter()
+    with shelve.open(BACKUP_GPS_SL) as sh:
+        sh['last'] = (d, t)
+
+
+def utils_gps_backup_get():
+    try:
+        with shelve.open(BACKUP_GPS_SL) as sh:
+            b = sh['last']
+        # if stored one is too old
+        if b[1] + 180 < time.perf_counter():
+            return None
+        return b[0]
+    except (KeyError, Exception) as ex:
+        return None
 
 
 def utils_gps_get_one_lat_lon_dt(timeout=3):
@@ -28,7 +51,11 @@ def utils_gps_get_one_lat_lon_dt(timeout=3):
         # you can also 'return None' to simulate an error
         return lat, lon, dt
 
-    return gps_get_rmc_frame(timeout)
+    # get one measurement and cache in case OK
+    d = gps_get_rmc_data(timeout)
+    if d:
+        utils_gps_backup_set(d)
+    return d
 
 
 def utils_gps_in_land(lat, lon):

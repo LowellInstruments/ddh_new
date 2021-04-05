@@ -23,9 +23,14 @@ def emit_status(sig, s):
         sig.status.emit(s)
 
 
+def emit_debug(sig, d):
+    if sig:
+        sig.debug.emit(d)
+
+
 def emit_error(sig, e):
     if sig:
-        sig.status.emit(e)
+        sig.error.emit(e)
 
 
 def emit_update(sig, u):

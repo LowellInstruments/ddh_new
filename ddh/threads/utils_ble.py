@@ -11,7 +11,7 @@ from ddh.threads.utils import (
     emit_status,
     check_local_file_integrity, is_float, get_folder_path_from_mac
 )
-from ddh.threads.utils_gps_quectel import utils_gps_get_one_lat_lon_dt
+from ddh.threads.utils_gps_quectel import utils_gps_get_one_lat_lon_dt, utils_gps_backup_get
 from mat.logger_controller import (
     RWS_CMD,
     SWS_CMD, STATUS_CMD
@@ -363,6 +363,8 @@ def logger_download(mac, fol, hci_if, sig=None):
         with lc(mac, hci_if) as lc:
             # g -> (lat, lon, ignored datetime object)
             g = utils_gps_get_one_lat_lon_dt(timeout=5)
+            if not g:
+                g = utils_gps_backup_get()
             _logger_sws(lc, sig, g)
             _logger_time_check(lc, sig)
 

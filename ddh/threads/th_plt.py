@@ -1,6 +1,6 @@
 import threading
 from ddh.settings import ctx
-from ddh.threads.utils import json_mac_dns, get_mac_from_folder_path, json_get_span_dict, wait_boot_signal, emit_error
+from ddh.threads.utils import json_mac_dns, get_mac_from_folder_path, json_get_span_dict, wait_boot_signal, emit_debug
 from ddh.threads.utils_plt import plot
 
 
