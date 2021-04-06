@@ -8,6 +8,14 @@ from mat.gps_quectel import gps_configure_quectel
 from mat.utils import linux_is_rpi
 
 
+BOOT_GPS_FIX_TIMEOUT = 30
+
+
+def _boot_banner(w):
+    s = 'wait up to {}s for GPS fix'
+    w.lbl_ble.setText(s.format(BOOT_GPS_FIX_TIMEOUT))
+
+
 def _boot_sync_time(w):
     """ th_boot gets datetime source """
 
@@ -17,7 +25,8 @@ def _boot_sync_time(w):
 def _boot_sync_position(w):
     """ th_boot gets first GPS position """
 
-    _o = utils_gps_get_one_lat_lon_dt()
+    t = BOOT_GPS_FIX_TIMEOUT
+    _o = utils_gps_get_one_lat_lon_dt(t)
     w.sig_gps.update.emit(_o)
 
 
@@ -41,6 +50,7 @@ def boot(w, evb):
     # get first values ever for position and time and their sources
     time.sleep(.5)
 
+    _boot_banner(w)
     utils_gps_backup_reset()
     _boot_connect_gps(w)
     _boot_sync_time(w)
