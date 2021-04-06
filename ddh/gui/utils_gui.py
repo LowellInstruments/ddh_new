@@ -8,7 +8,7 @@ from ddh.db.db_his import DBHis
 from ddh.settings.version import VER_SW
 from ddh.threads.th_time import ButtonPressEvent
 from ddh.threads.utils import json_get_ship_name
-from ddh.threads.utils_gps_quectel import utils_gps_in_land
+from ddh.threads.utils_gps_quectel import utils_gps_in_land, utils_gps_valid_cache, utils_gps_backup_get
 from mat.utils import linux_is_rpi, linux_is_docker_on_rpi
 
 
@@ -108,18 +108,33 @@ def setup_buttons_gui(my_app):
     a.btn_load_current.clicked.connect(a.click_btn_load_current_json_file)
 
 
-def paint_gps_icon_w_color_land_sea(my_app, did_ok, lat, lon):
+def paint_gps_icon_w_color_land_sea(my_app, lat, lon):
     """ paints the gps icon """
+
     a = my_app
-    if not did_ok:
-        img = 'ddh/gui/res/img_gps_dis.png'
-        a.img_gps.setPixmap(QPixmap(img))
-        return
     if utils_gps_in_land(lat, lon):
         img = 'ddh/gui/res/img_gps_land.png'
         a.img_gps.setPixmap(QPixmap(img))
         return
     img = 'ddh/gui/res/img_gps_sea.png'
+    a.img_gps.setPixmap(QPixmap(img))
+
+
+def paint_gps_icon_w_color_dis_or_cache(my_app, lat, lon):
+    """ paints the gps icon as disabled or cache """
+
+    a = my_app
+    if utils_gps_valid_cache():
+        # dirty but meh, update GUI content
+        lat, lon, _ = utils_gps_backup_get()
+        img = 'ddh/gui/res/img_gps_cache.png'
+        cc = a.lbl_time_n_pos.text().split('\n')
+        lat = '{:+.6f}'.format(float(lat))
+        lon = '{:+.6f}'.format(float(lon))
+        s = '{}\n{}\n{}\n{}'.format(cc[0], lat, lon, cc[3])
+        a.lbl_time_n_pos.setText(s)
+    else:
+        img = 'ddh/gui/res/img_gps_dis.png'
     a.img_gps.setPixmap(QPixmap(img))
 
 

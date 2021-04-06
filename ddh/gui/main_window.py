@@ -23,7 +23,8 @@ import ddh.gui.designer_main as d_m
 from ddh.db.db_his import DBHis
 from ddh.gui.utils_gui import (
     setup_view, setup_his_tab, setup_buttons_gui, setup_window_center, hide_edit_tab,
-    dict_from_list_view, setup_buttons_rpi, _confirm_by_user, paint_gps_icon_w_color_land_sea, populate_history_tab)
+    dict_from_list_view, setup_buttons_rpi, _confirm_by_user, paint_gps_icon_w_color_land_sea, populate_history_tab,
+    paint_gps_icon_w_color_dis_or_cache)
 from ddh.settings import ctx
 from ddh.settings.utils_settings import yaml_load_pairs, gen_ddh_json_content
 from ddh.threads import th_ble, th_cnv, th_plt, th_gps, th_aws, th_net, th_boot, th_time
@@ -39,6 +40,7 @@ from ddh.threads.utils import (
     json_get_forget_time_secs, rpi_set_brightness, rm_plot_db, json_get_pairs, setup_app_log,
     update_cnv_log_err_file, json_set_plot_units)
 from ddh.threads.utils_aws import aws_credentials_assert
+from ddh.threads.utils_gps_quectel import utils_gps_backup_set
 from ddh.threads.utils_macs import delete_color_mac_file
 from mat.utils import linux_is_rpi
 
@@ -160,6 +162,10 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.tim_q = QTimer()
         self.tim_q.timeout.connect(self._timer_bye)
 
+        # todo: remove this
+        _ = ('11.111111', '22.222222', '3333333333333')
+        utils_gps_backup_set(_)
+
     def _timer_bye(self):
         self.tim_q.stop()
         os._exit(0)
@@ -213,16 +219,18 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         cc = self.lbl_time_n_pos.text().split('\n')
 
         # u: lat, lon, timestamp
-        if not u:
-            lat, lon, self.gps_last_ts = u if u else ('N/A', ) * 3
-        else:
+        lat, lon, self.gps_last_ts = ('N/A',) * 3
+        if u:
             lat = '{:+.6f}'.format(float(u[0]))
             lon = '{:+.6f}'.format(float(u[1]))
             self.gps_last_ts = u[2]
 
         s = '{}\n{}\n{}\n{}'.format(cc[0], lat, lon, cc[3])
         self.lbl_time_n_pos.setText(s)
-        paint_gps_icon_w_color_land_sea(self, u, lat, lon)
+        if u:
+            paint_gps_icon_w_color_land_sea(self, lat, lon)
+        else:
+            paint_gps_icon_w_color_dis_or_cache(self, lat, lon)
 
     @pyqtSlot(str, name='slot_gui_update_net_source')
     def slot_gui_update_net_source(self, s):

@@ -14,6 +14,7 @@ BACKUP_GPS_SL = './backup_gps.sl'
 
 
 def utils_gps_backup_set(d):
+    # d: ('12.3456', '44.444444', '...')
     t = time.perf_counter()
     with shelve.open(BACKUP_GPS_SL) as sh:
         sh['last'] = (d, t)
@@ -24,11 +25,16 @@ def utils_gps_backup_get():
         with shelve.open(BACKUP_GPS_SL) as sh:
             b = sh['last']
         # if stored one is too old
-        if b[1] + 180 < time.perf_counter():
+        # todo: change this to 180
+        if b[1] + 10 < time.perf_counter():
             return None
         return b[0]
     except (KeyError, Exception) as ex:
         return None
+
+
+def utils_gps_valid_cache():
+    return utils_gps_backup_get()
 
 
 def utils_gps_get_one_lat_lon_dt(timeout=3):
