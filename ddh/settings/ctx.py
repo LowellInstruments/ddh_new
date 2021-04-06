@@ -42,6 +42,10 @@ ble_en = True
 sw_ble_en = True
 
 
+# cell shield: present or not
+cell_shield_en = True
+
+
 # debug hooks :)
 dbg_hook_purge_mac_blacklist_on_boot = False
 dbg_hook_purge_dl_files_for_this_mac = False

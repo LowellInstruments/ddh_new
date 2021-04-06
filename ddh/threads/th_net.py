@@ -16,19 +16,20 @@ def loop(w, ev_can_i_boot):
 
     wait_boot_signal(w, ev_can_i_boot, 'NET')
 
-    # on a desktop computer, we stay here
-    is_rpi = linux_is_rpi()
+    # check our platform
+    desktop_or_no_cell_shield = (not linux_is_rpi()) or (not ctx.cell_shield_en)
+    w.sig_net.status.emit('NET: cell shield flag: {}'.format(ctx.cell_shield_en))
+
+    # loop here when desktop computer or DDH w/o cell
     old_s = ''
-    while 1:
-        if is_rpi:
-            break
+    while desktop_or_no_cell_shield:
         s = net_get_my_current_wlan_ssid()
         if s != old_s:
             w.sig_net.update.emit('no network' if not s else s)
         old_s = s
         time.sleep(TH_NET_PERIOD_S)
 
-    # on a raspberry DDH, we stay here
+    # loop here when DDH w/ cell shield
     while 1:
         ctx.sem_ble.acquire()
         ctx.sem_aws.acquire()
