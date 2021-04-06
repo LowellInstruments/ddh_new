@@ -4,8 +4,7 @@ from ddh.threads.utils import wait_boot_signal
 from ddh.threads.utils_gps_quectel import utils_gps_get_one_lat_lon_dt
 
 
-# todo: change this to 10
-PERIOD_GPS = 5
+PERIOD_GPS = 10
 
 
 def loop(w, ev_can_i_boot):

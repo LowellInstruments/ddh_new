@@ -25,8 +25,7 @@ def utils_gps_backup_get():
         with shelve.open(BACKUP_GPS_SL) as sh:
             b = sh['last']
         # if stored one is too old
-        # todo: change this to 180
-        if b[1] + 10 < time.perf_counter():
+        if b[1] + 180 < time.perf_counter():
             return None
         return b[0]
     except (KeyError, Exception) as ex:

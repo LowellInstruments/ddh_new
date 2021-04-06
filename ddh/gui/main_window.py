@@ -162,10 +162,6 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.tim_q = QTimer()
         self.tim_q.timeout.connect(self._timer_bye)
 
-        # todo: remove this
-        _ = ('11.111111', '22.222222', '3333333333333')
-        utils_gps_backup_set(_)
-
     def _timer_bye(self):
         self.tim_q.stop()
         os._exit(0)
