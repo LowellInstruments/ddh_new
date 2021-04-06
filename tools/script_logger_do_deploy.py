@@ -49,6 +49,10 @@ def _menu_build(_sr: dict, n: int):
         print(PC.FAIL + e + PC.ENDC)
         return
 
+    # ensure lower-case for all entries
+    l_d = dict((k.lower(), v) for k, v in l_d.items())
+    ddh_d = dict((k.lower(), v) for k, v in ddh_d.items())
+
     # sr: scan results, entry: (<mac>, <rssi>)
     d = {}
     for i, each_sr in enumerate(_sr):
@@ -78,6 +82,8 @@ def _menu_show(d: dict):
     print('\ts) scan for valid loggers again')
     print('\tr) toggle RUN flag, current value is {}'.format(g_flag_run))
     print('\tq) quit')
+    if not d:
+        return
     for k, v in d.items():
         s = '\t{}) deploy {} {} {}'
         print(s.format(k, v[0], v[1], v[2]))
