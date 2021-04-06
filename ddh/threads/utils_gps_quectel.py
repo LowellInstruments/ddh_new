@@ -1,3 +1,4 @@
+import os
 import shelve
 
 import time
@@ -25,6 +26,8 @@ def utils_gps_backup_get():
         with shelve.open(BACKUP_GPS_SL) as sh:
             b = sh['last']
         # if stored one is too old
+        print('now is {}'.format(time.perf_counter()))
+        print('b[1] + 180 is {}'.format(b[1] + 180))
         if b[1] + 180 < time.perf_counter():
             return None
         return b[0]
@@ -34,6 +37,11 @@ def utils_gps_backup_get():
 
 def utils_gps_valid_cache():
     return utils_gps_backup_get()
+
+
+def utils_gps_backup_reset():
+    if os.path.exists(BACKUP_GPS_SL):
+        os.remove(BACKUP_GPS_SL)
 
 
 def utils_gps_get_one_lat_lon_dt(timeout=3):
