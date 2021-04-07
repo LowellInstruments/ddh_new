@@ -46,6 +46,11 @@ sw_ble_en = True
 cell_shield_en = True
 
 
+# GPS: essential for BLE downloading or not
+# False: allows setting N/A GPS positions in logger
+gps_enforced = True
+
+
 # debug hooks :)
 dbg_hook_purge_mac_blacklist_on_boot = False
 dbg_hook_purge_dl_files_for_this_mac = False
@@ -55,7 +60,7 @@ dbg_hook_make_ntp_to_fail = False
 
 
 def only_one_instance(name):
-    """ ensures only one DDH program running"""
+    """ ensures only 1 DDH program runs at a given time """
 
     ooi = only_one_instance
     ooi._lock_socket = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
@@ -63,6 +68,7 @@ def only_one_instance(name):
     try:
         # '\0' so the lock does not take a filesystem entry
         ooi._lock_socket.bind('\0' + name)
+
     except socket.error:
         s = '{} already running so NOT executing this one'
         print(s.format(name))

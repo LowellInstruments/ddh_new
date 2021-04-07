@@ -106,6 +106,7 @@ def setup_buttons_gui(my_app):
     a.btn_dl_purge.clicked.connect(a.click_btn_purge_dl_folder)
     a.btn_his_purge.clicked.connect(a.click_btn_purge_his_db)
     a.btn_load_current.clicked.connect(a.click_btn_load_current_json_file)
+    a.btn_err_gotcha.clicked.connect(a.click_btn_err_gotcha)
 
 
 def paint_gps_icon_w_color_land_sea(my_app, lat, lon):

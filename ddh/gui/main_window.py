@@ -174,9 +174,6 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.tim_q.stop()
         os._exit(0)
 
-    def _timer_err(self):
-        self.tim_e.stop()
-
     @pyqtSlot(str, name='slot_gui_update_time')
     def slot_gui_update_time(self, dots):
         """ th_time sends the signal for this slot """
@@ -323,10 +320,12 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     def slot_error(self, e):
         c_log.error(e)
 
-    @pyqtSlot(name='slot_ble_gps_bad')
-    def slot_ble_gps_bad(self):
-        print('hello')
+    @pyqtSlot(str, name='slot_ble_gps_bad')
+    def slot_ble_gps_bad(self, s=None):
         show_error_tab(self)
+        s = s if s else 'what'
+        self.slot_his_update(s)
+        self.tim_e.stop()
 
     @pyqtSlot(list, name='slot_ble_dl_warning')
     def slot_ble_dl_warning(self, w):
@@ -409,6 +408,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.bar_dl.setValue(100 if ok else 0)
         self.lbl_ble.setText(s)
         if not ok:
+            # piggyback error in history update slot
             self.slot_his_update(mac, s, '')
 
     @pyqtSlot(str, name='slot_ble_logger_plot_req')
@@ -455,6 +455,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     def slot_his_update(self, mac, lat, lon):
         """ th_ble sends the signal for this slot """
 
+        # note: 'lat' parameter can piggyback an error message
         j = ctx.app_json_file
         name = json_mac_dns(j, mac)
         frm = '%Y/%m/%d %H:%M:%S'
@@ -651,6 +652,10 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         f_t = json_get_forget_time_secs(j)
         self.lne_vessel.setText(ves)
         self.lne_forget.setText(str(f_t))
+
+    def click_btn_err_gotcha(self):
+        hide_error_tab(self)
+        self.tabs.setCurrentIndex(0)
 
     def closeEvent(self, event):
         event.accept()

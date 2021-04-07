@@ -8,12 +8,12 @@ from mat.logger_controller_ble import ble_scan, FAKE_MAC_CC26X2
 from ddh.settings import ctx
 from ddh.threads.utils import json_get_macs, json_get_forget_time_secs, json_get_hci_if, wait_boot_signal, \
     json_get_forget_time_at_sea_secs, is_float, get_folder_path_from_mac
-from ddh.threads.utils_ble import logger_download
+from ddh.threads.utils_ble import logger_interact
 from ddh.threads.utils_gps_quectel import utils_gps_in_land
 from ddh.threads.utils_macs import filter_white_macs, bluepy_scan_results_to_macs_string, ColorMacList
 
 
-TOO_BAD_TIME_S = 3600
+TOO_MANY_DL_ERRS_TIME_S = 3600
 IGNORE_TIME_S = 60
 
 
@@ -68,8 +68,11 @@ def _scan_loggers(w, h, whitelist, ml):
     return li
 
 
-def _download_loggers(w, h, macs, ml, ft: tuple):
+def _download_all_loggers(w, h, macs, ml, ft: tuple):
     """ downloads every BLE logger found """
+
+    # get needed vars
+    fol = ctx.app_dl_folder
 
     # ensure all scanned macs format in lower case
     li = [i.lower() for i in macs]
@@ -82,39 +85,34 @@ def _download_loggers(w, h, macs, ml, ft: tuple):
 
         # debug hook, removes existing logger files before download session
         if ctx.dbg_hook_purge_dl_files_for_this_mac:
-            s = 'BLE: pre_rm_files for {}'.format(mac)
-            w.sig_ble.debug.emit(s)
+            w.sig_ble.debug.emit('BLE: dbg_hook_pre_rm_files {}'.format(mac))
             _pre_rm_path = pathlib.Path(get_folder_path_from_mac(mac))
             shutil.rmtree(str(_pre_rm_path), ignore_errors=True)
 
         try:
-            # start a download session for ONE logger
+            # download session for ONE logger
             w.sig_ble.session_pre.emit(mac, i + 1, len(li))
             w.sig_ble.status.emit('BLE: connecting {}'.format(mac))
             w.sig_ble.logger_pre.emit()
-            fol = ctx.app_dl_folder
+            done, g = logger_interact(mac, fol, h, w.sig_ble)
 
-            # get files from the logger
-            done, g = logger_download(mac, fol, h, w.sig_ble)
-
-            # NOT OK download session
+            # session: NOT OK, check retries left
             if not done:
-                # see if it as repetitive failure
                 r = ml.retries_get_from_orange_mac(mac)
                 r = 1 if not r else r + 1 if r < 5 else 5
                 if r == 5:
-                    # case lost-> remove mac from orange list, add to black
+                    # case lost -> remove from orange list, add to black
                     ml.entry_delete(mac)
-                    ml.entry_add_or_update(mac, TOO_BAD_TIME_S, r, 'black')
+                    ml.entry_add_or_update(mac, TOO_MANY_DL_ERRS_TIME_S, r, 'black')
                     e = 'BLE: too many errors for {}, blacklist, r = {}'.format(mac, r)
                 else:
-                    # just add to orange list
+                    # still hope -> add to orange list
                     ml.entry_add_or_update(mac, IGNORE_TIME_S, r, 'orange')
                     e = 'BLE: error for {}, orange-listing it r = {}'.format(mac, r)
                 w.sig_ble.error.emit(e.format(mac))
                 continue
 
-            # OK download session, set 'forget time_sea or land'
+            # session OK! set 'forget time_sea or land'
             ft_s, ft_sea_s = ft
             lat, lon, _ = g if g else (None,) * 3
             if lat and is_float(lat) and lon and is_float(lon):
@@ -128,7 +126,7 @@ def _download_loggers(w, h, macs, ml, ft: tuple):
                 t = ft_sea_s
                 s = 'BLE: bad GPS signal or off, blacklist {} w/ {} secs'.format(mac, t)
 
-            # case good -> remove mac from orange list, if so, add to black
+            # case good -> delete from orange (in case it's in it) and add to black
             ml.entry_delete(mac)
             ml.entry_add_or_update(mac, t, 0, 'black')
             w.sig_ble.debug.emit(s)
@@ -141,7 +139,6 @@ def _download_loggers(w, h, macs, ml, ft: tuple):
             w.sig_ble.error.emit(e)
 
         finally:
-            # unprotect critical zone
             ctx.sem_ble.release()
 
     # give time to show messages
@@ -175,9 +172,9 @@ def loop(w, ev_can_i_boot):
                 continue
 
             # >>> download stage
-            _download_loggers(w, h, macs, ml, (ft_s, ft_sea_s))
+            _download_all_loggers(w, h, macs, ml, (ft_s, ft_sea_s))
 
-            # >>> report stage w/ download errors, if any
+            # >>> report stage w/ download errors, may NOT be any
             ol = ml.macs_get_orange()
             w.sig_ble.dl_warning.emit(ol)
 

@@ -38,6 +38,11 @@ def emit_update(sig, u):
         sig.status.emit(u)
 
 
+def emit_gps_bad(sig, b):
+    if sig:
+        sig.gps_bad.emit(b)
+
+
 def rpi_set_brightness(v):
     """ adjusts DDH screen brightness """
 

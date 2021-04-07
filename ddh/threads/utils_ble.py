@@ -9,7 +9,7 @@ from ddh.threads.utils import (
     create_folder,
     check_local_file_exists,
     emit_status,
-    check_local_file_integrity, is_float, get_folder_path_from_mac
+    check_local_file_integrity, is_float, get_folder_path_from_mac, emit_gps_bad
 )
 from ddh.threads.utils_gps_quectel import utils_gps_get_one_lat_lon_dt, utils_gps_backup_get
 from mat.logger_controller import (
@@ -46,21 +46,20 @@ def _ok_or_die(w, rv, sig):
     _show(rv, sig)
 
 
-def _logger_already_stopped(lc):
+def _logger_is_already_stopped(lc):
     rv = lc.command(STATUS_CMD)
     return rv == [b'STS', b'0201']
 
 
 def _logger_sws(lc, sig, g):
-    """ stop with string """
+    """ STOP logger w/ STRING """
 
-    rv = _logger_already_stopped(lc)
-    if rv:
+    if _logger_is_already_stopped(lc):
         s = 'BLE: no SWS required'
         emit_status(sig, s)
         return
 
-    # logger running or delayed, we gonna stop it
+    # format GPS string to be used with STOP w/ string
     lat, lon, _ = g if g else (None, ) * 3
     if lat and is_float(lat) and lon and is_float(lon):
         lat = '{:+.6f}'.format(float(lat))
@@ -68,7 +67,7 @@ def _logger_sws(lc, sig, g):
     else:
         lat, lon = 'N/A', 'N/A'
 
-    # SWS parameter contains no comma
+    # send STP (SWS) command: parameter has NO comma
     g = '{}{}'.format(lat, lon)
     for _ in range(10):
         rv = lc.command(SWS_CMD, '{}'.format(g))
@@ -80,11 +79,11 @@ def _logger_sws(lc, sig, g):
 
 
 def _logger_time_check(lc, sig=None):
-    # command: GTM
+    """ see if need to sync time """
+
+    # obtain logger's time
     dt = lc.get_time()
     _show(dt, sig)
-
-    # protection
     if dt is None:
         _die(__name__)
 
@@ -100,7 +99,7 @@ def _logger_time_check(lc, sig=None):
 
 def _logger_ls(lc, fol, sig=None, pre_rm=False):
 
-    # create folder when not exists
+    # create destination folder when not exists
     assert ':' not in str(fol)
     mac = lc.per.addr
     if pre_rm:
@@ -190,6 +189,9 @@ def _logger_ls(lc, fol, sig=None, pre_rm=False):
 
 
 def _logger_dwg_files(lc, sig, folder, files):
+    """ DWG all files in a logger """
+
+    # statistics preparation
     mac, num_to_dwg, dwg_ed = lc.per.addr, 0, 0
     name_n_size, b_total = {}, 0
 
@@ -206,11 +208,11 @@ def _logger_dwg_files(lc, sig, folder, files):
             num_to_dwg += 1
             b_total += size
 
-    # statistics
+    # statistics preparation: more
     b_left = b_total
     _show('{} has {} files for us'.format(mac, num_to_dwg), sig)
 
-    # download files one by one
+    # DWG (download) files one by one
     label = 1
     for name, size in name_n_size.items():
         mm = ((b_left // 5000) // 60) + 1
@@ -218,10 +220,9 @@ def _logger_dwg_files(lc, sig, folder, files):
         _show('dwg {}, {} B'.format(name, size), sig)
         sig.file_pre.emit(name, b_total, label, num_to_dwg, mm)
         label += 1
-
-        # x-modem download
         s_t = time.time()
 
+        # actual download DWG
         if not lc.dwg_file(name, folder, size, sig.dl_step):
             e = 'BLE: cannot download {}, size {}'
             _error(e.format(name, size), sig)
@@ -243,7 +244,7 @@ def _logger_dwg_files(lc, sig, folder, files):
         speed = size / (time.time() - s_t)
         sig.file_post.emit(speed)
 
-    # logger was downloaded ok
+    # display logger downloaded ok or not
     _ = 'almost done, '
     if dwg_ed > 0:
         s = 'got {} file(s)'.format(dwg_ed)
@@ -259,6 +260,9 @@ def _logger_dwg_files(lc, sig, folder, files):
 
 
 def _logger_rws(lc, sig, g):
+    """ logger RUN w/ string """
+
+    # format GPS parameter
     lat, lon, _ = g if g else (None, ) * 3
     if lat and is_float(lat) and lon and is_float(lon):
         lat = '{:+.6f}'.format(float(lat))
@@ -266,6 +270,7 @@ def _logger_rws(lc, sig, g):
     else:
         lat, lon = 'N/A', 'N/A'
 
+    # send RWS command
     g = '{}{}'.format(lat, lon)
     s = 'BLE: RWS coordinates {}'.format(g)
     sig.status.emit(s)
@@ -287,6 +292,8 @@ def _dir_cfg(lc, sig):
 
 
 def _ensure_wake_mode_is_on(lc, sig):
+    """ query and ensure logger WAK flag is 1 """
+
     rv = lc.command(WAKE_CMD)
     if len(rv) != 2:
         _die('sending wake mode 1 failed')
@@ -304,8 +311,11 @@ def _ensure_wake_mode_is_on(lc, sig):
 
 def _logger_re_setup(lc, sig):
     """ get logger's MAT.cfg, formats mem, re-sends MAT.cfg """
+
+    # constant name for configuration file
     _MC = 'MAT.cfg'
 
+    # check configuration file is present in the logger
     size, rv = 0, _dir_cfg(lc, sig)
     try:
         size = rv[_MC]
@@ -322,7 +332,7 @@ def _logger_re_setup(lc, sig):
     if not lc.dwg_file(_MC, dff, size, None):
         _die('error downloading {}'.format(_MC))
 
-    # check MAT.cfg file
+    # CRC check of MAT.cfg file
     crc = lc.command(CRC_CMD, _MC)
     rv, l_crc = check_local_file_integrity(_MC, dff, crc)
     if not rv:
@@ -342,44 +352,38 @@ def _logger_re_setup(lc, sig):
     except JSONDecodeError:
         _die('cannot decode downloaded {}'.format(_MC))
 
-    # format the logger
+    # format logger's file-system, all files gone
     rv = lc.command(FORMAT_CMD)
     _ok_or_die([b'FRM', b'00'], rv, sig)
 
-    # re-config the logger
+    # re-config the logger, ensure wake-up mode
     rv = lc.send_cfg(cfg_dict)
     _ok_or_die([b'CFG', b'00'], rv, sig)
-
-    # enable wake-up mode
     _ensure_wake_mode_is_on(lc, sig)
 
 
-def logger_download(mac, fol, hci_if, sig=None):
+def logger_interact(mac, fol, hci_if, sig=None):
     """ downloads logger files and re-setups it """
 
     try:
+        # create object to interact with logger
         lc = LcBLEFactory.generate(mac)
-
         with lc(mac, hci_if) as lc:
-            # g -> (lat, lon, ignored datetime object)
             g = utils_gps_get_one_lat_lon_dt(timeout=5)
             if not g:
                 g = utils_gps_backup_get()
 
-            # todo: remove this text fixture
-            g = None
-            if not g:
-                sig.gps_bad.emit()
+            # GPS too important to keep on w/o it
+            if ctx.gps_enforced and not g:
+                emit_gps_bad('bad gps for {}'.format(mac))
                 return
 
-
-            # start with string
+            # STOP w/ string
             _logger_sws(lc, sig, g)
             _logger_time_check(lc, sig)
 
             # DIR logger files and get them
             fol, ls = _logger_ls(lc, fol, sig, pre_rm=False)
-            # got_all = _logger_get_files(lc, sig, fol, ls)
             got_all = _logger_dwg_files(lc, sig, fol, ls)
 
             # :) got all files
@@ -393,13 +397,13 @@ def logger_download(mac, fol, hci_if, sig=None):
                 _time_to_display(2)
                 return True, g
 
-            # :( did NOT get all files
+            # :( did NOT get all files, tell all loggers super-loop
             e = 'logger {} not done yet'.format(mac)
             sig.logger_post.emit(False, e, mac)
             sig.error.emit(e.format(mac))
             return False, None
 
-    # my exception, ex: no MAT.cfg file
+    # my exception, ex: no MAT.cfg file, raised at _die()
     except AppBLEException as ex:
         e = 'error: {}, will retry'.format(ex)
         # e: ends up in history tab
@@ -407,12 +411,12 @@ def logger_download(mac, fol, hci_if, sig=None):
         sig.error.emit(e)
         return False, None
 
-    # bluepy or python exception, ex: None.command()
+    # bluepy / python exception, ex: None.command()
     except AttributeError as ae:
         sig.error.emit('error: {}'.format(ae))
         return False, None
 
 
 class AppBLEException(Exception):
-    # used 10 lines above
+    # used in logger_download()
     pass
