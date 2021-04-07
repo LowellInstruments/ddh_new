@@ -8,11 +8,11 @@ from mat.gps_quectel import gps_configure_quectel
 from mat.utils import linux_is_rpi
 
 
-BOOT_GPS_FIX_TIMEOUT = 30
+BOOT_GPS_FIX_TIMEOUT = 60
 
 
 def _boot_banner(w):
-    s = 'wait up to {}s for GPS fix'
+    s = 'wait {}s for GPS fix'
     w.lbl_ble.setText(s.format(BOOT_GPS_FIX_TIMEOUT))
 
 

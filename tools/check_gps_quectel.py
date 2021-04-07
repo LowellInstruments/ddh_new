@@ -71,25 +71,27 @@ if __name__ == '__main__':
             break
         time.sleep(1)
 
-    # benchmark how we get GPS frames
+    # banner
+    _till, ns = 20, 0
+    s = '\n[ .. ] Wait frames for {} s / loop, n = {}'
+    print(s.format(_till, args.n))
+
+    # super-loop: infinite mode or not
     sp = serial.Serial(PORT_DATA, baudrate=115200, timeout=0.1)
     while 1:
-        _till, i, ns = 20, 0, 0
-        s = '\n[ .. ] GPS Quectel, will check for frames up to {} seconds...'
-        print(s.format(_till))
         try:
             _start = time.perf_counter()
             _till = time.perf_counter() + _till
-            while True:
 
-                # '_till' did expire
+            # loop: frame timeout
+            while True:
                 if time.perf_counter() > _till:
                     print('[ ER ] GPS Quectel, could not get any data frame')
+                    time.sleep(.1)
                     continue
 
                 # reading serial port
                 data = sp.readline()
-
                 if b'$GPGGA' in data:
                     gga = data.decode()
                     s = gga.split(',')
