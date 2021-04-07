@@ -164,6 +164,11 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.tim_q = QTimer()
         self.tim_q.timeout.connect(self._timer_bye)
 
+        # timer used to simulate errors
+        hide_error_tab(self, 1)
+        self.tim_e = QTimer()
+        self.tim_e.singleShot(5000, self.slot_ble_gps_bad)
+
     def _timer_bye(self):
         self.tim_q.stop()
         os._exit(0)
@@ -316,7 +321,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
 
     @pyqtSlot(name='slot_ble_gps_bad')
     def slot_ble_gps_bad(self):
-        show_error_tab()
+        show_error_tab(self)
 
     @pyqtSlot(list, name='slot_ble_dl_warning')
     def slot_ble_dl_warning(self, w):
