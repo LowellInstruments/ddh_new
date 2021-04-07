@@ -11,7 +11,7 @@ from ddh.settings import ctx
 from mat.gps_quectel import gps_get_rmc_data
 
 
-BACKUP_GPS_SL = './backup_gps.sl'
+BACKUP_GPS_SL = './.gps_cache.sl'
 
 
 def utils_gps_backup_set(d):

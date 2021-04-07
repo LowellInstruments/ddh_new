@@ -8,7 +8,7 @@ from mat.gps_quectel import gps_configure_quectel
 from mat.utils import linux_is_rpi
 
 
-BOOT_GPS_FIX_TIMEOUT = 60
+BOOT_GPS_FIX_TIMEOUT = 120
 
 
 def _boot_banner(w):
