@@ -11,4 +11,5 @@ Fiona==1.8.13.post1
 parse==1.19.0
 lowell-mat@git+https://github.com/LowellInstruments/lowell-mat.git
 boto3
-# PyQt5 NOT, since no packages for Rpi, do manually for dev platforms
+# PyQt5 -> apt-get, no PIP packages for Rpi
+# Cartopy -> apt-get, uses ne_50m_land.zip, a copy of which in 'tools' folder

@@ -39,7 +39,7 @@ def utils_gps_valid_cache():
     return utils_gps_backup_get()
 
 
-def utils_gps_backup_reset():
+def utils_gps_cache_clear():
     if os.path.exists(BACKUP_GPS_SL):
         os.remove(BACKUP_GPS_SL)
 

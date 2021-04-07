@@ -2,7 +2,7 @@ import os
 import sys
 import time
 from ddh.settings.ctx import dbg_hook_make_gps_give_fake_measurement
-from ddh.threads.utils_gps_quectel import utils_gps_get_one_lat_lon_dt, utils_gps_backup_reset
+from ddh.threads.utils_gps_quectel import utils_gps_get_one_lat_lon_dt, utils_gps_cache_clear
 from ddh.threads.utils_time import update_datetime_source
 from mat.gps_quectel import gps_configure_quectel
 from mat.utils import linux_is_rpi
@@ -51,7 +51,7 @@ def boot(w, evb):
     time.sleep(.5)
 
     _boot_banner(w)
-    utils_gps_backup_reset()
+    utils_gps_cache_clear()
     _boot_connect_gps(w)
     _boot_sync_time(w)
     _boot_sync_position(w)
