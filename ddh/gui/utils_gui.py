@@ -138,6 +138,11 @@ def paint_gps_icon_w_color_dis_or_cache(my_app, lat, lon):
     a.img_gps.setPixmap(QPixmap(img))
 
 
+def _hide_all_tabs(ui):
+    ui.tabs.removeTab(3)
+    ui.tabs.removeTab(4)
+
+
 def hide_edit_tab(ui):
     # find tab ID, index and keep ref
     p = ui.tabs.findChild(QWidget, 'tab_setup')
@@ -146,23 +151,25 @@ def hide_edit_tab(ui):
     ui.tabs.removeTab(i)
 
 
-def hide_error_tab(ui, hide_it):
-    # find tab ID, index and keep ref
+def show_edit_tab(ui):
+    _hide_all_tabs(ui)
+    icon = QIcon('ddh/gui/res/icon_setup.png')
+    ui.tabs.addTab(ui.tab_edit_wgt_ref, icon, ' Setup')
+    ui.tabs.setCurrentIndex(3)
+
+
+def hide_error_tab(ui):
     p = ui.tabs.findChild(QWidget, 'tab_err')
     i = ui.tabs.indexOf(p)
-    ui.tab_err_wgt_ref = ui.tabs.widget(i)
-    if hide_it:
-        ui.tabs.removeTab(i)
-        return
-
-    icon = QIcon('ddh/gui/res/icon_lowell.png')
-    ui.tabs.addTab(ui.tab_err_wgt_ref, icon, ' Note')
-    ui.tabs.setCurrentIndex(4)
+    ui.tab_edit_wgt_ref = ui.tabs.widget(i)
+    ui.tabs.removeTab(i)
 
 
 def show_error_tab(ui):
-    hide_error_tab(ui, 0)
-
+    _hide_all_tabs(ui)
+    icon = QIcon('ddh/gui/res/icon_lowell.png')
+    ui.tabs.addTab(ui.tab_edit_wgt_ref, icon, ' Note')
+    ui.tabs.setCurrentIndex(3)
 
 
 def dict_from_list_view(l_v):

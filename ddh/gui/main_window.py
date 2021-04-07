@@ -24,7 +24,7 @@ from ddh.db.db_his import DBHis
 from ddh.gui.utils_gui import (
     setup_view, setup_his_tab, setup_buttons_gui, setup_window_center, hide_edit_tab,
     dict_from_list_view, setup_buttons_rpi, _confirm_by_user, paint_gps_icon_w_color_land_sea, populate_history_tab,
-    paint_gps_icon_w_color_dis_or_cache, hide_error_tab, show_error_tab)
+    paint_gps_icon_w_color_dis_or_cache, hide_error_tab, show_error_tab, show_edit_tab)
 from ddh.settings import ctx
 from ddh.settings.utils_settings import yaml_load_pairs, gen_ddh_json_content
 from ddh.threads import th_ble, th_cnv, th_plt, th_gps, th_aws, th_net, th_boot, th_time
@@ -165,13 +165,17 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.tim_q.timeout.connect(self._timer_bye)
 
         # timer used to simulate errors
-        hide_error_tab(self, 1)
+        hide_error_tab(self)
         self.tim_e = QTimer()
-        self.tim_e.singleShot(5000, self.slot_ble_gps_bad)
+        self.tim_e.timeout.connect(self.slot_ble_gps_bad)
+        self.tim_e.start(5000)
 
     def _timer_bye(self):
         self.tim_q.stop()
         os._exit(0)
+
+    def _timer_err(self):
+        self.tim_e.stop()
 
     @pyqtSlot(str, name='slot_gui_update_time')
     def slot_gui_update_time(self, dots):
@@ -321,6 +325,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
 
     @pyqtSlot(name='slot_ble_gps_bad')
     def slot_ble_gps_bad(self):
+        print('hello')
         show_error_tab(self)
 
     @pyqtSlot(list, name='slot_ble_dl_warning')
@@ -605,10 +610,8 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         if self.tab_edit_hide:
             hide_edit_tab(self)
             return
+        show_edit_tab(self)
 
-        icon = QIcon('ddh/gui/res/icon_setup.png')
-        self.tabs.addTab(self.tab_edit_wgt_ref, icon, ' Setup')
-        self.tabs.setCurrentIndex(3)
 
     def click_btn_purge_dl_folder(self):
         """ deletes contents in 'download files' folder """
