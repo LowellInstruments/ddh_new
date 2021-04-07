@@ -365,6 +365,15 @@ def logger_download(mac, fol, hci_if, sig=None):
             g = utils_gps_get_one_lat_lon_dt(timeout=5)
             if not g:
                 g = utils_gps_backup_get()
+
+            # todo: remove this text fixture
+            g = None
+            if not g:
+                sig.gps_bad.emit()
+                return
+
+
+            # start with string
             _logger_sws(lc, sig, g)
             _logger_time_check(lc, sig)
 

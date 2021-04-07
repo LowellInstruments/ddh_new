@@ -24,7 +24,7 @@ from ddh.db.db_his import DBHis
 from ddh.gui.utils_gui import (
     setup_view, setup_his_tab, setup_buttons_gui, setup_window_center, hide_edit_tab,
     dict_from_list_view, setup_buttons_rpi, _confirm_by_user, paint_gps_icon_w_color_land_sea, populate_history_tab,
-    paint_gps_icon_w_color_dis_or_cache)
+    paint_gps_icon_w_color_dis_or_cache, hide_error_tab, show_error_tab)
 from ddh.settings import ctx
 from ddh.settings.utils_settings import yaml_load_pairs, gen_ddh_json_content
 from ddh.threads import th_ble, th_cnv, th_plt, th_gps, th_aws, th_net, th_boot, th_time
@@ -82,6 +82,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.btn_3_held = 0
         self.tab_edit_hide = True
         self.tab_edit_wgt_ref = None
+        self.tab_err_wgt_ref = None
         self.key_shift = None
         self.last_time_icon_ble_press = 0
         json_set_plot_units(ctx.app_json_file)
@@ -133,6 +134,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.sig_ble.deployed.connect(self.slot_his_update)
         self.sig_ble.dl_step.connect(self.slot_ble_dl_step)
         self.sig_ble.dl_warning.connect(self.slot_ble_dl_warning)
+        self.sig_ble.gps_bad.connect(self.slot_ble_gps_bad)
         self.sig_ble.logger_plot_req.connect(self.slot_ble_logger_plot_req)
         self.sig_tim.via.connect(self.slot_gui_update_time_source)
 
@@ -311,6 +313,10 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     @pyqtSlot(str, name='slot_error')
     def slot_error(self, e):
         c_log.error(e)
+
+    @pyqtSlot(name='slot_ble_gps_bad')
+    def slot_ble_gps_bad(self):
+        show_error_tab()
 
     @pyqtSlot(list, name='slot_ble_dl_warning')
     def slot_ble_dl_warning(self, w):

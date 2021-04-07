@@ -385,11 +385,23 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2.setStretch(2, 10)
         self.horizontalLayout_6.addLayout(self.horizontalLayout_2)
         self.tabs.addTab(self.tab_setup, "")
+        self.tab_err = QtWidgets.QWidget()
+        self.tab_err.setObjectName("tab_err")
+        self.verticalLayout_7 = QtWidgets.QVBoxLayout(self.tab_err)
+        self.verticalLayout_7.setObjectName("verticalLayout_7")
+        self.label_2 = QtWidgets.QLabel(self.tab_err)
+        self.label_2.setStyleSheet("color: rgb(239, 41, 41);\n"
+"font: 19pt \"DejaVu Sans\";")
+        self.label_2.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_2.setWordWrap(True)
+        self.label_2.setObjectName("label_2")
+        self.verticalLayout_7.addWidget(self.label_2)
+        self.tabs.addTab(self.tab_err, "")
         self.horizontalLayout.addWidget(self.tabs)
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
-        self.tabs.setCurrentIndex(0)
+        self.tabs.setCurrentIndex(4)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -417,3 +429,5 @@ class Ui_MainWindow(object):
         self.label_7.setText(_translate("MainWindow", "history tab"))
         self.btn_his_purge.setText(_translate("MainWindow", "purge"))
         self.tabs.setTabText(self.tabs.indexOf(self.tab_setup), _translate("MainWindow", " Setup"))
+        self.label_2.setText(_translate("MainWindow", "GPS malfunction detected: skipping this logger"))
+        self.tabs.setTabText(self.tabs.indexOf(self.tab_err), _translate("MainWindow", "Note"))

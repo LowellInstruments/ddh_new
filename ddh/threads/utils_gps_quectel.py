@@ -25,10 +25,8 @@ def utils_gps_backup_get():
     try:
         with shelve.open(BACKUP_GPS_SL) as sh:
             b = sh['last']
-        # if stored one is too old
-        print('now is {}'.format(time.perf_counter()))
-        print('b[1] + 180 is {}'.format(b[1] + 180))
-        if b[1] + 180 < time.perf_counter():
+        # check cached one is recent enough
+        if b[1] + 90 < time.perf_counter():
             return None
         return b[0]
     except (KeyError, Exception) as ex:

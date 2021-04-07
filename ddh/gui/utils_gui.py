@@ -146,6 +146,25 @@ def hide_edit_tab(ui):
     ui.tabs.removeTab(i)
 
 
+def hide_error_tab(ui, hide_it):
+    # find tab ID, index and keep ref
+    p = ui.tabs.findChild(QWidget, 'tab_err')
+    i = ui.tabs.indexOf(p)
+    ui.tab_err_wgt_ref = ui.tabs.widget(i)
+    if hide_it:
+        ui.tabs.removeTab(i)
+        return
+
+    icon = QIcon('ddh/gui/res/icon_lowell.png')
+    ui.tabs.addTab(ui.tab_err_wgt_ref, icon, ' Note')
+    ui.tabs.setCurrentIndex(4)
+
+
+def show_error_tab(ui):
+    hide_error_tab(ui, 0)
+
+
+
 def dict_from_list_view(l_v):
     """ grab listview entries 'name mac' and build a dict """
     d = dict()

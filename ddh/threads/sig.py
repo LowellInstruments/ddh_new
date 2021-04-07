@@ -17,6 +17,7 @@ class SignalsBLE(QObject):
     error = pyqtSignal(str)
     dl_warning = pyqtSignal(list)
     dl_step = pyqtSignal()
+    gps_bad = pyqtSignal()
 
 
 class SignalsGPS(QObject):
