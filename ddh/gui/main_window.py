@@ -64,7 +64,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         setup_app_log(str(ctx.app_logs_folder / 'ddh.log'))
         setup_window_center(self)
         setup_buttons_rpi(self, c_log)
-        rpi_set_brightness(v)
+        rpi_set_brightness(100)
 
         # gui: controller
         self.gps_last_ts = None
