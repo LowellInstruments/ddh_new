@@ -71,16 +71,13 @@ def _scan_loggers(w, h, whitelist, ml):
 def _download_all_loggers(w, h, macs, ml, ft: tuple):
     """ downloads every BLE logger found """
 
-    # get needed vars
-    fol = ctx.app_dl_folder
-
     # ensure all scanned macs format in lower case
     li = [i.lower() for i in macs]
 
     # protect critical zone
     ctx.sem_ble.acquire()
 
-    # downloading files
+    # loop along all loggers
     for i, mac in enumerate(li):
 
         # debug hook, removes existing logger files before download session
@@ -90,13 +87,14 @@ def _download_all_loggers(w, h, macs, ml, ft: tuple):
             shutil.rmtree(str(_pre_rm_path), ignore_errors=True)
 
         try:
-            # download session for ONE logger
+            # this logger session: banner
+            fol = ctx.app_dl_folder
             w.sig_ble.session_pre.emit(mac, i + 1, len(li))
             w.sig_ble.status.emit('BLE: connecting {}'.format(mac))
             w.sig_ble.logger_pre.emit()
             done, g = logger_interact(mac, fol, h, w.sig_ble)
 
-            # session: this one logger NOT OK, check retries left
+            # this logger session: NOT OK, check retries left
             if not done:
                 r = ml.retries_get_from_orange_mac(mac)
                 r = 1 if not r else r + 1 if r < 5 else 5
@@ -112,7 +110,7 @@ def _download_all_loggers(w, h, macs, ml, ft: tuple):
                 w.sig_ble.error.emit(e.format(mac))
                 continue
 
-            # session: this one logger OK! set 'forget time sea or land'
+            # this logger session: OK! set 'forget time sea or land'
             ft_s, ft_sea_s = ft
             lat, lon, _ = g if g else (None,) * 3
             if lat and is_float(lat) and lon and is_float(lon):
@@ -126,7 +124,7 @@ def _download_all_loggers(w, h, macs, ml, ft: tuple):
                 t = ft_sea_s
                 s = 'BLE: bad GPS signal or off, blacklist {} w/ {} secs'.format(mac, t)
 
-            # case good -> delete from orange (in case it's in it) and add to black
+            # un-orange logger (if so) and black-list it
             ml.entry_delete(mac)
             ml.entry_add_or_update(mac, t, 0, 'black')
             w.sig_ble.debug.emit(s)
@@ -141,7 +139,7 @@ def _download_all_loggers(w, h, macs, ml, ft: tuple):
         finally:
             ctx.sem_ble.release()
 
-    # give time to show messages
+    # give time for messages to display
     time.sleep(3)
 
 
