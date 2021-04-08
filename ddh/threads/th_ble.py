@@ -19,13 +19,13 @@ IGNORE_TIME_S = 60
 
 def _mac_show_color_lists_on_boot(w, ml):
 
-    s = 'SYS: purging mac_orange_list on boot'
+    s = 'SYS: purging orange mac list on boot'
     w.sig_ble.debug.emit(s)
     ol = ml.macs_get_orange()
     for each in ol:
         ml.entry_delete(each)
 
-    # debug hook, forces a brand new mac black list
+    # debug hook, may force a brand new mac black list
     if ctx.dbg_hook_purge_mac_blacklist_on_boot:
         s = 'SYS: loaded previous mac_black_list -> {}'
         w.sig_ble.debug.emit(s.format(ml.get_all_entries_as_string()))
@@ -96,7 +96,7 @@ def _download_all_loggers(w, h, macs, ml, ft: tuple):
             w.sig_ble.logger_pre.emit()
             done, g = logger_interact(mac, fol, h, w.sig_ble)
 
-            # session: NOT OK, check retries left
+            # session: this one logger NOT OK, check retries left
             if not done:
                 r = ml.retries_get_from_orange_mac(mac)
                 r = 1 if not r else r + 1 if r < 5 else 5
@@ -112,7 +112,7 @@ def _download_all_loggers(w, h, macs, ml, ft: tuple):
                 w.sig_ble.error.emit(e.format(mac))
                 continue
 
-            # session OK! set 'forget time_sea or land'
+            # session: this one logger OK! set 'forget time sea or land'
             ft_s, ft_sea_s = ft
             lat, lon, _ = g if g else (None,) * 3
             if lat and is_float(lat) and lon and is_float(lon):
@@ -148,8 +148,10 @@ def _download_all_loggers(w, h, macs, ml, ft: tuple):
 def loop(w, ev_can_i_boot):
     """ BLE loop: scan, download and re-deploy found loggers """
 
+    # this th_ble thread waits to boot
     wait_boot_signal(w, ev_can_i_boot, 'BLE')
 
+    # variables needed
     whitelist = json_get_macs(ctx.app_json_file)
     h = json_get_hci_if(ctx.app_json_file)
     ml = ColorMacList(ctx.db_color_macs, w.sig_ble)
@@ -160,6 +162,7 @@ def loop(w, ev_can_i_boot):
     _mac_show_color_lists_on_boot(w, ml)
 
     while 1:
+        # user disabled the BLE scan with secret click on BLE
         if not ctx.ble_en:
             w.sig_ble.scan_pre.emit('not scanning')
             time.sleep(3)

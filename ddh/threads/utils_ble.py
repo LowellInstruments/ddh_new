@@ -312,10 +312,8 @@ def _ensure_wake_mode_is_on(lc, sig):
 def _logger_re_setup(lc, sig):
     """ get logger's MAT.cfg, formats mem, re-sends MAT.cfg """
 
-    # constant name for configuration file
-    _MC = 'MAT.cfg'
-
     # check configuration file is present in the logger
+    _MC = 'MAT.cfg'
     size, rv = 0, _dir_cfg(lc, sig)
     try:
         size = rv[_MC]
@@ -328,7 +326,6 @@ def _logger_re_setup(lc, sig):
     # download MAT.cfg
     dff = get_folder_path_from_mac(lc.address)
     _show('downloading {}...'.format(_MC), sig)
-
     if not lc.dwg_file(_MC, dff, size, None):
         _die('error downloading {}'.format(_MC))
 
@@ -341,7 +338,7 @@ def _logger_re_setup(lc, sig):
         _die('error CRC for {}'.format(_MC))
     _show('got {}'.format(_MC), sig)
 
-    # ensure MAT.cfg suitable for CFG command
+    # ensure MAT.cfg good enough for CFG command
     try:
         with open(pathlib.Path(dff / _MC)) as f:
             cfg_dict = json.load(f)
@@ -366,7 +363,7 @@ def logger_interact(mac, fol, hci_if, sig=None):
     """ downloads logger files and re-setups it """
 
     try:
-        # create object to interact with logger
+        # create object to interact w/ current logger
         lc = LcBLEFactory.generate(mac)
         with lc(mac, hci_if) as lc:
             g = utils_gps_get_one_lat_lon_dt(timeout=5)
@@ -386,7 +383,7 @@ def logger_interact(mac, fol, hci_if, sig=None):
             fol, ls = _logger_ls(lc, fol, sig, pre_rm=False)
             got_all = _logger_dwg_files(lc, sig, fol, ls)
 
-            # :) got all files
+            # :) got all files from this current logger
             if got_all:
                 _logger_re_setup(lc, sig)
                 _logger_rws(lc, sig, g)

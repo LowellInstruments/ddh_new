@@ -11,11 +11,12 @@ from ddh.settings import ctx
 from mat.gps_quectel import gps_get_rmc_data
 
 
-BACKUP_GPS_SL = './.gps_cache.sl'
+BACKUP_GPS_SL = 'db/.gps_cache.sl'
+CACHED_GPS_VALID_TIME = 90
 
 
 def utils_gps_backup_set(d):
-    # d: ('12.3456', '44.444444', '...')
+    # d: ('12.3456', '44.444444', ...)
     t = time.perf_counter()
     with shelve.open(BACKUP_GPS_SL) as sh:
         sh['last'] = (d, t)
@@ -26,7 +27,7 @@ def utils_gps_backup_get():
         with shelve.open(BACKUP_GPS_SL) as sh:
             b = sh['last']
         # check cached one is recent enough
-        if b[1] + 90 < time.perf_counter():
+        if b[1] + CACHED_GPS_VALID_TIME < time.perf_counter():
             return None
         return b[0]
     except (KeyError, Exception) as ex:
@@ -45,7 +46,7 @@ def utils_gps_cache_clear():
 def utils_gps_get_one_lat_lon_dt(timeout=3):
     """
     returns (lat, lon, dt object) or None
-    from a dummy or real GPS measurement
+    for a dummy or real GPS measurement
     """
 
     # debug hook, returns our custom GPS frame

@@ -24,7 +24,7 @@ from ddh.db.db_his import DBHis
 from ddh.gui.utils_gui import (
     setup_view, setup_his_tab, setup_buttons_gui, setup_window_center, hide_edit_tab,
     dict_from_list_view, setup_buttons_rpi, _confirm_by_user, paint_gps_icon_w_color_land_sea, populate_history_tab,
-    paint_gps_icon_w_color_dis_or_cache, hide_error_tab, show_error_tab, show_edit_tab)
+    paint_gps_icon_w_color_dis_or_cache, hide_error_tab, show_error_tab, show_edit_tab, connect_gui_signals_n_slots)
 from ddh.settings import ctx
 from ddh.settings.utils_settings import yaml_load_pairs, gen_ddh_json_content
 from ddh.threads import th_ble, th_cnv, th_plt, th_gps, th_aws, th_net, th_boot, th_time
@@ -99,44 +99,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.sig_ble = SignalsBLE()
         self.sig_aws = SignalsAWS()
         self.sig_boot = SignalsBoot()
-        self.sig_boot.status.connect(self.slot_status)
-        self.sig_ble.status.connect(self.slot_status)
-        self.sig_gps.status.connect(self.slot_status)
-        self.sig_cnv.status.connect(self.slot_status)
-        self.sig_net.status.connect(self.slot_status)
-        self.sig_plt.status.connect(self.slot_status)
-        self.sig_aws.status.connect(self.slot_status)
-        self.sig_tim.status.connect(self.slot_status)
-        self.sig_boot.error.connect(self.slot_error)
-        self.sig_gps.error.connect(self.slot_error)
-        self.sig_cnv.error.connect(self.slot_error)
-        self.sig_plt.error.connect(self.slot_error)
-        self.sig_ble.error.connect(self.slot_error)
-        self.sig_aws.error.connect(self.slot_error)
-        self.sig_cnv.update.connect(self.slot_gui_update_cnv)
-        self.sig_gps.update.connect(self.slot_gui_update_gps_pos)
-        self.sig_tim.update.connect(self.slot_gui_update_time)
-        self.sig_net.update.connect(self.slot_gui_update_net_source)
-        self.sig_plt.update.connect(self.slot_gui_update_plt)
-        self.sig_aws.update.connect(self.slot_gui_update_aws)
-        self.sig_plt.start.connect(self.slot_plt_start)
-        self.sig_plt.msg.connect(self.slot_plt_msg)
-        self.sig_plt.end.connect(self.slot_plt_end)
-        self.sig_plt.debug.connect(self.slot_debug)
-        self.sig_ble.debug.connect(self.slot_debug)
-        self.sig_ble.scan_pre.connect(self.slot_ble_scan_pre)
-        self.sig_ble.session_pre.connect(self.slot_ble_session_pre)
-        self.sig_ble.logger_pre.connect(self.slot_ble_logger_pre)
-        self.sig_ble.file_pre.connect(self.slot_ble_file_pre)
-        self.sig_ble.file_post.connect(self.slot_ble_file_post)
-        self.sig_ble.logger_post.connect(self.slot_ble_logger_post)
-        self.sig_ble.session_post.connect(self.slot_ble_session_post)
-        self.sig_ble.deployed.connect(self.slot_his_update)
-        self.sig_ble.dl_step.connect(self.slot_ble_dl_step)
-        self.sig_ble.dl_warning.connect(self.slot_ble_dl_warning)
-        self.sig_ble.gps_bad.connect(self.slot_ble_gps_bad)
-        self.sig_ble.logger_plot_req.connect(self.slot_ble_logger_plot_req)
-        self.sig_tim.via.connect(self.slot_gui_update_time_source)
+        connect_gui_signals_n_slots(self)
 
         # app: prepare boot thread
         evb = threading.Event()
@@ -167,12 +130,16 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         # timer used to simulate errors
         hide_error_tab(self)
         self.tim_e = QTimer()
-        self.tim_e.timeout.connect(self.slot_ble_gps_bad)
+        self.tim_e.timeout.connect(self._timer_err)
         self.tim_e.start(5000)
 
     def _timer_bye(self):
         self.tim_q.stop()
         os._exit(0)
+
+    def _timer_err(self):
+        self.slot_ble_gps_bad()
+        self.tim_e.stop()
 
     @pyqtSlot(str, name='slot_gui_update_time')
     def slot_gui_update_time(self, dots):
@@ -234,7 +201,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         if u:
             paint_gps_icon_w_color_land_sea(self, lat, lon)
         else:
-            paint_gps_icon_w_color_dis_or_cache(self, lat, lon)
+            paint_gps_icon_w_color_dis_or_cache(self)
 
     @pyqtSlot(str, name='slot_gui_update_net_source')
     def slot_gui_update_net_source(self, s):
@@ -324,8 +291,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     def slot_ble_gps_bad(self, s=None):
         show_error_tab(self)
         s = s if s else 'what'
-        self.slot_his_update(s)
-        self.tim_e.stop()
+        self.slot_his_update(s, None, None)
 
     @pyqtSlot(list, name='slot_ble_dl_warning')
     def slot_ble_dl_warning(self, w):

@@ -15,7 +15,7 @@ def loop(w, ev_can_i_boot):
     time.sleep(1)
 
     while 1:
-        # updates only position, time source updated in other thread
+        # updates only position, time source updated somewhere else
         ctx.sem_ble.acquire()
         _o = utils_gps_get_one_lat_lon_dt()
         w.sig_gps.update.emit(_o)

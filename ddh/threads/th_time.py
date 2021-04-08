@@ -1,7 +1,7 @@
 import time
 from ddh.settings import ctx
 from ddh.threads.utils import wait_boot_signal
-from ddh.threads.utils_time import update_datetime_source
+from ddh.threads.utils_time import utils_time_update_datetime_source
 
 
 class ButtonPressEvent:
@@ -26,6 +26,7 @@ def loop(w, ev_can_i_boot):
     steps = 0
 
     while 1:
+        # some long operations like plotting show 3 dots
         time.sleep(1)
         steps += 1
         idx = (idx + 1) % len(symbols)
@@ -35,5 +36,5 @@ def loop(w, ev_can_i_boot):
         if ctx.sem_ble.acquire(blocking=False):
             if steps >= TIME_SYNC_PERIOD_S:
                 steps = 0
-                update_datetime_source(w)
+                utils_time_update_datetime_source(w)
             ctx.sem_ble.release()

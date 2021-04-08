@@ -109,6 +109,48 @@ def setup_buttons_gui(my_app):
     a.btn_err_gotcha.clicked.connect(a.click_btn_err_gotcha)
 
 
+def connect_gui_signals_n_slots(my_app):
+    a = my_app
+    a.sig_boot.status.connect(a.slot_status)
+    a.sig_ble.status.connect(a.slot_status)
+    a.sig_gps.status.connect(a.slot_status)
+    a.sig_cnv.status.connect(a.slot_status)
+    a.sig_net.status.connect(a.slot_status)
+    a.sig_plt.status.connect(a.slot_status)
+    a.sig_aws.status.connect(a.slot_status)
+    a.sig_tim.status.connect(a.slot_status)
+    a.sig_boot.error.connect(a.slot_error)
+    a.sig_gps.error.connect(a.slot_error)
+    a.sig_cnv.error.connect(a.slot_error)
+    a.sig_plt.error.connect(a.slot_error)
+    a.sig_ble.error.connect(a.slot_error)
+    a.sig_aws.error.connect(a.slot_error)
+    a.sig_cnv.update.connect(a.slot_gui_update_cnv)
+    a.sig_gps.update.connect(a.slot_gui_update_gps_pos)
+    a.sig_tim.update.connect(a.slot_gui_update_time)
+    a.sig_net.update.connect(a.slot_gui_update_net_source)
+    a.sig_plt.update.connect(a.slot_gui_update_plt)
+    a.sig_aws.update.connect(a.slot_gui_update_aws)
+    a.sig_plt.start.connect(a.slot_plt_start)
+    a.sig_plt.msg.connect(a.slot_plt_msg)
+    a.sig_plt.end.connect(a.slot_plt_end)
+    a.sig_plt.debug.connect(a.slot_debug)
+    a.sig_ble.debug.connect(a.slot_debug)
+    a.sig_ble.scan_pre.connect(a.slot_ble_scan_pre)
+    a.sig_ble.session_pre.connect(a.slot_ble_session_pre)
+    a.sig_ble.logger_pre.connect(a.slot_ble_logger_pre)
+    a.sig_ble.file_pre.connect(a.slot_ble_file_pre)
+    a.sig_ble.file_post.connect(a.slot_ble_file_post)
+    a.sig_ble.logger_post.connect(a.slot_ble_logger_post)
+    a.sig_ble.session_post.connect(a.slot_ble_session_post)
+    a.sig_ble.deployed.connect(a.slot_his_update)
+    a.sig_ble.dl_step.connect(a.slot_ble_dl_step)
+    a.sig_ble.dl_warning.connect(a.slot_ble_dl_warning)
+    a.sig_ble.gps_bad.connect(a.slot_ble_gps_bad)
+    a.sig_ble.logger_plot_req.connect(a.slot_ble_logger_plot_req)
+    a.sig_tim.via.connect(a.slot_gui_update_time_source)
+
+
 def paint_gps_icon_w_color_land_sea(my_app, lat, lon):
     """ paints the gps icon """
 
@@ -121,7 +163,7 @@ def paint_gps_icon_w_color_land_sea(my_app, lat, lon):
     a.img_gps.setPixmap(QPixmap(img))
 
 
-def paint_gps_icon_w_color_dis_or_cache(my_app, lat, lon):
+def paint_gps_icon_w_color_dis_or_cache(my_app):
     """ paints the gps icon as disabled or cache """
 
     a = my_app
@@ -139,11 +181,6 @@ def paint_gps_icon_w_color_dis_or_cache(my_app, lat, lon):
     a.img_gps.setPixmap(QPixmap(img))
 
 
-def _hide_all_tabs(ui):
-    ui.tabs.removeTab(3)
-    ui.tabs.removeTab(4)
-
-
 def hide_edit_tab(ui):
     # find tab ID, index and keep ref
     p = ui.tabs.findChild(QWidget, 'tab_setup')
@@ -153,24 +190,26 @@ def hide_edit_tab(ui):
 
 
 def show_edit_tab(ui):
-    _hide_all_tabs(ui)
     icon = QIcon('ddh/gui/res/icon_setup.png')
     ui.tabs.addTab(ui.tab_edit_wgt_ref, icon, ' Setup')
-    ui.tabs.setCurrentIndex(3)
+    p = ui.tabs.findChild(QWidget, 'tab_setup')
+    i = ui.tabs.indexOf(p)
+    ui.tabs.setCurrentIndex(i)
 
 
 def hide_error_tab(ui):
     p = ui.tabs.findChild(QWidget, 'tab_err')
     i = ui.tabs.indexOf(p)
-    ui.tab_edit_wgt_ref = ui.tabs.widget(i)
+    ui.tab_err_wgt_ref = ui.tabs.widget(i)
     ui.tabs.removeTab(i)
 
 
 def show_error_tab(ui):
-    _hide_all_tabs(ui)
     icon = QIcon('ddh/gui/res/icon_lowell.png')
-    ui.tabs.addTab(ui.tab_edit_wgt_ref, icon, ' Note')
-    ui.tabs.setCurrentIndex(3)
+    ui.tabs.addTab(ui.tab_err_wgt_ref, icon, ' Note')
+    p = ui.tabs.findChild(QWidget, 'tab_err')
+    i = ui.tabs.indexOf(p)
+    ui.tabs.setCurrentIndex(i)
 
 
 def dict_from_list_view(l_v):
