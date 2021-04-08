@@ -125,6 +125,8 @@ def connect_gui_signals_n_slots(my_app):
     a.sig_plt.error.connect(a.slot_error)
     a.sig_ble.error.connect(a.slot_error)
     a.sig_aws.error.connect(a.slot_error)
+    a.sig_plt.debug.connect(a.slot_debug)
+    a.sig_ble.debug.connect(a.slot_debug)
     a.sig_cnv.update.connect(a.slot_gui_update_cnv)
     a.sig_gps.update.connect(a.slot_gui_update_gps_pos)
     a.sig_tim.update.connect(a.slot_gui_update_time)
@@ -134,8 +136,6 @@ def connect_gui_signals_n_slots(my_app):
     a.sig_plt.start.connect(a.slot_plt_start)
     a.sig_plt.msg.connect(a.slot_plt_msg)
     a.sig_plt.end.connect(a.slot_plt_end)
-    a.sig_plt.debug.connect(a.slot_debug)
-    a.sig_ble.debug.connect(a.slot_debug)
     a.sig_ble.scan_pre.connect(a.slot_ble_scan_pre)
     a.sig_ble.session_pre.connect(a.slot_ble_session_pre)
     a.sig_ble.logger_pre.connect(a.slot_ble_logger_pre)
@@ -143,12 +143,13 @@ def connect_gui_signals_n_slots(my_app):
     a.sig_ble.file_post.connect(a.slot_ble_file_post)
     a.sig_ble.logger_post.connect(a.slot_ble_logger_post)
     a.sig_ble.session_post.connect(a.slot_ble_session_post)
-    a.sig_ble.deployed.connect(a.slot_his_update)
-    a.sig_ble.dl_step.connect(a.slot_ble_dl_step)
-    a.sig_ble.dl_warning.connect(a.slot_ble_dl_warning)
-    a.sig_ble.gps_bad.connect(a.slot_ble_gps_bad)
+    a.sig_ble.logger_dl_step.connect(a.slot_ble_dl_step)
+    a.sig_ble.logger_dl_warning.connect(a.slot_ble_dl_warning)
+    a.sig_ble.logger_gps_bad.connect(a.slot_ble_gps_bad)
     a.sig_ble.logger_plot_req.connect(a.slot_ble_logger_plot_req)
     a.sig_tim.via.connect(a.slot_gui_update_time_source)
+    # this one is tricky
+    a.sig_ble.logger_deployed.connect(a.slot_his_update)
 
 
 def paint_gps_icon_w_color_land_sea(my_app, lat, lon):

@@ -138,7 +138,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         os._exit(0)
 
     def _timer_err(self):
-        self.slot_ble_gps_bad()
+        self.slot_ble_gps_bad('sim_mac')
         self.tim_e.stop()
 
     @pyqtSlot(str, name='slot_gui_update_time')
@@ -288,10 +288,10 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         c_log.error(e)
 
     @pyqtSlot(str, name='slot_ble_gps_bad')
-    def slot_ble_gps_bad(self, s=None):
+    def slot_ble_gps_bad(self, mac):
+        # display it did not end well, update history tab
         show_error_tab(self)
-        s = s if s else 'what'
-        self.slot_his_update(s, None, None)
+        self.slot_his_update(mac, 'no GPS fix', '')
 
     @pyqtSlot(list, name='slot_ble_dl_warning')
     def slot_ble_dl_warning(self, w):
@@ -308,7 +308,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
             lbl.setText(s)
             return
 
-        # some logger not deployed
+        # some logger not re-deployed
         _arp = json_mac_dns(ctx.app_json_file, w[0])
         _e = '{} check history'.format(_arp)
         s = '{}\n{}\n{}'.format(_[0], _[1], _e)
@@ -373,8 +373,9 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
 
         self.bar_dl.setValue(100 if ok else 0)
         self.lbl_ble.setText(s)
+
+        # on error, piggyback it to history update slot
         if not ok:
-            # piggyback error in history update slot
             self.slot_his_update(mac, s, '')
 
     @pyqtSlot(str, name='slot_ble_logger_plot_req')
@@ -419,7 +420,11 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
 
     @pyqtSlot(str, str, str, name='slot_his_update')
     def slot_his_update(self, mac, lat, lon):
-        """ th_ble sends the signal for this slot """
+        """
+        th_ble emits 'deployed' signal for this slot, at success
+        also called by slot_ble_logger_post, at error or AppBLEException
+        also called by slot_gps_bad
+        """
 
         # note: 'lat' parameter can piggyback an error message
         j = ctx.app_json_file
@@ -430,6 +435,8 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         if lat is None or lat == '':
             lat, lon = 'N/A', 'N/A'
         db.safe_update(mac, name, lat, lon, frm_t)
+
+        # re-display updated history database
         populate_history_tab(self)
 
     def click_btn_clear_known_mac_list(self):
@@ -579,7 +586,6 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
             return
         show_edit_tab(self)
 
-
     def click_btn_purge_dl_folder(self):
         """ deletes contents in 'download files' folder """
 
@@ -608,6 +614,8 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
             db = DBHis(ctx.db_his)
             db.delete_all_records()
             delete_color_mac_file(ctx.db_color_macs)
+
+        # show new (empty) history tab
         populate_history_tab(self)
 
     def click_btn_load_current_json_file(self):

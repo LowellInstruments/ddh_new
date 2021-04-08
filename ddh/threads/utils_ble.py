@@ -9,7 +9,9 @@ from ddh.threads.utils import (
     create_folder,
     check_local_file_exists,
     emit_status,
-    check_local_file_integrity, is_float, get_folder_path_from_mac, emit_gps_bad
+    check_local_file_integrity,
+    is_float,
+    get_folder_path_from_mac
 )
 from ddh.threads.utils_gps_quectel import utils_gps_get_one_lat_lon_dt, utils_gps_backup_get
 from mat.logger_controller import (
@@ -223,7 +225,7 @@ def _logger_dwg_files(lc, sig, folder, files):
         s_t = time.time()
 
         # actual download DWG
-        if not lc.dwg_file(name, folder, size, sig.dl_step):
+        if not lc.dwg_file(name, folder, size, sig.logger_dl_step):
             e = 'BLE: cannot download {}, size {}'
             _error(e.format(name, size), sig)
             return False
@@ -276,7 +278,9 @@ def _logger_rws(lc, sig, g):
     sig.status.emit(s)
     rv = lc.command(RWS_CMD, g)
     _ok_or_die([b'RWS', b'00'], rv, sig)
-    sig.deployed.emit(lc.per.addr, str(lat), str(lon))
+
+    # tell GUI, which will update history tab
+    sig.logger_deployed.emit(lc.per.addr, str(lat), str(lon))
 
 
 def _logger_plot(mac, sig):
@@ -372,7 +376,8 @@ def logger_interact(mac, fol, hci_if, sig=None):
 
             # GPS too important to keep on w/o it
             if ctx.gps_enforced and not g:
-                emit_gps_bad('bad gps for {}'.format(mac))
+                if sig:
+                    sig.logger_gps_bad.emit(mac)
                 return
 
             # STOP w/ string
@@ -394,7 +399,7 @@ def logger_interact(mac, fol, hci_if, sig=None):
                 _time_to_display(2)
                 return True, g
 
-            # :( did NOT get all files, tell all loggers super-loop
+            # :( did NOT get all files, go back to super-loop
             e = 'logger {} not done yet'.format(mac)
             sig.logger_post.emit(False, e, mac)
             sig.error.emit(e.format(mac))
