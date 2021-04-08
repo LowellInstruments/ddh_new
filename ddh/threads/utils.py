@@ -51,8 +51,6 @@ def rpi_set_brightness(v):
 
 
 def linux_set_datetime(t_str):
-    # e.g. $ date -s "19 APR 2012 11:14:00"
-
     s = 'sudo date -s "{}"'.format(t_str)
     o = sp.DEVNULL
     rv = sp.run(shlex.split(s), stdout=o, stderr=o)

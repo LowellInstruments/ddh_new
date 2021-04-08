@@ -41,21 +41,19 @@ def _time_sync_net():
 
 def _time_sync_gps():
 
-    # update only GPS time, don't care lat, lon
+    # gps_time is datetime in UTC, NOT a string, ignore lat, lon
     g = utils_gps_get_one_lat_lon_dt()
-    _, _, gps_time = g if g else (None, ) * 3
-    if not gps_time:
+    _, _, dt_gps = g if g else (None, ) * 3
+    if not dt_gps:
         return False
 
-    # this is my timezone, apply it to UTC-based datetime from GPS frame
-    tz_utc = datetime.timezone.utc
-    tz_me = get_localzone()
+    # get my timezone, format the UTC GPS datetime object as it
+    z_my = get_localzone()
+    z_utc = datetime.timezone.utc
+    dt_my = dt_gps.replace(tzinfo=z_utc).astimezone(tz=z_my)
 
-    # here gps_time is a datetime object, NOT a string
-    my_dt = gps_time.replace(tzinfo=tz_utc).astimezone(tz=tz_me)
-
-    # apply time to the box
-    t = str(my_dt)[:-6]
+    # stringify and apply time to the box
+    t = str(dt_my)[:-6]
     linux_set_datetime(t)
     return True
 

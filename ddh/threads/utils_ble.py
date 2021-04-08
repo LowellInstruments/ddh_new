@@ -378,7 +378,7 @@ def logger_interact(mac, fol, hci_if, sig=None):
             if ctx.gps_enforced and not g:
                 if sig:
                     sig.logger_gps_bad.emit(mac)
-                return
+                return False, None
 
             # STOP w/ string
             _logger_sws(lc, sig, g)
