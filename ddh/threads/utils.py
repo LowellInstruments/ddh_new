@@ -17,6 +17,8 @@ from socket import AF_INET, SOCK_DGRAM
 import socket
 import struct
 
+from mat.utils import linux_is_rpi
+
 
 def emit_status(sig, s):
     if sig:
@@ -40,6 +42,9 @@ def emit_update(sig, u):
 
 def rpi_set_brightness(v):
     """ adjusts DDH screen brightness """
+
+    if not linux_is_rpi():
+        return
 
     v *= 127
     v = 50 if v < 50 else v

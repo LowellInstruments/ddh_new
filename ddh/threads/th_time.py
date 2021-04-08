@@ -12,7 +12,7 @@ class ButtonPressEvent:
         return self.code
 
 
-TIME_SYNC_PERIOD_S = 300
+TIME_SYNC_PERIOD_S = 600
 
 
 def loop(w, ev_can_i_boot):

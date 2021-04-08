@@ -4,7 +4,7 @@ from ddh.threads.utils import wait_boot_signal
 from ddh.threads.utils_aws import aws_credentials_get, aws_ddh_sync
 
 
-PERIOD_AWS = 300
+PERIOD_AWS = 600
 
 
 def loop(w, ev_can_i_boot):

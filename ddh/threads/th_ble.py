@@ -104,11 +104,11 @@ def _download_all_loggers(w, h, macs, ml, ft: tuple):
                     # case lost -> remove from orange list, add to black
                     ml.entry_delete(mac)
                     ml.entry_add_or_update(mac, TOO_MANY_DL_ERRS_TIME_S, r, 'black')
-                    e = 'BLE: too many errors for {}, blacklist, r = {}'.format(mac, r)
+                    e = 'BLE: too many errors for {} -> black-list as r = {}'.format(mac, r)
                 else:
                     # still hope -> add to orange list
                     ml.entry_add_or_update(mac, IGNORE_TIME_S, r, 'orange')
-                    e = 'BLE: error for {}, orange-listing it r = {}'.format(mac, r)
+                    e = 'BLE: error for {} -> orange-list as r = {}'.format(mac, r)
                 w.sig_ble.error.emit(e.format(mac))
                 continue
 
@@ -135,7 +135,7 @@ def _download_all_loggers(w, h, macs, ml, ft: tuple):
             # not ours, but bluepy exception
             ml.entry_delete(mac)
             ml.entry_add_or_update(mac, IGNORE_TIME_S, 0, 'orange')
-            e = 'BLE: caught exception {}, orange-listing it w/ r = 0'.format(ex)
+            e = 'BLE: caught exception {} -> orange-list as r = 0'.format(ex)
             w.sig_ble.error.emit(e)
 
         finally:
