@@ -129,10 +129,10 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.tim_q.timeout.connect(self._timer_bye)
 
         # timer used to simulate errors
-        hide_error_tab(self)
-        self.tim_e = QTimer()
-        self.tim_e.timeout.connect(self._timer_err)
-        self.tim_e.start(5000)
+        # hide_error_tab(self)
+        # self.tim_e = QTimer()
+        # self.tim_e.timeout.connect(self._timer_err)
+        # self.tim_e.start(5000)
 
     def _timer_bye(self):
         self.tim_q.stop()
