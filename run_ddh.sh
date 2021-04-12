@@ -10,6 +10,13 @@ FOL_LI=/home/pi/li; FOL_DDH=$FOL_LI/ddh; FOL_VENV=$FOL_LI/venv
 # (un)comment this depending on if you use python virtualenv on or not
 # if [ ! -d $FOL_VENV ]; then printf "DDH python venv NOT detected\n"; exit 1; fi
 
+# ensure we place ourselves
+cd $FOL_DDH
+if [ $? -ne 0 ]; then
+  printf "cannot enter DDH folder"
+  exit 1
+fi
+
 # set X server vars for raspberry
 export XAUTHORITY=/home/pi/.Xauthority
 export DISPLAY=:0

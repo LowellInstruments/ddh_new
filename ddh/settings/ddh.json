@@ -3,8 +3,9 @@
     "db_logger_macs": {
     },
     "ship_name": "My boat!",
+    "gps_enforced": 1,
     "forget_time": 86400,
-    "forget_time_at_sea": 900,
+    "forget_time_at_sea": 86400,
     "metrics": [
         [
             "DOS",

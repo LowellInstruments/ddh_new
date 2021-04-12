@@ -38,7 +38,7 @@ from ddh.threads.utils import (
     json_get_metrics,
     json_mac_dns,
     json_get_forget_time_secs, rpi_set_brightness, rm_plot_db, json_get_pairs, setup_app_log,
-    update_cnv_log_err_file, json_set_plot_units)
+    update_cnv_log_err_file, json_set_plot_units, json_get_gps_enforced)
 from ddh.threads.utils_aws import aws_credentials_assert
 from ddh.threads.utils_gps_quectel import utils_gps_backup_set
 from ddh.threads.utils_macs import delete_color_mac_file
@@ -86,6 +86,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.tab_err_wgt_ref = None
         self.key_shift = None
         self.last_time_icon_ble_press = 0
+        self.gps_enforced = json_get_gps_enforced(ctx.app_json_file)
         json_set_plot_units(ctx.app_json_file)
         hide_edit_tab(self)
         populate_history_tab(self)

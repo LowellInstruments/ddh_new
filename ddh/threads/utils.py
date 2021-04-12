@@ -170,6 +170,14 @@ def json_get_ship_name(j):
         return 'Unnamed ship'
 
 
+def json_get_gps_enforced(j):
+    with open(j) as f:
+        cfg = json.load(f)
+        v = cfg['gps_enforced']
+        assert v in [0, 1]
+        return v
+
+
 def json_set_plot_units(j):
     with open(j) as f:
         cfg = json.load(f)

@@ -92,7 +92,8 @@ def _download_all_loggers(w, h, macs, ml, ft: tuple):
             w.sig_ble.session_pre.emit(mac, i + 1, len(li))
             w.sig_ble.status.emit('BLE: connecting {}'.format(mac))
             w.sig_ble.logger_pre.emit()
-            done, g = logger_interact(mac, fol, h, w.sig_ble)
+            gps_enf = w.gps_enforced
+            done, g = logger_interact(mac, fol, h, gps_enf, w.sig_ble)
 
             # this logger session: NOT OK, check retries left
             if not done:

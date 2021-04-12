@@ -11,11 +11,6 @@ from mat.utils import linux_is_rpi
 BOOT_GPS_FIX_TIMEOUT = 120
 
 
-def _boot_banner(w):
-    s = 'wait {}s for GPS fix'
-    w.lbl_ble.setText(s.format(BOOT_GPS_FIX_TIMEOUT))
-
-
 def _boot_sync_time(w):
     """ th_boot gets datetime source """
 
@@ -31,6 +26,10 @@ def _boot_sync_position(w):
 
 
 def _boot_connect_gps(w):
+
+    s = 'wait {}s for GPS fix'
+    w.lbl_ble.setText(s.format(BOOT_GPS_FIX_TIMEOUT))
+
     # tries twice to enable GPS, used for position and time source
     if linux_is_rpi() and not dbg_hook_make_gps_give_fake_measurement:
         rv = gps_configure_quectel()
@@ -50,7 +49,6 @@ def boot(w, evb):
     # get first values ever for position and time and their sources
     time.sleep(.5)
 
-    _boot_banner(w)
     utils_gps_cache_clear()
     _boot_connect_gps(w)
     _boot_sync_time(w)

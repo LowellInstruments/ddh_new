@@ -18,7 +18,7 @@ from mat.logger_controller import (
     RWS_CMD,
     SWS_CMD, STATUS_CMD
 )
-from mat.logger_controller_ble import ERR_MAT_ANS, FORMAT_CMD, CRC_CMD, WAKE_CMD
+from mat.logger_controller_ble import ERR_MAT_ANS, FORMAT_CMD, CRC_CMD, WAKE_CMD, brand_ti
 from mat.logger_controller_ble_factory import LcBLEFactory
 
 
@@ -363,7 +363,61 @@ def _logger_re_setup(lc, sig):
     _ensure_wake_mode_is_on(lc, sig)
 
 
-def logger_interact(mac, fol, hci_if, sig=None):
+def _interact_cc26x2(lc, mac, fol, g, sig):
+    # STOP w/ string
+    _logger_sws(lc, sig, g)
+    _logger_time_check(lc, sig)
+
+    # DIR logger files and get them
+    fol, ls = _logger_ls(lc, fol, sig, pre_rm=False)
+    got_all = _logger_dwg_files(lc, sig, fol, ls)
+
+    # :) got all files from this current logger
+    if got_all:
+        _logger_re_setup(lc, sig)
+        _logger_rws(lc, sig, g)
+        sig.logger_post.emit(True, 'logger done', mac)
+
+        # plot it
+        _logger_plot(mac, sig)
+        _time_to_display(2)
+        return True, g
+
+    # :( did NOT get all files, go back to super-loop
+    e = 'logger {} not done yet'.format(mac)
+    sig.logger_post.emit(False, e, mac)
+    sig.error.emit(e.format(mac))
+    return False, None
+
+
+def _interact_rn4020(lc, mac, fol, g, sig):
+    # STOP w/ string
+    # _logger_sws(lc, sig, g)
+    _logger_time_check(lc, sig)
+
+    # # DIR logger files and get them
+    # fol, ls = _logger_ls(lc, fol, sig, pre_rm=False)
+    # got_all = _logger_get_files(lc, sig, fol, ls)
+    #
+    # # :) got all files from this current logger
+    # if got_all:
+    #     _logger_re_setup(lc, sig)
+    #     _logger_rws(lc, sig, g)
+    #     sig.logger_post.emit(True, 'logger done', mac)
+    #
+    #     # plot it
+    #     _logger_plot(mac, sig)
+    #     _time_to_display(2)
+    #     return True, g
+    #
+    # # :( did NOT get all files, go back to super-loop
+    # e = 'logger {} not done yet'.format(mac)
+    # sig.logger_post.emit(False, e, mac)
+    # sig.error.emit(e.format(mac))
+    # return False, None
+
+
+def logger_interact(mac, fol, hci_if, gps_enf, sig=None, _interact_rn4020=None):
     """ downloads logger files and re-setups it """
 
     try:
@@ -375,35 +429,15 @@ def logger_interact(mac, fol, hci_if, sig=None):
                 g = utils_gps_backup_get()
 
             # GPS too important to keep on w/o it
-            if ctx.gps_enforced and not g:
+            if gps_enf and not g:
                 if sig:
                     sig.logger_gps_bad.emit(mac)
                 return False, None
 
-            # STOP w/ string
-            _logger_sws(lc, sig, g)
-            _logger_time_check(lc, sig)
-
-            # DIR logger files and get them
-            fol, ls = _logger_ls(lc, fol, sig, pre_rm=False)
-            got_all = _logger_dwg_files(lc, sig, fol, ls)
-
-            # :) got all files from this current logger
-            if got_all:
-                _logger_re_setup(lc, sig)
-                _logger_rws(lc, sig, g)
-                sig.logger_post.emit(True, 'logger done', mac)
-
-                # plot it
-                _logger_plot(mac, sig)
-                _time_to_display(2)
-                return True, g
-
-            # :( did NOT get all files, go back to super-loop
-            e = 'logger {} not done yet'.format(mac)
-            sig.logger_post.emit(False, e, mac)
-            sig.error.emit(e.format(mac))
-            return False, None
+            # do according to Lowell Instruments logger type
+            cb = _interact_cc26x2 if brand_ti(mac) else _interact_rn4020
+            rv = cb(lc, mac, fol, g, sig)
+            return rv
 
     # my exception, ex: no MAT.cfg file, raised at _die()
     except AppBLEException as ex:
