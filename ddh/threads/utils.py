@@ -402,11 +402,12 @@ def wait_boot_signal(w, ev, s):
     w.sig_aws.status.emit(_)
 
 
-def is_float(s: str):
+def is_float(s):
     try:
         float(s)
         return True
-    except ValueError:
+    except (TypeError, ValueError):
+        # ex: None
         return False
 
 
