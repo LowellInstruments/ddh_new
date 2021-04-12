@@ -89,6 +89,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.gps_enforced = json_get_gps_enforced(ctx.app_json_file)
         json_set_plot_units(ctx.app_json_file)
         hide_edit_tab(self)
+        hide_error_tab(self)
         populate_history_tab(self)
         rm_plot_db()
 
