@@ -1,6 +1,5 @@
 import os
 import shelve
-
 import time
 from datetime import datetime
 import fiona
@@ -11,7 +10,8 @@ from ddh.settings import ctx
 from mat.gps_quectel import gps_get_rmc_data
 
 
-BACKUP_GPS_SL = 'db/.gps_cache.sl'
+# be safe, set this path as './' == DDH app root folder
+BACKUP_GPS_SL = './.gps_cache.sl'
 CACHED_GPS_VALID_TIME = 90
 
 
