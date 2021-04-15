@@ -624,15 +624,16 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         if e.key() == Qt.Key_Shift:
             self.key_shift = 1
 
-        known = [Qt.Key_1, Qt.Key_3, Qt.Key_Shift]
-        if e.key() not in known:
+        known_keys = (Qt.Key_1, Qt.Key_3, Qt.Key_Shift)
+        if e.key() not in known_keys:
             # this may fire with alt + tab too
             e = 'GUI: unknown keypress'
             c_log.debug(e)
             return
 
         # prevent div by zero
-        if not self.plt_folders:
+        number_keys = (Qt.Key_1, Qt.Key_3)
+        if e.key() in number_keys and not self.plt_folders:
             c_log.debug('GUI: no data folders')
             e = 'no folders to plot'
             self.slot_gui_update_plt(e)
