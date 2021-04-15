@@ -140,9 +140,9 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.tim_q.stop()
         os._exit(0)
 
-    def _timer_err(self):
-        self.slot_ble_logger_gps_nope('sim_mac')
-        self.tim_e.stop()
+    # def _timer_err(self):
+    #     self.slot_ble_logger_gps_nope('sim_mac')
+    #     self.tim_e.stop()
 
     @pyqtSlot(str, name='slot_gui_update_time')
     def slot_gui_update_time(self, dots):
@@ -295,6 +295,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
 
         # GPS not found, ends up updating history tab
         show_error_tab(self)
+        self.slot_error('no GPS fix for {}'.format(mac))
         self.slot_his_update(mac, 'no GPS fix', '')
 
     @pyqtSlot(list, name='slot_ble_logger_to_orange')
