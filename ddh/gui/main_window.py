@@ -292,12 +292,12 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
 
     @pyqtSlot(str, name='slot_ble_gps_bad')
     def slot_ble_gps_bad(self, mac):
-        # display it did not end well, update history tab
+        # display GPS not found, ends up updating history tab
         show_error_tab(self)
         self.slot_his_update(mac, 'no GPS fix', '')
 
-    @pyqtSlot(list, name='slot_ble_dl_warning')
-    def slot_ble_dl_warning(self, w):
+    @pyqtSlot(list, name='slot_ble_logger_to_orange')
+    def slot_ble_logger_to_orange(self, w):
         """ th_ble sends the signal for this slot """
 
         lbl = self.lbl_plot
@@ -362,14 +362,6 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.lbl_ble.setText(s)
         ctx.lg_dl_size = dl_s
 
-    @pyqtSlot(int, name='slot_ble_file_post')
-    def slot_ble_file_post(self, speed):
-        """ th_ble sends the signal for this slot """
-
-        # s = 'BLE: approximate speed {} B/s'.format(speed)
-        # self.slot_status(s)
-        pass
-
     @pyqtSlot(bool, str, str, name='slot_ble_logger_post')
     def slot_ble_logger_post(self, ok, s, mac):
         """ th_ble sends the signal for this slot """
@@ -402,12 +394,6 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         d = self.plt_dir
         plt_args = (d, ax, ts, met)
         self.qpo.put(plt_args, timeout=1)
-
-    @pyqtSlot(str, name='slot_ble_session_post')
-    def slot_ble_session_post(self, desc):
-        """ th_ble sends the signal for this slot """
-
-        self.lbl_ble.setText(desc)
 
     @pyqtSlot(name='slot_ble_dl_step')
     def slot_ble_dl_step(self):

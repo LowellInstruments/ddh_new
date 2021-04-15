@@ -7,17 +7,16 @@ class SignalsBLE(QObject):
     debug = pyqtSignal(str)
     error = pyqtSignal(str)
     scan_pre = pyqtSignal(str)
+
     session_pre = pyqtSignal(str, int, int)
-    session_post = pyqtSignal(str)
-    file_pre = pyqtSignal(str, int, int, int, int)
-    file_post = pyqtSignal(int)
     logger_pre = pyqtSignal()
+    file_pre = pyqtSignal(str, int, int, int, int)
     logger_post = pyqtSignal(bool, str, str)
     logger_plot_req = pyqtSignal(str)
     logger_deployed = pyqtSignal(str, str, str)
-    logger_dl_warning = pyqtSignal(list)
     logger_dl_step = pyqtSignal()
     logger_gps_bad = pyqtSignal(str)
+    logger_to_orange = pyqtSignal(list)
 
 
 class SignalsGPS(QObject):

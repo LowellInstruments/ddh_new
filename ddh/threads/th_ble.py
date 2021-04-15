@@ -182,7 +182,7 @@ def loop(w, ev_can_i_boot):
 
             # >>> report stage w/ download errors, may NOT be any
             ol = ml.macs_get_orange()
-            w.sig_ble.logger_dl_warning.emit(ol)
+            w.sig_ble.logger_to_orange.emit(ol)
 
         except ble.BTLEManagementError as ex:
             e = 'BLE: big error, wrong HCI or permissions? {}'

@@ -77,7 +77,7 @@ def _logger_sws(lc, sig, g):
             _show('SWS coordinates {}'.format(g), sig)
             return
         time.sleep(.5)
-    _die(rv)
+    _die(__name__)
 
 
 def _logger_time_check(lc, sig=None):
@@ -173,7 +173,6 @@ def _logger_ls(lc, fol, sig=None, pre_rm=False):
 #         # show CRC and statistics
 #         got += 1
 #         speed = size / (time.time() - s_t)
-#         sig.file_post.emit(speed)
 #
 #     # logger was downloaded ok
 #     _ = 'almost done, '
@@ -241,10 +240,9 @@ def _logger_dwg_files(lc, sig, folder, files):
             return False
         emit_status(sig, 'BLE: got {} w/ good CRC'.format(name))
 
-        # show CRC and statistics
+        # show CRC and speed statistics
         dwg_ed += 1
-        speed = size / (time.time() - s_t)
-        sig.file_post.emit(speed)
+        # speed = size / (time.time() - s_t)
 
     # display logger downloaded ok or not
     _ = 'almost done, '
