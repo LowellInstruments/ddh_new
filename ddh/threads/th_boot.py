@@ -21,7 +21,7 @@ def _boot_sync_position(w):
     """ th_boot gets first GPS position """
 
     t = BOOT_GPS_FIX_TIMEOUT
-    _o = utils_gps_get_one_lat_lon_dt(t)
+    _o = utils_gps_get_one_lat_lon_dt(timeout=t)
     w.sig_gps.update.emit(_o)
 
 

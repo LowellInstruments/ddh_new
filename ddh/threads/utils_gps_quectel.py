@@ -50,9 +50,10 @@ def utils_gps_get_one_lat_lon_dt(timeout=3):
     """
 
     # debug hook, returns our custom GPS frame
+    t = timeout
     if ctx.dbg_hook_make_gps_give_fake_measurement:
         # remember: for GPS use .utcnow(), not .now()
-        time.sleep(timeout / 3)
+        time.sleep(t / 3)
         dt = datetime.utcnow()
         # dummy gps 1 (random)
         lat = '{:+.6f}'.format(12.34567866666666)
@@ -64,7 +65,7 @@ def utils_gps_get_one_lat_lon_dt(timeout=3):
         return lat, lon, dt
 
     # get one measurement and cache in case OK
-    d = gps_get_rmc_data(timeout)
+    d = gps_get_rmc_data(timeout=t)
     if d:
         utils_gps_backup_set(d)
     return d

@@ -636,7 +636,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         # prevent div by zero
         if not self.plt_folders:
             c_log.debug('GUI: no data folders')
-            e = 'no plot folders'
+            e = 'no folders to plot'
             self.slot_gui_update_plt(e)
             return
 
