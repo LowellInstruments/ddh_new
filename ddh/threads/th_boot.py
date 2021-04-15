@@ -27,11 +27,15 @@ def _boot_sync_position(w):
 
 def _boot_connect_gps(w):
 
-    s = 'wait {}s for GPS fix'
-    w.lbl_ble.setText(s.format(BOOT_GPS_FIX_TIMEOUT))
+    # on Desktop, do not wait
+    if not linux_is_rpi():
+        w.lbl_ble.setText('no GPS shield to wait for')
+        return
 
     # tries twice to enable GPS, used for position and time source
     if linux_is_rpi() and not dbg_hook_make_gps_give_fake_measurement:
+        s = 'wait {}s for GPS fix'.format(BOOT_GPS_FIX_TIMEOUT)
+        w.lbl_ble.setText(s)
         rv = gps_configure_quectel()
         if rv == 0:
             return
@@ -55,7 +59,5 @@ def boot(w, evb):
     _boot_sync_position(w)
 
     # now, allow other threads to boot
-    w.sig_boot.status.emit('SYS: th_boot starting other threads')
+    w.sig_boot.status.emit('SYS: th_boot -> event_start other threads')
     evb.set()
-
-

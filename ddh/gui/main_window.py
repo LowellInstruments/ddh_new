@@ -141,7 +141,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         os._exit(0)
 
     def _timer_err(self):
-        self.slot_ble_gps_bad('sim_mac')
+        self.slot_ble_logger_gps_nope('sim_mac')
         self.tim_e.stop()
 
     @pyqtSlot(str, name='slot_gui_update_time')
@@ -290,9 +290,10 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     def slot_error(self, e):
         c_log.error(e)
 
-    @pyqtSlot(str, name='slot_ble_gps_bad')
-    def slot_ble_gps_bad(self, mac):
-        # display GPS not found, ends up updating history tab
+    @pyqtSlot(str, name='slot_ble_logger_gps_nope')
+    def slot_ble_logger_gps_nope(self, mac):
+
+        # GPS not found, ends up updating history tab
         show_error_tab(self)
         self.slot_his_update(mac, 'no GPS fix', '')
 
@@ -300,6 +301,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     def slot_ble_logger_to_orange(self, w):
         """ th_ble sends the signal for this slot """
 
+        # grab GUI current content
         lbl = self.lbl_plot
         _ = lbl.text().split('\n')
         style = 'color: {}; font: 18pt'
@@ -330,21 +332,8 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
             p = '{}/img_blue.png'.format(r)
         self.img_ble.setPixmap(QPixmap(p))
 
-    @pyqtSlot(str, int, int, name='slot_ble_session_pre')
-    def slot_ble_session_pre(self, mac, val_1, val_2):
-        """ th_ble sends the signal for this slot """
-
-        # a download session consists of 1 to n loggers
-        j = ctx.app_json_file
-        s = 'logger {} of {}\n{}'
-        # desc: mac, val_1: logger index, val_2: total num of loggers
-        s = s.format(val_1, val_2, json_mac_dns(j, mac))
-        ctx.lg_num = s
-        s = 'doing {}'.format(s)
-        self.lbl_ble.setText(s)
-
-    @pyqtSlot(name='slot_ble_logger_pre')
-    def slot_ble_logger_pre(self):
+    @pyqtSlot(name='slot_ble_logger_dl_start')
+    def slot_ble_logger_dl_start(self):
         """ th_ble sends the signal for this slot """
 
         t = 'querying {}'.format(ctx.lg_num)
@@ -353,25 +342,26 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         ctx.lg_dl_bar_pc = 0
         self.bar_dl.setValue(0)
 
-    @pyqtSlot(str, int, int, int, int, name='slot_ble_file_pre')
-    def slot_ble_file_pre(self, _, dl_s, val_1, val_2, val_3):
+    @pyqtSlot(str, int, int, int, int, name='slot_ble_logger_dl_start_file')
+    def slot_ble_logger_dl_start_file(self, _, dl_s, val_1, val_2, val_3):
         """ th_ble sends the signal for this slot """
 
-        s = 'get file {} of {}\n{} minutes left'
+        s = 'file {} of {}\n{} minutes left'
         s = s.format(val_1, val_2, val_3)
         self.lbl_ble.setText(s)
         ctx.lg_dl_size = dl_s
 
-    @pyqtSlot(bool, str, str, name='slot_ble_logger_post')
-    def slot_ble_logger_post(self, ok, s, mac):
+    @pyqtSlot(bool, str, str, name='slot_ble_logger_end')
+    def slot_ble_logger_end(self, ok, s, mac):
         """ th_ble sends the signal for this slot """
 
         self.bar_dl.setValue(100 if ok else 0)
         self.lbl_ble.setText(s)
 
-        # on error, piggyback it to history update slot
+        # on error, piggyback to history update slot / tab
         if not ok:
-            self.slot_his_update(mac, s, '')
+            e = s
+            self.slot_his_update(mac, e, '')
 
     @pyqtSlot(str, name='slot_ble_logger_plot_req')
     def slot_ble_logger_plot_req(self, mac):
@@ -387,7 +377,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         d = d / str(mac).replace(':', '-')
         self.plt_dir = str(d)
 
-        # build args needed by th_plot
+        # collect args needed by th_plot
         ax = self.plt_cnv.axes
         ts = self.plt_ts
         met = self.plt_metrics
@@ -395,8 +385,8 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         plt_args = (d, ax, ts, met)
         self.qpo.put(plt_args, timeout=1)
 
-    @pyqtSlot(name='slot_ble_dl_step')
-    def slot_ble_dl_step(self):
+    @pyqtSlot(name='slot_ble_dl_progress_file')
+    def slot_ble_dl_progress_file(self):
         """ th_ble sends the signal for this slot """
 
         # 128: hardcoded XMODEM packet size
@@ -411,8 +401,8 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     def slot_his_update(self, mac, lat, lon):
         """
         th_ble emits 'deployed' signal for this slot, at success
-        also called by slot_ble_logger_post, at error or AppBLEException
-        also called by slot_gps_bad
+        also called by slot_ble_logger_after: at ble_interact error / AppBLEException
+        also called by slot_ble_logger_gps_nope
         """
 
         # note: 'lat' parameter can piggyback an error message

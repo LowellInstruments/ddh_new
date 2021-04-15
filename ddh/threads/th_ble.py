@@ -17,7 +17,7 @@ TOO_MANY_DL_ERRS_TIME_S = 3600
 IGNORE_TIME_S = 60
 
 
-def _mac_show_color_lists_on_boot(w, ml):
+def _show_mac_color_lists_at_ble_boot(w, ml):
 
     s = 'SYS: purging orange mac list on boot'
     w.sig_ble.debug.emit(s)
@@ -37,7 +37,7 @@ def _mac_show_color_lists_on_boot(w, ml):
     w.sig_ble.debug.emit(s.format(ml.get_all_entries_as_string()))
 
 
-def _scan_loggers(w, h, whitelist, ml):
+def _scan_for_loggers(w, h, whitelist, ml):
 
     # scan all BLE devices around, hint: '!' in GUI when USB dongle
     s = '!' if h else ''
@@ -80,26 +80,23 @@ def _download_all_loggers(w, h, macs, ml, ft: tuple):
     # loop along all loggers
     for i, mac in enumerate(li):
 
-        # debug hook, removes existing logger files before download session
+        # debug hook, removes this logger existing files
         if ctx.dbg_hook_purge_dl_files_for_this_mac:
             w.sig_ble.debug.emit('BLE: dbg_hook_pre_rm_files {}'.format(mac))
             _pre_rm_path = pathlib.Path(get_folder_path_from_mac(mac))
             shutil.rmtree(str(_pre_rm_path), ignore_errors=True)
 
         try:
-            # this logger session: banner
-            fol = ctx.app_dl_folder
-            w.sig_ble.session_pre.emit(mac, i + 1, len(li))
-            w.sig_ble.status.emit('BLE: connecting {}'.format(mac))
-            w.sig_ble.logger_pre.emit()
-
             # --------------------------------------------------------
             #  main interaction w/ this logger
+            w.sig_ble.status.emit('BLE: connecting {}'.format(mac))
+            w.sig_ble.logger_dl_start.emit()
+            fol = ctx.app_dl_folder
             gps_enf = w.gps_enforced
             done, g = logger_interact(mac, fol, h, gps_enf, w.sig_ble)
             # --------------------------------------------------------
 
-            # this logger session: NOT OK, check retries left
+            # logger download result: BAD, check retries left
             if not done:
                 r = ml.retries_get_from_orange_mac(mac)
                 r = 1 if not r else r + 1 if r < 5 else 5
@@ -115,7 +112,7 @@ def _download_all_loggers(w, h, macs, ml, ft: tuple):
                 w.sig_ble.error.emit(e.format(mac))
                 continue
 
-            # this logger session: OK! set 'forget time sea or land'
+            # logger download result: OK! set 'forget time sea or land'
             ft_s, ft_sea_s = ft
             lat, lon, _ = g if g else (None,) * 3
             if lat and is_float(lat) and lon and is_float(lon):
@@ -129,7 +126,7 @@ def _download_all_loggers(w, h, macs, ml, ft: tuple):
                 t = ft_sea_s
                 s = 'BLE: bad GPS signal or off, blacklist {} w/ {} secs'.format(mac, t)
 
-            # un-orange logger (if so) and black-list it
+            # un-orange logger (if so) and black-list it as success
             ml.entry_delete(mac)
             ml.entry_add_or_update(mac, t, 0, 'black')
             w.sig_ble.debug.emit(s)
@@ -144,7 +141,7 @@ def _download_all_loggers(w, h, macs, ml, ft: tuple):
         finally:
             ctx.sem_ble.release()
 
-    # give time for messages to display
+    # give time for GUI to display messages, if any
     time.sleep(3)
 
 
@@ -162,7 +159,7 @@ def loop(w, ev_can_i_boot):
     ft_sea_s = json_get_forget_time_at_sea_secs(ctx.app_json_file)
     assert ft_s >= 3600
     assert ft_sea_s >= 900
-    _mac_show_color_lists_on_boot(w, ml)
+    _show_mac_color_lists_at_ble_boot(w, ml)
 
     while 1:
         # user disabled the BLE scan with secret click on BLE
@@ -173,14 +170,14 @@ def loop(w, ev_can_i_boot):
 
         try:
             # >>> scan stage
-            macs = _scan_loggers(w, h, whitelist, ml)
+            macs = _scan_for_loggers(w, h, whitelist, ml)
             if not macs:
                 continue
 
             # >>> download stage
             _download_all_loggers(w, h, macs, ml, (ft_s, ft_sea_s))
 
-            # >>> report stage w/ download errors, may NOT be any
+            # >>> report stage w/ download errors, may be none
             ol = ml.macs_get_orange()
             w.sig_ble.logger_to_orange.emit(ol)
 

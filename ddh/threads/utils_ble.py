@@ -80,7 +80,7 @@ def _logger_sws(lc, sig, g):
     _die(__name__)
 
 
-def _logger_time_check(lc, sig=None):
+def _logger_time_sync_if_need_to(lc, sig=None):
     """ see if need to sync time """
 
     # obtain logger's time
@@ -150,12 +150,12 @@ def _logger_ls(lc, fol, sig=None, pre_rm=False):
 #         mm = ((b_left // 5000) // 60) + 1
 #         b_left -= size
 #         _show('get {}, {} B'.format(name, size), sig)
-#         sig.file_pre.emit(name, b_total, label, num_to_get, mm)
+#         sig.logger_dl_start_one_file.emit(name, b_total, label, num_to_get, mm)
 #         label += 1
 #
 #         # x-modem download
 #         s_t = time.time()
-#         if not lc.get_file(name, folder, size, sig.dl_step):
+#         if not lc.get_file(name, folder, size, sig.dl_progress):
 #             e = 'BLE: cannot get {}, size {}'
 #             _error(e.format(name, size), sig)
 #             return False
@@ -183,7 +183,7 @@ def _logger_ls(lc, fol, sig=None, pre_rm=False):
 #     else:
 #         s = 'already had all files'
 #     s = '{}\n{}'.format(_, s)
-#     sig.logger_post.emit(True, s, mac)
+#     sig.ble_logger_after.emit(True, s, mac)
 #
 #     # success condition
 #     return num_to_get == got
@@ -196,7 +196,7 @@ def _logger_dwg_files(lc, sig, folder, files):
     mac, num_to_dwg, dwg_ed = lc.per.addr, 0, 0
     name_n_size, b_total = {}, 0
 
-    # filter what we'll get, omit locally existing ones
+    # filter what we'll get, skip locally existing ones
     for each in files.items():
         name, size = each[0], int(each[1])
 
@@ -216,20 +216,22 @@ def _logger_dwg_files(lc, sig, folder, files):
     # DWG (download) files one by one
     label = 1
     for name, size in name_n_size.items():
+
+        # file: download start banner
         mm = ((b_left // 5000) // 60) + 1
         b_left -= size
         _show('dwg {}, {} B'.format(name, size), sig)
-        sig.file_pre.emit(name, b_total, label, num_to_dwg, mm)
+        sig.logger_dl_start_file.emit(name, b_total, label, num_to_dwg, mm)
         label += 1
         s_t = time.time()
 
-        # actual download DWG
-        if not lc.dwg_file(name, folder, size, sig.logger_dl_step):
+        # file: actual download using DWG command
+        if not lc.dwg_file(name, folder, size, sig.logger_dl_progress_file):
             e = 'BLE: cannot download {}, size {}'
             _error(e.format(name, size), sig)
             return False
 
-        # check file CRC
+        # file: check remote and local CRC
         crc = lc.command('CRC', name)
         rv, l_crc = check_local_file_integrity(name, folder, crc)
         # s = 'BLE: {} remote crc {} | local crc {}'
@@ -240,11 +242,11 @@ def _logger_dwg_files(lc, sig, folder, files):
             return False
         emit_status(sig, 'BLE: got {} w/ good CRC'.format(name))
 
-        # show CRC and speed statistics
+        # file: statistics
         dwg_ed += 1
         # speed = size / (time.time() - s_t)
 
-    # display logger downloaded ok or not
+    # display ALL files downloaded OK or not
     _ = 'almost done, '
     if dwg_ed > 0:
         s = 'got {} file(s)'.format(dwg_ed)
@@ -253,7 +255,7 @@ def _logger_dwg_files(lc, sig, folder, files):
     else:
         s = 'already had all files'
     s = '{}\n{}'.format(_, s)
-    sig.logger_post.emit(True, s, mac)
+    sig.logger_dl_end.emit(True, s, mac)
 
     # success condition
     return num_to_dwg == dwg_ed
@@ -364,7 +366,7 @@ def _logger_re_setup(lc, sig):
 def _interact_cc26x2(lc, mac, fol, g, sig):
     # STOP w/ string
     _logger_sws(lc, sig, g)
-    _logger_time_check(lc, sig)
+    _logger_time_sync_if_need_to(lc, sig)
 
     # DIR logger files and get them
     fol, ls = _logger_ls(lc, fol, sig, pre_rm=False)
@@ -374,7 +376,7 @@ def _interact_cc26x2(lc, mac, fol, g, sig):
     if got_all:
         _logger_re_setup(lc, sig)
         _logger_rws(lc, sig, g)
-        sig.logger_post.emit(True, 'logger done', mac)
+        sig.logger_dl_end.emit(True, 'logger done', mac)
 
         # plot it
         _logger_plot(mac, sig)
@@ -383,7 +385,7 @@ def _interact_cc26x2(lc, mac, fol, g, sig):
 
     # :( did NOT get all files, go back to super-loop
     e = 'logger {} not done yet'.format(mac)
-    sig.logger_post.emit(False, e, mac)
+    sig.logger_dl_end.emit(False, e, mac)
     sig.error.emit(e.format(mac))
     return False, None
 
@@ -391,7 +393,7 @@ def _interact_cc26x2(lc, mac, fol, g, sig):
 def _interact_rn4020(lc, mac, fol, g, sig):
     # STOP w/ string
     # _logger_sws(lc, sig, g)
-    _logger_time_check(lc, sig)
+    _logger_time_sync_if_need_to(lc, sig)
 
     # # DIR logger files and get them
     # fol, ls = _logger_ls(lc, fol, sig, pre_rm=False)
@@ -401,7 +403,7 @@ def _interact_rn4020(lc, mac, fol, g, sig):
     # if got_all:
     #     _logger_re_setup(lc, sig)
     #     _logger_rws(lc, sig, g)
-    #     sig.logger_post.emit(True, 'logger done', mac)
+    #     sig.ble_logger_after.emit(True, 'logger done', mac)
     #
     #     # plot it
     #     _logger_plot(mac, sig)
@@ -410,7 +412,7 @@ def _interact_rn4020(lc, mac, fol, g, sig):
     #
     # # :( did NOT get all files, go back to super-loop
     # e = 'logger {} not done yet'.format(mac)
-    # sig.logger_post.emit(False, e, mac)
+    # sig.ble_logger_after.emit(False, e, mac)
     # sig.error.emit(e.format(mac))
     # return False, None
 
@@ -429,7 +431,7 @@ def logger_interact(mac, fol, hci_if, gps_enf, sig=None, _interact_rn4020=None):
             # GPS too important to keep on w/o it
             if gps_enf and not g:
                 if sig:
-                    sig.logger_gps_bad.emit(mac)
+                    sig.logger_gps_nope.emit(mac)
                 return False, None
 
             # do according to Lowell Instruments logger type
@@ -440,8 +442,7 @@ def logger_interact(mac, fol, hci_if, gps_enf, sig=None, _interact_rn4020=None):
     # my exception, ex: no MAT.cfg file, raised at _die()
     except AppBLEException as ex:
         e = 'error: {}, will retry'.format(ex)
-        # e: ends up in history tab
-        sig.logger_post.emit(False, e, mac)
+        sig.logger_dl_end.emit(False, e, mac)
         sig.error.emit(e)
         return False, None
 
@@ -452,5 +453,5 @@ def logger_interact(mac, fol, hci_if, gps_enf, sig=None, _interact_rn4020=None):
 
 
 class AppBLEException(Exception):
-    # used in logger_download()
+    # used in logger_interact()
     pass
