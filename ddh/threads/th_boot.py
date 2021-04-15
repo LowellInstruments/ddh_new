@@ -20,8 +20,9 @@ def _boot_sync_time(w):
 def _boot_sync_position(w):
     """ th_boot gets first GPS position """
 
-    t = BOOT_GPS_FIX_TIMEOUT
-    _o = utils_gps_get_one_lat_lon_dt(timeout=t)
+    s = 'wait {}s for GPS fix'.format(BOOT_GPS_FIX_TIMEOUT)
+    w.lbl_ble.setText(s)
+    _o = utils_gps_get_one_lat_lon_dt(timeout=BOOT_GPS_FIX_TIMEOUT)
     w.sig_gps.update.emit(_o)
 
 
@@ -33,9 +34,7 @@ def _boot_connect_gps(w):
         return
 
     # tries twice to enable GPS, used for position and time source
-    if linux_is_rpi() and not dbg_hook_make_gps_give_fake_measurement:
-        s = 'wait {}s for GPS fix'.format(BOOT_GPS_FIX_TIMEOUT)
-        w.lbl_ble.setText(s)
+    if not dbg_hook_make_gps_give_fake_measurement:
         rv = gps_configure_quectel()
         if rv == 0:
             return
