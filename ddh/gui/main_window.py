@@ -504,9 +504,10 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         c_log.debug('GUI: clicked secret bye!')
         self.closeEvent(_)
 
-    def click_icon_plot(self, _):
+    def click_icon_plot(self, ev):
         """ clicking shift + plot icon minimizes the app """
 
+        ev.accept()
         s = 'GUI: secret PLT click, shift pressed = {}'
         c_log.debug(s.format(self.key_shift))
 
@@ -515,9 +516,10 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.key_shift = 0
         self.showMinimized()
 
-    def click_icon_ble(self, _):
+    def click_icon_ble(self, ev):
         """ clicking shift + BLE icon disables bluetooth thread """
 
+        ev.accept()
         s = 'GUI: secret BLE click, shift pressed = {}'
         c_log.debug(s.format(self.key_shift))
 
@@ -549,21 +551,20 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
             v = self.bright_idx
             rpi_set_brightness(v)
 
-    def click_icon_net(self, _):
+    def click_icon_net(self, ev):
         """ clicking shift + NET icon (un)shows the EDIT tab """
 
+        ev.accept()
         s = 'GUI: secret NET click, shift pressed = {}'
         c_log.debug(s.format(self.key_shift))
 
         if not self.key_shift:
             return
         self.key_shift = 0
-        self.tab_edit_hide = not self.tab_edit_hide
 
-        if self.tab_edit_hide:
-            hide_edit_tab(self)
-            return
-        show_edit_tab(self)
+        # toggle edit tab visibility
+        teh = self.tab_edit_hide = not self.tab_edit_hide
+        hide_edit_tab(self) if teh else show_edit_tab(self)
 
     def click_btn_purge_dl_folder(self):
         """ deletes contents in 'download files' folder """
@@ -615,10 +616,6 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         c_log.debug('SYS: closing GUI ...')
         sys.stderr.close()
         os._exit(0)
-
-    def keyReleaseEvent(self, e):
-        # just ensure it
-        self.key_shift = 0
 
     def keyPressEvent(self, e):
         """ controls status of the PRESS event of keyboard keys """
