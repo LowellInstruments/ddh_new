@@ -90,7 +90,7 @@ def _download_all_loggers(w, h, macs, ml, ft: tuple):
             # --------------------------------------------------------
             #  main interaction w/ this logger
             w.sig_ble.status.emit('BLE: connecting {}'.format(mac))
-            w.sig_ble.logger_dl_start.emit()
+            w.sig_ble.logger_dl_start.emit(mac)
             fol = ctx.app_dl_folder
             gps_enf = w.gps_enforced
             done, g = logger_interact(mac, fol, h, gps_enf, w.sig_ble)
@@ -122,10 +122,10 @@ def _download_all_loggers(w, h, macs, ml, ft: tuple):
                     s = 'BLE: in-land GPS, blacklist {} w/ {} secs'.format(mac, t)
                 else:
                     t = ft_sea_s
-                    s = 'BLE: at sea GPS, blacklist {} w/ {} secs'.format(mac, t)
+                    s = 'BLE: sea GPS, blacklist {} w/ {} secs'.format(mac, t)
             else:
                 t = ft_sea_s
-                s = 'BLE: bad GPS signal or off, blacklist {} w/ {} secs'.format(mac, t)
+                s = 'BLE: unknown sea / land GPS, blacklist {} w/ {} secs'.format(mac, t)
 
             # un-orange logger (if so) and black-list it as success
             ml.entry_delete(mac)

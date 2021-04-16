@@ -16,8 +16,9 @@ import json
 from socket import AF_INET, SOCK_DGRAM
 import socket
 import struct
-
+from pathlib import Path
 from mat.utils import linux_is_rpi
+from mat.data_file_factory import load_data_file
 
 
 def emit_status(sig, s):
@@ -279,18 +280,32 @@ def get_folder_path_from_mac(mac):
     return fol
 
 
+def _lid_file_has_sensor_data_type(path, suffix):
+    _map = {
+        '_DissolvedOxygen': 'DOS',
+        '_Temperature': 'TMP',
+        '_Pressure': 'PRS'
+    }
+    header = load_data_file(path).header()
+    return header.tag(_map[suffix])
+
+
 def lid_to_csv(fol, suffix, sig, files_to_ignore=[]) -> (bool, list):
     """ converts depending on fileX_suffix.lid is an existing file """
 
-    # valid_suffixes = ('_DissolvedOxygen', '_Temperature', '_Pressure')
-    valid_suffixes = ('_DissolvedOxygen', )
-    assert suffix in valid_suffixes
+    # check asked MAC folder exists
     err_files = []
-
-    if not os.path.exists(fol):
+    if not Path(fol).is_dir():
+        sig.error.emit('error: {} does not exist'.format(fol))
         return False, err_files
 
-    # prepare conversion
+    # check asked sensor data type exists
+    valid_suffixes = ('_DissolvedOxygen', '_Temperature', '_Pressure')
+    if suffix not in valid_suffixes:
+        sig.error.emit('error: asked unknown suffix {}'.format(suffix))
+        return False, err_files
+
+    # conversion
     parameters = default_parameters()
     lid_files = linux_ls_by_ext(fol, 'lid')
     all_ok = True
@@ -299,20 +314,26 @@ def lid_to_csv(fol, suffix, sig, files_to_ignore=[]) -> (bool, list):
         # prevents continuous warnings on same files
         if f in files_to_ignore:
             continue
+
+        # skip already converted files
         _ = '{}{}.csv'.format(f.split('.')[0], suffix)
-        if os.path.exists(_):
-            # print('file {} already exists'.format(_))
+        if Path(_).is_file():
+            # print('>> file {} already exists'.format(_))
             continue
 
+        # skip files not containing this sensor data
+        if not _lid_file_has_sensor_data_type(f, suffix):
+            sig.debug.emit('SYS: file {} has no {} data'.format(f, suffix))
+            continue
+
+        # try to convert
         try:
             DataConverter(f, parameters).convert()
-            s = 'converted OK -> {}'.format(f)
-            sig.status.emit(s)
+            sig.debug.emit('SYS: OK -> {}, suffix {}'.format(f, suffix))
         except (ValueError, Exception) as ve:
             all_ok = False
             err_files.append(f)
-            e = 'error converting {} -> {}'.format(f, ve)
-            sig.error.emit(e)
+            sig.error.emit('SYS: error {} -> {}'.format(f, ve))
 
     return all_ok, err_files
 
@@ -360,9 +381,8 @@ def rm_folder(mac):
 def rm_plot_db():
     """ removes plot database file """
 
-    p = ctx.db_plt
-    if os.path.exists(p):
-        os.remove(p)
+    if Path(ctx.db_plt).is_file():
+        os.remove(ctx.db_plt)
 
 
 def setup_app_log(path_to_log_file: str):

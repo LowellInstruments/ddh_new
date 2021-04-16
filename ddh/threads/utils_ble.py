@@ -74,7 +74,7 @@ def _logger_sws(lc, sig, g):
     """ STOP logger w/ STRING """
 
     if _logger_is_already_stopped(lc):
-        _show('BLE: no SWS required', sig)
+        _show('no SWS required', sig)
         return
 
     # format GPS string to be used with STOP w/ string
@@ -115,7 +115,7 @@ def _logger_time_sync_if_need_to(lc, sig=None):
     _show(s, sig)
 
 
-def _logger_ls(lc, fol, sig=None, pre_rm=False):
+def _logger_ls_both_lid_and_not_lid(lc, fol, sig=None, pre_rm=False):
 
     # create destination folder when not exists
     assert ':' not in str(fol)
@@ -137,6 +137,23 @@ def _logger_ls(lc, fol, sig=None, pre_rm=False):
     files = lid_f
     files.update(gps_f)
     return fol, files
+
+
+def _logger_ls_lid(lc, fol, sig=None, pre_rm=False):
+    # create destination folder when not exists
+    assert ':' not in str(fol)
+    mac = lc.per.addr
+    if pre_rm:
+        rm_folder(mac)
+    fol = create_folder(mac, fol)
+
+    # get DIR lid listing
+    lid_f = lc.ls_lid()
+    s = 'BLE: DIR lid {}'.format(lid_f)
+    emit_status(sig, s)
+    if lid_f == ERR_MAT_ANS.encode():
+        return None
+    return fol, lid_f
 
 
 def _logger_get_files(lc, sig, folder, files):
@@ -168,22 +185,21 @@ def _logger_get_files(lc, sig, folder, files):
         mm = ((b_left // 5000) // 60) + 1
         b_left -= size
         _show('get {}, {} B'.format(name, size), sig)
-        sig.logger_dl_start_one_file.emit(name, b_total, label, num_to_get, mm)
+        sig.logger_dl_start_file.emit(name, b_total, label, num_to_get, mm)
         label += 1
 
         # x-modem download, it has embedded CRC checking
         s_t = time.time()
-        if not lc.get_file(name, folder, size, sig.dl_progress):
-            e = 'BLE: cannot get {}, size {}'
-            _error(e.format(name, size), sig)
+        if not lc.get_file(name, folder, size, sig.logger_dl_progress_get_file):
+            _error('BLE cannot get {}, size {}'.format(name, size), sig)
             return False
 
         # for RN4020 loggers, we delete the file
-        rv = lc.command(DEL_FILE_CMD, name)
-        if rv != [b'DEL', b'00']:
-            e = 'BLE: cannot delete {}, size {}'
-            _error(e.format(name, size), sig)
-            return False
+        # rv = lc.command(DEL_FILE_CMD, name)
+        # if rv != [b'DEL', b'00']:
+        #     e = 'BLE: cannot delete {}, size {}'
+        #     _error(e.format(name, size), sig)
+        #     return False
 
         # show CRC and statistics
         got += 1
@@ -198,7 +214,7 @@ def _logger_get_files(lc, sig, folder, files):
     else:
         s = 'already had all files'
     s = '{}\n{}'.format(_, s)
-    sig.ble_logger_after.emit(True, s, mac)
+    sig.logger_dl_end.emit(True, s, mac)
 
     # success condition
     return num_to_get == got
@@ -241,7 +257,7 @@ def _logger_dwg_files(lc, sig, folder, files):
         s_t = time.time()
 
         # file: actual download using DWG command
-        if not lc.dwg_file(name, folder, size, sig.logger_dl_progress_file):
+        if not lc.dwg_file(name, folder, size, sig.logger_dl_progress_dwg_file):
             e = 'BLE: cannot download {}, size {}'
             _error(e.format(name, size), sig)
             return False
@@ -277,7 +293,7 @@ def _logger_dwg_files(lc, sig, folder, files):
 
 
 def _logger_rws(lc, sig, g):
-    """ logger RUN w/ string """
+    """ logger RUN w/ string, does not exist on rn4020 loggers """
 
     # format GPS parameter
     lat, lon, _ = g if g else (None, ) * 3
@@ -384,7 +400,7 @@ def _interact_cc26x2(lc, mac, fol, g, sig):
     _logger_time_sync_if_need_to(lc, sig)
 
     # DIR logger files and get them
-    fol, ls = _logger_ls(lc, fol, sig, pre_rm=False)
+    fol, ls = _logger_ls_both_lid_and_not_lid(lc, fol, sig, pre_rm=False)
     got_all = _logger_dwg_files(lc, sig, fol, ls)
 
     # :) got all files from this current cc26x2 logger
@@ -406,51 +422,48 @@ def _interact_cc26x2(lc, mac, fol, g, sig):
 
 
 def _interact_rn4020(lc, mac, fol, g, sig):
-    # todo: TEST THIS FUNCTION
-
-    # STOP and sync time
-    _logger_stp(lc, sig, g)
+    # STOP with String and sync time
+    _logger_sws(lc, sig, g)
     _logger_time_sync_if_need_to(lc, sig)
 
     # DIR logger files and GET them, not DWG
-    fol, ls = _logger_ls(lc, fol, sig, pre_rm=False)
+    fol, ls = _logger_ls_lid(lc, fol, sig, pre_rm=False)
     got_all = _logger_get_files(lc, sig, fol, ls)
 
-    # :) got all files from this current rn4020 logger
+    # :) plot, since we got all files from this rn4020 logger
     if got_all:
-        _logger_rws(lc, sig, g)
-        sig.ble_logger_after.emit(True, 'logger done', mac)
-
-        # plot it
+        sig.logger_dl_end.emit(True, 'logger done', mac)
         _logger_plot(mac, sig)
         _time_to_display(2)
+
+        # tell about RN4020 deployment, so GUI updates history tab
+        sig.logger_deployed.emit(lc.per.addr, 'RN4020 deployed', '')
         return True, g
 
     # :( did NOT get all files, go back to super-loop
     e = 'logger {} not done yet'.format(mac)
-    sig.ble_logger_after.emit(False, e, mac)
+    sig.logger_dl_end.emit(False, e, mac)
     sig.error.emit(e.format(mac))
     return False, None
 
 
-def logger_interact(mac, fol, hci_if, gps_enf, sig=None, _interact_rn4020=None):
+def logger_interact(mac, fol, hci_if, gps_enf, sig=None):
     """ downloads logger files and re-setups it """
 
+    # check GPS too important to keep on w/o it
+    g = utils_gps_get_one_lat_lon_dt(timeout=5)
+    if not g:
+        g = utils_gps_cache_get()
+    if gps_enf and not g:
+        if sig:
+            sig.logger_gps_nope.emit(mac)
+        return False, None
+
+    # get object to interact w/ current logger
     try:
-        # get object to interact w/ current logger
         lc = LcBLEFactory.generate(mac)
         with lc(mac, hci_if) as lc:
-            g = utils_gps_get_one_lat_lon_dt(timeout=5)
-            if not g:
-                g = utils_gps_cache_get()
-
-            # GPS too important to keep on w/o it
-            if gps_enf and not g:
-                if sig:
-                    sig.logger_gps_nope.emit(mac)
-                return False, None
-
-            # do according to logger chipset type
+            # do according to logger chipset type, rn4020 or cc26x2
             cb = _interact_cc26x2 if brand_ti(mac) else _interact_rn4020
             rv = cb(lc, mac, fol, g, sig)
             return rv

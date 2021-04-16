@@ -16,9 +16,10 @@ def loop(w, ev_can_i_boot):
 
     wait_boot_signal(w, ev_can_i_boot, 'NET')
 
-    # check our platform
+    # check our platform CELL capabilities
     desktop_or_no_cell_shield = (not linux_is_rpi()) or (not ctx.cell_shield_en)
-    w.sig_net.status.emit('NET: cell shield flag: {}'.format(ctx.cell_shield_en))
+    cell_present = not desktop_or_no_cell_shield
+    w.sig_net.status.emit('NET: cell features -> {}'.format(cell_present))
 
     # loop here when desktop computer or DDH w/o cell
     old_s = ''

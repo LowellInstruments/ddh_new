@@ -22,7 +22,6 @@ db_color_macs = None
 
 
 # current logger context
-lg_num = ''
 lg_dl_size = 0
 lg_dl_bar_pc = 0
 
@@ -52,8 +51,8 @@ gps_enforced = True
 
 
 # debug hooks :)
-dbg_hook_purge_mac_blacklist_on_boot = False
-dbg_hook_purge_dl_files_for_this_mac = False
+dbg_hook_purge_mac_blacklist_on_boot = True
+dbg_hook_purge_dl_files_for_this_mac = True
 dbg_hook_make_dummy_ti_logger_visible = False
 dbg_hook_make_gps_give_fake_measurement = False
 dbg_hook_make_ntp_to_fail = False

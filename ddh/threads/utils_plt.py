@@ -193,7 +193,7 @@ def _slice_n_avg(t, d, ts, sig):
 
 def _cache_or_process(sig, folder, ts, metric, sd):
     # metadata
-    emit_status(sig, 'PLT: processing {} data'.format(metric))
+    emit_status(sig, 'PLT: processing {} data...'.format(metric))
     c = _metric_to_col_name(metric)
     mac = get_mac_from_folder_path(folder)
 

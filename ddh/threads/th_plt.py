@@ -11,25 +11,28 @@ from ddh.threads.utils_plt import plot
 
 
 def _plot_data(w, plt_args):
-
     def _plot():
-        fol, ax, ts, metric_pair = plt_args
+        fol, ax, ts, metric_pairs = plt_args
         j = ctx.app_json_file
         lg = json_mac_dns(j, get_mac_from_folder_path(fol))
         sd = json_get_span_dict(j)
 
         # plot
-        for pair in metric_pair:
-            if plot(w.sig_plt, fol, ax, ts, pair, sd, lg):
+        rv = False
+        pair_failed = None
+        for each_pair in metric_pairs:
+            rv |= plot(w.sig_plt, fol, ax, ts, each_pair, sd, lg)
+            if rv:
                 w.sig_plt.end.emit(True, None)
                 return
+            pair_failed = each_pair
 
-            # oops, plotting went wrong
-            e = 'PLT: no {}({}) plots for \'{}\''.format(pair, ts, lg)
-            w.sig_plt.error.emit(e)
-            e = 'can\'t plot 1{} \'{}\''.format(ts, lg)
-            w.sig_plt.msg.emit(e)
-            w.sig_plt.end.emit(False, e)
+        # oops, all plotting went wrong
+        e = 'PLT: no {}({}) plots for \'{}\''.format(pair_failed, ts, lg)
+        w.sig_plt.error.emit(e)
+        e = 'can\'t plot 1{} \'{}\''.format(ts, lg)
+        w.sig_plt.msg.emit(e)
+        w.sig_plt.end.emit(False, e)
 
     th = threading.Thread(target=_plot)
     th.start()

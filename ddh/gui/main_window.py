@@ -332,11 +332,11 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
             p = '{}/img_blue.png'.format(r)
         self.img_ble.setPixmap(QPixmap(p))
 
-    @pyqtSlot(name='slot_ble_logger_dl_start')
-    def slot_ble_logger_dl_start(self):
+    @pyqtSlot(str, name='slot_ble_logger_dl_start')
+    def slot_ble_logger_dl_start(self, mac):
         """ th_ble sends the signal for this slot """
 
-        t = 'querying {}'.format(ctx.lg_num)
+        t = 'querying {}'.format(mac)
         self.lbl_ble.setText(t)
         ctx.lg_dl_size = 0
         ctx.lg_dl_bar_pc = 0
@@ -385,16 +385,21 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         plt_args = (d, ax, ts, met)
         self.qpo.put(plt_args, timeout=1)
 
-    @pyqtSlot(name='slot_ble_dl_progress_file')
-    def slot_ble_dl_progress_file(self):
+    @pyqtSlot(name='slot_ble_dl_progress_get_file')
+    def slot_ble_dl_progress_get_file(self):
         """ th_ble sends the signal for this slot """
 
-        # 128: hardcoded XMODEM packet size
-        # step = 128
+        # 128: hardcoded XMODEM packet size using GET for CC26x2
+        # 1024: hardcoded XMODEM packet size using GET for RN4020
+        ctx.lg_dl_bar_pc += (100 * (1024 / ctx.lg_dl_size))
+        self.bar_dl.setValue(ctx.lg_dl_bar_pc)
+
+    @pyqtSlot(name='slot_ble_dl_progress_dwg_file')
+    def slot_ble_dl_progress_dwg_file(self):
+        """ th_ble sends the signal for this slot """
 
         # 2048: hardcoded when using DWG
-        pc = 100 * (2048 / ctx.lg_dl_size)
-        ctx.lg_dl_bar_pc += pc
+        ctx.lg_dl_bar_pc += (100 * (2048 / ctx.lg_dl_size))
         self.bar_dl.setValue(ctx.lg_dl_bar_pc)
 
     @pyqtSlot(str, str, str, name='slot_his_update')
