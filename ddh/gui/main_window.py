@@ -189,9 +189,6 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     def slot_gui_update_gps_pos(self, u):
         """ th_gps sends the signal for this slot """
 
-        # save current content (cc) of GUI
-        cc = self.lbl_time_n_pos.text().split('\n')
-
         # u: lat, lon, timestamp
         lat, lon, self.gps_last_ts = ('N/A',) * 3
         if u:
@@ -199,6 +196,8 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
             lon = '{:+.6f}'.format(float(u[1]))
             self.gps_last_ts = u[2]
 
+        # update content of the GUI
+        cc = self.lbl_time_n_pos.text().split('\n')
         s = '{}\n{}\n{}\n{}'.format(cc[0], lat, lon, cc[3])
         self.lbl_time_n_pos.setText(s)
         if u:
@@ -295,7 +294,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
 
         # GPS not found, ends up updating history tab
         show_error_tab(self)
-        self.slot_error('no GPS fix for {}'.format(mac))
+        self.slot_warning('SYS: no GPS fix for {}'.format(mac))
         self.slot_his_update(mac, 'no GPS fix', '')
 
     @pyqtSlot(list, name='slot_ble_logger_to_orange')

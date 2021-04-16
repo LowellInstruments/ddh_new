@@ -104,7 +104,8 @@ def _download_all_loggers(w, h, macs, ml, ft: tuple):
                     # case lost -> remove from orange list, add to black
                     ml.entry_delete(mac)
                     ml.entry_add_or_update(mac, TOO_MANY_DL_ERRS_TIME_S, r, 'black')
-                    e = 'BLE: too many errors for {} -> black-list as r = {}'.format(mac, r)
+                    e = 'BLE: max errors {} -> black-list as r = {} for {} secs'
+                    e = e.format(mac, r)
                 else:
                     # still hope -> add to orange list
                     ml.entry_add_or_update(mac, IGNORE_TIME_S, r, 'orange')

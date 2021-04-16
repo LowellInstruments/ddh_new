@@ -31,7 +31,7 @@ class ColorMacList:
         s = ''
         with shelve.open(self.db_name) as sh:
             for k, v in sh.items():
-                # v: (datestamp, retries, color)
+                # v: (expiration time, retries, color)
                 t = int(v[0] - datetime.datetime.now().timestamp())
                 _ = '{}: {} seconds left, retries {}, color {} / '
                 s += _.format(k, t, v[1], v[2])
@@ -44,7 +44,7 @@ class ColorMacList:
         with shelve.open(self.db_name) as sh:
             for k, v in sh.items():
                 if v[2] == 'orange':
-                    # v: (datestamp, retries, color)
+                    # v: (expiration time, retries, color)
                     t = int(v[0] - datetime.datetime.now().timestamp())
                     _ = '{}: {} seconds left, retries {}, color {} / '
                     s += _.format(k, t, v[1], v[2])
@@ -80,7 +80,7 @@ class ColorMacList:
         """ return orange entries """
 
         db = shelve.open(self.db_name)
-        rv = {k: v for k,v in db.items() if v[2] == 'orange'}
+        rv = {k: v for k, v in db.items() if v[2] == 'orange'}
         db.close()
         return rv
 
@@ -101,6 +101,7 @@ class ColorMacList:
         db = shelve.open(self.db_name)
         _now = datetime.datetime.now().timestamp()
         for k, v in db.items():
+            # v: (expiration time, retries, color)
             if _now < v[0] and v[2] == 'orange':
                 rv.append(k)
         db.close()
@@ -129,7 +130,7 @@ class ColorMacList:
         db.close()
         return rv
 
-    def retries_get_from_orange_mac(self, mac) -> list:
+    def retries_get_from_orange_mac(self, mac):
         om = self.entries_get_all_orange()
         try:
             return om[mac][1]

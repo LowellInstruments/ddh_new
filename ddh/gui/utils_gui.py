@@ -203,7 +203,7 @@ def hide_error_tab(ui):
 
 
 def show_error_tab(ui):
-    icon = QIcon('ddh/gui/res/icon_lowell.png')
+    icon = QIcon('ddh/gui/res/icon_exclamation.png')
     ui.tabs.addTab(ui.tab_err_wgt_ref, icon, ' Note')
     p = ui.tabs.findChild(QWidget, 'tab_err')
     i = ui.tabs.indexOf(p)
