@@ -8,7 +8,7 @@ from ddh.db.db_his import DBHis
 from ddh.settings.version import VER_SW
 from ddh.threads.th_time import ButtonPressEvent
 from ddh.threads.utils import json_get_ship_name
-from ddh.threads.utils_gps_quectel import utils_gps_in_land, utils_gps_valid_cache, utils_gps_backup_get
+from ddh.threads.utils_gps_quectel import utils_gps_in_land, utils_gps_cache_is_there_any, utils_gps_cache_get
 from mat.utils import linux_is_rpi, linux_is_docker_on_rpi
 
 
@@ -165,9 +165,9 @@ def paint_gps_icon_w_color_dis_or_cache(my_app):
     """ paints the gps icon as disabled or cache """
 
     a = my_app
-    if utils_gps_valid_cache():
+    if utils_gps_cache_is_there_any():
         # dirty but meh, update GUI content
-        lat, lon, _ = utils_gps_backup_get()
+        lat, lon, _ = utils_gps_cache_get()
         img = 'ddh/gui/res/img_gps_cache.png'
         cc = a.lbl_time_n_pos.text().split('\n')
         lat = '{:+.6f}'.format(float(lat))

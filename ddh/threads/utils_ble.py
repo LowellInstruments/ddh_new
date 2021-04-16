@@ -13,10 +13,10 @@ from ddh.threads.utils import (
     is_float,
     get_folder_path_from_mac
 )
-from ddh.threads.utils_gps_quectel import utils_gps_get_one_lat_lon_dt, utils_gps_backup_get
+from ddh.threads.utils_gps_quectel import utils_gps_get_one_lat_lon_dt, utils_gps_cache_get
 from mat.logger_controller import (
     RWS_CMD,
-    SWS_CMD, STATUS_CMD
+    SWS_CMD, STATUS_CMD, STOP_CMD, DEL_FILE_CMD
 )
 from mat.logger_controller_ble import ERR_MAT_ANS, FORMAT_CMD, CRC_CMD, WAKE_CMD, brand_ti
 from mat.logger_controller_ble_factory import LcBLEFactory
@@ -53,12 +53,28 @@ def _logger_is_already_stopped(lc):
     return rv == [b'STS', b'0201']
 
 
+def _logger_stp(lc, sig, g):
+    """ STOP logger, plain, NO string """
+
+    if _logger_is_already_stopped(lc):
+        _show('BLE: no STP required', sig)
+        return
+
+    # send STP command
+    for _ in range(10):
+        rv = lc.command(STOP_CMD, '{}'.format(g))
+        if rv == [b'STP', b'00']:
+            _show('STP went OK', sig)
+            return
+        time.sleep(1)
+    _die(__name__)
+
+
 def _logger_sws(lc, sig, g):
     """ STOP logger w/ STRING """
 
     if _logger_is_already_stopped(lc):
-        s = 'BLE: no SWS required'
-        emit_status(sig, s)
+        _show('BLE: no SWS required', sig)
         return
 
     # format GPS string to be used with STOP w/ string
@@ -123,70 +139,69 @@ def _logger_ls(lc, fol, sig=None, pre_rm=False):
     return fol, files
 
 
-# def _logger_get_files(lc, sig, folder, files):
-#     mac, num_to_get, got = lc.per.addr, 0, 0
-#     name_n_size, b_total = {}, 0
-#
-#     # filter what we'll get, omit locally existing ones
-#     for each in files.items():
-#         name, size = each[0], int(each[1])
-#
-#         if size == 0:
-#             _show('not getting {}, size 0'.format(name), sig)
-#             continue
-#
-#         if not check_local_file_exists(name, size, folder):
-#             name_n_size[name] = size
-#             num_to_get += 1
-#             b_total += size
-#
-#     # statistics
-#     b_left = b_total
-#     _show('{} has {} files for us'.format(mac, num_to_get), sig)
-#
-#     # download files one by one
-#     label = 1
-#     for name, size in name_n_size.items():
-#         mm = ((b_left // 5000) // 60) + 1
-#         b_left -= size
-#         _show('get {}, {} B'.format(name, size), sig)
-#         sig.logger_dl_start_one_file.emit(name, b_total, label, num_to_get, mm)
-#         label += 1
-#
-#         # x-modem download
-#         s_t = time.time()
-#         if not lc.get_file(name, folder, size, sig.dl_progress):
-#             e = 'BLE: cannot get {}, size {}'
-#             _error(e.format(name, size), sig)
-#             return False
-#
-#         # check file CRC
-#         crc = lc.command('CRC', name)
-#         rv, l_crc = check_local_file_integrity(name, folder, crc)
-#         # s = 'BLE: {} remote crc {} | local crc {}'
-#         # emit_status(sig, s.format(name, crc, l_crc))
-#         if not rv:
-#             _error('bad crc on {}'.format(name), sig)
-#             return False
-#         emit_status(sig, 'BLE: got {} w/ good CRC'.format(name))
-#
-#         # show CRC and statistics
-#         got += 1
-#         speed = size / (time.time() - s_t)
-#
-#     # logger was downloaded ok
-#     _ = 'almost done, '
-#     if got > 0:
-#         s = 'got {} file(s)'.format(got)
-#     elif got == 0:
-#         s = 'no files to get'
-#     else:
-#         s = 'already had all files'
-#     s = '{}\n{}'.format(_, s)
-#     sig.ble_logger_after.emit(True, s, mac)
-#
-#     # success condition
-#     return num_to_get == got
+def _logger_get_files(lc, sig, folder, files):
+    """ GET all files in a logger """
+
+    mac, num_to_get, got = lc.per.addr, 0, 0
+    name_n_size, b_total = {}, 0
+
+    # filter what we'll get, omit locally existing ones
+    for each in files.items():
+        name, size = each[0], int(each[1])
+
+        if size == 0:
+            _show('not getting {}, size 0'.format(name), sig)
+            continue
+
+        if not check_local_file_exists(name, size, folder):
+            name_n_size[name] = size
+            num_to_get += 1
+            b_total += size
+
+    # statistics
+    b_left = b_total
+    _show('{} has {} files for us'.format(mac, num_to_get), sig)
+
+    # download files one by one
+    label = 1
+    for name, size in name_n_size.items():
+        mm = ((b_left // 5000) // 60) + 1
+        b_left -= size
+        _show('get {}, {} B'.format(name, size), sig)
+        sig.logger_dl_start_one_file.emit(name, b_total, label, num_to_get, mm)
+        label += 1
+
+        # x-modem download, it has embedded CRC checking
+        s_t = time.time()
+        if not lc.get_file(name, folder, size, sig.dl_progress):
+            e = 'BLE: cannot get {}, size {}'
+            _error(e.format(name, size), sig)
+            return False
+
+        # for RN4020 loggers, we delete the file
+        rv = lc.command(DEL_FILE_CMD, name)
+        if rv != [b'DEL', b'00']:
+            e = 'BLE: cannot delete {}, size {}'
+            _error(e.format(name, size), sig)
+            return False
+
+        # show CRC and statistics
+        got += 1
+        speed = size / (time.time() - s_t)
+
+    # logger was downloaded ok
+    _ = 'almost done, '
+    if got > 0:
+        s = 'got {} file(s)'.format(got)
+    elif got == 0:
+        s = 'no files to get'
+    else:
+        s = 'already had all files'
+    s = '{}\n{}'.format(_, s)
+    sig.ble_logger_after.emit(True, s, mac)
+
+    # success condition
+    return num_to_get == got
 
 
 def _logger_dwg_files(lc, sig, folder, files):
@@ -300,12 +315,12 @@ def _ensure_wake_mode_is_on(lc, sig):
 
     rv = lc.command(WAKE_CMD)
     if len(rv) != 2:
-        _die('sending wake mode 1 failed')
+        _die('sending 1st wake mode failed')
     wak_is_on = rv[1].decode()[-1]
     if wak_is_on == '0':
         rv = lc.command(WAKE_CMD)
         if len(rv) != 2:
-            _die('sending wake mode 2 failed')
+            _die('sending 2nd wake mode failed')
     wak_is_on = rv[1].decode()[-1]
     if wak_is_on == '1':
         _show('wake mode enabled', sig)
@@ -313,7 +328,7 @@ def _ensure_wake_mode_is_on(lc, sig):
     _die('could not enable wake mode')
 
 
-def _logger_re_setup(lc, sig):
+def _logger_re_setup_cc26x2(lc, sig):
     """ get logger's MAT.cfg, formats mem, re-sends MAT.cfg """
 
     # check configuration file is present in the logger
@@ -372,9 +387,9 @@ def _interact_cc26x2(lc, mac, fol, g, sig):
     fol, ls = _logger_ls(lc, fol, sig, pre_rm=False)
     got_all = _logger_dwg_files(lc, sig, fol, ls)
 
-    # :) got all files from this current logger
+    # :) got all files from this current cc26x2 logger
     if got_all:
-        _logger_re_setup(lc, sig)
+        _logger_re_setup_cc26x2(lc, sig)
         _logger_rws(lc, sig, g)
         sig.logger_dl_end.emit(True, 'logger done', mac)
 
@@ -391,42 +406,43 @@ def _interact_cc26x2(lc, mac, fol, g, sig):
 
 
 def _interact_rn4020(lc, mac, fol, g, sig):
-    # STOP w/ string
-    # _logger_sws(lc, sig, g)
+    # todo: TEST THIS FUNCTION
+
+    # STOP and sync time
+    _logger_stp(lc, sig, g)
     _logger_time_sync_if_need_to(lc, sig)
 
-    # # DIR logger files and get them
-    # fol, ls = _logger_ls(lc, fol, sig, pre_rm=False)
-    # got_all = _logger_get_files(lc, sig, fol, ls)
-    #
-    # # :) got all files from this current logger
-    # if got_all:
-    #     _logger_re_setup(lc, sig)
-    #     _logger_rws(lc, sig, g)
-    #     sig.ble_logger_after.emit(True, 'logger done', mac)
-    #
-    #     # plot it
-    #     _logger_plot(mac, sig)
-    #     _time_to_display(2)
-    #     return True, g
-    #
-    # # :( did NOT get all files, go back to super-loop
-    # e = 'logger {} not done yet'.format(mac)
-    # sig.ble_logger_after.emit(False, e, mac)
-    # sig.error.emit(e.format(mac))
-    # return False, None
+    # DIR logger files and GET them, not DWG
+    fol, ls = _logger_ls(lc, fol, sig, pre_rm=False)
+    got_all = _logger_get_files(lc, sig, fol, ls)
+
+    # :) got all files from this current rn4020 logger
+    if got_all:
+        _logger_rws(lc, sig, g)
+        sig.ble_logger_after.emit(True, 'logger done', mac)
+
+        # plot it
+        _logger_plot(mac, sig)
+        _time_to_display(2)
+        return True, g
+
+    # :( did NOT get all files, go back to super-loop
+    e = 'logger {} not done yet'.format(mac)
+    sig.ble_logger_after.emit(False, e, mac)
+    sig.error.emit(e.format(mac))
+    return False, None
 
 
 def logger_interact(mac, fol, hci_if, gps_enf, sig=None, _interact_rn4020=None):
     """ downloads logger files and re-setups it """
 
     try:
-        # create object to interact w/ current logger
+        # get object to interact w/ current logger
         lc = LcBLEFactory.generate(mac)
         with lc(mac, hci_if) as lc:
             g = utils_gps_get_one_lat_lon_dt(timeout=5)
             if not g:
-                g = utils_gps_backup_get()
+                g = utils_gps_cache_get()
 
             # GPS too important to keep on w/o it
             if gps_enf and not g:
@@ -434,7 +450,7 @@ def logger_interact(mac, fol, hci_if, gps_enf, sig=None, _interact_rn4020=None):
                     sig.logger_gps_nope.emit(mac)
                 return False, None
 
-            # do according to Lowell Instruments logger type
+            # do according to logger chipset type
             cb = _interact_cc26x2 if brand_ti(mac) else _interact_rn4020
             rv = cb(lc, mac, fol, g, sig)
             return rv

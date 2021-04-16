@@ -40,7 +40,7 @@ from ddh.threads.utils import (
     json_get_forget_time_secs, rpi_set_brightness, rm_plot_db, json_get_pairs, setup_app_log,
     update_cnv_log_err_file, json_set_plot_units, json_get_gps_enforced)
 from ddh.threads.utils_aws import aws_credentials_assert
-from ddh.threads.utils_gps_quectel import utils_gps_backup_set
+from ddh.threads.utils_gps_quectel import utils_gps_cache_set
 from ddh.threads.utils_macs import delete_color_mac_file
 from mat.utils import linux_is_rpi
 
@@ -540,9 +540,10 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         s = 'GUI: secret BLE tap {}'.format(b)
         c_log.debug(s)
 
-    def click_icon_gps(self, _):
+    def click_icon_gps(self, ev):
         """ clicking shift + GPS icon adjusts DDH brightness :) """
 
+        ev.accept()
         s = 'GUI: secret GPS tap {}'.format(self.bright_idx)
         c_log.debug(s)
 
@@ -611,54 +612,54 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         hide_error_tab(self)
         self.tabs.setCurrentIndex(0)
 
-    def closeEvent(self, event):
-        event.accept()
+    def closeEvent(self, ev):
+        ev.accept()
         c_log.debug('SYS: closing GUI ...')
         sys.stderr.close()
         os._exit(0)
 
-    def keyPressEvent(self, e):
+    def keyPressEvent(self, ev):
         """ controls status of the PRESS event of keyboard keys """
 
-        if e.key() == Qt.Key_Shift:
+        if ev.key() == Qt.Key_Shift:
             self.key_shift = 1
 
         known_keys = (Qt.Key_1, Qt.Key_3, Qt.Key_Shift)
-        if e.key() not in known_keys:
+        if ev.key() not in known_keys:
             # this may fire with alt + tab too
-            e = 'GUI: unknown keypress'
-            c_log.debug(e)
+            ev = 'GUI: unknown keypress'
+            c_log.debug(ev)
             return
 
         # prevent div by zero
         number_keys = (Qt.Key_1, Qt.Key_3)
-        if e.key() in number_keys and not self.plt_folders:
+        if ev.key() in number_keys and not self.plt_folders:
             c_log.debug('GUI: no data folders')
-            e = 'no folders to plot'
-            self.slot_gui_update_plt(e)
+            ev = 'no folders to plot'
+            self.slot_gui_update_plt(ev)
             return
 
         # emulate raspberry button presses, no holds
-        if e.key() == Qt.Key_1:
+        if ev.key() == Qt.Key_1:
             c_log.debug('GUI: keypress 1')
             self.plt_folders_idx += 1
             self.plt_folders_idx %= len(self.plt_folders)
             self.plt_dir = self.plt_folders[self.plt_folders_idx]
-        elif e.key() == Qt.Key_2:
+        elif ev.key() == Qt.Key_2:
             c_log.debug('GUI: keypress 2')
-        elif e.key() == Qt.Key_3:
+        elif ev.key() == Qt.Key_3:
             self.plt_ts_idx += 1
             self.plt_ts_idx %= len(self.plt_time_spans)
             self.plt_ts = self.plt_time_spans[self.plt_ts_idx]
             c_log.debug('GUI: keypress 3')
         # emulate raspberry button holds
-        elif e.key() == Qt.Key_4:
+        elif ev.key() == Qt.Key_4:
             c_log.debug('GUI: keypress 4')
-        elif e.key() == Qt.Key_5:
+        elif ev.key() == Qt.Key_5:
             c_log.debug('GUI: keypress 5')
-        elif e.key() == Qt.Key_6:
+        elif ev.key() == Qt.Key_6:
             c_log.debug('GUI: keypress 6')
-        elif e.key() == Qt.Key_Shift:
+        elif ev.key() == Qt.Key_Shift:
             c_log.debug('GUI: keypress left shift')
             return
         else:
@@ -690,7 +691,7 @@ def _aws_credentials_check():
 
 
 def _sudo_permissions_check():
-    if not 'SUDO_UID' in os.environ.keys():
+    if 'SUDO_UID' not in os.environ.keys():
         print('bluetooth requires root permissions')
         os._exit(1)
 
