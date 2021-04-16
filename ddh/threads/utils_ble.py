@@ -18,8 +18,9 @@ from mat.logger_controller import (
     RWS_CMD,
     SWS_CMD, STATUS_CMD, STOP_CMD, DEL_FILE_CMD
 )
-from mat.logger_controller_ble import ERR_MAT_ANS, FORMAT_CMD, CRC_CMD, WAKE_CMD, brand_ti
+from mat.logger_controller_ble import ERR_MAT_ANS, FORMAT_CMD, CRC_CMD, WAKE_CMD, brand_ti, SLOW_DWL_CMD
 from mat.logger_controller_ble_factory import LcBLEFactory
+from mat.utils import linux_is_rpi
 
 
 def _time_to_display(t):
@@ -394,10 +395,35 @@ def _logger_re_setup_cc26x2(lc, sig):
     _ensure_wake_mode_is_on(lc, sig)
 
 
+def _ensure_slow_dwl_mode_is_on(lc, sig):
+    """ query and ensure logger WAK flag is 1 """
+
+    if linux_is_rpi():
+        _show('unknown slow DWL mode', sig)
+        return
+
+    rv = lc.command(SLOW_DWL_CMD)
+    if len(rv) != 2:
+        _die('sending 1st slow dwl mode failed')
+    slow_dwl_mode_is_on = rv[1].decode()[-1]
+    if slow_dwl_mode_is_on == '0':
+        rv = lc.command(SLOW_DWL_CMD)
+        if len(rv) != 2:
+            _die('sending 2nd slow dwl mode failed')
+    slow_dwl_mode_is_on = rv[1].decode()[-1]
+    if slow_dwl_mode_is_on == '1':
+        _show('slow dwl mode enabled', sig)
+        return
+    _die('could not enable slow dwl mode')
+
+
 def _interact_cc26x2(lc, mac, fol, g, sig):
     # STOP w/ string
     _logger_sws(lc, sig, g)
     _logger_time_sync_if_need_to(lc, sig)
+
+    # DDH need slow downloads
+    _ensure_slow_dwl_mode_is_on(lc, sig)
 
     # DIR logger files and get them
     fol, ls = _logger_ls_both_lid_and_not_lid(lc, fol, sig, pre_rm=False)
