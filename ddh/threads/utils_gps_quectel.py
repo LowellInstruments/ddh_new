@@ -11,6 +11,8 @@ from mat.gps_quectel import gps_get_rmc_data
 
 
 # be safe, set this path as './' == DDH app root folder
+from mat.utils import linux_is_rpi
+
 BACKUP_GPS_SL = './.gps_cache.sl'
 CACHED_GPS_VALID_TIME = 90
 
@@ -43,7 +45,7 @@ def utils_gps_cache_clear():
         os.remove(BACKUP_GPS_SL)
 
 
-def utils_gps_get_one_lat_lon_dt(timeout=3):
+def utils_gps_get_one_lat_lon_dt(timeout=3, sig=None):
     """
     returns (lat, lon, dt object) or None
     for a dummy or real GPS measurement
@@ -52,6 +54,9 @@ def utils_gps_get_one_lat_lon_dt(timeout=3):
     # debug hook, returns our custom GPS frame
     t = timeout
     if ctx.dbg_hook_make_gps_give_fake_measurement:
+        if sig:
+            sig.debug.emit('GPS: dbg_hook_gps_fake_measurement')
+
         # remember: for GPS use .utcnow(), not .now()
         time.sleep(t / 3)
         dt = datetime.utcnow()
@@ -63,6 +68,11 @@ def utils_gps_get_one_lat_lon_dt(timeout=3):
         lon = '{:+.6f}'.format(-64.78203306587088)
         # you can also 'return None' to simulate an error
         return lat, lon, dt
+
+    # no fake measurement, let's see what we are
+    if not linux_is_rpi():
+        # sig.debug.emit('GPS: nope for desktop / laptop')
+        return None
 
     # get one measurement and cache in case OK
     d = gps_get_rmc_data(timeout=t)

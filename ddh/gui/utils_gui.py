@@ -128,6 +128,7 @@ def connect_gui_signals_n_slots(my_app):
     a.sig_plt.debug.connect(a.slot_debug)
     a.sig_ble.debug.connect(a.slot_debug)
     a.sig_cnv.debug.connect(a.slot_debug)
+    a.sig_gps.debug.connect(a.slot_debug)
     a.sig_cnv.update.connect(a.slot_gui_update_cnv)
     a.sig_gps.update.connect(a.slot_gui_update_gps_pos)
     a.sig_tim.update.connect(a.slot_gui_update_time)

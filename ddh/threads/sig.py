@@ -24,6 +24,7 @@ class SignalsGPS(QObject):
     status = pyqtSignal(str)
     error = pyqtSignal(str)
     update = pyqtSignal(object)
+    debug = pyqtSignal(str)
 
 
 class SignalsAWS(QObject):
