@@ -640,8 +640,9 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         number_keys = (Qt.Key_1, Qt.Key_3)
         if ev.key() in number_keys and not self.plt_folders:
             c_log.debug('GUI: no data folders')
-            ev = 'no folders to plot'
-            self.slot_gui_update_plt(ev)
+            e = 'no folders to plot'
+            self.slot_gui_update_plt(e)
+            self.slot_plt_msg(e)
             return
 
         # emulate raspberry button presses, no holds
