@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# /bin/bash /home/kaz/PycharmProjects/ddh/tools/script_ddh_deploy.sh <vessel_name>>
+# /bin/bash /home/kaz/PycharmProjects/ddh/tools/script_ddh_deploy_web_service.sh <vessel_name>>
 
 
 MY_URL="http://127.0.0.1:5000/ddh/${1}/info.zip"

@@ -41,7 +41,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>4</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -894,7 +894,7 @@
            </spacer>
           </item>
           <item row="3" column="2">
-           <widget class="QPushButton" name="btn_err_gotcha">
+           <widget class="QPushButton" name="btn_note">
             <property name="text">
              <string>got it</string>
             </property>
@@ -979,7 +979,7 @@
            </spacer>
           </item>
           <item row="1" column="1" colspan="3">
-           <widget class="QLabel" name="label_2">
+           <widget class="QLabel" name="lbl_note">
             <property name="styleSheet">
              <string notr="true">color: rgb(239, 41, 41);
 font: 19pt &quot;DejaVu Sans&quot;;</string>

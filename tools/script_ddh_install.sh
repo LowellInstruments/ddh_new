@@ -32,4 +32,4 @@ git clone https://github.com/LowellInstruments/ddh.git /home/pi/li/ddh
 pip3 install -r /home/pi/li/ddh/requirements.txt
 
 
-printf '\n>> Now you may do ./script_ddh_deploy.sh \n'
+printf '\n>> Now you may do ./script_ddh_deploy_web_service.sh \n'

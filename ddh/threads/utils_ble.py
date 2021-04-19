@@ -87,7 +87,7 @@ def _logger_sws(lc, sig, g):
         lat, lon = 'N/A', 'N/A'
 
     # send STP (SWS) command: parameter has NO comma
-    g = '{}{}'.format(lat, lon)
+    g = '{} {}'.format(lat, lon)
     for _ in range(10):
         rv = lc.command(SWS_CMD, '{}'.format(g))
         if rv == [b'SWS', b'00']:
@@ -305,7 +305,7 @@ def _logger_rws(lc, sig, g):
         lat, lon = 'N/A', 'N/A'
 
     # send RWS command
-    g = '{}{}'.format(lat, lon)
+    g = '{} {}'.format(lat, lon)
     s = 'BLE: RWS coordinates {}'.format(g)
     sig.status.emit(s)
     rv = lc.command(RWS_CMD, g)
@@ -398,10 +398,6 @@ def _logger_re_setup_cc26x2(lc, sig):
 def _ensure_slow_dwl_mode_is_on(lc, sig):
     """ query and ensure logger WAK flag is 1 """
 
-    if linux_is_rpi():
-        _show('unknown slow DWL mode', sig)
-        return
-
     rv = lc.command(SLOW_DWL_CMD)
     if len(rv) != 2:
         _die('sending 1st slow dwl mode failed')
@@ -422,11 +418,9 @@ def _interact_cc26x2(lc, mac, fol, g, sig):
     _logger_sws(lc, sig, g)
     _logger_time_sync_if_need_to(lc, sig)
 
-    # DDH need slow downloads
-    _ensure_slow_dwl_mode_is_on(lc, sig)
-
     # DIR logger files and get them
     fol, ls = _logger_ls_both_lid_and_not_lid(lc, fol, sig, pre_rm=False)
+    _ensure_slow_dwl_mode_is_on(lc, sig)
     got_all = _logger_dwg_files(lc, sig, fol, ls)
 
     # :) got all files from this current cc26x2 logger

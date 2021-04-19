@@ -1,7 +1,7 @@
 import time
 import bluepy.btle as ble
 from bluepy.btle import Scanner
-from mat.logger_controller_ble import FAKE_MAC_CC26X2, LED_CMD
+from mat.logger_controller_ble import FAKE_MAC_CC26X2, LED_CMD, WAKE_CMD, SLOW_DWL_CMD
 from mat.logger_controller import (LOGGER_INFO_CMD_W,
                                    LOGGER_INFO_CMD,
                                    STOP_CMD,
@@ -11,6 +11,50 @@ from mat.logger_controller import (LOGGER_INFO_CMD_W,
 from mat.logger_controller_ble_factory import LcBLEFactory
 
 
+def _ensure_wake_mode_is_on(lc):
+    """ query and ensure logger WAK flag is 1 """
+
+    rv = lc.command(WAKE_CMD)
+    if rv == b'ERR':
+        return rv
+
+    wak_is_on = rv[1].decode()[-1]
+    if wak_is_on == '1':
+        return 'ON'
+
+    rv = lc.command(WAKE_CMD)
+    if rv == b'ERR':
+        return rv
+
+    wak_is_on = rv[1].decode()[-1]
+    if wak_is_on == '1':
+        return 'ON'
+
+    return 'OFF'
+
+
+def _ensure_slow_dwl_mode_is_on(lc):
+    """ query and ensure logger SLOW_DWL_CMD flag is 1 """
+
+    rv = lc.command(SLOW_DWL_CMD)
+    if rv == b'ERR':
+        return rv
+
+    slow_dwl_mode_is_on = rv[1].decode()[-1]
+    if slow_dwl_mode_is_on == '1':
+        return 'ON'
+
+    rv = lc.command(SLOW_DWL_CMD)
+    if rv == b'ERR':
+        return rv
+
+    slow_dwl_mode_is_on = rv[1].decode()[-1]
+    if slow_dwl_mode_is_on == '1':
+        return 'ON'
+
+    return 'OFF'
+
+
 # resets a logger memory and runs it
 def frm_n_run(mac, sn, flag_run):
     try:
@@ -18,12 +62,12 @@ def frm_n_run(mac, sn, flag_run):
         ok = 0
         with lc(mac) as lc:
             # sets up logger time, memory, serial number, tests leds
-            rv = lc.command(LED_CMD)
-            print('\t\tLED --> {}'.format(rv))
-            ok += b'ERR' in rv
-
             rv = lc.command(STATUS_CMD)
             print('\t\tSTS --> {}'.format(rv))
+            ok += b'ERR' in rv
+
+            rv = lc.command(LED_CMD)
+            print('\t\tLED --> {}'.format(rv))
             ok += b'ERR' in rv
 
             rv = lc.command(STOP_CMD)
@@ -46,7 +90,8 @@ def frm_n_run(mac, sn, flag_run):
                 'DFN': 'sxt',
                 'TMP': 0, 'PRS': 0,
                 'DOS': 1, 'DOP': 1, 'DOT': 1,
-                'TRI': 10, 'ORI': 10, 'DRI': 900,
+                # todo: set back 10 -> 900
+                'TRI': 10, 'ORI': 10, 'DRI': 10,
                 'PRR': 8,
                 'PRN': 4,
                 'STM': '2012-11-12 12:14:00',
@@ -74,8 +119,16 @@ def frm_n_run(mac, sn, flag_run):
             print('\t\tRLI (SN) --> {}'.format(rv))
             ok += b'ERR' in rv
 
-            result = lc.command(DO_SENSOR_READINGS_CMD)
-            print('\t\tGDO --> {}'.format(result))
+            rv = _ensure_wake_mode_is_on(lc)
+            print('\t\tWAK --> {}'.format(rv))
+            ok += rv in [b'ERR', 'OFF']
+
+            rv = _ensure_slow_dwl_mode_is_on(lc)
+            print('\t\tSLW --> {}'.format(rv))
+            ok += rv in [b'ERR', 'OFF']
+
+            rv = lc.command(DO_SENSOR_READINGS_CMD)
+            print('\t\tGDO --> {}'.format(rv))
             ok += b'ERR' in rv
 
             # starts the logger, depending on flag
@@ -85,7 +138,7 @@ def frm_n_run(mac, sn, flag_run):
                 print('\t\tRUN --> {}'.format(rv))
                 ok += b'ERR' in rv
             else:
-                print('\t\tRUN command omitted: current flag value is False')
+                print('\t\tRUN --> omitted: current flag value is False')
 
             # ok != 0 is bad
             return ok

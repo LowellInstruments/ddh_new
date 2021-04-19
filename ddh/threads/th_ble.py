@@ -60,11 +60,19 @@ def _scan_for_loggers(w, h, whitelist, ml):
     # DDH macs -> w/o too recent bad ones
     li = ml.macs_filter_not_in_orange(li)
 
+    # see how many orange loggers we have
+    o = len(ml.macs_get_orange())
+    if o:
+        w.sig_ble.scan_pre.emit('{} loggers in queue '.format(o))
+        time.sleep(3)
+
     # display number of fresh loggers to be downloaded
     n = len(li)
-    if n:
-        s = 'BLE: {} fresh loggers'.format(n)
-        w.sig_ble.status.emit(s)
+    if n == 0:
+        return []
+
+    s = 'BLE: {} fresh loggers'.format(n)
+    w.sig_ble.status.emit(s)
     return li
 
 

@@ -58,14 +58,10 @@ def utils_gps_get_one_lat_lon_dt(timeout=3, sig=None):
             sig.debug.emit('GPS: dbg_hook_gps_fake_measurement')
 
         # remember: for GPS use .utcnow(), not .now()
-        time.sleep(t / 3)
+        time.sleep(5)
         dt = datetime.utcnow()
-        # dummy gps 1 (random)
         lat = '{:+.6f}'.format(12.34567866666666)
-        lon = '{:+.6f}'.format(-77.777777666666667)
-        # dummy gps 2 (Bermuda sea)
-        lat = '{:+.6f}'.format(32.44826992858049)
-        lon = '{:+.6f}'.format(-64.78203306587088)
+        lon = '{:+.6f}'.format(-144.777777666666667)
         # you can also 'return None' to simulate an error
         return lat, lon, dt
 

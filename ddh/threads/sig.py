@@ -36,6 +36,7 @@ class SignalsAWS(QObject):
 class SignalsBoot(QObject):
     status = pyqtSignal(str)
     error = pyqtSignal(str)
+    debug = pyqtSignal(str)
 
 
 class SignalsPLT(QObject):

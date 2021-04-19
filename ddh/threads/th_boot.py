@@ -21,9 +21,10 @@ def _boot_sync_time(w):
 def _boot_sync_position(w):
     """ th_boot gets first GPS position """
 
-    s = 'wait {}s for GPS fix'.format(BOOT_GPS_1ST_FIX_TIMEOUT)
+    t = BOOT_GPS_1ST_FIX_TIMEOUT
+    s = 'wait {}s for GPS fix'.format(t)
     w.lbl_ble.setText(s)
-    _o = utils_gps_get_one_lat_lon_dt(timeout=BOOT_GPS_1ST_FIX_TIMEOUT)
+    _o = utils_gps_get_one_lat_lon_dt(timeout=t, sig=w.sig_gps)
     w.sig_gps.update.emit(_o)
 
 
@@ -31,7 +32,9 @@ def _boot_connect_gps(w):
 
     # on Desktop, do not wait
     if not linux_is_rpi():
-        w.lbl_ble.setText('no GPS shield to wait for')
+        e = 'no GPS shield to wait for'
+        w.lbl_ble.setText(e)
+        w.sig_boot.debug.emit('BOO: {}'.format(e))
         return
 
     # tries twice to enable GPS, used for position and time source
@@ -42,7 +45,7 @@ def _boot_connect_gps(w):
         time.sleep(1)
         rv = gps_configure_quectel()
         if rv:
-            w.sig_boot.error.emit('SYS: boot error opening GPS port')
+            w.sig_boot.error.emit('BOO: error opening GPS port')
             os._exit(rv)
             sys.exit(rv)
 

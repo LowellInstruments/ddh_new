@@ -12,6 +12,10 @@ from ddh.threads.utils_gps_quectel import utils_gps_in_land, utils_gps_cache_is_
 from mat.utils import linux_is_rpi, linux_is_docker_on_rpi
 
 
+STR_NOTE_PURGE_BLACKLIST = 'Do you really want to purge the lock-out time?'
+STR_NOTE_GPS_BAD = 'Skipping this logger until a valid GPS fix is obtained'
+
+
 def setup_view(my_win, j):
     """ fills window with titles and default contents """
     a = my_win
@@ -106,7 +110,7 @@ def setup_buttons_gui(my_app):
     a.btn_dl_purge.clicked.connect(a.click_btn_purge_dl_folder)
     a.btn_his_purge.clicked.connect(a.click_btn_purge_his_db)
     a.btn_load_current.clicked.connect(a.click_btn_load_current_json_file)
-    a.btn_err_gotcha.clicked.connect(a.click_btn_err_gotcha)
+    a.btn_note.clicked.connect(a.click_btn_note)
 
 
 def connect_gui_signals_n_slots(my_app):
@@ -129,6 +133,7 @@ def connect_gui_signals_n_slots(my_app):
     a.sig_ble.debug.connect(a.slot_debug)
     a.sig_cnv.debug.connect(a.slot_debug)
     a.sig_gps.debug.connect(a.slot_debug)
+    a.sig_boot.debug.connect(a.slot_debug)
     a.sig_cnv.update.connect(a.slot_gui_update_cnv)
     a.sig_gps.update.connect(a.slot_gui_update_gps_pos)
     a.sig_tim.update.connect(a.slot_gui_update_time)
@@ -208,6 +213,16 @@ def hide_error_tab(ui):
 def show_error_tab(ui):
     icon = QIcon('ddh/gui/res/icon_exclamation.png')
     ui.tabs.addTab(ui.tab_err_wgt_ref, icon, ' Note')
+    ui.lbl_note.setText(STR_NOTE_GPS_BAD)
+    p = ui.tabs.findChild(QWidget, 'tab_err')
+    i = ui.tabs.indexOf(p)
+    ui.tabs.setCurrentIndex(i)
+
+
+def show_gui_request_rm_black_list_tab(ui):
+    icon = QIcon('ddh/gui/res/icon_exclamation.png')
+    ui.tabs.addTab(ui.tab_err_wgt_ref, icon, ' Note')
+    ui.lbl_note.setText(STR_NOTE_PURGE_BLACKLIST)
     p = ui.tabs.findChild(QWidget, 'tab_err')
     i = ui.tabs.indexOf(p)
     ui.tabs.setCurrentIndex(i)

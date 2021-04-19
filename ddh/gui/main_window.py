@@ -24,7 +24,8 @@ from ddh.db.db_his import DBHis
 from ddh.gui.utils_gui import (
     setup_view, setup_his_tab, setup_buttons_gui, setup_window_center, hide_edit_tab,
     dict_from_list_view, setup_buttons_rpi, _confirm_by_user, paint_gps_icon_w_color_land_sea, populate_history_tab,
-    paint_gps_icon_w_color_dis_or_cache, hide_error_tab, show_error_tab, show_edit_tab, connect_gui_signals_n_slots)
+    paint_gps_icon_w_color_dis_or_cache, hide_error_tab, show_error_tab, show_edit_tab, connect_gui_signals_n_slots,
+    show_gui_request_rm_black_list_tab, STR_NOTE_GPS_BAD, STR_NOTE_PURGE_BLACKLIST)
 from ddh.settings import ctx
 from ddh.settings.utils_settings import yaml_load_pairs, gen_ddh_json_content
 from ddh.threads import th_ble, th_cnv, th_plt, th_gps, th_aws, th_net, th_boot, th_time
@@ -297,6 +298,10 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.slot_warning('SYS: no GPS fix for {}'.format(mac))
         self.slot_his_update(mac, 'no GPS fix', '')
 
+    @pyqtSlot(name='slot_ble_gui_request_rm_black_list')
+    def slot_ble_gui_request_rm_black_list(self):
+        show_gui_request_rm_black_list_tab(self)
+
     @pyqtSlot(list, name='slot_ble_logger_to_orange')
     def slot_ble_logger_to_orange(self, w):
         """ th_ble sends the signal for this slot """
@@ -336,7 +341,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     def slot_ble_logger_dl_start(self, mac):
         """ th_ble sends the signal for this slot """
 
-        t = 'querying {}'.format(mac)
+        t = 'querying {}'.format(mac[-8:])
         self.lbl_ble.setText(t)
         ctx.lg_dl_size = 0
         ctx.lg_dl_bar_pc = 0
@@ -613,7 +618,14 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.lne_vessel.setText(ves)
         self.lne_forget.setText(str(f_t))
 
-    def click_btn_err_gotcha(self):
+    def click_btn_note(self):
+        s = self.lbl_note.text()
+        f = ctx.db_color_macs
+        if s == STR_NOTE_PURGE_BLACKLIST:
+            try:
+                os.remove(f)
+            except (OSError, Exception) as ex:
+                print(ex)
         hide_error_tab(self)
         self.tabs.setCurrentIndex(0)
 
@@ -629,7 +641,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         if ev.key() == Qt.Key_Shift:
             self.key_shift = 1
 
-        known_keys = (Qt.Key_1, Qt.Key_3, Qt.Key_Shift)
+        known_keys = (Qt.Key_1, Qt.Key_2, Qt.Key_3, Qt.Key_Shift)
         if ev.key() not in known_keys:
             # this may fire with alt + tab too
             ev = 'GUI: unknown keypress'
@@ -637,8 +649,8 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
             return
 
         # prevent div by zero
-        number_keys = (Qt.Key_1, Qt.Key_3)
-        if ev.key() in number_keys and not self.plt_folders:
+        plot_keys = (Qt.Key_1, Qt.Key_3)
+        if ev.key() in plot_keys and not self.plt_folders:
             c_log.debug('GUI: no data folders')
             e = 'no folders to plot'
             self.slot_gui_update_plt(e)
@@ -653,6 +665,8 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
             self.plt_dir = self.plt_folders[self.plt_folders_idx]
         elif ev.key() == Qt.Key_2:
             c_log.debug('GUI: keypress 2')
+            self.slot_ble_gui_request_rm_black_list()
+
         elif ev.key() == Qt.Key_3:
             self.plt_ts_idx += 1
             self.plt_ts_idx %= len(self.plt_time_spans)
