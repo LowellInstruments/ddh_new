@@ -7,7 +7,7 @@ from mat.logger_controller import (LOGGER_INFO_CMD_W,
                                    STOP_CMD,
                                    STATUS_CMD,
                                    RUN_CMD,
-                                   DO_SENSOR_READINGS_CMD)
+                                   DO_SENSOR_READINGS_CMD, RWS_CMD)
 from mat.logger_controller_ble_factory import LcBLEFactory
 
 
@@ -134,11 +134,11 @@ def frm_n_run(mac, sn, flag_run):
             # starts the logger, depending on flag
             if flag_run:
                 time.sleep(1)
-                rv = lc.command(RUN_CMD)
-                print('\t\tRUN --> {}'.format(rv))
+                rv = lc.command(RWS_CMD, 'LAB LAB')
+                print('\t\tRWS / RUN --> {}'.format(rv))
                 ok += b'ERR' in rv
             else:
-                print('\t\tRUN --> omitted: current flag value is False')
+                print('\t\tRWS / RUN --> omitted: current flag value is False')
 
             # ok != 0 is bad
             return ok
