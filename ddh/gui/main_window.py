@@ -666,7 +666,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         elif ev.key() == Qt.Key_2:
             c_log.debug('GUI: keypress 2')
             self.slot_ble_gui_request_rm_black_list()
-
+            return
         elif ev.key() == Qt.Key_3:
             self.plt_ts_idx += 1
             self.plt_ts_idx %= len(self.plt_time_spans)
