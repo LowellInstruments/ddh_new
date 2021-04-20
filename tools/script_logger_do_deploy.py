@@ -1,7 +1,7 @@
 import sys
 import subprocess as sp
 from mat.utils import PrintColors as PC
-from script_logger_do_deploy_utils import (
+from _script_logger_do_deploy_utils import (
     frm_n_run,
     get_ordered_scan_results,
 )
