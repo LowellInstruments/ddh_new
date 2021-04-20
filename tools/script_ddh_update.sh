@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+# terminate script at first line failing
+set -e
+if [[ $EUID -ne 0 ]]; then echo "run this script as root";  exit 1; fi
+
+
 echo ''
 (cd /home/pi/li/ddh) || (echo "no ddh folder"; exit 1)
 (cp run_ddh.sh .. && cp ddh/settings/ddh.json ..) || (echo "bad: no files to copy"; exit 1)
