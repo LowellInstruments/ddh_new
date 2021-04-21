@@ -1,14 +1,36 @@
 #!/usr/bin/env bash
 
+FOL=/home/pi/li/ddh
+FST=$FOL/ddh/settings
+FDL=$FOL/ddh/dl_files
+
+
 # terminate script at first line failing
 set -e
 if [[ $EUID -ne 0 ]]; then echo "run this script as root";  exit 1; fi
 
 
-echo ''
-(cd /home/pi/li/ddh) || (echo "no ddh folder"; exit 1)
-(cp run_ddh.sh .. && cp ddh/settings/ddh.json ..) || (echo "bad: no files to copy"; exit 1)
-(git reset --hard && git pull) || (echo "bad: git"; exit 1)
-(mv ../run_ddh.sh . && mv ../ddh.json ddh/settings) || (echo "bad: restoring files"; exit 1)
-printf "\n\tdone! error flag = %d\n" $?
+# pre-checks
+echo ""
+[ -d $FOL ] || echo "bad: no ddh folder"
+[ -d $FST ] || echo "bad: no settings folder"
 
+
+# saving current DDH files
+cp $FOL/run_ddh.sh /tmp || echo "bad: no run_ddh"
+cp $FST/ddh.json /tmp || echo "bad: no ddh.json"
+cp -rf $FDL /tmp
+
+
+# updating DDH
+(cd $FOL && git reset --hard && git pull) || echo "bad: git"
+
+
+# restoring DDH files
+cp /tmp/run_ddh.sh $FOL || echo "bad: restoring run_ddh"
+cp /tmp/ddh.json $FST || echo "bad: restoring ddh.json"
+cp -ru /tmp/dl_files $FOL/ddh
+
+
+# post-banner
+printf "\n\tdone!\r\n"

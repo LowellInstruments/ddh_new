@@ -24,8 +24,8 @@ from ddh.db.db_his import DBHis
 from ddh.gui.utils_gui import (
     setup_view, setup_his_tab, setup_buttons_gui, setup_window_center, hide_edit_tab,
     dict_from_list_view, setup_buttons_rpi, _confirm_by_user, paint_gps_icon_w_color_land_sea, populate_history_tab,
-    paint_gps_icon_w_color_dis_or_cache, hide_error_tab, show_error_tab, show_edit_tab, connect_gui_signals_n_slots,
-    show_gui_request_rm_black_list_tab, STR_NOTE_GPS_BAD, STR_NOTE_PURGE_BLACKLIST)
+    paint_gps_icon_w_color_dis_or_cache, hide_note_tab, show_note_tab, show_edit_tab, connect_gui_signals_n_slots,
+    show_note_tab_del_blacklist, STR_NOTE_GPS_BAD, STR_NOTE_PURGE_BLACKLIST)
 from ddh.settings import ctx
 from ddh.settings.utils_settings import yaml_load_pairs, gen_ddh_json_content
 from ddh.threads import th_ble, th_cnv, th_plt, th_gps, th_aws, th_net, th_boot, th_time
@@ -84,13 +84,13 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.btn_3_held = 0
         self.tab_edit_hide = True
         self.tab_edit_wgt_ref = None
-        self.tab_err_wgt_ref = None
+        self.tab_note_wgt_ref = None
         self.key_shift = None
         self.last_time_icon_ble_press = 0
         self.gps_enforced = json_get_gps_enforced(ctx.app_json_file)
         json_set_plot_units(ctx.app_json_file)
         hide_edit_tab(self)
-        hide_error_tab(self)
+        hide_note_tab(self)
         populate_history_tab(self)
         rm_plot_db()
 
@@ -294,13 +294,15 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     def slot_ble_logger_gps_nope(self, mac):
 
         # GPS not found, ends up updating history tab
-        show_error_tab(self)
+        show_note_tab(self)
+        self.btn_note_no.setVisible(False)
         self.slot_warning('SYS: no GPS fix for {}'.format(mac))
         self.slot_his_update(mac, 'no GPS fix', '')
 
     @pyqtSlot(name='slot_ble_gui_request_rm_black_list')
     def slot_ble_gui_request_rm_black_list(self):
-        show_gui_request_rm_black_list_tab(self)
+        show_note_tab_del_blacklist(self)
+        self.btn_note_no.setVisible(True)
 
     @pyqtSlot(list, name='slot_ble_logger_to_orange')
     def slot_ble_logger_to_orange(self, w):
@@ -618,7 +620,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.lne_vessel.setText(ves)
         self.lne_forget.setText(str(f_t))
 
-    def click_btn_note(self):
+    def click_btn_note_yes(self):
         s = self.lbl_note.text()
         f = ctx.db_color_macs
         if s == STR_NOTE_PURGE_BLACKLIST:
@@ -626,8 +628,14 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
                 os.remove(f)
             except (OSError, Exception) as ex:
                 print(ex)
-        hide_error_tab(self)
+        hide_note_tab(self)
         self.tabs.setCurrentIndex(0)
+        c_log.debug('GUI: pressed note button OK')
+
+    def click_btn_note_no(self):
+        hide_note_tab(self)
+        self.tabs.setCurrentIndex(0)
+        c_log.debug('GUI: pressed note button CANCEL')
 
     def closeEvent(self, ev):
         ev.accept()
@@ -644,8 +652,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         known_keys = (Qt.Key_1, Qt.Key_2, Qt.Key_3, Qt.Key_Shift)
         if ev.key() not in known_keys:
             # this may fire with alt + tab too
-            ev = 'GUI: unknown keypress'
-            c_log.debug(ev)
+            c_log.debug('GUI: unknown keypress')
             return
 
         # prevent div by zero

@@ -12,8 +12,8 @@ from ddh.threads.utils_gps_quectel import utils_gps_in_land, utils_gps_cache_is_
 from mat.utils import linux_is_rpi, linux_is_docker_on_rpi
 
 
-STR_NOTE_PURGE_BLACKLIST = 'Do you really want to purge the lock-out time?'
-STR_NOTE_GPS_BAD = 'Skipping this logger until a valid GPS fix is obtained'
+STR_NOTE_PURGE_BLACKLIST = 'Sure to purge all loggers\' lock-out time?'
+STR_NOTE_GPS_BAD = 'Skipping logger until valid GPS fix is obtained'
 
 
 def setup_view(my_win, j):
@@ -110,7 +110,8 @@ def setup_buttons_gui(my_app):
     a.btn_dl_purge.clicked.connect(a.click_btn_purge_dl_folder)
     a.btn_his_purge.clicked.connect(a.click_btn_purge_his_db)
     a.btn_load_current.clicked.connect(a.click_btn_load_current_json_file)
-    a.btn_note.clicked.connect(a.click_btn_note)
+    a.btn_note_yes.clicked.connect(a.click_btn_note_yes)
+    a.btn_note_no.clicked.connect(a.click_btn_note_no)
 
 
 def connect_gui_signals_n_slots(my_app):
@@ -203,27 +204,27 @@ def show_edit_tab(ui):
     ui.tabs.setCurrentIndex(i)
 
 
-def hide_error_tab(ui):
-    p = ui.tabs.findChild(QWidget, 'tab_err')
+def hide_note_tab(ui):
+    p = ui.tabs.findChild(QWidget, 'tab_note')
     i = ui.tabs.indexOf(p)
-    ui.tab_err_wgt_ref = ui.tabs.widget(i)
+    ui.tab_note_wgt_ref = ui.tabs.widget(i)
     ui.tabs.removeTab(i)
 
 
-def show_error_tab(ui):
+def show_note_tab(ui):
     icon = QIcon('ddh/gui/res/icon_exclamation.png')
-    ui.tabs.addTab(ui.tab_err_wgt_ref, icon, ' Note')
+    ui.tabs.addTab(ui.tab_note_wgt_ref, icon, ' Note')
     ui.lbl_note.setText(STR_NOTE_GPS_BAD)
-    p = ui.tabs.findChild(QWidget, 'tab_err')
+    p = ui.tabs.findChild(QWidget, 'tab_note')
     i = ui.tabs.indexOf(p)
     ui.tabs.setCurrentIndex(i)
 
 
-def show_gui_request_rm_black_list_tab(ui):
+def show_note_tab_del_blacklist(ui):
     icon = QIcon('ddh/gui/res/icon_exclamation.png')
-    ui.tabs.addTab(ui.tab_err_wgt_ref, icon, ' Note')
+    ui.tabs.addTab(ui.tab_note_wgt_ref, icon, ' Note')
     ui.lbl_note.setText(STR_NOTE_PURGE_BLACKLIST)
-    p = ui.tabs.findChild(QWidget, 'tab_err')
+    p = ui.tabs.findChild(QWidget, 'tab_note')
     i = ui.tabs.indexOf(p)
     ui.tabs.setCurrentIndex(i)
 
