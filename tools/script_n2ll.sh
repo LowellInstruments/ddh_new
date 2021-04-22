@@ -8,11 +8,8 @@ FOL=/usr/local/lib/python3.7/dist-packages/mat
 
 # pre-checks
 echo ""
-[ -f $FOL/xr.py ] || echo "bad: no xr.py"
+[ -f $FOL/n2ll_agent.py ] || echo "bad: no n2ll_agent.py"
 
 # run XR, in its folder
-(cd $FOL && python3 xr.py) || echo "bad: running xr.py"
+(cd $FOL && python3 n2ll_agent.py) || echo "bad: running n2ll_agent.py"
 
-
-# post-banner
-printf "\n\tdone!\r\n"
