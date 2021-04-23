@@ -9,7 +9,7 @@ set -e
 if [[ $EUID -ne 0 ]]; then echo "need to run as root";  exit 1; fi
 
 
-echo ''
+echo '' && echo 'running, please wait...'
 pip3 uninstall -y lowell-mat
 pip3 install git+https://github.com/LowellInstruments/lowell-mat.git
 printf "\n\tdone!\r\n"
