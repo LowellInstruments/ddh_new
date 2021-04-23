@@ -155,9 +155,25 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         fmt = '%b %d %H:%M:%S'
         t = datetime.datetime.now().strftime(fmt)
         _ = self.lbl_time_n_pos.text().split('\n')
+        # update lbl_time_n_pos: {LAT} {LON} {SRC} {TIME}
         s = '{}\n{}\n{}\n{}'.format(_[0], _[1], _[2], t)
         self.lbl_time_n_pos.setText(s)
         self.lbl_plt_bsy.setText(self.bsy_dots)
+
+        # dirty-hack for Nick petition
+        if 'GPS cold start' in self.lbl_ble.text():
+            # lbl_time_n_pos: {LAT} {LON} {SRC} {TIME}
+            _ = self.lbl_time_n_pos.text().split('\n')
+            s = '{}\n{}\n{}\n{}'.format(dots, _[1], _[2], _[3])
+            self.lbl_time_n_pos.setText(s)
+            # lbl_net_: {SRC} {AWS}
+            _ = self.lbl_net_n_cloud.text().split('\n')
+            s = '{}\n{}'.format(_[0], dots)
+            self.lbl_net_n_cloud.setText(s)
+            # lbl_plot.text: {PLT} {CNV} {ERR}
+            _ = self.lbl_plot.text().split('\n')
+            s = '{}\n{}\n{}'.format(_[0], dots, _[2])
+            self.lbl_plot.setText(s)
 
         # timeout to display plot tab, compare to 1 only runs once
         if self.plt_timeout_dis == 1:
@@ -184,8 +200,8 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         """ th_time sends the signal for this slot """
 
         _ = self.lbl_time_n_pos.text().split('\n')
-        # update lbl_time_n_pos: {SRC} {LAT} {LON} {TIME}
-        s = '{}\n{}\n{}\n{}'.format(s, _[1], _[2], _[3])
+        # update lbl_time_n_pos: {LAT} {LON} {SRC} {TIME}
+        s = '{}\n{}\n{} time\n{}'.format(_[0], _[1], s, _[3])
         self.lbl_time_n_pos.setText(s)
 
     @pyqtSlot(object, name='slot_gui_update_gps_pos')
@@ -199,9 +215,9 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
             lon = '{:+.6f}'.format(float(u[1]))
             self.gps_last_ts = u[2]
 
-        # update lbl_time_n_pos: {SRC} {LAT} {LON} {TIME}
+        # update lbl_time_n_pos: {LAT} {LON} {SRC} {TIME}
         cc = self.lbl_time_n_pos.text().split('\n')
-        s = '{}\n{}\n{}\n{}'.format(cc[0], lat, lon, cc[3])
+        s = '{}\n{}\n{}\n{}'.format(lat, lon, cc[2], cc[3])
         self.lbl_time_n_pos.setText(s)
         if u:
             paint_gps_icon_w_color_land_sea(self, lat, lon)
@@ -499,7 +515,13 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
             return
 
         # nope, not applying conf in form
-        s = 'bad'
+        s = 'good values'
+        if t < 3600:
+            s = 'bad forget_time'
+        if not ves:
+            s = 'bad vessel name'
+        if not pairs:
+            s = 'bad, MAC pairs'
         self.lbl_setup_result.setText(s)
 
     def click_icon_boat(self, _):

@@ -11,6 +11,7 @@ from mat.utils import linux_is_rpi
 # Wikipedia: GPS-Time-To-First-Fix for cold start is typ.
 # 2 to 4 minutes, warm <= 45 secs, hot <= 22 secs
 BOOT_GPS_1ST_FIX_TIMEOUT = 240
+BOOT_GPS_WAIT_MESSAGE = 'wait {} minutes on GPS cold start'
 
 
 def _boot_sync_time(w):
@@ -22,15 +23,14 @@ def _boot_sync_time(w):
         if rv in ('GPS', 'NTP'):
             break
         time.sleep(5)
-    w.debug.emit('BOO: sync time {}'.format(rv))
+    w.sig_boot.debug.emit('BOO: sync time {}'.format(rv))
 
 
 def _boot_sync_position(w):
     """ th_boot gets first GPS position """
 
     t = BOOT_GPS_1ST_FIX_TIMEOUT
-    s = 'wait {}s for GPS fix'.format(t)
-    w.lbl_ble.setText(s)
+    w.lbl_ble.setText(BOOT_GPS_WAIT_MESSAGE.format(t / 60))
     _o = utils_gps_get_one_lat_lon_dt(timeout=t, sig=w.sig_gps)
     w.sig_gps.update.emit(_o)
 

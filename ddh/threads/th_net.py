@@ -14,7 +14,8 @@ def loop(w, ev_can_i_boot):
     checks we have the best network connection possible
     """
 
-    wait_boot_signal(w, ev_can_i_boot, 'NET')
+    # maybe no need for th_net to be blocked
+    # wait_boot_signal(w, ev_can_i_boot, 'NET')
 
     # check our platform CELL capabilities
     desktop_or_no_cell_shield = (not linux_is_rpi()) or (not ctx.cell_shield_en)

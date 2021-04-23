@@ -410,7 +410,7 @@ def _ensure_slow_dwl_mode_is_on(lc, sig):
             _die('sending 2nd slow dwl mode failed')
     slow_dwl_mode_is_on = rv[1].decode()[-1]
     if slow_dwl_mode_is_on == '1':
-        _show('slow dwl mode enabled', sig)
+        _show('DWL slow mode enabled', sig)
         return
     _die('could not enable slow dwl mode')
 
