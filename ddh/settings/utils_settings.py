@@ -61,5 +61,5 @@ def gen_ddh_json_content(known, v, f_t):
     }
     data['units'] = 'F'
     data['hci_if'] = 0
-    data['gps_enforced'] = 1
+    data['gps_enforced'] = 0
     return json.dumps(data, indent=4)
