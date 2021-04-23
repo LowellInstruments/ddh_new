@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# =======================================
+# to run when building DDH from scratch
+# =======================================
+
 # exit on error, keep track of executed commands, print
 clear && set -e
 trap 'echo ‘$BASH_COMMAND’ trapped! returned code $?' EXIT
@@ -32,4 +36,4 @@ git clone https://github.com/LowellInstruments/ddh.git /home/pi/li/ddh
 pip3 install -r /home/pi/li/ddh/requirements.txt
 
 
-printf '\n>> Now you may do ./script_ddh_deploy_web_service.sh \n'
+printf '\n>> Now you may do ./script_ddh_webservice.sh \n'

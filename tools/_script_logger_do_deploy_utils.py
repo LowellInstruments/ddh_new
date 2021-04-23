@@ -147,10 +147,9 @@ def frm_n_run(mac, sn, flag_run):
         print('BLE: connect exception --> {}'.format(ex))
 
 
-def get_ordered_scan_results() -> dict:
+def get_ordered_scan_results() -> tuple:
     """
-    Does a BLE scan and returns friendly results lists
-    :param dummies: add a couple dummies for resting
+    Performs a BLE scan and returns two dictionaries
     :return: near and far lists
     """
 

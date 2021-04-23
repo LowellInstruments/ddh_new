@@ -7,6 +7,7 @@ import sys
 import threading
 
 import matplotlib
+from PyQt5 import QtWidgets
 from PyQt5.QtCore import (
     Qt,
     pyqtSlot,
@@ -183,6 +184,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         """ th_time sends the signal for this slot """
 
         _ = self.lbl_time_n_pos.text().split('\n')
+        # update lbl_time_n_pos: {SRC} {LAT} {LON} {TIME}
         s = '{}\n{}\n{}\n{}'.format(s, _[1], _[2], _[3])
         self.lbl_time_n_pos.setText(s)
 
@@ -197,7 +199,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
             lon = '{:+.6f}'.format(float(u[1]))
             self.gps_last_ts = u[2]
 
-        # update content of the GUI
+        # update lbl_time_n_pos: {SRC} {LAT} {LON} {TIME}
         cc = self.lbl_time_n_pos.text().split('\n')
         s = '{}\n{}\n{}\n{}'.format(cc[0], lat, lon, cc[3])
         self.lbl_time_n_pos.setText(s)
@@ -212,6 +214,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
 
         s = s.replace('\n', '')
         self.slot_status('NET: {}'.format(s))
+        # update lbl_net_: {SRC} {AWS}
         _ = self.lbl_net_n_cloud.text().split('\n')
         v = '{}\n{}'.format(s, _[1])
         self.lbl_net_n_cloud.setText(v)
@@ -221,6 +224,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         """ th_aws sends the signal for this slot """
 
         _ = self.lbl_net_n_cloud.text().split('\n')
+        # update lbl_net_: {SRC} {AWS}
         s = '{}\n{}'.format(_[0], c)
         self.lbl_net_n_cloud.setText(s)
 
@@ -230,7 +234,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
 
         path = str(ctx.app_logs_folder / 'ddh_err_cnv.log')
         update_cnv_log_err_file(path, _e)
-        s = 'CNV: error' if _e else 'conversion OK'
+        s = 'CNV: error' if _e else 'CNV: OK'
         _ = self.lbl_plot.text().split('\n')
         # lbl_plot.text: {PLT} {CNV} {ERR}
         s = '{}\n{}\n{}'.format(_[0], s, _[2])
@@ -308,23 +312,12 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     def slot_ble_logger_to_orange(self, w):
         """ th_ble sends the signal for this slot """
 
-        # grab GUI current content
-        lbl = self.lbl_plot
-        _ = lbl.text().split('\n')
-        style = 'color: {}; font: 18pt'
-
-        # lbl_plot.text: {PLT} {CNV} {ERR}
-        if not w:
-            s = '{}\n{}\n{}'.format(_[0], _[1], '')
-            lbl.setStyleSheet(style.format('black'))
-            lbl.setText(s)
-            return
-
         # some logger not re-deployed
-        _arp = json_mac_dns(ctx.app_json_file, w[0])
-        _e = '{} check history'.format(_arp)
-        s = '{}\n{}\n{}'.format(_[0], _[1], _e)
-        lbl.setStyleSheet(style.format('orange'))
+        lbl = self.lbl_plot
+        # lbl_plot.text: {PLT} {CNV} {ERR}
+        cc = lbl.text().split('\n')
+        _e = 'check History' if w else ''
+        s = '{}\n{}\n{}'.format(cc[0], cc[1], _e)
         lbl.setText(s)
 
     @pyqtSlot(str, name='slot_ble_scan_pre')
@@ -396,8 +389,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     def slot_ble_dl_progress_get_file(self):
         """ th_ble sends the signal for this slot """
 
-        # 128: hardcoded XMODEM packet size using GET for CC26x2
-        # 1024: hardcoded XMODEM packet size using GET for RN4020
+        # 128 / 1024: fixed XMODEM packet size for CC26x2 / RN4020
         ctx.lg_dl_bar_pc += (100 * (1024 / ctx.lg_dl_size))
         self.bar_dl.setValue(ctx.lg_dl_bar_pc)
 
@@ -405,7 +397,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     def slot_ble_dl_progress_dwg_file(self):
         """ th_ble sends the signal for this slot """
 
-        # 2048: hardcoded when using DWG
+        # 2048: fixed DWL packet size for CC26x2
         ctx.lg_dl_bar_pc += (100 * (2048 / ctx.lg_dl_size))
         self.bar_dl.setValue(ctx.lg_dl_bar_pc)
 
@@ -413,11 +405,11 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     def slot_his_update(self, mac, lat, lon):
         """
         th_ble emits 'deployed' signal for this slot, at success
-        also called by slot_ble_logger_after: at ble_interact error / AppBLEException
-        also called by slot_ble_logger_gps_nope
+        also called by slot_ble_logger_after(): at ble_interact error / AppBLEException
+        also called by slot_ble_logger_gps_nope()
         """
 
-        # note: 'lat' parameter can piggyback an error message
+        # note: 'lat' parameter may piggyback an error message
         j = ctx.app_json_file
         name = json_mac_dns(j, mac)
         frm = '%Y/%m/%d %H:%M:%S'

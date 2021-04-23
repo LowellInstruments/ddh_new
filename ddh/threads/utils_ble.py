@@ -390,6 +390,8 @@ def _logger_re_setup_cc26x2(lc, sig):
     _ok_or_die([b'FRM', b'00'], rv, sig)
 
     # re-config the logger, ensure wake-up mode
+    dbg = 'BLE: sending CFG command, DRI = {} seconds'
+    sig.debug.emit(dbg.format(cfg_dict['DRI']))
     rv = lc.send_cfg(cfg_dict)
     _ok_or_die([b'CFG', b'00'], rv, sig)
     _ensure_wake_mode_is_on(lc, sig)

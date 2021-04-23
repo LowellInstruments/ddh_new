@@ -60,18 +60,25 @@ def _scan_for_loggers(w, h, whitelist, ml):
     # DDH macs -> w/o too recent bad ones
     li = ml.macs_filter_not_in_orange(li)
 
+    # start preparing banner
+    n = len(li)
+    s = '{} new loggers'.format(n)
+
     # see how many orange loggers we have
     o = len(ml.macs_get_orange())
     if o:
-        w.sig_ble.scan_pre.emit('{} loggers in queue '.format(o))
+        s += '\n{} pending'.format(o)
+
+    # show how many new / pending (orange) loggers
+    if n or o:
+        w.sig_ble.scan_pre.emit(s)
         time.sleep(3)
 
-    # display number of fresh loggers to be downloaded
-    n = len(li)
+    # only new loggers, pending (orange) ones must expire first
     if n == 0:
         return []
 
-    s = 'BLE: {} fresh loggers'.format(n)
+    s = 'BLE: {} new loggers'.format(n)
     w.sig_ble.status.emit(s)
     return li
 

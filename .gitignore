@@ -3,7 +3,10 @@ ddh.lo*
 *.db
 .*.sl
 ddh/dl_files/*
-tools/recipe_script_macs.py
+_macs_to_sn.*
+.idea/
+*.so
+*.lid
 
 
 # Byte-compiled / optimized / DLL files
@@ -11,15 +14,6 @@ __pycache__/
 apps/__pycache__/
 *.py[cod]
 *$py.class
-
-# IDE
-.idea/
-
-# C extensions
-*.so
-
-# LID files
-*.lid
 
 # Distribution / packaging
 .Python

@@ -1,3 +1,4 @@
+from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtWidgets import QDesktopWidget, QWidget, QMessageBox, QTableWidgetItem, \
@@ -63,13 +64,18 @@ def setup_his_tab(my_app):
         it = QTableWidgetItem(sn)
         it.setToolTip(mac)
         a.tbl_his.setItem(i, 0, it)
-        s = '{},{}'.format(lat, lon)
+        s = '{}'.format(lat)
+        s += ',{}'.format(lon) if lon else ''
         a.tbl_his.setItem(i, 1, QTableWidgetItem(s))
         # 2021/03/01 14:56:34 -> '21/03/01 14:56'
         a.tbl_his.setItem(i, 2, QTableWidgetItem(ts[2:-3]))
     a.tbl_his.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
-    labels = ['serial num', 'last position', 'last time']
+    labels = ['serial', 'last position', 'last time']
     a.tbl_his.setHorizontalHeaderLabels(labels)
+
+    # columns table hack
+    header = a.tbl_his.horizontalHeader()
+    header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
 
 
 def populate_history_tab(self):

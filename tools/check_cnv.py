@@ -3,6 +3,12 @@ import os
 from mat.data_converter import default_parameters, DataConverter
 
 
+# place this script inside a DDH folder along with any .lid files to be converted
+#   $ cd /home/pi/Desktop/<your_folder>
+#   $ sudo python3 main_cnv.py
+# this script will not convert already converted files
+
+
 if __name__ == '__main__':
     fol = str(os.getcwd())
     # fol = '/home/joaquim/Desktop/04-ee-03-73-87-24'
