@@ -18,20 +18,21 @@ CACHED_GPS_VALID_TIME = 90
 
 
 def utils_gps_cache_set(d):
-    # d: ('12.3456', '44.444444', ...)
-    t = time.perf_counter()
+    # d: (<lat>, <lon>, <gps_time>)
     with shelve.open(BACKUP_GPS_SL) as sh:
-        sh['last'] = (d, t)
+        t_expiration = time.perf_counter() + CACHED_GPS_VALID_TIME
+        sh['last'] = (d, t_expiration)
 
 
 def utils_gps_cache_get():
     try:
         with shelve.open(BACKUP_GPS_SL) as sh:
-            b = sh['last']
-        # check cache is recent enough, o/w too old
-        if b[1] + CACHED_GPS_VALID_TIME < time.perf_counter():
-            return None
-        return b[0]
+            # data: ((<lat>, <lon>, <gps_time>), till)
+            data, till = sh['last']
+            # check cache is recent enough, o/w too old
+            if time.perf_counter() > till:
+                return None
+        return data
     except (KeyError, Exception) as ex:
         return None
 
@@ -70,8 +71,10 @@ def utils_gps_get_one_lat_lon_dt(timeout=3, sig=None):
         # sig.debug.emit('GPS: nope for desktop / laptop')
         return None
 
-    # get one measurement and cache in case OK
+    # get one measurement None / (lat, lon, gps_time)
     d = gps_get_rmc_data(timeout=t)
+
+    # cache in case is a good one
     if d:
         utils_gps_cache_set(d)
     return d
