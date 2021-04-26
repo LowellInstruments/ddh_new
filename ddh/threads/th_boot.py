@@ -1,6 +1,8 @@
 import os
 import sys
 import time
+
+from ddh.settings import ctx
 from ddh.settings.ctx import dbg_hook_make_gps_give_fake_measurement
 from ddh.threads.utils_gps_quectel import utils_gps_get_one_lat_lon_dt, utils_gps_cache_clear
 from ddh.threads.utils_time import utils_time_update_datetime_source
@@ -18,9 +20,11 @@ def _boot_sync_time(w):
     """ th_boot gets datetime source """
 
     rv = 'local'
+    desktop_or_no_cell_shield = (not linux_is_rpi()) or (not ctx.cell_shield_en)
+    list_src = ('NTP', ) if not desktop_or_no_cell_shield else ('GPS', 'NTP')
     for i in range(3):
         rv = utils_time_update_datetime_source(w)
-        if rv in ('GPS', 'NTP'):
+        if rv in list_src:
             break
         time.sleep(5)
     w.sig_boot.debug.emit('BOO: sync time {}'.format(rv))
@@ -28,6 +32,13 @@ def _boot_sync_time(w):
 
 def _boot_sync_position(w):
     """ th_boot gets first GPS position """
+
+    desktop_or_no_cell_shield = (not linux_is_rpi()) or (not ctx.cell_shield_en)
+    if desktop_or_no_cell_shield:
+        e = 'no GPS / cell shield to wait position'
+        w.lbl_ble.setText(e)
+        w.sig_boot.debug.emit('BOO: {}'.format(e))
+        return
 
     t = BOOT_GPS_1ST_FIX_TIMEOUT
     w.lbl_ble.setText(BOOT_GPS_WAIT_MESSAGE.format(t / 60))
@@ -38,8 +49,9 @@ def _boot_sync_position(w):
 def _boot_connect_gps(w):
 
     # on Desktop, do not wait
-    if not linux_is_rpi():
-        e = 'no GPS shield to wait for'
+    desktop_or_no_cell_shield = (not linux_is_rpi()) or (not ctx.cell_shield_en)
+    if desktop_or_no_cell_shield:
+        e = 'no GPS / cell shield to connect to'
         w.lbl_ble.setText(e)
         w.sig_boot.debug.emit('BOO: {}'.format(e))
         return
