@@ -352,8 +352,10 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     def slot_ble_logger_dl_start(self, mac):
         """ th_ble sends the signal for this slot """
 
-        t = 'querying {}'.format(mac[-8:])
-        self.lbl_ble.setText(t)
+        j = ctx.app_json_file
+        name = json_mac_dns(j, mac)
+        s = 'querying {}'.format(name)
+        self.lbl_ble.setText(s)
         ctx.lg_dl_size = 0
         ctx.lg_dl_bar_pc = 0
         self.bar_dl.setValue(0)
