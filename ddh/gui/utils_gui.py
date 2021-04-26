@@ -183,11 +183,14 @@ def paint_gps_icon_w_color_dis_or_cache(my_app):
     if utils_gps_cache_is_there_any():
         # dirty but meh, update GUI content
         lat, lon, _ = utils_gps_cache_get()
+        s = 'GUI: using cached GPS {}'.format((lat, lon, _))
+        a.sig_gps.debug.emit(s)
         img = 'ddh/gui/res/img_gps_cache.png'
         cc = a.lbl_time_n_pos.text().split('\n')
         lat = '{:+.6f}'.format(float(lat))
         lon = '{:+.6f}'.format(float(lon))
-        s = '{}\n{}\n{}\n{}'.format(cc[0], lat, lon, cc[3])
+        # update lbl_time_n_pos: {LAT} {LON} {SRC} {TIME}
+        s = '{}\n{}\n{}\n{}'.format(lat, lon, cc[2], cc[3])
         a.lbl_time_n_pos.setText(s)
     else:
         img = 'ddh/gui/res/img_gps_dis.png'
