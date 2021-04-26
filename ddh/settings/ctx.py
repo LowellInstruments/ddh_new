@@ -45,11 +45,6 @@ sw_ble_en = True
 cell_shield_en = True
 
 
-# GPS: essential for BLE downloading or not
-# False: allows setting N/A GPS positions in logger
-gps_enforced = True
-
-
 # debug hooks :)
 dbg_hook_purge_mac_blacklist_on_boot = False
 dbg_hook_purge_dl_files_for_this_mac = False
