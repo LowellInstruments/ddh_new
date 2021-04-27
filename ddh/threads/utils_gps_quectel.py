@@ -31,13 +31,13 @@ def utils_gps_cache_get():
             data, till = sh['last']
             # check cache is not expired
             if time.perf_counter() > till:
-                print('dbg: GPS cache expired')
+                # print('dbg: GPS cache expired')
                 return
-        print('dbg: GPS cache valid {}'.format(data))
+        # print('dbg: GPS cache valid {}'.format(data))
         return data
     except (KeyError, Exception) as ex:
         # for example, at first ever
-        print('dbg: GPS cache get exception {}'.format(ex))
+        # print('dbg: GPS cache get exception {}'.format(ex))
         return
 
 
@@ -47,7 +47,7 @@ def utils_gps_cache_is_there_any():
 
 def utils_gps_cache_clear():
     if os.path.exists(BACKUP_GPS_SL):
-        print('dbg: removing {}'.format(BACKUP_GPS_SL))
+        # print('dbg: removing {}'.format(BACKUP_GPS_SL))
         os.remove(BACKUP_GPS_SL)
 
 
@@ -59,7 +59,7 @@ def utils_gps_get_one_lat_lon_dt(timeout=3, sig=None):
 
     # debug hook, returns None
     if ctx.dbg_hook_make_gps_to_fail:
-        print('DBG: returning GPS None forced')
+        # print('DBG: returning GPS None forced')
         return
 
     # debug hook, returns our custom GPS frame

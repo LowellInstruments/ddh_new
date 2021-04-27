@@ -444,12 +444,6 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.lst_mac_org.clear()
         self.lst_mac_dst.clear()
 
-    @staticmethod
-    def click_force_gps_fail():
-        ctx.dbg_hook_make_gps_to_fail = not ctx.dbg_hook_make_gps_to_fail
-        s = ctx.dbg_hook_make_gps_to_fail
-        print('DBG: dbg_hook_make_gps_to_fail == {}'.format(s))
-
     def click_btn_clear_see_all_macs(self):
         """ loads (mac, name) pairs from yaml file """
 
@@ -549,6 +543,24 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
             return
         self.key_shift = 0
         self.showMinimized()
+
+    def click_lbl_ver(self, ev):
+        """ clicking shift + VER label makes GPS fail on purpose """
+
+        ev.accept()
+        s = 'GUI: secret VER click, shift pressed = {}'
+        c_log.debug(s.format(self.key_shift))
+
+        # allows this feature or not
+        if not ctx.sw_gps_fail_en:
+            return
+        if not self.key_shift:
+            return
+        self.key_shift = 0
+
+        ctx.dbg_hook_make_gps_to_fail = not ctx.dbg_hook_make_gps_to_fail
+        s = ctx.dbg_hook_make_gps_to_fail
+        c_log.debug('DBG: dbg_hook_make_gps_fail is {}'.format(s))
 
     def click_icon_ble(self, ev):
         """ clicking shift + BLE icon disables bluetooth thread """

@@ -45,6 +45,10 @@ sw_ble_en = True
 cell_shield_en = True
 
 
+# GPS: switch capability to simulate failures
+sw_gps_fail_en = False
+
+
 # debug hooks :)
 dbg_hook_purge_mac_blacklist_on_boot = False
 dbg_hook_purge_dl_files_for_this_mac = False

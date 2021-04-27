@@ -106,6 +106,7 @@ def setup_buttons_gui(my_app):
     a.img_gps.mousePressEvent = a.click_icon_gps
     a.img_net.mousePressEvent = a.click_icon_net
     a.img_plt.mousePressEvent = a.click_icon_plot
+    a.lbl_ver.mousePressEvent = a.click_lbl_ver
 
     # buttons' connections
     a.btn_known_clear.clicked.connect(a.click_btn_clear_known_mac_list)
@@ -118,7 +119,6 @@ def setup_buttons_gui(my_app):
     a.btn_load_current.clicked.connect(a.click_btn_load_current_json_file)
     a.btn_note_yes.clicked.connect(a.click_btn_note_yes)
     a.btn_note_no.clicked.connect(a.click_btn_note_no)
-    a.btn_force_gps_fail.clicked.connect(a.click_force_gps_fail)
 
 
 def connect_gui_signals_n_slots(my_app):

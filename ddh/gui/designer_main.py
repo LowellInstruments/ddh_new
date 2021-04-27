@@ -160,9 +160,6 @@ class Ui_MainWindow(object):
         self.horizontalLayout_9.setStretch(0, 1)
         self.horizontalLayout_9.setStretch(1, 1)
         self.verticalLayout_4.addLayout(self.horizontalLayout_9)
-        self.btn_force_gps_fail = QtWidgets.QPushButton(self.tab)
-        self.btn_force_gps_fail.setObjectName("btn_force_gps_fail")
-        self.verticalLayout_4.addWidget(self.btn_force_gps_fail)
         self.verticalLayout_4.setStretch(0, 1)
         self.verticalLayout_4.setStretch(1, 1)
         self.horizontalLayout_10.addLayout(self.verticalLayout_4)
@@ -443,13 +440,12 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
-        self.tabs.setCurrentIndex(0)
+        self.tabs.setCurrentIndex(2)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.btn_force_gps_fail.setText(_translate("MainWindow", "force GPS fail"))
         self.tabs.setTabText(self.tabs.indexOf(self.tab), _translate("MainWindow", " Information"))
         self.lbl_plt_bsy.setText(_translate("MainWindow", "···"))
         self.lbl_plt_msg.setText(_translate("MainWindow", "msg_plt"))
