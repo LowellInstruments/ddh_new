@@ -8,11 +8,10 @@ import shapely.geometry as sgeom
 from shapely.prepared import prep
 from ddh.settings import ctx
 from mat.gps_quectel import gps_get_rmc_data
-
-
-# be safe, set this path as './' == DDH app root folder
 from mat.utils import linux_is_rpi
 
+
+# be safe, set path as './' == DDH app root folder
 BACKUP_GPS_SL = './.gps_cache.sl'
 CACHED_GPS_VALID_TIME = 90
 
@@ -20,8 +19,9 @@ CACHED_GPS_VALID_TIME = 90
 def utils_gps_cache_set(d):
     # d: (<lat>, <lon>, <gps_time>)
     with shelve.open(BACKUP_GPS_SL) as sh:
-        t_expiration = time.perf_counter() + CACHED_GPS_VALID_TIME
-        sh['last'] = (d, t_expiration)
+        till = time.perf_counter() + CACHED_GPS_VALID_TIME
+        sh['last'] = (d, till)
+        print('dbg: GPS cache set till {}'.format(till))
 
 
 def utils_gps_cache_get():
@@ -29,12 +29,15 @@ def utils_gps_cache_get():
         with shelve.open(BACKUP_GPS_SL) as sh:
             # data: ((<lat>, <lon>, <gps_time>), till)
             data, till = sh['last']
-            # check cache is recent enough, o/w too old
+            # check cache is not expired
             if time.perf_counter() > till:
-                return None
+                print('dbg: GPS cache expired')
+                return
+        print('dbg: GPS cache valid {}'.format(data))
         return data
     except (KeyError, Exception) as ex:
-        return None
+        print('dbg: GPS cache get exception {}'.format(ex))
+        return
 
 
 def utils_gps_cache_is_there_any():
@@ -43,6 +46,7 @@ def utils_gps_cache_is_there_any():
 
 def utils_gps_cache_clear():
     if os.path.exists(BACKUP_GPS_SL):
+        print('dbg: removing {}'.format(BACKUP_GPS_SL))
         os.remove(BACKUP_GPS_SL)
 
 
@@ -69,7 +73,7 @@ def utils_gps_get_one_lat_lon_dt(timeout=3, sig=None):
     # no fake measurement, let's see what we are
     if not linux_is_rpi():
         # sig.debug.emit('GPS: nope for desktop / laptop')
-        return None
+        return
 
     # get one measurement None / (lat, lon, gps_time)
     d = gps_get_rmc_data(timeout=t)

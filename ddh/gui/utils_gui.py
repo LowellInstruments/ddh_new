@@ -168,11 +168,9 @@ def paint_gps_icon_w_color_land_sea(my_app, lat, lon):
     """ paints the gps icon """
 
     a = my_app
+    img = 'ddh/gui/res/img_gps_sea.png'
     if utils_gps_in_land(lat, lon):
         img = 'ddh/gui/res/img_gps_land.png'
-        a.img_gps.setPixmap(QPixmap(img))
-        return
-    img = 'ddh/gui/res/img_gps_sea.png'
     a.img_gps.setPixmap(QPixmap(img))
 
 
@@ -180,6 +178,7 @@ def paint_gps_icon_w_color_dis_or_cache(my_app):
     """ paints the gps icon as disabled or cache """
 
     a = my_app
+    img = 'ddh/gui/res/img_gps_dis.png'
     if utils_gps_cache_is_there_any():
         # dirty but meh, update GUI content
         lat, lon, _ = utils_gps_cache_get()
@@ -192,8 +191,6 @@ def paint_gps_icon_w_color_dis_or_cache(my_app):
         # update lbl_time_n_pos: {LAT} {LON} {SRC} {TIME}
         s = '{}\n{}\n{}\n{}'.format(lat, lon, cc[2], cc[3])
         a.lbl_time_n_pos.setText(s)
-    else:
-        img = 'ddh/gui/res/img_gps_dis.png'
     a.img_gps.setPixmap(QPixmap(img))
 
 
