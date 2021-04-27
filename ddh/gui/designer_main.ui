@@ -41,7 +41,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -49,7 +49,7 @@
        </attribute>
        <layout class="QHBoxLayout" name="horizontalLayout_10">
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_4" stretch="1,1">
+         <layout class="QVBoxLayout" name="verticalLayout_4" stretch="1,1,0">
           <property name="spacing">
            <number>12</number>
           </property>
@@ -323,6 +323,13 @@
              </layout>
             </item>
            </layout>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btn_force_gps_fail">
+            <property name="text">
+             <string>force GPS fail</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>

@@ -36,6 +36,7 @@ def utils_gps_cache_get():
         print('dbg: GPS cache valid {}'.format(data))
         return data
     except (KeyError, Exception) as ex:
+        # for example, at first ever
         print('dbg: GPS cache get exception {}'.format(ex))
         return
 
@@ -55,6 +56,11 @@ def utils_gps_get_one_lat_lon_dt(timeout=3, sig=None):
     returns (lat, lon, dt object) or None
     for a dummy or real GPS measurement
     """
+
+    # debug hook, returns None
+    if ctx.dbg_hook_make_gps_to_fail:
+        print('DBG: returning GPS None forced')
+        return
 
     # debug hook, returns our custom GPS frame
     t = timeout

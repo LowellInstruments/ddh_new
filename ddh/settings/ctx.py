@@ -51,6 +51,7 @@ dbg_hook_purge_dl_files_for_this_mac = False
 dbg_hook_make_dummy_ti_logger_visible = False
 dbg_hook_make_gps_give_fake_measurement = False
 dbg_hook_make_ntp_to_fail = False
+dbg_hook_make_gps_to_fail = False
 
 
 def only_one_instance(name):

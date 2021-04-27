@@ -444,6 +444,12 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         self.lst_mac_org.clear()
         self.lst_mac_dst.clear()
 
+    @staticmethod
+    def click_force_gps_fail():
+        ctx.dbg_hook_make_gps_to_fail = not ctx.dbg_hook_make_gps_to_fail
+        s = ctx.dbg_hook_make_gps_to_fail
+        print('DBG: dbg_hook_make_gps_to_fail == {}'.format(s))
+
     def click_btn_clear_see_all_macs(self):
         """ loads (mac, name) pairs from yaml file """
 
