@@ -1,9 +1,10 @@
+import json
 import sys
 import subprocess as sp
 from mat.utils import PrintColors as PC
 from _script_logger_do_deploy_utils import (
     frm_n_run,
-    get_ordered_scan_results,
+    get_ordered_scan_results, get_script_cfg_file, set_script_cfg_file_do_value,
 )
 import yaml
 import os
@@ -13,7 +14,6 @@ def _screen_clear(): sp.run('clear', shell=True)
 def _check_cwd(): assert os.getcwd().endswith('tools')
 def _screen_separation() : print('\n\n')
 def _menu_get(): return input('\t-> ')
-def _menu_banner(): print('scan done! nearer loggers listed first')
 
 
 # indicates  RUN command is issued at end of logger configuration
@@ -76,11 +76,14 @@ def _menu_build(_sr: dict, n: int):
     return d
 
 
-def _menu_show(d: dict):
+def _menu_show(d: dict, cfg: dict):
     global g_flag_run
+    do_i = cfg['DRI']
+    print('scan done! nearer loggers listed first')
     print('\nnow, choose an option:')
     print('\ts) scan for valid loggers again')
     print('\tr) toggle RUN flag, current value is {}'.format(g_flag_run))
+    print('\ti) set DO interval, current value is {}'.format(do_i))
     print('\tq) quit')
     if not d:
         return
@@ -89,7 +92,7 @@ def _menu_show(d: dict):
         print(s.format(k, v[0], v[1], v[2]))
 
 
-def _menu_do(_m, _c):
+def _menu_do(_m, _c, cfg):
     """ deploys the logger chosen from the list """
     global g_flag_run
 
@@ -104,6 +107,20 @@ def _menu_do(_m, _c):
     if _c == 'r':
         # toggle run flag
         g_flag_run = not g_flag_run
+        return
+    if _c == 'i':
+        # set new DO interval
+        try:
+            i = int(input('\t\t enter new interval -> '))
+        except ValueError:
+            print('invalid input: must be number')
+            return
+        valid = (30, 60, 300, 600, 900, 3600, 7200)
+        if i not in valid:
+            print('invalid interval: must be {}'.format(valid))
+            return
+        cfg['DRI'] = i
+        set_script_cfg_file_do_value(cfg)
         return
 
     # safety check, menu keys are integers
@@ -131,12 +148,12 @@ def _menu_do(_m, _c):
 
 
 def _loop():
+    cfg = get_script_cfg_file()
     sr, _ = get_ordered_scan_results()
-    _menu_banner()
     m = _menu_build(sr, 10)
-    _menu_show(m)
+    _menu_show(m, cfg)
     c = _menu_get()
-    _menu_do(m, c)
+    _menu_do(m, c, cfg)
     _screen_separation()
 
 

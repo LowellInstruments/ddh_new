@@ -1,3 +1,5 @@
+import json
+
 import time
 import bluepy.btle as ble
 from bluepy.btle import Scanner
@@ -55,6 +57,17 @@ def _ensure_slow_dwl_mode_is_on(lc):
     return 'OFF'
 
 
+def get_script_cfg_file():
+    # let it crash on purpose, if so
+    with open('./script_logger_do_deploy_cfg.json') as f:
+        return json.load(f)
+
+
+def set_script_cfg_file_do_value(cfg_d: dict):
+    with open('./script_logger_do_deploy_cfg.json', 'w') as f:
+        return json.dump(cfg_d, f)
+
+
 # resets a logger memory and runs it
 def frm_n_run(mac, sn, flag_run):
     try:
@@ -86,18 +99,8 @@ def frm_n_run(mac, sn, flag_run):
             print('\t\tFRM --> {}'.format(rv))
             ok += b'ERR' in rv
 
-            cfg_file = {
-                'DFN': 'sxt',
-                'TMP': 0, 'PRS': 0,
-                'DOS': 1, 'DOP': 1, 'DOT': 1,
-                # todo: set back 10 -> 900
-                'TRI': 10, 'ORI': 10, 'DRI': 10,
-                'PRR': 8,
-                'PRN': 4,
-                'STM': '2012-11-12 12:14:00',
-                'ETM': '2030-11-12 12:14:20',
-                'LED': 1
-            }
+            cfg_file = get_script_cfg_file()
+            print(cfg_file)
             rv = lc.send_cfg(cfg_file)
             print('\t\tCFG --> {}'.format(rv))
             ok += b'ERR' in rv
