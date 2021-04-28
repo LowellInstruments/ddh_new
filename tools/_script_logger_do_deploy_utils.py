@@ -78,61 +78,74 @@ def frm_n_run(mac, sn, flag_run):
             rv = lc.command(STATUS_CMD)
             print('\t\tSTS --> {}'.format(rv))
             ok += b'ERR' in rv
+            ok += rv == []
 
             rv = lc.command(LED_CMD)
             print('\t\tLED --> {}'.format(rv))
             ok += b'ERR' in rv
+            ok += rv == []
 
             rv = lc.command(STOP_CMD)
             print('\t\tSTP --> {}'.format(rv))
             ok += b'ERR' in rv
+            ok += rv == []
 
             rv = lc.sync_time()
             print('\t\tSTM --> {}'.format(rv))
             ok += b'ERR' in rv
+            ok += rv == []
 
             rv = lc.get_time()
             print('\t\tGTM --> {}'.format(rv))
             ok += not rv
+            ok += rv == []
 
             rv = lc.command('FRM')
             print('\t\tFRM --> {}'.format(rv))
             ok += b'ERR' in rv
+            ok += rv == []
 
             cfg_file = get_script_cfg_file()
-            print(cfg_file)
             rv = lc.send_cfg(cfg_file)
             print('\t\tCFG --> {}'.format(rv))
             ok += b'ERR' in rv
+            ok += rv == []
 
             rv = lc.command(LOGGER_INFO_CMD_W, 'BA8007')
             print('\t\tWLI (BA) --> {}'.format(rv))
             ok += b'ERR' in rv
+            ok += rv == []
 
             rv = lc.command(LOGGER_INFO_CMD, 'BA')
             print('\t\tRLI (BA) --> {}'.format(rv))
             ok += b'ERR' in rv
+            ok += rv == []
 
             s = 'SN{}'.format(sn)
             rv = lc.command(LOGGER_INFO_CMD_W, s)
             print('\t\tWLI (SN) --> {}'.format(rv))
             ok += b'ERR' in rv
+            ok += rv == []
 
             rv = lc.command(LOGGER_INFO_CMD, 'SN')
             print('\t\tRLI (SN) --> {}'.format(rv))
             ok += b'ERR' in rv
+            ok += rv == []
 
             rv = _ensure_wake_mode_is_on(lc)
             print('\t\tWAK --> {}'.format(rv))
             ok += rv in [b'ERR', 'OFF']
+            ok += rv == []
 
             rv = _ensure_slow_dwl_mode_is_on(lc)
             print('\t\tSLW --> {}'.format(rv))
             ok += rv in [b'ERR', 'OFF']
+            ok += rv == []
 
             rv = lc.command(DO_SENSOR_READINGS_CMD)
             print('\t\tGDO --> {}'.format(rv))
             ok += b'ERR' in rv
+            ok += rv == []
 
             # starts the logger, depending on flag
             if flag_run:
@@ -140,6 +153,7 @@ def frm_n_run(mac, sn, flag_run):
                 rv = lc.command(RWS_CMD, 'LAB LAB')
                 print('\t\tRWS / RUN --> {}'.format(rv))
                 ok += b'ERR' in rv
+                ok += rv == []
             else:
                 print('\t\tRWS / RUN --> omitted: current flag value is False')
 
