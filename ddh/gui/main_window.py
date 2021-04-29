@@ -738,7 +738,8 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         met = self.plt_metrics
         d = self.plt_dir
         plt_args = (d, ax, ts, met)
-        self.qpo.put(plt_args, timeout=1)
+        if self.qpo.empty():
+            self.qpo.put(plt_args)
 
 
 def on_ctrl_c(signal_num, _):

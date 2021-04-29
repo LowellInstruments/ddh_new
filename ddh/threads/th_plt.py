@@ -1,4 +1,6 @@
 import threading
+import time
+
 from ddh.settings import ctx
 from ddh.threads.utils import (
     json_mac_dns,
@@ -46,8 +48,8 @@ def loop(w, ev_can_i_boot):
     while 1:
         # wait to be unblocked by a plot petition
         plt_args = w.qpo.get()
-        if ctx.sem_plt.acquire(timeout=1):
-            _plot_data(w, plt_args)
-            ctx.sem_plt.release()
-            continue
+        time.sleep(1)
+        ctx.sem_plt.acquire()
+        _plot_data(w, plt_args)
+        ctx.sem_plt.release()
         emit_error(w.sig_plt, 'no plot: ongoing conversion')
