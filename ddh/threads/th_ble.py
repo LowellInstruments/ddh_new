@@ -12,13 +12,11 @@ from ddh.threads.utils_ble import logger_interact
 from ddh.threads.utils_gps_quectel import utils_gps_in_land
 from ddh.threads.utils_macs import filter_white_macs, bluepy_scan_results_to_macs_string, ColorMacList
 
-
 TOO_MANY_DL_ERRS_TIME_S = 3600
 IGNORE_TIME_S = 60
 
 
 def _show_mac_color_lists_at_ble_boot(w, ml):
-
     s = 'SYS: purging orange mac list on boot'
     w.sig_ble.debug.emit(s)
     ol = ml.macs_get_orange()
@@ -38,7 +36,6 @@ def _show_mac_color_lists_at_ble_boot(w, ml):
 
 
 def _scan_for_loggers(w, h, whitelist, ml):
-
     # scan all BLE devices around, hint: '!' in GUI when USB dongle
     s = '!' if h else ''
     w.sig_ble.scan_pre.emit('scanning{}'.format(s))
@@ -89,11 +86,14 @@ def _download_all_loggers(w, h, macs, ml, ft: tuple):
     # ensure all scanned macs format in lower case
     li = [i.lower() for i in macs]
 
-    # protect critical zone
-    ctx.sem_ble.acquire()
+    # old, protect critical zone
+    # ctx.sem_ble.acquire()
 
     # loop along all loggers
     for i, mac in enumerate(li):
+
+        # new, protect critical zone
+        ctx.sem_ble.acquire()
 
         # debug hook, removes this logger existing files
         if ctx.dbg_hook_purge_dl_files_for_this_mac:
@@ -156,9 +156,8 @@ def _download_all_loggers(w, h, macs, ml, ft: tuple):
 
         finally:
             ctx.sem_ble.release()
-
-    # give time for GUI to display messages, if any
-    time.sleep(3)
+            # give time for GUI to display messages, if any
+            time.sleep(2)
 
 
 def loop(w, ev_can_i_boot):
