@@ -2,7 +2,7 @@ import time
 from ddh.settings import ctx
 from ddh.threads.utils import lid_to_csv, pre_rm_csv, wait_boot_signal
 
-PERIOD_CNV = 60
+PERIOD_CNV = 300
 
 
 def loop(w, ev_can_i_boot, pre_rm_csv_files=False):
