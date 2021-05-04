@@ -119,13 +119,14 @@ def _download_all_loggers(w, h, macs, ml, ft: tuple):
                     # case lost -> remove from orange list, add to black
                     ml.entry_delete(mac)
                     ml.entry_add_or_update(mac, TOO_MANY_DL_ERRS_TIME_S, r, 'black')
-                    e = 'BLE: max errors -> black-list as r = {} for {} secs'
-                    e = e.format(mac, r)
+                    e = 'BLE: max errors by {} -> black-list as r = {} for {} secs'
+                    e = e.format(mac, r, TOO_MANY_DL_ERRS_TIME_S)
                 else:
                     # still hope -> add to orange list
                     ml.entry_add_or_update(mac, IGNORE_TIME_S, r, 'orange')
-                    e = 'BLE: error for {} -> orange-list as r = {}'.format(mac, r)
-                w.sig_ble.error.emit(e.format(mac))
+                    e = 'BLE: error by {} -> orange-list as r = {} for {} secs'
+                    e = e.format(mac, r, IGNORE_TIME_S)
+                w.sig_ble.error.emit(e)
                 continue
 
             # logger download result: OK! set 'forget time sea or land'
