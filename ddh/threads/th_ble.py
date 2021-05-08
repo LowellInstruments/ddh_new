@@ -148,7 +148,7 @@ def _download_all_loggers(w, h, macs, ml, ft: tuple):
             ml.entry_add_or_update(mac, t, 0, 'black')
             w.sig_ble.debug.emit(s)
 
-        except ble.BTLEException as ex:
+        except (ble.BTLEException, Exception) as ex:
             # not ours, but bluepy exception
             ml.entry_delete(mac)
             ml.entry_add_or_update(mac, IGNORE_TIME_S, 0, 'orange')
