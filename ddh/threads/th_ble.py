@@ -61,17 +61,20 @@ def _scan_for_loggers(w, h, whitelist, ml):
     n = len(li)
     s = '{} new loggers'.format(n)
 
-    # see how many orange loggers we have
-    o = len(ml.macs_get_orange())
-    if o:
-        s += '\n{} pending'.format(o)
+    # see how many active / expired orange loggers we have
+    oa = len(ml.macs_get_orange_not_expired())
+    op = len(ml.macs_get_orange())
+
+    # 'op' always includes 'oa', but not vice-versa
+    if op:
+        s += '\n{} / {} pending'.format(oa, op)
 
     # show how many new / pending (orange) loggers
-    if n or o:
+    if n or op:
         w.sig_ble.scan_pre.emit(s)
         time.sleep(3)
 
-    # only new loggers, pending (orange) ones must expire first
+    # only new loggers, orange ones will expire before appearing as new
     if n == 0:
         return []
 
@@ -103,7 +106,7 @@ def _download_all_loggers(w, h, macs, ml, ft: tuple):
 
         try:
             # --------------------------------------------------------
-            #  main interaction w/ this logger
+            # main interaction w/ this logger
             w.sig_ble.status.emit('BLE: connecting {}'.format(mac))
             w.sig_ble.logger_dl_start.emit(mac)
             fol = ctx.app_dl_folder
@@ -148,8 +151,15 @@ def _download_all_loggers(w, h, macs, ml, ft: tuple):
             ml.entry_add_or_update(mac, t, 0, 'black')
             w.sig_ble.debug.emit(s)
 
-        except (ble.BTLEException, Exception) as ex:
+        except ble.BTLEException as ex:
             # not ours, but bluepy exception
+            ml.entry_delete(mac)
+            ml.entry_add_or_update(mac, IGNORE_TIME_S, 0, 'orange')
+            e = 'BLE: caught ble.exception {} -> orange-list as r = 0'.format(ex)
+            w.sig_ble.error.emit(e)
+
+        except Exception as ex:
+            # this exception case should never take place
             ml.entry_delete(mac)
             ml.entry_add_or_update(mac, IGNORE_TIME_S, 0, 'orange')
             e = 'BLE: caught exception {} -> orange-list as r = 0'.format(ex)
@@ -193,7 +203,7 @@ def loop(w, ev_can_i_boot):
             # >>> download stage
             _download_all_loggers(w, h, macs, ml, (ft_s, ft_sea_s))
 
-            # >>> report stage w/ download errors, may be none
+            # >>> report stage w/ (not)expired download errors, if any
             ol = ml.macs_get_orange()
             w.sig_ble.logger_to_orange.emit(ol)
 

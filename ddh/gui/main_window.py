@@ -277,7 +277,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         """ th_plt sends the signal for this slot """
 
         if result:
-            self.slot_gui_update_plt('plot OK')
+            self.slot_gui_update_plt('PLT: OK')
             self.tabs.setCurrentIndex(1)
             to = ctx.PLT_SHOW_TIMEOUT
             self.plt_timeout_dis = to
@@ -332,7 +332,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         lbl = self.lbl_plot
         # lbl_plot.text: {PLT} {CNV} {ERR}
         cc = lbl.text().split('\n')
-        _e = 'check History' if w else ''
+        _e = 'see History / pending' if w else ''
         s = '{}\n{}\n{}'.format(cc[0], cc[1], _e)
         lbl.setText(s)
 
