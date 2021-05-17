@@ -8,6 +8,11 @@ PLT_SHOW_TIMEOUT = 120
 PLT_MSG_TIMEOUT = 5
 
 
+# Wikipedia: GPS-Time-To-First-Fix for cold start is typ.
+# 2 to 4 minutes, warm <= 45 secs, hot <= 22 secs
+BOOT_GPS_1ST_FIX_TIMEOUT = 240
+
+
 # set at main.py
 app_res_folder = None
 app_dl_folder = None

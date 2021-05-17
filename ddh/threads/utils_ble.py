@@ -207,15 +207,17 @@ def _logger_get_files(lc, sig, folder, files):
         speed = size / (time.time() - s_t)
 
     # logger was downloaded ok
-    _ = 'almost done, '
     if got > 0:
         s = 'got {} file(s)'.format(got)
     elif got == 0:
         s = 'no files to get'
     else:
         s = 'already had all files'
-    s = '{}\n{}'.format(_, s)
+    s = 'almost done, \n{}'.format(s)
     sig.logger_dl_end.emit(True, s, mac)
+
+    # to log
+    sig.debug.emit(s)
 
     # success condition
     return num_to_get == got
@@ -279,15 +281,17 @@ def _logger_dwg_files(lc, sig, folder, files):
         # speed = size / (time.time() - s_t)
 
     # display ALL files downloaded OK or not
-    _ = 'almost done, '
     if dwg_ed > 0:
         s = 'got {} file(s)'.format(dwg_ed)
     elif dwg_ed == 0:
         s = 'no files to get'
     else:
         s = 'already had all files'
-    s = '{}\n{}'.format(_, s)
+    s = 'almost done, \n{}'.format(s)
     sig.logger_dl_end.emit(True, s, mac)
+
+    # to log
+    sig.debug.emit(s)
 
     # success condition
     return num_to_dwg == dwg_ed
@@ -485,8 +489,9 @@ def logger_interact(mac, fol, hci_if, gps_enf, sig=None):
     try:
         lc = LcBLEFactory.generate(mac)
         with lc(mac, hci_if) as lc:
-            # do according to logger chipset type, rn4020 or cc26x2
+            # -------------------------------------------------------------
             cb = _interact_cc26x2 if brand_ti(mac) else _interact_rn4020
+            # -------------------------------------------------------------
             rv = cb(lc, mac, fol, g, sig)
             return rv
 

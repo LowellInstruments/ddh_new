@@ -14,6 +14,7 @@ from ddh.threads.utils_macs import filter_white_macs, bluepy_scan_results_to_mac
 
 TOO_MANY_DL_ERRS_TIME_S = 3600
 IGNORE_TIME_S = 60
+g_last_scan_banner_time = 0
 
 
 def _show_mac_color_lists_at_ble_boot(w, ml):
@@ -36,9 +37,17 @@ def _show_mac_color_lists_at_ble_boot(w, ml):
 
 
 def _scan_for_loggers(w, h, whitelist, ml):
+
+    # for logs, once in a while
+    global g_last_scan_banner_time
+    lst = g_last_scan_banner_time
+    if lst == 0 or time.perf_counter() > lst + 300:
+        g_last_scan_banner_time = time.perf_counter()
+        w.sig_ble.debug.emit('BLE: scanning')
+
     # scan all BLE devices around, hint: '!' in GUI when USB dongle
-    s = '!' if h else ''
-    w.sig_ble.scan_pre.emit('scanning{}'.format(s))
+    s = 'scanning!' if h else 'scanning'
+    w.sig_ble.scan_pre.emit(s)
     near = ble_scan(h)
 
     # scan results format -> [strings]

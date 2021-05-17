@@ -10,9 +10,6 @@ from mat.gps_quectel import gps_configure_quectel
 from mat.utils import linux_is_rpi
 
 
-# Wikipedia: GPS-Time-To-First-Fix for cold start is typ.
-# 2 to 4 minutes, warm <= 45 secs, hot <= 22 secs
-BOOT_GPS_1ST_FIX_TIMEOUT = 240
 BOOT_GPS_WAIT_MESSAGE = 'wait {:.1f} minutes on GPS cold start'
 
 
@@ -40,7 +37,8 @@ def _boot_sync_position(w):
         w.sig_boot.debug.emit('BOO: {}'.format(e))
         return
 
-    t = BOOT_GPS_1ST_FIX_TIMEOUT
+    t = ctx.BOOT_GPS_1ST_FIX_TIMEOUT
+    assert (t >= 10)
     w.lbl_ble.setText(BOOT_GPS_WAIT_MESSAGE.format(t / 60))
     _o = utils_gps_get_one_lat_lon_dt(timeout=t, sig=w.sig_gps)
     w.sig_gps.update.emit(_o)
