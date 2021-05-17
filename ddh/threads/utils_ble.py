@@ -16,7 +16,7 @@ from ddh.threads.utils import (
 from ddh.threads.utils_gps_quectel import utils_gps_get_one_lat_lon_dt, utils_gps_cache_get
 from mat.logger_controller import (
     RWS_CMD,
-    SWS_CMD, STATUS_CMD, STOP_CMD, DEL_FILE_CMD
+    SWS_CMD, STATUS_CMD, STOP_CMD, DEL_FILE_CMD, RUN_CMD
 )
 from mat.logger_controller_ble import ERR_MAT_ANS, FORMAT_CMD, CRC_CMD, WAKE_CMD, brand_ti, SLOW_DWL_CMD
 from mat.logger_controller_ble_factory import LcBLEFactory
@@ -319,6 +319,17 @@ def _logger_rws(lc, sig, g):
     sig.logger_deployed.emit(lc.per.addr, str(lat), str(lon))
 
 
+def _logger_run(lc, sig):
+    """ logger RUN """
+
+    sig.status.emit('BLE: RUN')
+    rv = lc.command(RUN_CMD)
+    _ok_or_die([b'RUN', b'00'], rv, sig)
+
+    # tell GUI, which will update history tab
+    sig.logger_deployed.emit(lc.per.addr, 'run!', '')
+
+
 def _logger_plot(mac, sig):
     sig.logger_plot_req.emit(mac)
 
@@ -458,6 +469,7 @@ def _interact_rn4020(lc, mac, fol, g, sig):
 
     # :) plot, since we got all files from this rn4020 logger
     if got_all:
+        _logger_run(mac, sig)
         sig.logger_dl_end.emit(True, 'logger done', mac)
         _logger_plot(mac, sig)
         _time_to_display(2)
