@@ -149,7 +149,6 @@ def connect_gui_signals_n_slots(my_app):
     a.sig_plt.update.connect(a.slot_gui_update_plt)
     a.sig_aws.update.connect(a.slot_gui_update_aws)
     a.sig_plt.start.connect(a.slot_plt_start)
-    a.sig_plt.msg.connect(a.slot_plt_msg)
     a.sig_plt.end.connect(a.slot_plt_end)
     a.sig_ble.scan_pre.connect(a.slot_ble_scan_pre)
     a.sig_ble.logger_dl_start.connect(a.slot_ble_logger_dl_start)

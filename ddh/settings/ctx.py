@@ -4,7 +4,7 @@ import threading
 
 
 # messagebox timeout constants
-PLT_SHOW_TIMEOUT = 120
+PLT_SHOW_TIMEOUT = 60
 PLT_MSG_TIMEOUT = 5
 
 
@@ -42,7 +42,7 @@ aws_en = True
 
 
 # BLE: enabled or not + switch capability
-ble_en = True
+ble_en = False
 sw_ble_en = True
 
 

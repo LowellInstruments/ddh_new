@@ -276,23 +276,18 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     def slot_plt_end(self, result, s):
         """ th_plt sends the signal for this slot """
 
+        # show plot tab and start timer to un-show it
+        self.lbl_plt_bsy.setVisible(False)
+        self.tabs.setCurrentIndex(1)
+        self.plt_timeout_dis = ctx.PLT_SHOW_TIMEOUT
+
         if result:
             self.slot_gui_update_plt('PLT: OK')
-            self.tabs.setCurrentIndex(1)
-            to = ctx.PLT_SHOW_TIMEOUT
-            self.plt_timeout_dis = to
         else:
             self.slot_gui_update_plt(s)
-            self.slot_plt_msg(s)
-        self.lbl_plt_bsy.setVisible(False)
-
-    @pyqtSlot(str, name='slot_plt_msg')
-    def slot_plt_msg(self, desc):
-        """ th_plt sends the signal for this slot """
-
-        self.lbl_plt_msg.setText(desc)
-        self.lbl_plt_msg.setVisible(True)
-        self.plt_timeout_msg = ctx.PLT_MSG_TIMEOUT
+            self.lbl_plt_msg.setText(s)
+            self.lbl_plt_msg.setVisible(True)
+            self.plt_timeout_msg = ctx.PLT_MSG_TIMEOUT
 
     @pyqtSlot(str, name='slot_status')
     def slot_status(self, t):
@@ -359,6 +354,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         ctx.lg_dl_size = 0
         ctx.lg_dl_bar_pc = 0
         self.bar_dl.setValue(0)
+        self.bar_dl.setVisible(True)
 
     @pyqtSlot(str, int, int, int, int, name='slot_ble_logger_dl_start_file')
     def slot_ble_logger_dl_start_file(self, _, dl_s, val_1, val_2, val_3):
@@ -373,7 +369,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
     def slot_ble_logger_end(self, ok, s, mac):
         """ th_ble sends the signal for this slot """
 
-        self.bar_dl.setValue(100 if ok else 0)
+        self.bar_dl.setVisible(False)
         self.lbl_ble.setText(s)
 
         # on error, piggyback to history update slot / tab
@@ -409,6 +405,8 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
 
         # 128 / 1024: fixed XMODEM packet size for CC26x2 / RN4020
         ctx.lg_dl_bar_pc += (100 * (1024 / ctx.lg_dl_size))
+        if ctx.lg_dl_bar_pc > 99:
+            ctx.lg_dl_bar_pc = 99
         self.bar_dl.setValue(ctx.lg_dl_bar_pc)
 
     @pyqtSlot(name='slot_ble_dl_progress_dwg_file')
@@ -417,6 +415,8 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
 
         # 2048: fixed DWL packet size for CC26x2
         ctx.lg_dl_bar_pc += (100 * (2048 / ctx.lg_dl_size))
+        if ctx.lg_dl_bar_pc > 99:
+            ctx.lg_dl_bar_pc = 99
         self.bar_dl.setValue(ctx.lg_dl_bar_pc)
 
     @pyqtSlot(str, str, str, name='slot_his_update')

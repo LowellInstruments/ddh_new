@@ -24,11 +24,6 @@ def emit_result(sig, rv, s):
         sig.result.emit(rv, s)
 
 
-def emit_msg(sig, m):
-    if sig:
-        sig.msg.emit(m)
-
-
 def _metric_to_csv_suffix(metric):
     metric_dict = {
         'DOS': '_DissolvedOxygen',
@@ -186,39 +181,40 @@ def _slice_n_avg(t, d, ts, sig):
     # summary
     num_good_slices = len(x) - n_slices_nan
     if num_good_slices < 2:
-        e = 'PLT: argh, good slices {} < 2'.format(num_good_slices)
-        emit_debug(sig, e)
+        e = 'PLT: process -> argh, good slices {} < 2'
+        emit_debug(sig, e.format(num_good_slices))
     return x, y
 
 
 def _cache_or_process(sig, folder, ts, metric, sd):
+
     # metadata
-    emit_status(sig, 'PLT: processing {} data...'.format(metric))
+    emit_status(sig, 'PLT: process -> {}'.format(metric))
     c = _metric_to_col_name(metric)
     mac = get_mac_from_folder_path(folder)
 
-    # load + prune data within last 'ts'
+    # convert from LID to CSV format
     suffix = _metric_to_csv_suffix(metric)
     lid_to_csv(folder, suffix, sig)
+
+    # load + prune CSV data within last 'ts'
     df = _csv_to_df(folder, metric)
     x, y = _rm_df_before(df, c, sd[ts])
     s, e = x.values[0], x.values[-1]
 
-    # DBPlt cache check
+    # check processed CSV data exists in cache
     p = ctx.db_plt
     db = DBPlt(p)
     if db.does_record_exist(mac, s, e, ts, c):
-        # cached! grab data from database
-        emit_status(sig, 'PLT: cache hit')
+        # cached! retrieve it from database
+        emit_status(sig, 'PLT: process cache hit')
         r_id = db.get_record_id(mac, s, e, ts, c)
         t = db.get_record_times(r_id)
         y_avg = db.get_record_values(r_id)
         return t, y_avg
 
-    # not cached! process it as slice and average
+    # not cached! process it and cache it
     t, y_avg = _slice_n_avg(x, y, sd[ts], sig)
-
-    # cache it so next time we found it
     db.add_record(mac, s, e, ts, c, t, y_avg)
     return t, y_avg
 
@@ -233,15 +229,13 @@ def plot(sig, fol, ax, ts, metric_pair, sd, lg):
     l1 = _metric_to_legend_name(m_p[1])
     clr0 = _line_color(c0)
     clr1 = _line_color(c1)
-    s = 'PLT: plotting {}({}) for {}'.format(m_p, ts, f)
-    emit_status(sig, s)
 
     # metric 1 of 2, required, query database
     try:
         t, y0 = _cache_or_process(sig, fol, ts, m_p[0], sd)
     except (AttributeError, Exception) as ex:
         # e.g. when no values at all, None.values
-        e = 'PLT: error _cache_or_process {}({}) for {}'
+        e = 'PLT: process -> error {}({}) for {}'
         emit_error(sig, e.format(m_p[0], ts, f))
         return False
 
@@ -249,17 +243,15 @@ def plot(sig, fol, ax, ts, metric_pair, sd, lg):
     try:
         _, y1 = _cache_or_process(sig, fol, ts, m_p[1], sd)
     except (AttributeError, Exception):
-        e1 = 'PLT: no {}({}) for {}'.format(m_p[1], ts, f)
         y1 = None
-        emit_error(sig, e1)
+        e1 = 'process -> error {}({}) for {}'
+        emit_error(sig, e1.format(m_p[1], ts, f))
 
     # line plot needs at least 2 points
     good_dots = np.count_nonzero(~np.isnan(y0))
     if good_dots < 2:
-        e = 'PLT: few {}({}) dots for {}'.format(m_p, ts, f)
+        e = 'PLT: process -> few {}({}) dots for {}'.format(m_p, ts, f)
         emit_error(sig, e)
-        m = 'few data to plot 1 {} of {}'.format(ts, f)
-        emit_msg(sig, m)
         return False
 
     # metric 1 of 2, get axis

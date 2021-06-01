@@ -19,21 +19,23 @@ def _plot_data(w, plt_args):
         lg = json_mac_dns(j, get_mac_from_folder_path(fol))
         sd = json_get_span_dict(j)
 
-        # plot
+        # -------------------------------------------------------
+        # plot start
         rv = False
-        pair_failed = None
         for each_pair in metric_pairs:
             rv |= plot(w.sig_plt, fol, ax, ts, each_pair, sd, lg)
+            # one plot went OK :)
             if rv:
                 w.sig_plt.end.emit(True, None)
                 return
-            pair_failed = each_pair
+        # -------------------------------------------------------
 
-        # oops, all plotting went wrong
-        e = 'PLT: no {}({}) plots for \'{}\''.format(pair_failed, ts, lg)
+        # oops, all plots went wrong
+        e = 'PLT: end -> can\'t plot anything for \'{}\''.format(lg)
         w.sig_plt.error.emit(e)
+
+        # this is shown to GUI
         e = 'can\'t plot 1{} \'{}\''.format(ts, lg)
-        w.sig_plt.msg.emit(e)
         w.sig_plt.end.emit(False, e)
 
     th = threading.Thread(target=_plot)
@@ -52,4 +54,3 @@ def loop(w, ev_can_i_boot):
         ctx.sem_plt.acquire()
         _plot_data(w, plt_args)
         ctx.sem_plt.release()
-        emit_error(w.sig_plt, 'no plot: ongoing conversion')
