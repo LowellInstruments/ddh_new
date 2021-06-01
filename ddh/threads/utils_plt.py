@@ -159,15 +159,18 @@ def _slice_n_avg(t, d, ts, sig):
                 warnings.simplefilter("ignore", category=RuntimeWarning)
                 v = np.nanmean(sl)
 
-            # y -> data
-            good_mean_for_this_slice = sl.any()
-            if good_mean_for_this_slice:
-                y.append(v)
-            else:
-                # not so good one, p.e. all 0
-                # emit_debug(sig, 'PLT: bad slice')
-                n_slices_nan += 1
-                y.append(np.nan)
+            # no bad slices treatment: y -> data
+            y.append(v)
+
+            # bad slices treatment: y -> data only after checked
+            # good_mean_for_this_slice = sl.any()
+            # if good_mean_for_this_slice:
+            #     y.append(v)
+            # else:
+            #     # not so good one, p.e. all 0
+            #     # emit_debug(sig, 'PLT: bad slice')
+            #     n_slices_nan += 1
+            #     y.append(np.nan)
 
         except (KeyError, Exception) as e:
             print('** {}'.format(e))
@@ -178,11 +181,12 @@ def _slice_n_avg(t, d, ts, sig):
             s = e
             e = _off_mm(s, mm_each_slice)
 
-    # summary
-    num_good_slices = len(x) - n_slices_nan
-    if num_good_slices < 2:
-        e = 'PLT: process -> argh, good slices {} < 2'
-        emit_debug(sig, e.format(num_good_slices))
+    # bad slices treatment: summary
+    # num_good_slices = len(x) - n_slices_nan
+    # if num_good_slices < 2:
+    #     e = 'PLT: process -> argh, good slices {} < 2'
+    #    emit_debug(sig, e.format(num_good_slices))
+
     return x, y
 
 
