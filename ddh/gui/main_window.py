@@ -336,6 +336,7 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
         """ th_ble sends the signal for this slot """
 
         self.bar_dl.setValue(0)
+        self.bar_dl.setVisible(False)
         self.lbl_ble.setText(s)
         r = ctx.app_res_folder
         p = '{}/img_blue_color.png'.format(r)
