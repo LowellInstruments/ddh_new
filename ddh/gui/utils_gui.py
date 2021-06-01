@@ -46,6 +46,7 @@ def setup_view(my_win, j):
     a.lbl_net_n_cloud.setText(fmt.format('', ''))
     fmt = '{}\n{}\n{}'
     a.lbl_plot.setText(fmt.format('', '', ''))
+    a.bar_dl.setVisible(False)
     return a
 
 

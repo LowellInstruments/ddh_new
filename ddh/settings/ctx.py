@@ -42,7 +42,7 @@ aws_en = True
 
 
 # BLE: enabled or not + switch capability
-ble_en = False
+ble_en = True
 sw_ble_en = True
 
 
