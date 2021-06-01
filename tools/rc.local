@@ -18,6 +18,16 @@ if [ "$_IP" ]; then
 fi
 
 
+# you may need -------------------------
+#     $ sudo chmod +x /etc/rc.local
+#     $ systemctl enable rc-local
+#     $ systemctl status rc-local
+# --------------------------------------
+printf "Flagging run of rc.local...\n"
+rm /home/pi/rc-local-ran.ok || true
+touch /home/pi/rc-local-ran.ok
+
+
 printf "Running juice4halt script...\n"
 /home/pi/juice4halt/bin/shutdown_script.py &
 

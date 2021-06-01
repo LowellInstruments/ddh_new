@@ -502,6 +502,7 @@ def logger_interact(mac, fol, hci_if, gps_enf, sig=None):
         lc = LcBLEFactory.generate(mac)
         with lc(mac, hci_if) as lc:
             # -------------------------------------------------------------
+            # todo: do this using get_model() MAT library function
             cb = _interact_cc26x2 if brand_ti(mac) else _interact_rn4020
             # -------------------------------------------------------------
             rv = cb(lc, mac, fol, g, sig)
