@@ -3,7 +3,6 @@ import json
 import pathlib
 import time
 from json import JSONDecodeError
-from ddh.settings import ctx
 from ddh.threads.utils import (
     rm_folder,
     create_folder,
@@ -18,7 +17,7 @@ from mat.logger_controller import (
     RWS_CMD,
     SWS_CMD, STATUS_CMD, STOP_CMD, DEL_FILE_CMD, RUN_CMD
 )
-from mat.logger_controller_ble import ERR_MAT_ANS, FORMAT_CMD, CRC_CMD, WAKE_CMD, brand_ti, SLOW_DWL_CMD
+from mat.logger_controller_ble import ERR_MAT_ANS, FORMAT_CMD, CRC_CMD, WAKE_CMD, brand_ti, SLOW_DWL_CMD, BAT_CMD
 from mat.logger_controller_ble_factory import LcBLEFactory
 from mat.utils import linux_is_rpi
 
@@ -213,7 +212,7 @@ def _logger_get_files(lc, sig, folder, files):
         s = 'no files to get'
     else:
         s = 'already had all files'
-    s = 'almost done, \n{}'.format(s)
+    s = 'almost done, {}'.format(s)
     sig.logger_dl_end.emit(True, s, mac)
 
     # to log
@@ -287,11 +286,11 @@ def _logger_dwg_files(lc, sig, folder, files):
         s = 'no files to get'
     else:
         s = 'already had all files'
-    s = 'almost done, \n{}'.format(s)
+    s = 'almost done, {}'.format(s)
     sig.logger_dl_end.emit(True, s, mac)
 
     # to log
-    sig.debug.emit(s)
+    sig.debug.emit('BLE: {}'.format(s))
 
     # success condition
     return num_to_dwg == dwg_ed
@@ -430,9 +429,19 @@ def _ensure_slow_dwl_mode_is_on(lc, sig):
     _die('could not enable slow dwl mode')
 
 
+def _logger_bat(lc, sig):
+    rv = lc.command(BAT_CMD)
+    if len(rv) != 2:
+        _die('retrieving bat failed')
+    b = rv[1].decode()[-2:] + rv[1].decode()[-4:-2]
+    sig.debug.emit('BLE: BAT = {} mV'.format(int(b, 16)))
+
+
 def _interact_cc26x2(lc, mac, fol, g, sig):
-    # STOP w/ string
+
+    # STOP w/ string and get battery level
     _logger_sws(lc, sig, g)
+    _logger_bat(lc, sig)
     _logger_time_sync_if_need_to(lc, sig)
 
     # DIR logger files and get them
