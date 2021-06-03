@@ -20,8 +20,8 @@ if ! (cd $FOL && git reset --hard && git pull); then echo "error -> git"; exit 1
 
 # get configuration files from web service and install them
 rm -rf conf || true
-curl http://"$1":5000/"$2"/"$3" --output "$3"
-if ! unzip "$3"; then echo "error -> bad zip password"; exit 1; fi
+curl http://"$1":5000/"$2"/"$3".zip --output "$3".zip
+if ! unzip -o "$3"; then echo "error -> bad zip password"; exit 1; fi
 if ! cp "$3"/run_ddh.sh $FOL; then echo "error -> run_ddh.sh"; exit 1; fi
 if ! cp "$3"/ddh.json $FST; then echo "error -> ddh.json"; exit 1; fi
 if ! cp "$3"/_macs_to_sn.yml $FST; then echo "error -> _macs file"; exit 1; fi
