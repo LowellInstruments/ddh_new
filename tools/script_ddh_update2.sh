@@ -25,7 +25,7 @@ if ! unzip -o "$3"; then echo "error -> bad zip password"; exit 1; fi
 if ! cp "$3"/run_ddh.sh $FOL; then echo "error -> run_ddh.sh"; exit 1; fi
 if ! cp "$3"/ddh.json $FST; then echo "error -> ddh.json"; exit 1; fi
 if ! cp "$3"/_macs_to_sn.yml $FST; then echo "error -> _macs file"; exit 1; fi
-rm -rf "$3" || true
+rm -rf "$3".zip || true
 
 # recover saved dl_files
 cp -ru /tmp/dl_files $FOL/ddh

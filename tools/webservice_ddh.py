@@ -32,10 +32,13 @@ def index():
 #     return 'Hello, %s! %s %s' % (name, eo, ui)
 
 
-@app.route("/<path:project>/<path:vessel_file_zip>")
-def get_vessel_files(project, vessel_file_zip):
+@app.route("/<path:project>/<path:vessel_name>")
+def get_vessel_files(project, vessel_name):
     # @ browser: as_attachment = 0 shows, = 1 gets
-    return send_from_directory(project, vessel_file_zip, as_attachment=True)
+    zip_file = vessel_name
+    if not str(vessel_name).endswith('.zip'):
+        zip_file = '{}.zip'.format(vessel_name)
+    return send_from_directory(project, zip_file, as_attachment=True)
 
 
 # to create / upload / get the files:
