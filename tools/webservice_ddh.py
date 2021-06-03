@@ -40,7 +40,7 @@ def get_vessel_files(project, vessel_file_zip):
 
 # to create / upload / get the files:
 #   $ zip -r --password <password> <output_file.zip> <folder_w_files>
-#   $ scp -i <path_to_file.pem> login@<IP>:<destination_path>
+#   $ scp -i <path_to_file.pem> login@<IP>:<destination_project_folder>
 #   $ curl http://<IP>:<port>/<project>/<vessel_file.zip> --output info.zip
 if __name__ == "__main__":
     app.debug = True

@@ -7,6 +7,7 @@ _macs_to_sn.*
 .idea/
 *.so
 *.lid
+tools/conf/
 
 
 # Byte-compiled / optimized / DLL files
