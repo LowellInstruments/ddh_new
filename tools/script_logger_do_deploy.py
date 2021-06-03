@@ -1,4 +1,3 @@
-import json
 import sys
 import subprocess as sp
 from mat.utils import PrintColors as PC
@@ -26,14 +25,6 @@ def _menu_build(_sr: dict, n: int):
     only entries in '_macs_to_sn.yml' files are valid
     """
 
-    # get entries in current folder's mac-to-sn YAML file, if any
-    l_d = {}
-    try:
-        with open('./_macs_to_sn.yml') as f:
-            l_d = yaml.load(f, Loader=yaml.FullLoader)
-    except FileNotFoundError:
-        pass
-
     # get entries in DDH folder mac-to-sn YAML file, if any
     ddh_d = {}
     try:
@@ -44,13 +35,12 @@ def _menu_build(_sr: dict, n: int):
         pass
 
     # warning
-    if not ddh_d and not l_d:
-        e = 'no local or DDH _macs_to_sn.yml file found'
+    if not ddh_d:
+        e = 'DDH _macs_to_sn.yml file found'
         print(PC.FAIL + e + PC.ENDC)
         return
 
     # ensure lower-case for all entries
-    l_d = dict((k.lower(), v) for k, v in l_d.items())
     ddh_d = dict((k.lower(), v) for k, v in ddh_d.items())
 
     # sr: scan results, entry: (<mac>, <rssi>)
@@ -62,17 +52,13 @@ def _menu_build(_sr: dict, n: int):
         mac, rssi = each_sr
 
         # filter by known mac in files
-        if mac not in l_d and mac not in ddh_d:
+        if mac not in ddh_d:
             continue
 
-        # info from local file has precedence
-        try:
-            sn = str(l_d[mac])
-        except KeyError:
-            sn = str(ddh_d[mac])
-
-        d[i] = (mac, sn, rssi)
         # menu dict entries are d[number]: (mac, sn, rssi)
+        sn = str(ddh_d[mac])
+        d[i] = (mac, sn, rssi)
+
     return d
 
 
