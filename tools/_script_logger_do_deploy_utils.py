@@ -3,12 +3,12 @@ import json
 import time
 import bluepy.btle as ble
 from bluepy.btle import Scanner
-from mat.logger_controller_ble import FAKE_MAC_CC26X2, LED_CMD, WAKE_CMD, SLOW_DWL_CMD
+from mat.logger_controller_ble import WAKE_CMD, SLOW_DWL_CMD, LED_CMD
+
 from mat.logger_controller import (LOGGER_INFO_CMD_W,
                                    LOGGER_INFO_CMD,
                                    STOP_CMD,
                                    STATUS_CMD,
-                                   RUN_CMD,
                                    DO_SENSOR_READINGS_CMD, RWS_CMD)
 from mat.logger_controller_ble_factory import LcBLEFactory
 

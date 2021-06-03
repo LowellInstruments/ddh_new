@@ -36,7 +36,7 @@ def _menu_build(_sr: dict, n: int):
 
     # warning
     if not ddh_d:
-        e = 'DDH _macs_to_sn.yml file found'
+        e = 'error -> file _macs_to_sn.yml cannot be imported'
         print(PC.FAIL + e + PC.ENDC)
         return
 
@@ -45,10 +45,8 @@ def _menu_build(_sr: dict, n: int):
 
     # sr: scan results, entry: (<mac>, <rssi>)
     d = {}
-    for i, each_sr in enumerate(_sr):
-        if i == n:
-            break
-
+    i = 0
+    for each_sr in _sr:
         mac, rssi = each_sr
 
         # filter by known mac in files
@@ -58,6 +56,9 @@ def _menu_build(_sr: dict, n: int):
         # menu dict entries are d[number]: (mac, sn, rssi)
         sn = str(ddh_d[mac])
         d[i] = (mac, sn, rssi)
+        i += 1
+        if i == n - 1:
+            break
 
     return d
 
@@ -74,6 +75,7 @@ def _menu_show(d: dict, cfg: dict):
     if not d:
         return
     for k, v in d.items():
+        # menu entries -> number) mac sn rssi
         s = '\t{}) deploy {} {} {}'
         print(s.format(k, v[0], v[1], v[2]))
 
