@@ -162,25 +162,11 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
 
         # dirty-hack for Nick petition
         if 'GPS cold start' in self.lbl_ble.text():
-            # todo: search for $joaquim$
             s = self.lbl_ble.text()
             s = s.replace('·', '')
             s = s.replace('\n', '')
             self.lbl_ble.setText(s + '\n' + dots)
 
-
-        #     # lbl_time_n_pos: {LAT} {LON} {SRC} {TIME}
-        #     _ = self.lbl_time_n_pos.text().split('\n')
-        #     s = '{}\n{}\n{}\n{}'.format(dots, _[1], _[2], _[3])
-        #     self.lbl_time_n_pos.setText(s)
-        #     # lbl_net_: {SRC} {AWS}
-        #     _ = self.lbl_net_n_cloud.text().split('\n')
-        #     s = '{}\n{}'.format(_[0], dots)
-        #     self.lbl_net_n_cloud.setText(s)
-        #     # lbl_plot.text: {PLT} {CNV} {ERR}
-        #     _ = self.lbl_plot.text().split('\n')
-        #     s = '{}\n{}\n{}'.format(_[0], dots, _[2])
-        #     self.lbl_plot.setText(s)
 
         # timeout to display plot tab, compare to 1 only runs once
         if self.plt_timeout_dis == 1:
