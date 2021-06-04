@@ -30,29 +30,32 @@ def _boot_sync_time(w):
 def _boot_sync_position(w):
     """ th_boot gets first GPS position """
 
-    desktop_or_no_cell_shield = (not linux_is_rpi()) or (not ctx.cell_shield_en)
-    if desktop_or_no_cell_shield:
-        e = 'no GPS / cell shield to wait position'
-        w.lbl_ble.setText(e)
-        w.sig_boot.debug.emit('BOO: {}'.format(e))
-        return
+    # $joaquim$
+    # desktop_or_no_cell_shield = (not linux_is_rpi()) or (not ctx.cell_shield_en)
+    # if desktop_or_no_cell_shield:
+    #     e = 'no GPS / cell shield to wait position'
+    #     w.lbl_ble.setText(e)
+    #     w.sig_boot.debug.emit('BOO: {}'.format(e))
+    #     return
 
-    t = ctx.BOOT_GPS_1ST_FIX_TIMEOUT
-    assert (t >= 10)
-    w.lbl_ble.setText(BOOT_GPS_WAIT_MESSAGE.format(t / 60))
-    _o = utils_gps_get_one_lat_lon_dt(timeout=t, sig=w.sig_gps)
+    _o = utils_gps_get_one_lat_lon_dt(timeout=3, sig=w.sig_gps)
     w.sig_gps.update.emit(_o)
 
 
 def _boot_connect_gps(w):
 
+    t = ctx.BOOT_GPS_1ST_FIX_TIMEOUT
+    assert (t >= 10)
+    w.lbl_ble.setText(BOOT_GPS_WAIT_MESSAGE.format(t / 60))
+
+    # $joaquim$
     # on Desktop, do not wait
-    desktop_or_no_cell_shield = (not linux_is_rpi()) or (not ctx.cell_shield_en)
-    if desktop_or_no_cell_shield:
-        e = 'no GPS / cell shield to connect to'
-        w.lbl_ble.setText(e)
-        w.sig_boot.debug.emit('BOO: {}'.format(e))
-        return
+    # desktop_or_no_cell_shield = (not linux_is_rpi()) or (not ctx.cell_shield_en)
+    # if desktop_or_no_cell_shield:
+    #     e = 'no GPS / cell shield to connect to'
+    #     w.lbl_ble.setText(e)
+    #     w.sig_boot.debug.emit('BOO: {}'.format(e))
+    #     return
 
     # tries twice to enable GPS, used for position and time source
     if not dbg_hook_make_gps_give_fake_measurement:
