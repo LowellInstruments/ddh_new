@@ -42,15 +42,6 @@ completely from scratch on a Raspberry:
 
     When on a DDH platform, recall to check crontab file with ``crontab -e`` (for editing) or ``crontab -l`` for displaying to see if the DDH gui is kept monitored, that is, restarted in case it crashes, if ever. (Un)comment the line depending on what you need.
 
-To install on a laptop or workstation, for development purposes:
-
-.. code-block:: bash
-
-    $ wget https://raw.githubusercontent.com/LowellInstruments/ddh/master/tools/script_install_dev.sh
-    $ chmod +x script_install_dev.sh
-    $ sudo ./script_install_dev.sh
-
-
 It is left to the user to decide if a python virtual environment is used, or not.
 
 

@@ -37,7 +37,8 @@ def _boot_sync_position(w):
         w.sig_boot.debug.emit('BOO: {}'.format(e))
         return
 
-    _o = utils_gps_get_one_lat_lon_dt(timeout=3, sig=w.sig_gps)
+    t = ctx.BOOT_GPS_1ST_FIX_TIMEOUT
+    _o = utils_gps_get_one_lat_lon_dt(timeout=t, sig=w.sig_gps)
     w.sig_gps.update.emit(_o)
 
 

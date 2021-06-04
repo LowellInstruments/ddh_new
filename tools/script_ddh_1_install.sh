@@ -36,4 +36,4 @@ git clone https://github.com/LowellInstruments/ddh.git /home/pi/li/ddh
 pip3 install -r /home/pi/li/ddh/requirements.txt
 
 
-printf '\n>> Now you may do ./script_ddh_webservice.sh \n'
+printf '\n>> Now you may /home/pi/li/ddh/tools/script_ddh_2_configure.sh \n'

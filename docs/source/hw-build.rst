@@ -23,10 +23,6 @@ In your desktop computer, move such files to locations behind '->' to the DDH SS
 * dwagent.sh -> /home/pi/Downloads/dwagent.sh
 
 
-In your desktop computer, edit the SSD file ``/etc/dhcpcd.conf`` in the SSD disk to add at the end:
-
-    static domain_name_servers=8.8.4.4 8.8.8.8
-
 In your desktop computer, unmount the SSD disk. 
 
 
@@ -55,13 +51,23 @@ In your DDH, open the screensaver settings and completely disable it. Yes, you n
 
 In your DDH, open ``/etc/resolv.conf`` as root and edit it so it only has the following content:
 
-
-    # resolv.conf, protect this with 'chattr +i' to prevent interfaces changing it
     nameserver 8.8.8.8
     nameserver 8.8.4.4
 
+In your DDH, prevent changes to ``/etc/resolv.conf`` by doing:
 
-In your DDH, obtain and install the cell and GPS script from SixFab. DDH uses a `hat` so during the installer you will probably choose an option such as `6: 3G/4G Base HAT` in the `ttyUSB3` port. You will also need to specify your SIM carrier, such as `wireless.twilio.com` and that it `does NOT need a user and password`. Finally, you say YES to enable `auto connect/reconnect service at R.Pi boot up?`.
+.. code:: bash
+
+    $ sudo chattr +i /etc/resolv.conf
+
+Also, ensure ``/etc/rc.local`` can be run by doing:
+
+.. code:: bash
+
+    $ sudo chmod +x /etc/rc.local
+
+
+In your DDH, obtain and install the cell and GPS script from SixFab. DDH uses a `hat` so during the installer you will choose an option such as `6: 3G/4G Base HAT`. The installer will also ask about the USB port the cell shield is connected to. Be sure to type in `ttyUSB3`. Do not just accept, since `ttyUSB3` does not seem to be the default. You will also need to specify your SIM carrier, such as `wireless.twilio.com` and that it `does NOT need a user and password`. Finally, you say YES to enable `auto connect/reconnect service at R.Pi boot up?`.
 
 .. code:: bash
 

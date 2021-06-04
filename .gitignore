@@ -2,12 +2,12 @@
 ddh.lo*
 *.db
 .*.sl
-ddh/dl_files/*
 _macs_to_sn.*
 .idea/
 *.so
 *.lid
-tools/conf/
+*.csv
+*.gps
 
 
 # Byte-compiled / optimized / DLL files

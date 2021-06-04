@@ -88,6 +88,7 @@ def setup_window_center(my_app):
     a = my_app
 
     if linux_is_rpi() or linux_is_docker_on_rpi():
+        # rpi is 800 x 480
         a.showFullScreen()
 
     # get window + screen shape, match both, adjust upper left corner
