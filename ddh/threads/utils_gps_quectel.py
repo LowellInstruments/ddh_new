@@ -21,7 +21,7 @@ def utils_gps_cache_set(d):
     with shelve.open(BACKUP_GPS_SL) as sh:
         till = time.perf_counter() + CACHED_GPS_VALID_TIME
         sh['last'] = (d, till)
-        print('dbg: GPS cache set till {}'.format(till))
+        # print('dbg: GPS cache set till {}'.format(till))
 
 
 def utils_gps_cache_get():
