@@ -20,9 +20,8 @@ class ColorMacList:
         try:
             os.remove(self.db_name)
             return 0
-        except FileNotFoundError as _:
-            _e = 'asked to del database color_mac file {} but not found'
-            print(_e.format(self.db_name))
+        except (FileNotFoundError, Exception) as ex:
+            print(ex)
             return 1
 
     def get_all_entries_as_string(self) -> str:
@@ -112,8 +111,8 @@ class ColorMacList:
 
         rv = []
         db = shelve.open(self.db_name)
-        _now = datetime.datetime.now().timestamp()
         for k, v in db.items():
+            # v: (expiration time, retries, color)
             if v[2] == 'orange':
                 rv.append(k)
         db.close()

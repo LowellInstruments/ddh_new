@@ -32,6 +32,8 @@ def _show_mac_color_lists_at_ble_boot(w, ml):
         ml.delete_color_mac_file()
         w.sig_ble.debug.emit(s)
 
+    # ensure we have the latest black list
+    ml.entries_prune_black()
     s = 'SYS: loaded current mac_black_list -> {}'
     w.sig_ble.debug.emit(s.format(ml.get_all_entries_as_string()))
 

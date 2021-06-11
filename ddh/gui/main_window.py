@@ -167,7 +167,6 @@ class DDHQtApp(QMainWindow, d_m.Ui_MainWindow):
             s = s.replace('\n', '')
             self.lbl_ble.setText(s + '\n' + dots)
 
-
         # timeout to display plot tab, compare to 1 only runs once
         if self.plt_timeout_dis == 1:
             self.tabs.setCurrentIndex(0)
