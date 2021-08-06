@@ -20,7 +20,12 @@ Check crontab is enabled, in case you wish it to be.
 juice4halt
 ----------
 
-In your final DDH, just press the power button and wait for DDH to switch off. If the juice4halt has worked as expected, the file ``/home/pi/juice4halt/bin/j4h_halt_flag`` should be present upon restart. Delete it to repeat the test.
+In your final DDH, just press the power button and wait for DDH to switch off. If the juice4halt has worked as expected, the file ``/home/pi/juice4halt/bin/j4h_halt_flag`` should be present upon restart. Delete it to repeat the test. In case of failure, check:
+
+.. code:: bash
+
+    $ systemctl status rc.local
+    $ ps -aux | grep shutdown
 
 
 buttons

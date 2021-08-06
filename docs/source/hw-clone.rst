@@ -1,21 +1,6 @@
 .. _hw-clone:
 
 
-Backup it
-=========
-
-This is optional. Just in case in the future you want to clone a DDH and you do not have 2 SSD disks.
-
-Prepare a DDH SSD with the instructions in :ref:`hw-build`.
-
-In your desktop computer, do:
-
-.. code:: bash
-
-    $ lsblk
-    $ sudo dd if=<SDA_DEV__FROM_LSBLK_OUTOUT> | gzip -c > ddh_8Mar2021.img.gz
-
-
 Clone it
 ========
 
@@ -56,17 +41,6 @@ In your DDH, connect another SSD to USB port and:
 .. code:: bash
 
     $ rpi-clone sdb
-
-
-4th way to clone
-----------------
-
-What if you do not have 2 SSD disks? Do not worrk, grab the ``img.gz`` backup image from your repo. Then:
-
-.. code:: bash
-
-    $ lsblk
-    $ gunzip -c </path/to/your-backup.img.gz> | dd of=<SDA_DEV__FROM_LSBLK_OUTOUT>
 
 
 First time ever you boot a newly cloned SSD you may find a blank screen. Just unplug the power. Wait 5 minutes (ensure the RPI red led is off) and try again.

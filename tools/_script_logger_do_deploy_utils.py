@@ -170,7 +170,7 @@ def get_ordered_scan_results() -> tuple:
     :return: near and far lists
     """
 
-    till = 3
+    till = 5
     s = 'detecting nearby loggers, please wait {} seconds...'
     print(s.format(till))
     sr = Scanner().scan(float(till))

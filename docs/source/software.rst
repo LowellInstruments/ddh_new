@@ -34,18 +34,14 @@ completely from scratch on a Raspberry:
 .. code-block:: bash
 
     $ cd /home/pi/Downloads
-    $ wget https://raw.githubusercontent.com/LowellInstruments/ddh/master/tools/script_install_rpi.sh
-    $ chmod +x script_install_rpi.sh
-    $ sudo ./script_install_rpi.sh
+    $ wget https://raw.githubusercontent.com/LowellInstruments/ddh/master/tools/script_install_ddh_1.sh
+    $ chmod +x script_install_ddh_1.sh
+    $ sudo ./script_install_ddh_1.sh
 
 .. note::
 
-    When on a DDH platform, recall to check crontab file with ``crontab -e`` (for editing) or ``crontab -l`` for displaying to see if the DDH gui is kept monitored, that is, restarted in case it crashes, if ever. (Un)comment the line depending on what you need.
 
-It is left to the user to decide if a python virtual environment is used, or not.
-
-
-The rest of this Software section introduces DDH configuration and development.
+The rest of this Software section introduces DDH configuration and development. It is left to the user to decide if a python virtual environment is used, or not.
 
 
 .. toctree::

@@ -4,7 +4,7 @@
 Access it
 =========
 
-Recall we copied its installer file, so-called `dwagent.sh`, in the ``/home/pi/Downloads`` folder during the first steps of this document. We will run the installed contained in such file so we can access DDH worldwide. But first, let's configure SSH.
+Recall we downloaded `dwagent.sh`, in the ``/home/pi/Downloads`` folder during the first steps of this document. We will run the installed contained in such file so we can access DDH worldwide. But first, let's configure SSH.
 
 You will need to connect once via SSH to this DDH in order to add it to your known SSH hosts file. Next, you can automate tasks on it with tools like ``parallel-ssh``. The ``phosts.txt`` file has one line entries in the format ``pi@X.X.X.X``. 
 

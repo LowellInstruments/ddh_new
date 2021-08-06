@@ -14,13 +14,13 @@ In your desktop computer, obtain some files for DDH configuration with:
 
     $ wget https://raw.githubusercontent.com/LowellInstruments/ddh/master/tools/rc.local
     $ wget https://raw.githubusercontent.com/LowellInstruments/ddh/master/tools/shutdown_script.py
-    $ wget https://github.com/LowellInstruments/ddh/raw/master/tools/dwagent.sh
+
 
 In your desktop computer, move such files to locations behind '->' to the DDH SSD disk, in its `rootfs` partition.
 
 * rc.local -> /etc
 * shutdown_script.py -> /home/pi/juice4halt/bin/shutdown_script.py
-* dwagent.sh -> /home/pi/Downloads/dwagent.sh
+
 
 
 In your desktop computer, unmount the SSD disk. 
@@ -88,10 +88,24 @@ In your DDH, see cell communication-capabilities were installed properly by typi
     $ ifconfig | grep ppp0
 
 
-In your DDH, test `juice4halt` board. Just press the power button and wait for DDH to switch off. If the juice4halt has worked as expected, the file ``/home/pi/juice4halt/bin/j4h_halt_flag`` should be present upon restart. Delete it to repeat the test.
+In your DDH, test `juice4halt` board. Just press the power button and wait for DDH to switch off. If the juice4halt has worked as expected, the file ``/home/pi/juice4halt/bin/j4h_halt_flag`` should be present upon restart. Delete it to repeat the test. You can also see if the script has been run by rc.local with:
 
 
-In your DDH, even if at this point the DDH GUI software may not be installed yet, set the GUI to be always kept running by monitoring it with a 2 minutes period adding ``*/2 * * * * /home/pi/li/ddh/run_ddh.sh`` to crontab by:
+.. code:: bash
+
+    $ systemctl status rc.local
+    $ ps -aux | grep shutdown
+
+
+
+In your DDH, do a:
+
+.. code:: bash
+
+    $ sudo pi
+
+
+Even if at this point the DDH GUI software may not be installed yet, set the GUI to be always kept running by monitoring it with a 2 minutes period adding ``*/2 * * * * /home/pi/li/ddh/run_ddh.sh`` to crontab by:
 
 .. code:: bash
 
