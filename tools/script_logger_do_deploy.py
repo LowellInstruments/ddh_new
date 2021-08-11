@@ -10,23 +10,34 @@ import os
 
 
 def _screen_clear(): sp.run('clear', shell=True)
-def _check_cwd(): assert os.getcwd().endswith('tools')
+def _print_cwd(): print(os.getcwd())
 def _screen_separation() : print('\n\n')
 def _menu_get(): return input('\t-> ')
+
+
+def _check_cwd():
+    if not os.getcwd().endswith('tools'):
+        print('--> error pycharm run configuration')
+        print('--> set working directory = folder containing this script')
+        assert False
 
 
 # indicates  RUN command is issued at end of logger configuration
 g_flag_run = False
 
 
-def _menu_build(_sr: dict, n: int):
+def _menu_build(_sr: dict, n: int, hc=None):
     """
     builds a menu of up to 'n' entries
     only entries in '_macs_to_sn.yml' files are valid
     """
 
-    # get entries in DDH folder mac-to-sn YAML file, if any
+    # add hardcoded entries, if any
     ddh_d = {}
+    if hc:
+        ddh_d.update(hc)
+
+    # get entries in DDH folder mac-to-sn YAML file, if any
     try:
         # note: at PyCharm edit 'run configuration' working directory
         with open('../ddh/settings/_macs_to_sn.yml') as f:
@@ -61,6 +72,10 @@ def _menu_build(_sr: dict, n: int):
             break
 
     return d
+
+
+def _menu_hardcoded(d: dict, hc: dict):
+    d.update(hc)
 
 
 def _menu_show(d: dict, cfg: dict):
@@ -136,9 +151,12 @@ def _menu_do(_m, _c, cfg):
 
 
 def _loop():
+    # add macs w/o .yml file
+    hardcoded = {
+    }
     cfg = get_script_cfg_file()
     sr, _ = get_ordered_scan_results()
-    m = _menu_build(sr, 10)
+    m = _menu_build(sr, 10, hardcoded)
     _menu_show(m, cfg)
     c = _menu_get()
     _menu_do(m, c, cfg)
@@ -147,6 +165,7 @@ def _loop():
 
 if __name__ == '__main__':
     _screen_clear()
+    _print_cwd()
     _check_cwd()
     while True:
         _loop()

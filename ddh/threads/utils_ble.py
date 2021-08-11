@@ -524,7 +524,7 @@ def logger_interact(mac, fol, hci_if, gps_enf, sig=None):
         sig.error.emit(e)
         return False, None
 
-    # bluepy / python exception, ex: None.command()
+    # bleak / python exception, ex: None.command()
     except AttributeError as ae:
         sig.error.emit('error attribute: {}'.format(ae))
         return False, None

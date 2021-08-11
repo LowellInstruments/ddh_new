@@ -175,7 +175,7 @@ def get_ordered_scan_results() -> tuple:
     print(s.format(till))
     sr = Scanner().scan(float(till))
 
-    # bluepy 'scan results (sr)' format -> friendlier one
+    # bleak 'scan results (sr)' format -> friendlier one
     sr_f = {each_sr.addr: (each_sr.rssi, each_sr.rawData) for each_sr in sr}
 
     # filter: only keep lowell instruments' DO-1 loggers

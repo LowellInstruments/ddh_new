@@ -163,7 +163,7 @@ def _download_all_loggers(w, h, macs, ml, ft: tuple):
             w.sig_ble.debug.emit(s)
 
         except ble.BTLEException as ex:
-            # not ours, but bluepy exception
+            # not ours, but bleak exception
             ml.entry_delete(mac)
             ml.entry_add_or_update(mac, IGNORE_TIME_S, 0, 'orange')
             e = 'BLE: caught ble.exception {} -> orange-list as r = 0'.format(ex)
@@ -225,7 +225,7 @@ def loop(w, ev_can_i_boot):
             os._exit(1)
 
         except ble.BTLEDisconnectError as ex:
-            e = 'BLE: weird bluepy error, permissions? {}'
+            e = 'BLE: weird bleak error, permissions? {}'
             w.sig_ble.error.emit(e.format(ex))
             time.sleep(1)
             os._exit(1)
